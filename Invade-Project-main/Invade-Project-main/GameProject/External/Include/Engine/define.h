@@ -37,8 +37,6 @@ static type* GetInst()\
 
 #define MAX_LAYER 32
 
-#define _ANIMATION_TEST
-
 typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
@@ -149,7 +147,6 @@ enum class COMPONENT_TYPE
 	LIGHT3D,
 	PARTICLESYSTEM,
 	TERRAIN,
-	SENSOR,
 	END,
 	SCRIPT,
 };
@@ -247,7 +244,6 @@ enum class EVENT_TYPE
 	ACTIVATE_COMPONENT,		// wParam : Component Adress
 	DEACTIVATE_COMPONENT,	// wParam : Component Adress
 
-	CHANGE_SCENE,
 	END,
 };
 
@@ -325,60 +321,12 @@ enum class SHADER_POV
 //MINION STATE
 
 enum class MINION_STATE {
-	IDLE,
 	WALK,
 	ATTACK,
-	DIE,
-	END,
+	FIND,
 };
 
 enum class MINION_CAMP {
 	BLUE,
 	RED,
-};
-
-enum class SPAWN_PATTERN {
-	PATTERN1=1,
-	PATTERN2,
-	PATTERN3,
-	END,
-};
-enum class SPAWN_COUNT {
-	SIX=1,
-	SIX2,
-	SEVEN,
-};
-
-
-
-enum class PLAYER_STATE {
-	IDLE,
-	WALK,
-	RUN,
-	JUMP,
-	ATTACK_READY,
-	ATTACK,
-	DEMAGED,
-	DIE,
-	END,
-};
-
-enum class CAMERA_EFFECT_TYPE {
-	NONE,
-	ZOOMIN,
-	SHAKING,
-	DAMAGED,
-	LIGHTNING,
-};
-enum class ELEMENT_TYPE {
-	FROZEN = 0,
-	FIRE = 1,
-	DARK = 2,
-	THUNDER = 3,
-	WIND = 4
-};
-
-enum class SKILL_TYPE {
-	ACT,
-	PASSIVE,
 };

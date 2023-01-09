@@ -14,7 +14,7 @@ class CLight3D;
 class CCamera;
 class CParticleSystem;
 class CTerrain;
-class CSensor;
+
 class CGameObject :public CEntity
 {
 private:
@@ -26,8 +26,7 @@ private:
 	bool m_bDead;
 	bool m_bActive;
 	bool m_bFrustumCheck;
-	bool m_bFallDown = false;
-	int m_id;
+
 
 public:
 	void Awake();
@@ -42,8 +41,7 @@ public:
 	bool IsActive() { return m_bActive; }
 	void FrustumCheck(bool _bCheck) { m_bFrustumCheck = _bCheck; }
 	bool GetFrustumCheck() { return m_bFrustumCheck; }
-	void SetId(int id) { m_id = id; }
-	int  GetId() { return m_id; }
+
 	void AddComponent(CComponent* _pCom);
 	CComponent* GetComponent(COMPONENT_TYPE _eType) { assert(_eType != COMPONENT_TYPE::SCRIPT); return m_arrCom[(UINT)_eType]; }
 	CTransform* Transform() { return (CTransform*)m_arrCom[(UINT)COMPONENT_TYPE::TRANSFORM]; }
@@ -57,7 +55,6 @@ public:
 	CLight3D* Light3D() { return (CLight3D*)m_arrCom[(UINT)COMPONENT_TYPE::LIGHT3D]; }
 	CParticleSystem* ParticleSystem() { return (CParticleSystem*)m_arrCom[(UINT)COMPONENT_TYPE::PARTICLESYSTEM]; }
 	CTerrain* Terrain() { return (CTerrain*)m_arrCom[(UINT)COMPONENT_TYPE::TERRAIN]; }
-	CSensor* Sensor() { return (CSensor*)m_arrCom[(UINT)COMPONENT_TYPE::SENSOR]; }
 	const vector<CScript*>& GetScripts()const { return m_vecScript; }
 
 	template<typename T>
@@ -72,11 +69,9 @@ public:
 
 	bool IsDead() { return m_bDead; }
 	void SetDead();
-	bool IsFallDown() { return m_bFallDown; }
-	void SetFallDown();
 
 	void RegisterToLayer();
-	
+
 	CLONE(CGameObject);
 
 private:

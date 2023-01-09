@@ -33,8 +33,6 @@ enum class KEY_TYPE
 	KEY_Z,
 	KEY_L,
 	KEY_K,
-	KEY_E,
-	KEY_T,
 
 	KEY_LBTN,
 	KEY_RBTN,
@@ -54,10 +52,10 @@ enum class KEY_TYPE
 };
 enum class KEY_STATE
 {
-	STATE_NONE,
-	STATE_TAB,
-	STATE_HOLD,
-	STATE_AWAY,
+	STATE_NONE,		
+	STATE_TAB,		
+	STATE_HOLD,		
+	STATE_AWAY,		
 };
 struct tKeyState
 {
@@ -83,3 +81,4 @@ public:
 	const POINT& GetPrevMousePos() { return m_ptOldMouse; }
 	Vec2 GetDragDir() { return m_vDragDir; }
 };
+

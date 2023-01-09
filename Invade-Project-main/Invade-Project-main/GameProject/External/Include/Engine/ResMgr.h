@@ -37,7 +37,7 @@ public:
 	Ptr<T> FindRes(const wstring& _strKey);
 
 	template<typename T>
-	Ptr<T> Load(const wstring& _strKey, const wstring& _strPath);
+	Ptr<T> Load(const wstring& _strKey, const wstring& _strPath, bool _bFBX = false);
 	template<typename T>
 	Ptr<T> LoadFBXTexture(const wstring& _strKey, const wstring& _strPath/*��� ���*/);
 	
@@ -116,7 +116,7 @@ inline Ptr<T> CResMgr::FindRes(const wstring& _strKey)
 }
 
 template<typename T>
-inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath)
+inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath, bool _bFBX)
 {
 	Ptr<T> pRes = FindRes<T>(_strKey);
 
@@ -127,13 +127,13 @@ inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath)
 	wstring strFullPath = CPathMgr::GetResPath();
 
 	RES_TYPE eType2 = GetType<T>();
-	if (RES_TYPE::TEXTURE == eType2) {
+	if (_bFBX && RES_TYPE::TEXTURE == eType2) {
 		wstring rFileName;
 		int length = _strPath.length();
 		wchar_t a = _strPath[length - 1];
-		wchar_t path = L'.';
+		wchar_t path = L'\\';
 		int i = 1;
-
+		wstring wFBXLoad = L"FBXTexture";
 		while (true)
 		{
 			a = _strPath[length - i];
@@ -149,42 +149,46 @@ inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath)
 		for (int j = 0; j < rFileName.length(); ++j) {
 			FileName.push_back(rFileName[rFileName.length() - j - 1]);
 		}
-	
 		i = 1;
-		if (rFileName == L"dsp.") {
+		wstring fileexename;
+		path = L'.';
+		length = FileName.length();
+		while (true)
+		{
+			a = FileName[length - i];
+			fileexename.push_back(a);
+			if (a == path) {
+				break;
+			}
+			i++;
+
+		}
+		i = 1;
+		if (fileexename == L"dsp.") {
 			while (true)
 			{
-				if (i == 1) {
-					wstring& strPath = const_cast<wstring&>(_strPath);
-					strPath[length - i] = 'g';
-				}
-					
-				else if (i == 2) {
-					wstring& strPath = const_cast<wstring&>(_strPath);
-					strPath[length - i] = 'n';
-					
-				}
-					
-				else if (i == 3) {
-					wstring& strPath = const_cast<wstring&>(_strPath);
-					strPath[length - i] = 'p';
-				
-				}
-				
-				if (_strPath[length - i] == path) {
+				if (i == 1)
+					FileName[length - i] = 'g';
+				else if (i == 2)
+					FileName[length - i] = 'n';
+				else if (i == 3)
+					FileName[length - i] = 'p';
+				if (FileName[length - i] == path) {
 					break;
 				}
 				i++;
 
 			}
 		}
+		wFBXLoad += FileName;
 
-		int c = 0;
-	//	strFullPath += wFBXLoad;
+		strFullPath += wFBXLoad;
+	}
+	else {
+		strFullPath += _strPath;
 	}
 
-	strFullPath += _strPath;
-	pRes->Load(strFullPath);
+	pRes->Load(strFullPath, _bFBX);
 
 
 	RES_TYPE eType = GetType<T>();

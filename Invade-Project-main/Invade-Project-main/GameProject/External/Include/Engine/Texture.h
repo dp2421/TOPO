@@ -8,7 +8,7 @@
 #else
 #pragma comment(lib, "DirectTex\\DirectXTex.lib")
 #endif
-class CTexture :public CResource
+class CTexture:public CResource
 {
 private:
 	ScratchImage m_Image;
@@ -22,14 +22,14 @@ private:
 	D3D12_RESOURCE_STATES m_eState;
 
 public:
-	virtual void Load(const wstring& _strFullPath);
+	virtual void Load(const wstring& _strFullPath,bool _bFBX=false);
 	virtual void Save(const wstring& _strFullPath);
 	void Create(UINT _iWidth, UINT _iHeight, DXGI_FORMAT _eFormat
 		, const D3D12_HEAP_PROPERTIES& _HeapProperty, D3D12_HEAP_FLAGS _eHeapFlag
 		, D3D12_RESOURCE_FLAGS _eResFlag, Vec4 _vClearColor = Vec4());
 
 	void CreateFromResource(ComPtr<ID3D12Resource> _pTex2D);
-	void Load(const wstring& _strFullPath, D3D12_CPU_DESCRIPTOR_HANDLE _CpuHandle);
+
 	ComPtr<ID3D12Resource> GetTex2D() { return m_pTex2D; }
 	ComPtr<ID3D12DescriptorHeap> GetSRV() { return m_pSRV; }
 	ComPtr<ID3D12DescriptorHeap> GetRTV() { return m_pRTV; }
@@ -44,3 +44,4 @@ public:
 	CTexture();
 	virtual ~CTexture();
 };
+

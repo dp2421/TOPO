@@ -18,13 +18,10 @@ private:
 
     Matrix m_matColWorld;
     UINT m_iColID;
-    BoundingBox m_bBound;
 
 public:
     virtual void Update();
     virtual void FinalUpdate();
-
-    BoundingBox GetBox() { return m_bBound; }
     void Render();
 
     void OnCollisionEnter(CCollider3D* _pOther);
@@ -49,3 +46,4 @@ public:
 
     CLONE(CCollider3D);
 };
+

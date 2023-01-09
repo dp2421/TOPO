@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneMgr.h"
+
 int GetSizeofFormat(DXGI_FORMAT _eFormat);
 
 template<typename T1, typename T2>
@@ -40,13 +40,10 @@ Vec3 DeComposeRotMat(const Matrix& _matRot);
 
 float Dot(const Vec3& _Value1,const Vec3& _Value2);
 Vec3 Cross(const Vec3& _Value1, const Vec3& _Value2);
-class CGameObject;
-bool lengthCompare(Vec3 _vbeforeObject, Vec3 _vAfterPos,CGameObject* _pAfterObject, Vec3 _vTargetObject);
-
 
 class CMaterial;
 
-void ChangeScene(SCENE_TYPE _eNextScene);
+void NewMaterial(CMaterial* _Material,const wstring& _ShaderKey,const wstring& _strKey, const wstring& _strPath);
 
 
 Vec2 GetDiagnal(const float& _fDestination, const float& _fxvalue, const float& _fzvalue);
