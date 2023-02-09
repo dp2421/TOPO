@@ -10,6 +10,8 @@ class CMeshData :
 {
 private:
     Ptr<CMesh> m_pMesh;
+    vector<Ptr<CMesh>> m_pMeshContainer;
+
     vector<Ptr<CMaterial>> m_vecMtrl;
 
 public:

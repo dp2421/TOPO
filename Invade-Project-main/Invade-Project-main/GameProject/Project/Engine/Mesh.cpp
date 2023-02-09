@@ -391,9 +391,11 @@ void CMesh::Create(UINT _iVtxSize, UINT _iVtxCount, BYTE* _pVtxSysMem,
 	CDevice::GetInst()->WaitForFenceEvent();
 }
 
-CMesh* CMesh::CreateFromContainer(CFBXLoader& _Loader)
+CMesh* CMesh::CreateFromContainer(CFBXLoader& _Loader, int index)
 {
-	const tContainer* container = &_Loader.GetContainer(0);
+	const tContainer* container = &_Loader.GetContainer(index);
+	// GetContainer 인자가 index 인데, 우리는 컨테이너 여러개를 가져와야하는데 0번 하나만 가져오니 당연하게도 0번만 뜸
+	// 이거 배열로 구조고쳐서 해야 할 필요가 있다!!!!!!!!!
 
 	ComPtr<ID3D12Resource> pVB = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW tVtxView = {};

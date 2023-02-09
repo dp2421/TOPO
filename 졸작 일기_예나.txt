@@ -1,0 +1,24 @@
+2월 8일
+CMeshData* CMeshData::LoadFromFBX(const wstring& _strPath)
+구조를 컨테이너 전체를 가져올수 있도록 수정
+그러면 CMesh* pMesh = CMesh::CreateFromContainer(loader); 요기도 인덱스도 같이 인자로 받도록 수정
+CMesh 구조 살펴보고 컨테이너 전체를 받을수있는건지? 아마안될거임 그럼 컨테이너 자료형으로 받아오고
+CMeshData 이쪽은 어떻게 되는건지 살펴보기
+그럼 이거 렌더링 쪽도 전부 수정해야 하는건가?? 정말 화나게한다
+
+
+2월 9일
+mesh, meshdata 전부 하나씩만 담을 수 있음..(당연함..)
+오브젝트에 여러 개를 담을 수 있는지가 관건일지도
+안되면 그냥 같은 레이어에 여러개 오브젝트를 추가해야 할 것 같은데 
+흠
+오브젝트도 배열로 관리하는 방법은?
+
+애초에 모든 함수, 메쉬 등이 메쉬 하나만 관리할 수 있도록 되어있다..
+MeshRender m_pMesh render 함수 보기(subset 인덱스 벗어나는건지 체크)
+
+MeshData 에 벡터로 Mesh 여러갤 저장할 수 있는 멤버변수 추가: m_pMeshContainer
+GetContainer 요런것들 for문 돌면 컨테이너 갯수만큼 불러오게 해야함
+
+현재 MeshData.cpp 에 LoadFromFBX 함수에 메쉬 가져오는 쪽 그렇게 바꿔뒀으니, 참고해서 작성부탁
+지금 뜨는 꼬리: 반복문돌면서 제일 마지막 메쉬만 불러오도록 되어있어서 꼬리만 뜨는 거

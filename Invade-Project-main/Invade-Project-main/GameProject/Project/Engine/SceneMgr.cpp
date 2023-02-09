@@ -98,6 +98,7 @@ void CSceneMgr::Init()
 	m_pCurScene->GetLayer(3)->SetName(L"Arrow");
 	m_pCurScene->GetLayer(4)->SetName(L"Minion");
 	m_pCurScene->GetLayer(5)->SetName(L"Tower");
+	m_pCurScene->GetLayer(6)->SetName(L"temp");
 
 
 
@@ -286,8 +287,8 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
-//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\FirstTower01.fbx");
-    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
+//    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
 //	pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -296,15 +297,16 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, -200.f));
+	pObject->Transform()->SetLocalPos(Vec3(150.f, 200.f, -200.f));
 	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 3.14f, 0.f));
 
-	pObject->Transform()->SetLocalScale(Vec3(7.f, 7.f, 7.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 
 	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\SecondTower01.fbx");
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower01.mdat", L"MeshData\\SecondTower01.mdat");
