@@ -27,27 +27,37 @@ ULONG64 CMeshRender::GetInstID(UINT _iMtrlIdx)
 
 void CMeshRender::Render()
 {
-	if (IsActive() == false || nullptr == m_pMesh)
-		return;
 	int a = 1;
-	for (size_t i = 0; i < m_vecMtrl.size(); ++i)
+	for (size_t i = 0; i < m_vecMesh.size(); ++i)
 	{
-		if (nullptr == m_vecMtrl[i] || nullptr == m_vecMtrl[i]->GetShader())
-			continue;
+		if (IsActive() == false || nullptr == m_vecMesh[i])
+			return;
+	}
+	for (size_t h = 0; h < m_vecMesh.size(); ++h)
+	{
+
+		for (size_t i = 0; i < m_vecMtrl.size(); ++i)
+		{
+			if (nullptr == m_vecMtrl[i] || nullptr == m_vecMtrl[i]->GetShader())
+				continue;
 
 		
-		Transform()->UpdateData();
-		if (Animator3D())
-		{
-			Animator3D()->UpdateData();
+			Transform()->UpdateData();
+			if (Animator3D())
+			{
+				Animator3D()->UpdateData();
 	
-			a = 1;
-			m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a); // Animation Mesh 알리기
+				a = 1;
+				m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a); // Animation Mesh 알리기
+			}
+			m_vecMtrl[i]->UpdateData();
+
+			m_vecMesh[h]->Render((UINT)i);
+
+			//m_pMesh->Render((UINT)i);
+			a = 0;
+			m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a);
 		}
-		m_vecMtrl[i]->UpdateData();
-		m_pMesh->Render((UINT)i);
-		a = 0;
-		m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a);
 	}
 }
 
@@ -56,15 +66,19 @@ void CMeshRender::Render()
 void CMeshRender::Render_ShadowMap()
 {
 	int a = 1;
+
 	Ptr<CMaterial>pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"ShadowMapMtrl");
-	for (UINT i = 0; i < m_pMesh->GetSubsetCount(); ++i) {
-		if (Animator3D()) {
-			Animator3D()->UpdateData();
-			pMtrl->SetData(SHADER_PARAM::INT_0, &a);
+	for (int i = 0; i < m_vecMesh.size(); ++i)
+	{
+		for (UINT j = 0; j < m_vecMesh[i]->GetSubsetCount(); ++j) {
+			if (Animator3D()) {
+				Animator3D()->UpdateData();
+				pMtrl->SetData(SHADER_PARAM::INT_0, &a);
+			}
+			Transform()->UpdateData();
+			pMtrl->UpdateData();
+			m_vecMesh[i]->Render(j);
 		}
-		Transform()->UpdateData();
-		pMtrl->UpdateData();
-		m_pMesh->Render(i);
 	}
 	if (Animator3D()) {
 		a = 0;
@@ -80,6 +94,14 @@ Ptr<CMaterial> CMeshRender::GetCloneMaterial(UINT _iSubSet)
 
 	m_vecMtrl[_iSubSet] = m_vecMtrl[_iSubSet]->Clone();
 	return m_vecMtrl[_iSubSet];
+}
+
+void CMeshRender::SetMesh(Ptr<CMesh> _pMesh, UINT _iSubset)
+{
+	if (m_vecMesh.size() <= (size_t)_iSubset)
+		m_vecMesh.resize(_iSubset + 1);
+
+	m_vecMesh[_iSubset] = _pMesh;
 }
 
 void CMeshRender::SetMaterial(Ptr<CMaterial> _pMtrl, UINT _iSubset)

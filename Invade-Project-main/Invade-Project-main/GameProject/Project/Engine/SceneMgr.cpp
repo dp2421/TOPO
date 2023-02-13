@@ -211,7 +211,7 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 
-	 pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\sword_min.fbx");
+	 pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
  //    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\sword_min.mdat", L"MeshData\\sword_min.mdat");
 
 	pObject = pMeshData->Instantiate();
@@ -221,8 +221,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 150.f));
-	pObject->Transform()->SetLocalScale(Vec3(0.25f, 0.25f, 0.25f));
+	pObject->Transform()->SetLocalPos(Vec3(300.f, 100.f, 300.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
 
@@ -241,7 +241,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalScale(Vec3(0.25f, 0.25f, 0.25f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 
-	auto p=pObject->MeshRender()->GetMesh()->GetAnimClip()->at(4);
+	//auto p=pObject->MeshRender()->GetMesh()->GetAnimClip()->at(4);
 	
 
 
@@ -287,8 +287,8 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
-//    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
+//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
+    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
 //	pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
