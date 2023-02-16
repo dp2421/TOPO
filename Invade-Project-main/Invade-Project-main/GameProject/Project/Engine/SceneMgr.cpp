@@ -242,9 +242,6 @@ void CSceneMgr::Init()
 	pObject->MeshRender()->SetDynamicShadow(true);
 
 	//auto p=pObject->MeshRender()->GetMesh()->GetAnimClip()->at(4);
-	
-
-
 
 	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 

@@ -158,8 +158,10 @@ CGameObject* CMeshData::Instantiate()
 	{
 		pNewObj->MeshRender()->SetMesh(m_vecMesh[i], i);
 
+		//if (false == m_vecMesh[i]->IsAnimMesh())
+		//	return pNewObj;
 		if (false == m_vecMesh[i]->IsAnimMesh())
-			return pNewObj;
+			continue;
 
 		CAnimator3D* pAnimator = new CAnimator3D;
 		pNewObj->AddComponent(pAnimator);

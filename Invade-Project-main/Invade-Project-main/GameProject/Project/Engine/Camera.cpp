@@ -92,25 +92,26 @@ void CCamera::SortGameObject()
 		{
 			const vector<CGameObject*>& vecObj = pCurScene->GetLayer(i)->GetObjects();
 
-			for (UINT i = 0; i < vecObj.size(); ++i)
+			for (UINT j = 0; j < vecObj.size(); ++j)
 			{
-				if (!vecObj[i]->GetFrustumCheck()
-					|| m_frustum.CheckFrustumSphere(vecObj[i]->Transform()->GetWorldPos(), vecObj[i]->Transform()->GetMaxScale()))
+				//Ptr<CMesh> temp = vecObj[j]->MeshRender()->GetMesh();
+				if (!vecObj[j]->GetFrustumCheck()
+					|| m_frustum.CheckFrustumSphere(vecObj[j]->Transform()->GetWorldPos(), vecObj[j]->Transform()->GetMaxScale()))
 				{
-					if (vecObj[i]->MeshRender()
-						&& vecObj[i]->MeshRender()->GetMesh() != nullptr
-						&& vecObj[i]->MeshRender()->GetSharedMaterial() != nullptr
-						&& vecObj[i]->MeshRender()->GetSharedMaterial()->GetShader() != nullptr)
+					if (vecObj[j]->MeshRender()
+						&& vecObj[j]->MeshRender()->GetMesh() != nullptr
+						&& vecObj[j]->MeshRender()->GetSharedMaterial() != nullptr
+						&& vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader() != nullptr)
 					{
-						if (SHADER_POV::DEFERRED == vecObj[i]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
-							m_vecDeferred.push_back(vecObj[i]);
-						else if (SHADER_POV::FORWARD == vecObj[i]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
-							m_vecForward.push_back(vecObj[i]);
+						if (SHADER_POV::DEFERRED == vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
+							m_vecDeferred.push_back(vecObj[j]);
+						else if (SHADER_POV::FORWARD == vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
+							m_vecForward.push_back(vecObj[j]);
 					
 					}
-					else if (vecObj[i]->ParticleSystem())
+					else if (vecObj[j]->ParticleSystem())
 					{
-						m_vecParticle.push_back(vecObj[i]);
+						m_vecParticle.push_back(vecObj[j]);
 					}
 				}
 			}
