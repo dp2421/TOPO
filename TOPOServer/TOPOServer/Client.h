@@ -39,6 +39,7 @@ class Client
 {
 public:
 	int ID;
+	int RoomID;
 
 public:
 	Client();
