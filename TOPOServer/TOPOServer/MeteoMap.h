@@ -1,7 +1,7 @@
 #pragma once 
-#include "SurviveMap.h"
+#include "SurviveMode.h"
 
-class MeteoMap : public SurviveMap
+class MeteoMap : public SurviveMode
 {
 
 };

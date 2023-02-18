@@ -133,9 +133,9 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="MatchingSystem.cpp" />
     <ClCompile Include="MeteoMap.cpp" />
-    <ClCompile Include="RacingMap.cpp" />
+    <ClCompile Include="RacingMode.cpp" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="SurviveMap.cpp" />
+    <ClCompile Include="SurviveMode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Protocol.h" />
@@ -146,8 +146,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="MatchingSystem.h" />
     <ClInclude Include="MeteoMap.h" />
-    <ClInclude Include="RacingMap.h" />
-    <ClInclude Include="SurviveMap.h" />
+    <ClInclude Include="RacingMode.h" />
+    <ClInclude Include="SurviveMode.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
