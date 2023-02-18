@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Map">
+      <UniqueIdentifier>{8d033c91-55aa-4af1-a99e-e12768560825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Map">
+      <UniqueIdentifier>{9a043287-a286-4445-b111-5716ea05cdeb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -21,6 +27,27 @@
     <ClCompile Include="Client.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MatchingSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MeteoMap.cpp">
+      <Filter>소스 파일\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="RacingMap.cpp">
+      <Filter>소스 파일\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="SurviveMap.cpp">
+      <Filter>소스 파일\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="BombMap.cpp">
+      <Filter>소스 파일\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="AvoidObstacleMap.cpp">
+      <Filter>소스 파일\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -28,6 +55,33 @@
     </ClInclude>
     <ClInclude Include="..\..\Protocol.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSafeQueue.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MatchingSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MeteoMap.h">
+      <Filter>헤더 파일\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="RacingMap.h">
+      <Filter>헤더 파일\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="SurviveMap.h">
+      <Filter>헤더 파일\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="BombMap.h">
+      <Filter>헤더 파일\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="AvoidObstacleMap.h">
+      <Filter>헤더 파일\Map</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
