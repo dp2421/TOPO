@@ -226,8 +226,46 @@ void CSceneMgr::Init()
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
 
-
 	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
+
+
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\testitem.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 200.f));
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
+
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\hmm2.fbx");
+	////pMeshData->Save(pMeshData->GetPath());
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 200.f));
+	////pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
+
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	////pObject->Animator3D()->SetClipIndex(1);
+
+	//m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+
 
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\wizard_min.mdat", L"MeshData\\wizard_min.mdat");
 	pObject = pMeshData->Instantiate();
@@ -267,8 +305,8 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
-//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\SecondTower.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower.mdat", L"MeshData\\SecondTower.mdat");
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\SecondTower.fbx");
+//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower.mdat", L"MeshData\\SecondTower.mdat");
 	pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -284,7 +322,6 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
-//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
     pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
 //	pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
