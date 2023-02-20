@@ -1,39 +1,13 @@
-#include "stdafx.h"
-
-#include "Client.h"
-#include "ThreadSafeQueue.h"
-#include "MatchingSystem.h"
-#include "../../Protocol.h"
+#include "pch.h"
 
 SOCKET ServerSocket, ClientSocket;
 HANDLE IOCPHandle;
 OverlappedEx GlobalOverlapped;
 
 concurrency::concurrent_unordered_map<int, Client> clinets;
-MatchingSystem matchingSystem;
+MatchingManager matchingSystem;
 
-int roomID;
-bool matchingState;
-mutex matchingLock;
-
-void Matching()
-{
-	// 포인터로 관리
-	// 클라이언트 : 매칭패킷 전송
-	// 매칭하겠다고 한 애들 묶어서 관리
-	//	매칭 누르는 순서대로 큐 넣어서 관리하면 될듯
-	//	매칭 취소할땐 어떻게 하지 ? << 큐로는 관리하기 힘듬
-	// 
-	//	매칭 안돌아가고 있음->이벤트에 매칭 추가, 대기큐에 추가
-	//	매칭 돌아가는중->그냥 큐에만 넣음
-	//	매칭 완료됐을때
-	//	대기인원 있음->다시 이벤트 추가
-}
-
-void MatchingComplete()
-{
-	// GameStart
-}
+// 추상화 작업 예정
 
 void ProcessPacket(int key, char* packet)
 {
@@ -41,7 +15,6 @@ void ProcessPacket(int key, char* packet)
 	switch (packet[1])
 	{
 	case ClientMatching:
-		Matching();
 		break;
 	}
 }
@@ -61,7 +34,6 @@ void DisconnectClient(int id)
 
 void EventThread()
 {
-	// 업데이트 관련 내용 1/frame 시간 만큼 대기
 }
 
 void WorkerThread(HANDLE IOCP)
@@ -74,13 +46,13 @@ void WorkerThread(HANDLE IOCP)
 		BOOL ret = GetQueuedCompletionStatus(IOCP, &numBytes, &ID, &over, INFINITE);
 		OverlappedEx* overlappedEx = reinterpret_cast<OverlappedEx*>(over);
 
-		if (FALSE == ret) 
+		if (FALSE == ret)
 		{
 			if (OverlappedType::Accept == overlappedEx->type)
 			{
 				cout << "Accept Error" << endl;
 			}
-			else 
+			else
 			{
 				cout << "GQCS Error on client [" << static_cast<int>(ID) << "]\n";
 				DisconnectClient(static_cast<int>(ID));

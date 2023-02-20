@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ThreadSafeQueue.h"
 #include "Client.h"
 

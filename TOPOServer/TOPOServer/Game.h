@@ -4,6 +4,7 @@
 // Racing, Survive
 // Survive << 생존맵을 관리하는 클래스
 // Meteo, Bomb, AvoidObstacle
+#include "stdafx.h"
 
 class Game
 {

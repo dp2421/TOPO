@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="PotaTongServer">
+      <UniqueIdentifier>{b57cf8f8-f3ff-4fff-8c61-cbbadf62d1ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\GameMode">
+      <UniqueIdentifier>{6cb05771-c395-47bd-b986-80d8f114534f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\Container">
+      <UniqueIdentifier>{34178011-39f9-420d-b350-10e75e71e16e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\GameMode\Survive">
+      <UniqueIdentifier>{f6b04ff6-2e95-4e8f-af72-c58bc973b759}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\GameMode\Racing">
+      <UniqueIdentifier>{4f357729-4a48-4d5b-9ef6-fd11f1c84925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\Client">
+      <UniqueIdentifier>{e1ba166c-8e3e-47f7-94c3-1ae9442584c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\Core">
+      <UniqueIdentifier>{9ccea04e-2a70-4fbf-a7f7-89fb75782239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PotaTongServer\Manager">
+      <UniqueIdentifier>{f4350b2f-a552-4688-bbb2-633a392984a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMode.h">
+      <Filter>PotaTongServer\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSafeQueue.h">
+      <Filter>PotaTongServer\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Client.h">
+      <Filter>PotaTongServer\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="MatchingManager.h">
+      <Filter>PotaTongServer\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SurviveMode.h">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClInclude>
+    <ClInclude Include="RacingMode.h">
+      <Filter>PotaTongServer\GameMode\Racing</Filter>
+    </ClInclude>
+    <ClInclude Include="MeteorMode.h">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClInclude>
+    <ClInclude Include="BombMode.h">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClInclude>
+    <ClInclude Include="ObatacleMode.h">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerBase.h">
+      <Filter>PotaTongServer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="OverlappedEx.h">
+      <Filter>PotaTongServer\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Protocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadSafeQueue.cpp">
+      <Filter>PotaTongServer\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMode.cpp">
+      <Filter>PotaTongServer\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>PotaTongServer\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="PotaTongServer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MatchingManager.cpp">
+      <Filter>PotaTongServer\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="SurviveMode.cpp">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClCompile>
+    <ClCompile Include="RacingMode.cpp">
+      <Filter>PotaTongServer\GameMode\Racing</Filter>
+    </ClCompile>
+    <ClCompile Include="MeteorMode.cpp">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClCompile>
+    <ClCompile Include="BombMode.cpp">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClCompile>
+    <ClCompile Include="ObatacleMode.cpp">
+      <Filter>PotaTongServer\GameMode\Survive</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerBase.cpp">
+      <Filter>PotaTongServer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="OverlappedEx.cpp">
+      <Filter>PotaTongServer\Client</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
