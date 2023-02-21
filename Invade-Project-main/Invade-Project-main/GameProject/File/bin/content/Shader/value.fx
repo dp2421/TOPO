@@ -115,6 +115,12 @@ cbuffer GLOBAL : register(b5)
     float g_fAccTime;
 }
 
+cbuffer NeonLights : register(b0)
+{
+    float4x4 g_WorldViewProjection;
+    float4 g_EmissiveColor;
+}
+
 Texture2D g_tex_0 : register(t0);
 Texture2D g_tex_1 : register(t1);
 Texture2D g_tex_2 : register(t2);

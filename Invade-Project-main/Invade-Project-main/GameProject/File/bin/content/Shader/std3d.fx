@@ -67,12 +67,21 @@ struct PS_STD3D_OUTPUT
 
 PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
 {
+
+    /*
+    float4 texColor = g_Texture.Sample(g_Sampler, input.Tex);
+    float3 emissive = g_EmissiveColor * texColor.rgb;
+
+    return float4(emissive, texColor.a);
+    */
     PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT) 0.f;
     
     if (tex_0)
-        output.vTarget0 = g_tex_0.Sample(g_sam_0, _in.vUV);
+    {
+        output.vTarget0 = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+    }
     else
-        output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        output.vTarget0 = float4(1.f, 1.f, 1.f, 1.f);
         
     float3 vViewNormal = _in.vViewNormal;
     // 노말맵이 있는경우

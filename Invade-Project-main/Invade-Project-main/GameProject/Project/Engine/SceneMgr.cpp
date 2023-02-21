@@ -230,8 +230,8 @@ void CSceneMgr::Init()
 
 
 	//¸ÊÅ×½ºÆ®
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\racemap101.fbx");
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\testitem.fbx");
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\racemap101.fbx");
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);

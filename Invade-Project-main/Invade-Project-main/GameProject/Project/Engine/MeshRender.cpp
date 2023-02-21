@@ -52,7 +52,7 @@ void CMeshRender::Render()
 			}
 			m_vecMtrl[i]->UpdateData();
 
-			m_vecMesh[h]->Render((UINT)i);
+			m_vecMesh[h]->Render((UINT)0);
 
 			//m_pMesh->Render((UINT)i);
 			a = 0;
