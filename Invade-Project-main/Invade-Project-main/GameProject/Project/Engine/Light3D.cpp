@@ -49,6 +49,8 @@ void CLight3D::SetLightType(LIGHT_TYPE _eType)
 	else if (LIGHT_TYPE::SPOT == (LIGHT_TYPE)m_tLightInfo.iLightType)
 	{
 		m_pVolumeMesh = CResMgr::GetInst()->FindRes<CMesh>(L"ConeMesh");
+		m_pLightMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"SpotLightMtrl");
+
 	}
 }
 
@@ -78,15 +80,19 @@ void CLight3D::Render()
 {
 	if (-1 == m_iArrIdx)
 		return;
-	if (m_tLightInfo.iLightType == (UINT)LIGHT_TYPE::DIR) {
-		Ptr<CTexture> pShadowMapTex = CResMgr::GetInst()->FindRes<CTexture>(L"ShadowMapTargetTex");
-		m_pLightMtrl->SetData(SHADER_PARAM::TEX_3, pShadowMapTex.GetPointer());
-		Matrix matVP = m_pCamObj->Camera()->GetViewMat() * m_pCamObj->Camera()->GetProjMat();
+	//if (m_tLightInfo.iLightType == (UINT)LIGHT_TYPE::DIR) {
+	//	Ptr<CTexture> pShadowMapTex = CResMgr::GetInst()->FindRes<CTexture>(L"ShadowMapTargetTex");
+	//	m_pLightMtrl->SetData(SHADER_PARAM::TEX_3, pShadowMapTex.GetPointer());
+	//	Matrix matVP = m_pCamObj->Camera()->GetViewMat() * m_pCamObj->Camera()->GetProjMat();
 
-		m_pLightMtrl->SetData(SHADER_PARAM::MATRIX_0, &matVP);
-	}
+	//	m_pLightMtrl->SetData(SHADER_PARAM::MATRIX_0, &matVP);
+	//}
 
+	Ptr<CTexture> pShadowMapTex = CResMgr::GetInst()->FindRes<CTexture>(L"ShadowMapTargetTex");
+	m_pLightMtrl->SetData(SHADER_PARAM::TEX_3, pShadowMapTex.GetPointer());
+	Matrix matVP = m_pCamObj->Camera()->GetViewMat() * m_pCamObj->Camera()->GetProjMat();
 
+	m_pLightMtrl->SetData(SHADER_PARAM::MATRIX_0, &matVP);
 
 	Transform()->UpdateData();
 	m_pLightMtrl->SetData(SHADER_PARAM::INT_0, &m_iArrIdx); // 광원 배열 인덱스정보 업데이트
