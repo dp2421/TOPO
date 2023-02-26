@@ -128,7 +128,7 @@ void CSceneMgr::Init()
 	pObject->AddComponent(new CLight3D);
 	pObject->Light3D()->SetLightPos(Vec3(0.f, 500.f, 0.f));
 	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
-	pObject->Light3D()->SetDiffuseColor(Vec3(0.f, 0.f, 0.f));
+	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
 	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
 	pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
@@ -136,31 +136,31 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 
-	pObject = new CGameObject;
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CLight3D);
-	pObject->Light3D()->SetLightPos(Vec3(250.f, 200.f, -30.f));
-	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 0.f, 1.f));
-	pObject->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
-	pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
-	pObject->Light3D()->SetLightDir(Vec3(-1.f, -1.f, -1.f));
-	pObject->Light3D()->SetLightRange(300.f);
-	//pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
+	//pObject = new CGameObject;
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CLight3D);
+	//pObject->Light3D()->SetLightPos(Vec3(250.f, 200.f, -30.f));
+	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 0.f, 1.f));
+	//pObject->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
+	//pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
+	//pObject->Light3D()->SetLightDir(Vec3(-1.f, -1.f, -1.f));
+	//pObject->Light3D()->SetLightRange(300.f);
+	////pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
+	//m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 
-	pObject = new CGameObject;
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CLight3D);
-	pObject->Light3D()->SetLightPos(Vec3(350.f, 200.f, -30.f));
-	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 0.f, 1.f));
-	pObject->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
-	pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
-	pObject->Light3D()->SetLightDir(Vec3(-1.f, -1.f, -1.f));
-	pObject->Light3D()->SetLightRange(300.f);
-	//pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
+	//pObject = new CGameObject;
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CLight3D);
+	//pObject->Light3D()->SetLightPos(Vec3(350.f, 200.f, -30.f));
+	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	//pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 0.f, 1.f));
+	//pObject->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
+	//pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
+	//pObject->Light3D()->SetLightDir(Vec3(-1.f, -1.f, -1.f));
+	//pObject->Light3D()->SetLightRange(300.f);
+	////pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
+	//m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 	
 //	pMeshData->Save(pMeshData->GetPath());
 	// MeshData ·Îµå
