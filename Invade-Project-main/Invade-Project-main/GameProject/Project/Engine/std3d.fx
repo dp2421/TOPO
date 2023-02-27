@@ -80,13 +80,7 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     */
     PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT) 0.f;
     float brightness = dot(normalize(_in.vViewNormal), normalize(-_in.vLights));
-    float stepIntensity = saturate(brightness * 10);
-    if (tex_0)
-    {
-        output.vTarget0 = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
-    }
-    else
-    {
+    float stepIntensity = saturate(brightness);
         float3 stepColor = float3(1, 1, 1);
         if (stepIntensity > 0.95) {
             stepColor = float3(1, 1, 1);
@@ -100,6 +94,13 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
         else {
             stepColor = float3(0.4, 0.4, 0.4);
         }
+    if (tex_0)
+    {
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+        output.vTarget0 = texColor * float4(stepColor, 1.f);
+    }
+    else
+    {
         output.vTarget0 = float4(stepColor, 1.f);
         //output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
     }
@@ -161,13 +162,7 @@ PS_STD3D_OUTPUT PS_Toon3D(VS_STD3D_OUTPUT _in)
     PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT)0.f;
     float brightness = dot(normalize(_in.vViewNormal), normalize(-_in.vLights));
     float stepIntensity = saturate(brightness * 10);
-    if (tex_0)
-    {
-        output.vTarget0 = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
-    }
-    else
-    {
-        float3 stepColor = float3(1, 1, 1);
+    float3 stepColor = float3(1, 1, 1);
         if (stepIntensity > 0.95) {
             stepColor = float3(1, 1, 1);
         }
@@ -180,6 +175,13 @@ PS_STD3D_OUTPUT PS_Toon3D(VS_STD3D_OUTPUT _in)
         else {
             stepColor = float3(0.4, 0.4, 0.4);
         }
+    if (tex_0)
+    {
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+        output.vTarget0 = texColor + float4(stepColor, 1.f);
+    }
+    else
+    {
         output.vTarget0 = float4(stepColor, 1.f);
     }
 

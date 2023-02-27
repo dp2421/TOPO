@@ -14,7 +14,7 @@ CMaterial::CMaterial()
 	, m_bFileSave(true)
 {
 	m_tParam.m_vDiff = Vec4(0.5f, 0.5f, 0.5f, 0.5f);
-	m_tParam.m_vSpec = Vec4(1.f, 1.f, 1.f, 1.f);
+	m_tParam.m_vSpec = Vec4(0.f, 0.f, 0.f, 0.f);
 	m_tParam.m_vEmv = Vec4(1.f, 1.f, 1.f, 1.f);
 }
 
