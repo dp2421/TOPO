@@ -132,6 +132,7 @@
     <ClInclude Include="..\..\Protocol.h" />
     <ClInclude Include="BombMode.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="GameMode.h" />
     <ClInclude Include="MatchingManager.h" />
     <ClInclude Include="MeteorMode.h" />
@@ -146,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="BombMode.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="GameMode.cpp" />
     <ClCompile Include="MatchingManager.cpp" />
     <ClCompile Include="MeteorMode.cpp" />

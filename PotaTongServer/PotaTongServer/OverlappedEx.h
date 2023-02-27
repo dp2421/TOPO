@@ -3,8 +3,9 @@
 enum class OverlappedType
 {
 	Accept,
-	recv,
-	send
+	Recv,
+	Send,
+	ServerEvent
 };
 
 class OverlappedEx

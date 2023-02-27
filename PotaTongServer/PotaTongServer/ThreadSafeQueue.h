@@ -8,40 +8,51 @@ public:
     ThreadSafeQueue(const ThreadSafeQueue& other)
     {
         std::unique_lock<std::mutex> lock(other.mutex);
-        queue = other.queue;
+        this->vecter = other.vecter;
     }
 
     void Push(T value)
     {
         std::unique_lock<std::mutex> lock(mutex);
-        queue.push(value);
+        this->vecter.emplace_back(value);
+    }
+
+    void Erase(T& value)
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        this->vecter.erase
+        (
+            std::remove(this->vecter.begin(), this->vecter.end(), value),
+            this->vecter.end()
+        );
     }
 
     bool Empty() const
     {
         std::unique_lock<std::mutex> lock(mutex);
-        return queue.empty();
+        return this->vecter.empty();
     }
 
     int Size() const
     {
-        return queue.size();
+        std::unique_lock<std::mutex> lock(mutex);
+        return this->vecter.size();
     }
 
     bool TryPop(T& value)
     {
         std::unique_lock<std::mutex> lock(mutex);
-        if (queue.empty())
+        if (this->vecter.empty())
         {
             return false;
         }
 
-        value = queue.front();
-        queue.pop();
+        value = this->vecter.front();
+        this->Erase(this->vecter.front());
         return true;
     }
 
 private:
-    std::queue<T> queue;
+    std::vector<T> vecter;
     mutable std::mutex mutex;
 };
