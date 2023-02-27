@@ -46,6 +46,7 @@ cbuffer TRANSFORM_MATRIX : register(b0)
     row_major matrix g_matWorldInv;
     row_major matrix g_matViewInv;
     row_major matrix g_matProjInv;
+
 };
 
 cbuffer MATERIAL_PARAM : register(b1)
@@ -53,6 +54,7 @@ cbuffer MATERIAL_PARAM : register(b1)
     float4 g_vDiff;
     float4 g_vSpec;
     float4 g_vEmv;
+    //float4 g_emissiveColor;
 
     int g_int_0;
     int g_int_1;
@@ -113,12 +115,6 @@ cbuffer GLOBAL : register(b5)
     float2 g_vResolution;
     float g_fDT;
     float g_fAccTime;
-}
-
-cbuffer NeonLights : register(b0)
-{
-    float4x4 g_WorldViewProjection;
-    float4 g_EmissiveColor;
 }
 
 Texture2D g_tex_0 : register(t0);

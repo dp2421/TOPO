@@ -23,6 +23,8 @@ struct VS_STD3D_INPUT
     
     float4 vWeight : BLENDWEIGHT;
     float4 vIndices : BLENDINDICES;
+
+    float3 vLights : LIGHT;
     
 };
 
@@ -37,6 +39,7 @@ struct VS_STD3D_OUTPUT
     float3 vViewBinormal : BINORMAL;
     
     float2 vUV : TEXCOORD;
+    float3 vLights : LIGHT;
 };
 
 VS_STD3D_OUTPUT VS_Std3D(VS_STD3D_INPUT _in)
@@ -54,6 +57,7 @@ VS_STD3D_OUTPUT VS_Std3D(VS_STD3D_INPUT _in)
     output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV).xyz);
     output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV).xyz);
     output.vUV = _in.vUV;
+    output.vLights = _in.vLights;
     
     return output;
 }
@@ -75,13 +79,31 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     return float4(emissive, texColor.a);
     */
     PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT) 0.f;
-    
+    float brightness = dot(normalize(_in.vViewNormal), normalize(-_in.vLights));
+    float stepIntensity = saturate(brightness);
+        float3 stepColor = float3(1, 1, 1);
+        if (stepIntensity > 0.95) {
+            stepColor = float3(1, 1, 1);
+        }
+        else if (stepIntensity > 0.5) {
+            stepColor = float3(0.8, 0.8, 0.8);
+        }
+        else if (stepIntensity > 0.2) {
+            stepColor = float3(0.6, 0.6, 0.6);
+        }
+        else {
+            stepColor = float3(0.4, 0.4, 0.4);
+        }
     if (tex_0)
     {
-        output.vTarget0 = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+        output.vTarget0 = texColor * float4(stepColor, 1.f);
     }
     else
-        output.vTarget0 = float4(1.f, 1.f, 1.f, 1.f);
+    {
+        output.vTarget0 = float4(stepColor, 1.f);
+        //output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+    }
         
     float3 vViewNormal = _in.vViewNormal;
     // 노말맵이 있는경우
@@ -100,7 +122,84 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
 }
 
 
+// ==========================
+// Std3D Shader
+// Deferred = true
+//
+// g_tex_0 : Diffuse Texture
+// g_tex_1 : Normalmap Texture
+// BlendState : false
+// ==========================
 
+VS_STD3D_OUTPUT VS_Toon3D(VS_STD3D_INPUT _in)
+{
+    VS_STD3D_OUTPUT output = (VS_STD3D_OUTPUT)0.f;
+
+    if (g_int_0)
+    {
+        Skinning(_in.vPos, _in.vTangent, _in.vBinormal, _in.vNormal, _in.vWeight, _in.vIndices, 0);
+    }
+    output.vPosition = mul(float4(_in.vPos, 1.f), g_matWVP);
+
+    output.vViewPos = mul(float4(_in.vPos, 1.f), g_matWV).xyz;
+    output.vViewTangent = normalize(mul(float4(_in.vTangent, 0.f), g_matWV).xyz);
+    output.vViewNormal = normalize(mul(float4(_in.vNormal, 0.f), g_matWV).xyz);
+    output.vViewBinormal = normalize(mul(float4(_in.vBinormal, 0.f), g_matWV).xyz);
+    output.vUV = _in.vUV;
+
+    return output;
+}
+
+PS_STD3D_OUTPUT PS_Toon3D(VS_STD3D_OUTPUT _in)
+{
+
+    /*
+    float4 texColor = g_Texture.Sample(g_Sampler, input.Tex);
+    float3 emissive = g_EmissiveColor * texColor.rgb;
+
+    return float4(emissive, texColor.a);
+    */
+    PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT)0.f;
+    float brightness = dot(normalize(_in.vViewNormal), normalize(-_in.vLights));
+    float stepIntensity = saturate(brightness * 10);
+    float3 stepColor = float3(1, 1, 1);
+        if (stepIntensity > 0.95) {
+            stepColor = float3(1, 1, 1);
+        }
+        else if (stepIntensity > 0.5) {
+            stepColor = float3(0.8, 0.8, 0.8);
+        }
+        else if (stepIntensity > 0.2) {
+            stepColor = float3(0.6, 0.6, 0.6);
+        }
+        else {
+            stepColor = float3(0.4, 0.4, 0.4);
+        }
+    if (tex_0)
+    {
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV);
+        output.vTarget0 = texColor + float4(stepColor, 1.f);
+    }
+    else
+    {
+        output.vTarget0 = float4(stepColor, 1.f);
+    }
+
+    float3 vViewNormal = _in.vViewNormal;
+    // 노말맵이 있는경우
+    if (tex_1)
+    {
+        float3 vTSNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;
+        vTSNormal.xyz = (vTSNormal.xyz - 0.5f) * 2.f;
+        float3x3 matTBN = { _in.vViewTangent, _in.vViewBinormal, _in.vViewNormal };
+        vViewNormal = normalize(mul(vTSNormal, matTBN));
+    }
+
+    output.vTarget1.xyz = vViewNormal;
+    output.vTarget2.xyz = _in.vViewPos;
+
+    return output;
+}
 
 // =============
 // Skybox Shader
