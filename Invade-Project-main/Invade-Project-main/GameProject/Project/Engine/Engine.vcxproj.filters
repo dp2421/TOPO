@@ -441,5 +441,8 @@
     <FxCompile Include="terrain.fx">
       <Filter>ShaderCode</Filter>
     </FxCompile>
+    <FxCompile Include="Outline.fx">
+      <Filter>ShaderCode</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

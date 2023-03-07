@@ -190,9 +190,15 @@ void CRenderMgr::CreateMRT()
 			, DXGI_FORMAT_R32G32B32A32_FLOAT, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
 			, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
 
+		arrRT[3].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
+		arrRT[3].pTarget = CResMgr::GetInst()->CreateTexture(L"OutlineTargetTex"
+			, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
+			, DXGI_FORMAT_R32G32B32A32_FLOAT, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
+			, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
+
 
 		m_arrMRT[(UINT)MRT_TYPE::DEFERRED] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Create(3, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
+		m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Create(4, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
 	}
 
 

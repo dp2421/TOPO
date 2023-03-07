@@ -79,7 +79,7 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     return float4(emissive, texColor.a);
     */
     PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT) 0.f;
-    float brightness = dot(normalize(_in.vViewNormal), normalize(-_in.vLights));
+    float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
     float stepIntensity = saturate(brightness);
         float3 stepColor = float3(1, 1, 1);
         if (stepIntensity > 0.95) {
