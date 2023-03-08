@@ -54,7 +54,6 @@ cbuffer MATERIAL_PARAM : register(b1)
     float4 g_vDiff;
     float4 g_vSpec;
     float4 g_vEmv;
-    //float4 g_emissiveColor;
 
     int g_int_0;
     int g_int_1;
