@@ -4,6 +4,10 @@
 //    matrix worldViewProjectionMatrix;
 //};
 //
+
+#include "value.fx"
+#include "func.fx"
+
 struct VS_Input
 {
     float3 position : POSITION;
@@ -26,12 +30,13 @@ struct VS_Output
 //    output.worldNormal = _in.normal;
 //    return output;
 //}
-VSOutput VSOutline(VSInput input)
+VS_Output VSOutline(VS_Input _in)
 {
     VS_Output output = (VS_Output)0.f;
-    output.position = (float3)mul(float4(_in.position, 1.0f), g_matWVP);
-    float fScale = 1.00175f + length(gvCameraPosition - output.positionW) * 0.00035f;
-    output.worldPosition = (float3)mul(float4(input.position * fScale, 1.0f), g_matWVP);
+    output.position = mul(float4(_in.position, 1.0f), g_matWVP);
+    float fScale = 1.00175f;
+    //float fScale = 1.00175f + length(gvCameraPosition - output.positionW) * 0.00035f;
+    output.worldPosition = (float3)mul(float4(_in.position * fScale, 1.0f), g_matWVP);
     output.position = mul(mul(float4(output.worldPosition, 1.0f), g_matView), g_matProj);
 
     return(output);
