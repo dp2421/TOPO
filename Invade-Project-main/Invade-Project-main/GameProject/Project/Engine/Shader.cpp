@@ -39,16 +39,15 @@ void CShader::Create(SHADER_POV _ePov, D3D_PRIMITIVE_TOPOLOGY _eTopology)
 	switch (m_ePov)
 	{
 	case SHADER_POV::DEFERRED:
-		m_tPipeLine.NumRenderTargets = 4;
+		m_tPipeLine.NumRenderTargets = 3;
 		m_tPipeLine.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		m_tPipeLine.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		m_tPipeLine.RTVFormats[2] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		m_tPipeLine.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
 		break;
 	case SHADER_POV::FORWARD:
 	case SHADER_POV::POST_EFFECT:
 	case SHADER_POV::PARTICLE:
+	case SHADER_POV::OUTLINE:
 		m_tPipeLine.NumRenderTargets = 1;
 		m_tPipeLine.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		break;

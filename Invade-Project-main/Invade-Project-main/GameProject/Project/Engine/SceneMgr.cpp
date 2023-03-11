@@ -255,8 +255,8 @@ void CSceneMgr::Init()
 	//맵테스트
 	//bubunhapchimmap.fbx <= 기존타일맵에서 타일들 합친버전
 	//디버깅할땐 한줄한줄 돌아가는데 디버그없이 돌리면 터짐(왜)
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\bubunhapchimmap.fbx");
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\bubunhapchimmap.fbx");
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);

@@ -633,6 +633,7 @@ void CResMgr::CreateDefaultShader()
 	pShader->Create(SHADER_POV::FORWARD);
 	AddRes(L"Std2DShader", pShader);
 
+
 	// =================
 	// 2DShadow Shader
 	// =================
@@ -751,6 +752,21 @@ void CResMgr::CreateDefaultShader()
 	pShader->Create(SHADER_POV::SHADOWMAP);
 
 	AddRes(L"ShadowMapShader", pShader);
+
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\Outline.fx", "VSOutline", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\Outline.fx", "PSOutline", "ps_5_0");
+	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::LESS);
+
+	// BlendState 설정
+	//// Parameter 설정
+	//pShader->AddShaderParam(tShaderParam{ L"Outine Texture", SHADER_PARAM::TEX_0 });
+	//pShader->AddShaderParam(tShaderParam{ L"Outline Tex", SHADER_PARAM::TEX_3 });
+
+	pShader->Create(SHADER_POV::OUTLINE);
+	// 렌더링 순서 정하고 파라미터 설정 (어캄?)
+	AddRes(L"OutlineShader", pShader);
+
 
 	pShader = new CShader;
 	pShader->CreateComputeShader(L"Shader\\compute.fx", "CS_TEST", "cs_5_0");
@@ -958,6 +974,12 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl->DisableFileSave();
 	pMtrl->SetShader(FindRes<CShader>(L"ShadowMapShader"));
 	AddRes(L"ShadowMapMtrl", pMtrl);
+
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"OutlineShader"));
+	AddRes(L"OutlineMtrl", pMtrl);
+
 
 	pMtrl = new CMaterial;
 	pMtrl->DisableFileSave();

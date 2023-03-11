@@ -316,6 +316,7 @@ enum class SHADER_POV
 	PARTICLE,
 	COMPUTE, // GPGPU
 	SHADOWMAP,
+	OUTLINE,
 };
 // State Description
 

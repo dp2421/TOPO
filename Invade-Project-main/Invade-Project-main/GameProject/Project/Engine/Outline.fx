@@ -75,7 +75,7 @@ struct PS_Input
 //
 
 
-float4 PSOutline(PS_Input input)
+float4 PSOutline(PS_Input input) :SV_Target
 {
     return(float4(1.0f, 0.2f, 0.2f, 0.0f));
 }
