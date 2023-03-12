@@ -51,10 +51,9 @@ void CMeshRender::Render()
 				m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a); // Animation Mesh ¾Ë¸®±â
 			}
 			m_vecMtrl[i]->UpdateData();
+			m_vecMesh[h]->Render((UINT)0);
 
-			//m_vecMesh[h]->Render((UINT)0);
-
-			m_pMesh->Render((UINT)i);
+			//m_pMesh->Render((UINT)i);
 			a = 0;
 			m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a);
 		}

@@ -253,9 +253,7 @@ void CSceneMgr::Init()
 
 
 	//맵테스트
-	//bubunhapchimmap.fbx <= 기존타일맵에서 타일들 합친버전
-	//디버깅할땐 한줄한줄 돌아가는데 디버그없이 돌리면 터짐(왜)
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\bubunhapchimmap.fbx");
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\pavement2.fbx");
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
@@ -263,10 +261,10 @@ void CSceneMgr::Init()
 	pObject->AddComponent(new CCollider3D);
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(30.f, 40.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 200.f));
-	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(500.f, 10.f, 200.f));
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
