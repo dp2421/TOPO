@@ -68,6 +68,7 @@ void CGameFramework::Progress()
 
 	CEventMgr::GetInst()->Update();
 
+
 }
 
 void CGameFramework::ProcessInput()
@@ -129,3 +130,5 @@ void CGameFramework::ChangeWindowSize(HWND _hWnd, const tResolution _resolution)
 	SetWindowPos(_hWnd, nullptr, 0, 0, rt.right - rt.left, rt.bottom - rt.top, 0);
 
 }
+
+
