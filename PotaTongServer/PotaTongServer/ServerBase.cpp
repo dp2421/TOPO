@@ -5,6 +5,8 @@ ServerBase::ServerBase()
 {
 	InitServer();
 
+	matchingManager = new MatchingManager(IOCPHandle);
+	InitHandler();
 
 	int numThreads = std::thread::hardware_concurrency();
 
@@ -54,9 +56,10 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			Accept();
 			break;
 		case OverlappedType::Recv:
-			//ProcessPacket(static_cast<int>(ID), overlappedEx->sendBuf);
+			Reve(static_cast<int>(ID), numBytes, overlappedEx);
 			break;
 		case OverlappedType::Send:
+			delete overlappedEx;
 			break;
 		case OverlappedType::ServerEvent:
 			break;
@@ -112,6 +115,38 @@ void ServerBase::InitHandler()
 void ServerBase::Accept()
 {
 	cout << "Accept Success" << endl;
+	int newID = clientID++;
+
+	clients[newID].ID = newID;
+	clients[newID].socket = ClientSocket;
+	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
+	clients[newID].RecvPacket();
+	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+
+	ZeroMemory(&GlobalOverlapped.overlapped, sizeof(GlobalOverlapped.overlapped));
+	int addr_size = sizeof(SOCKADDR_IN);
+	AcceptEx(ServerSocket, ClientSocket, GlobalOverlapped.sendBuf, 0, addr_size + 16, addr_size + 16, 0, &GlobalOverlapped.overlapped);
+}
+
+void ServerBase::Reve(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
+{
+	int remainData = recvByte + clients[id].prevRemainData;
+	while (remainData > 0) {
+		int packet_size = p[0];
+		if (packet_size <= remainData) {
+			ProcessPacket(id, overlappedEx->sendBuf);
+			p = p + packet_size;
+			remainData = remainData - packet_size;
+		}
+		else break;
+	}
+	clients[id].prevRemainData = remainData;
+	if (remainData > 0) {
+		memcpy(overlappedEx->sendBuf, p, remainData);
+	}
+
+	clients[id].RecvPacket();
+	ProcessPacket(id, overlappedEx->sendBuf);
 }
 
 void ServerBase::Disconnect(int ID)
@@ -120,5 +155,44 @@ void ServerBase::Disconnect(int ID)
 	// 게임중, 로비 구별
 	// 게임중이면 같은 그룹에게 전달
 	// 로비면 그냥 끊기
+}
+
+void ServerBase::ProcessPacket(const int id, char* packet)
+{
+	switch (packet[1])
+	{
+	case ClientLogin:
+		clients[id].SendServerLoginPacket(id);
+		break;
+	case ClientKeyInput:
+		auto p = reinterpret_cast<ClinetKeyInputPacket*>(packet);
+		ProcessInput(id, p->key);
+		break;
+	case ClientMatching:
+		
+		break;
+	}
+}
+
+void ServerBase::ProcessInput(const int id, int key)
+{
+	switch (key)
+	{
+	case 'w':
+		cout << id << " pressed " << 'w' << endl;
+		break;
+	case 'a':
+		cout << id << " pressed " << 'a' << endl;
+		break;
+	case 's':
+		cout << id << " pressed " << 's' << endl;
+		break;
+	case 'd':
+		cout << id << " pressed " << 'd' << endl;
+		break;
+	case VK_CONTROL:
+		cout << id << " pressed " << "CONTROL" << endl;
+		break;
+	}
 }
 

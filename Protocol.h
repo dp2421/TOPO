@@ -5,10 +5,10 @@ constexpr int BUFFERSIZE = 256;
 constexpr int NAMESIZE = 20;
 
 constexpr char ClientLogin = 0;
-constexpr char ClientMatching = 0;
+constexpr char ClientMatching = 1;
 // 캐릭바꾸기? 색바꾸기 고려
-constexpr char ClientReady = 0;
-constexpr char ClientKeyInput = 0;
+constexpr char ClientReady = 2;
+constexpr char ClientKeyInput = 3;
 
 //-------------------------------------------------------------------------------------
 
