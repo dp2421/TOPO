@@ -24,6 +24,10 @@
 #pragma comment(lib,"dxgi")
 #pragma comment(lib, "dxguid")
 #pragma comment(lib, "d3dcompiler")
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "d3d11.lib")
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;

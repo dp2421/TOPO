@@ -125,8 +125,8 @@ void CShader::Create(SHADER_POV _ePov, D3D_PRIMITIVE_TOPOLOGY _eTopology)
 	}
 
 	HRESULT hr = DEVICE->CreateGraphicsPipelineState(&m_tPipeLine, IID_PPV_ARGS(&m_pPipeLineState));
-	if (FAILED(hr))
-		assert(nullptr);
+	//if (FAILED(hr))
+	//	assert(nullptr);
 
 }
 

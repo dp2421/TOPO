@@ -39,9 +39,9 @@ static type* GetInst()\
 
 #define _WITH_DIRECT2D
 
-#ifdef _WITH_DIRECT2D
-#define _WITH_DIRECT2D_IMAGE_EFFECT
-#endif
+//#ifdef _WITH_DIRECT2D
+//#define _WITH_DIRECT2D_IMAGE_EFFECT
+//#endif
 typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;

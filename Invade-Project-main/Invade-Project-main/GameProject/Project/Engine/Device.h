@@ -56,8 +56,10 @@ private:
 
 #ifdef _WITH_DIRECT2D
 	static const UINT			m_nSwapChainBuffers = 2;
+	UINT						m_nSwapChainBufferIndex=0;
 
-	ComPtr<ID3D12Resource> m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
+
+	ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
 	ComPtr<ID3D11On12Device> m_pd3d11On12Device = NULL;
 	ComPtr<ID3D11DeviceContext> m_pd3d11DeviceContext = NULL;
 	ComPtr<ID2D1Factory3> m_pd2dFactory = NULL;
@@ -66,7 +68,7 @@ private:
 	ComPtr<ID2D1DeviceContext2> m_pd2dDeviceContext = NULL;
 
 	ComPtr<ID3D11Resource> m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
-	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets[m_nSwapChainBuffers];
+	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets;
 
 	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBackground = NULL;
 	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBorder = NULL;

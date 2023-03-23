@@ -135,6 +135,34 @@ void CDevice::Render_Start(float(&_arrFloat)[4])
 
 void CDevice::Render_Present()
 {
+
+#ifdef _WITH_DIRECT2D
+	//Direct2D Drawing
+	m_pd2dDeviceContext->SetTarget(m_ppd2dRenderTargets.Get());
+	ID3D11Resource* ppd3dResources[] = { m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex].Get()};
+	m_pd3d11On12Device->AcquireWrappedResources(ppd3dResources, _countof(ppd3dResources));
+
+	m_pd2dDeviceContext->BeginDraw();
+
+	m_pd2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
+#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
+	D2D_POINT_2F d2dPoint = { 0.0f, 0.0f };
+	D2D_RECT_F d2dRect = { 100.0f, 100.0f, 400.0f, 400.0f };
+	m_pd2dDeviceContext->DrawImage((m_nDrawEffectImage == 0) ? m_pd2dfxGaussianBlur.Get() : m_pd2dfxGaussianBlur.Get(), &d2dPoint, &d2dRect);
+#endif
+	D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets->GetSize();
+	D2D1_RECT_F rcUpperText = D2D1::RectF(0, 0, szRenderTarget.width, szRenderTarget.height * 0.25f);
+	m_pd2dDeviceContext->DrawTextW(L"Locking...", (UINT32)wcslen(L"Locking..."), m_pdwFont.Get(), &rcUpperText, m_pd2dbrText.Get());
+	D2D1_RECT_F rcLowerText = D2D1::RectF(0, szRenderTarget.height * 0.8f, szRenderTarget.width, szRenderTarget.height);
+	m_pd2dDeviceContext->DrawTextW(L" ", (UINT32)wcslen(L" "), m_pdwFont.Get(), &rcLowerText, m_pd2dbrText.Get());
+
+	m_pd2dDeviceContext->EndDraw();
+
+	m_pd3d11On12Device->ReleaseWrappedResources(ppd3dResources, _countof(ppd3dResources));
+
+	m_pd3d11DeviceContext->Flush();
+#endif
+
 	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	// Indicate that the back buffer will now be used to present.
 	D3D12_RESOURCE_BARRIER barrier = {};
@@ -681,11 +709,15 @@ void CDevice::CreateDirect2DDevice()
 
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
 	{
+		m_ppd3dSwapChainBackBuffers[i] = NULL;
+		m_pSwapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&m_ppd3dSwapChainBackBuffers[i]);
+		//m_pDevice->CreateRenderTargetView(m_ppd3dSwapChainBackBuffers[i], NULL, m_pInitDescriptor.Get()->GetCPUDescriptorHandleForHeapStart());
+
 		D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
-		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i].Get(), &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&m_ppd3d11WrappedBackBuffers[i]));
+		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&m_ppd3d11WrappedBackBuffers[i]));
 		IDXGISurface* pdxgiSurface = NULL;
 		m_ppd3d11WrappedBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
-		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets[i]);
+		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets);
 		if (pdxgiSurface) pdxgiSurface->Release();
 	}
 
@@ -698,14 +730,14 @@ void CDevice::CreateDirect2DDevice()
 	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1GaussianBlur, &m_pd2dfxGaussianBlur);
 	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1EdgeDetection, &m_pd2dfxEdgeDetection);
 
-	IWICBitmapDecoder* pwicBitmapDecoder;
-	hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/MiniMap.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
-	IWICBitmapFrameDecode* pwicFrameDecode;
-	pwicBitmapDecoder->GetFrame(0, &pwicFrameDecode);
-	m_pwicImagingFactory->CreateFormatConverter(&m_pwicFormatConverter);
-	m_pwicFormatConverter->Initialize(pwicFrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
-	m_pd2dfxBitmapSource->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_pwicFormatConverter);
-	hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/EDGE.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
+	//IWICBitmapDecoder* pwicBitmapDecoder;
+	//hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/MiniMap.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
+	//IWICBitmapFrameDecode* pwicFrameDecode;
+	//pwicBitmapDecoder->GetFrame(0, &pwicFrameDecode);
+	//m_pwicImagingFactory->CreateFormatConverter(&m_pwicFormatConverter);
+	//m_pwicFormatConverter->Initialize(pwicFrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
+	//m_pd2dfxBitmapSource->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_pwicFormatConverter);
+	//hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/EDGE.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
 
 	m_pd2dfxGaussianBlur->SetInputEffect(0, m_pd2dfxBitmapSource.Get());
 	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.0f);
@@ -717,8 +749,8 @@ void CDevice::CreateDirect2DDevice()
 	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_OVERLAY_EDGES, false);
 	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_ALPHA_MODE, D2D1_ALPHA_MODE_PREMULTIPLIED);
 
-	if (pwicBitmapDecoder) pwicBitmapDecoder->Release();
-	if (pwicFrameDecode) pwicFrameDecode->Release();
+	//if (pwicBitmapDecoder) pwicBitmapDecoder->Release();
+	//if (pwicFrameDecode) pwicFrameDecode->Release();
 #endif
 }
 #endif

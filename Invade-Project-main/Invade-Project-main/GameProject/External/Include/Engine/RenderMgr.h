@@ -42,7 +42,7 @@ public:
 	void Render_Lights();
 	void Merge_Light();
 
-	void Render_OutLine();
+	//void Render_OutLine();
 private:
 
 
