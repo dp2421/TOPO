@@ -624,8 +624,8 @@ void CDevice::CreateDirect2DDevice()
 #endif
 
 	ID3D11Device* pd3d11Device = NULL;
-	ID3D12CommandQueue* ppd3dCommandQueues[] = { m_pd3dCommandQueue };
-	HRESULT hResult = ::D3D11On12CreateDevice(m_pd3dDevice, nD3D11DeviceFlags, NULL, 0, reinterpret_cast<IUnknown**>(ppd3dCommandQueues), _countof(ppd3dCommandQueues), 0, &pd3d11Device, &m_pd3d11DeviceContext, NULL);
+	ID3D12CommandQueue* ppd3dCommandQueues[] = { m_pCmdQueue.Get()};
+	HRESULT hResult = ::D3D11On12CreateDevice(m_pDevice.Get(), nD3D11DeviceFlags, NULL, 0, reinterpret_cast<IUnknown**>(ppd3dCommandQueues), _countof(ppd3dCommandQueues), 0, &pd3d11Device, &m_pd3d11DeviceContext, NULL);
 	hResult = pd3d11Device->QueryInterface(__uuidof(ID3D11On12Device), (void**)&m_pd3d11On12Device);
 	if (pd3d11Device) pd3d11Device->Release();
 
@@ -633,7 +633,7 @@ void CDevice::CreateDirect2DDevice()
 #if defined(_DEBUG) || defined(DBG)
 	nD2DFactoryOptions.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
 	ID3D12InfoQueue* pd3dInfoQueue = NULL;
-	if (SUCCEEDED(m_pd3dDevice->QueryInterface(IID_PPV_ARGS(&pd3dInfoQueue))))
+	if (SUCCEEDED(m_pDevice->QueryInterface(IID_PPV_ARGS(&pd3dInfoQueue))))
 	{
 		D3D12_MESSAGE_SEVERITY pd3dSeverities[] =
 		{
@@ -674,7 +674,7 @@ void CDevice::CreateDirect2DDevice()
 	hResult = m_pdwFont->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 	hResult = m_pdwFont->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkBlue, 0.8f), &m_pd2dbrText);
-	hResult = m_pdWriteFactory->CreateTextLayout(L"텍스트 레이아웃", 6, m_pdwFont, 1024, 1024, &m_pdwTextLayout);
+	hResult = m_pdWriteFactory->CreateTextLayout(L"텍스트 레이아웃", 6, m_pdwFont.Get(), 1024, 1024, &m_pdwTextLayout);
 
 	float fDpi = (float)GetDpiForWindow(m_hWnd);
 	D2D1_BITMAP_PROPERTIES1 d2dBitmapProperties = D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), fDpi, fDpi);
@@ -682,7 +682,7 @@ void CDevice::CreateDirect2DDevice()
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
 	{
 		D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
-		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&m_ppd3d11WrappedBackBuffers[i]));
+		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i].Get(), &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&m_ppd3d11WrappedBackBuffers[i]));
 		IDXGISurface* pdxgiSurface = NULL;
 		m_ppd3d11WrappedBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
 		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets[i]);
@@ -707,10 +707,10 @@ void CDevice::CreateDirect2DDevice()
 	m_pd2dfxBitmapSource->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_pwicFormatConverter);
 	hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/EDGE.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
 
-	m_pd2dfxGaussianBlur->SetInputEffect(0, m_pd2dfxBitmapSource);
+	m_pd2dfxGaussianBlur->SetInputEffect(0, m_pd2dfxBitmapSource.Get());
 	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.0f);
 
-	m_pd2dfxEdgeDetection->SetInputEffect(0, m_pd2dfxBitmapSource);
+	m_pd2dfxEdgeDetection->SetInputEffect(0, m_pd2dfxBitmapSource.Get());
 	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_STRENGTH, 0.5f);
 	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_BLUR_RADIUS, 0.0f);
 	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_MODE, D2D1_EDGEDETECTION_MODE_SOBEL);
