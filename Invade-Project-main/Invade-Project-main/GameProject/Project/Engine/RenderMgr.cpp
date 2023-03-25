@@ -33,6 +33,8 @@ void CRenderMgr::Render()
 	// SwapChain MRT 초기화
 	UINT iIdx = CDevice::GetInst()->GetSwapChainIndex();
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Clear(iIdx);
+	m_arrMRT[(UINT)MRT_TYPE::UI]->OMSet();
+	m_arrMRT[(UINT)MRT_TYPE::UI]->Clear();
 
 	// DeferredMRT 초기화
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Clear();
@@ -56,7 +58,6 @@ void CRenderMgr::Render()
 
 	m_vecCam[0]->Render_Forward(); // skybox, grid, ui
 
-	CDevice::GetInst()->CreateDirect2DDevice();
 	// 출력
 	CDevice::GetInst()->Render_Present();
 }
@@ -262,6 +263,22 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::OUTLINE]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
 	}
 
+	// ============
+	// UI MRT
+	// ============
+
+	{
+		tRT arrRT[8] = {};
+
+		arrRT[0].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
+		arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"UITargetTex"
+			, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
+			, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
+			, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
+
+		m_arrMRT[(UINT)MRT_TYPE::UI] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::UI]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
+	}
 }
 
 CCamera* CRenderMgr::GetMainCam()

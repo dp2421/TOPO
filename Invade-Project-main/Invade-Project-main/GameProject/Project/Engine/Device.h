@@ -67,8 +67,9 @@ private:
 	ComPtr<ID2D1Device2> m_pd2dDevice = NULL;
 	ComPtr<ID2D1DeviceContext2> m_pd2dDeviceContext = NULL;
 
-	ComPtr<ID3D11Resource> m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
-	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets;
+	ComPtr<ID3D11Resource> m_ppd3d11WrappedBackBuffers = NULL;
+	//ID3D11Resource* m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
+	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets = NULL;
 
 	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBackground = NULL;
 	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBorder = NULL;

@@ -32,7 +32,7 @@ public:
 
     Ptr<CTexture> GetRTTex(UINT _iIdx) { return m_arrRT[_iIdx].pTarget; }
     Ptr<CTexture> GetDSTex() { return m_pDSTex; }
-
+    ComPtr<ID3D12DescriptorHeap> GetDescriptorHeap() { return m_pRTV; }
     CMRT();
     virtual ~CMRT();
 };
