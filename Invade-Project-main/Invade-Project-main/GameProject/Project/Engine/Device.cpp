@@ -138,8 +138,7 @@ void CDevice::Render_Present()
 
 #ifdef _WITH_DIRECT2D
 	//Direct2D Drawing
-	CMRT* pUiMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::UI);
-	pUiMRT->GetDSTex();
+
 	m_pd2dDeviceContext->SetTarget(m_ppd2dRenderTargets.Get());
 	//ID3D11Resource* ppd3dResources[] = { m_ppd3d11WrappedBackBuffers.Get()};
 	ID3D12Resource* ppd3dResources[] = { m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers]};
@@ -268,14 +267,14 @@ void CDevice::CreateDirect2DDevice()
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
 	{
 		m_ppd3dSwapChainBackBuffers[i] = pUiMRT->GetDSTex()->GetTex2D().Get();
-		//m_pSwapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&m_ppd3dSwapChainBackBuffers[i]);
+		m_pSwapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&m_ppd3dSwapChainBackBuffers[i]);
 		//m_pDevice->CreateRenderTargetView(m_ppd3dSwapChainBackBuffers[i], NULL, m_pInitDescriptor.Get()->GetCPUDescriptorHandleForHeapStart());
 
 		D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
 		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&m_ppd3d11WrappedBackBuffers));
 		IDXGISurface* pdxgiSurface = NULL;
-		m_ppd3dSwapChainBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
-		//m_ppd3d11WrappedBackBuffers->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
+		//m_ppd3dSwapChainBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
+		m_ppd3d11WrappedBackBuffers->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
 		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets);
 		if (pdxgiSurface) pdxgiSurface->Release();
 	}
