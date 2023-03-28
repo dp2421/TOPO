@@ -18,7 +18,6 @@ CDevice::CDevice()
 	, m_iFenceValue(0)
 	, m_iCurDummyIdx(0)
 	,m_bWindowed(false),m_hWnd(),m_iCBVIncreSize(),m_iRTVHeapSize(),m_tResolution{}
-	
 {
 	m_vecCB.resize((UINT)CONST_REGISTER::END);
 }
@@ -94,6 +93,23 @@ int CDevice::Init(HWND _hWnd, const tResolution& _res, bool _bWindow)
 	// RootSignature 만들기
 	CreateRootSignature();
 
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	ImGui_ImplWin32_Init(m_hWnd);
+	ImGui_ImplDX12_Init(m_pDevice.Get(), 3,
+		DXGI_FORMAT_R8G8B8A8_UNORM, m_pInitDescriptor.Get(),
+		m_pInitDescriptor.Get()->GetCPUDescriptorHandleForHeapStart(),
+		m_pInitDescriptor.Get()->GetGPUDescriptorHandleForHeapStart());
+
+	// ImGui 창을 생성합니다.
+
+
+
+
 	return S_OK;
 }
 
@@ -134,47 +150,47 @@ void CDevice::Render_Start(float(&_arrFloat)[4])
 
 void CDevice::Render_Present()
 {
-	CreateDirect2DDevice();
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
-#ifdef _WITH_DIRECT2D
-	//Direct2D Drawing
+	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+	{
+		static float f = 0.0f;
+		static int counter = 0;
 
-	m_pd2dDeviceContext->SetTarget(m_ppd2dRenderTargets.Get());
-	//ID3D11Resource* ppd3dResources[] = { m_ppd3d11WrappedBackBuffers.Get()};
-	ID3D12Resource* ppd3dResources[] = { m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers]};
+		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 
-	//m_pd3d11On12Device->AcquireWrappedResources(ppd3dResources, _countof(ppd3dResources));
+		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+		//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 
-	m_pd2dDeviceContext->BeginDraw();
+		//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-	m_pd2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
-#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	D2D_POINT_2F d2dPoint = { 0.0f, 0.0f };
-	D2D_RECT_F d2dRect = { 100.0f, 100.0f, 400.0f, 400.0f };
-	m_pd2dDeviceContext->DrawImage((m_nDrawEffectImage == 0) ? m_pd2dfxGaussianBlur.Get() : m_pd2dfxGaussianBlur.Get(), &d2dPoint, &d2dRect);
-#endif
-	D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets->GetSize();
-	D2D1_RECT_F rcUpperText = D2D1::RectF(0, 0, szRenderTarget.width, szRenderTarget.height * 0.25f);
-	m_pd2dDeviceContext->DrawTextW(L"Locking...", (UINT32)wcslen(L"Locking..."), m_pdwFont.Get(), &rcUpperText, m_pd2dbrText.Get());
-	D2D1_RECT_F rcLowerText = D2D1::RectF(0, szRenderTarget.height * 0.8f, szRenderTarget.width, szRenderTarget.height);
-	m_pd2dDeviceContext->DrawTextW(L" ", (UINT32)wcslen(L" "), m_pdwFont.Get(), &rcLowerText, m_pd2dbrText.Get());
+		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+			counter++;
+		ImGui::SameLine();
+		ImGui::Text("counter = %d", counter);
 
-	m_pd2dDeviceContext->EndDraw();
-
-	//m_pd3d11On12Device->ReleaseWrappedResources(ppd3dResources, _countof(ppd3dResources));
-
-	m_pd3d11DeviceContext->Flush();
-#endif
+		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::End();
+	}
+	ImGui::Render();
 
 	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	// Indicate that the back buffer will now be used to present.
 	D3D12_RESOURCE_BARRIER barrier = {};
+	
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE; 
 	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 백버퍼에서
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 다시 출력으로 지정
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 백버퍼에서
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 다시 출력으로 지정
+	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
 
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_pCmdListGraphic.Get());
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
 	m_pCmdListGraphic->Close();
 
@@ -186,8 +202,6 @@ void CDevice::Render_Present()
 	m_pSwapChain->Present(0, 0);
 
 	WaitForFenceEvent();
-
-
 	
 	// 상수버퍼 오프셋 초기화
 	for (size_t i = 0; i < m_vecCB.size(); ++i)
@@ -310,6 +324,9 @@ void CDevice::CreateDirect2DDevice()
 	//if (pwicBitmapDecoder) pwicBitmapDecoder->Release();
 	//if (pwicFrameDecode) pwicFrameDecode->Release();
 #endif
+
+
+
 }
 #endif
 

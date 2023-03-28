@@ -57,6 +57,8 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 
 void CGameFramework::Progress()
 {
+
+
 	CKeyMgr::GetInst()->Update();
 
 	CTimeMgr::GetInst()->Update();

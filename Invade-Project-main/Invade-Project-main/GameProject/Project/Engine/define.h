@@ -37,7 +37,7 @@ static type* GetInst()\
 
 #define MAX_LAYER 32
 
-#define _WITH_DIRECT2D
+//#define _WITH_DIRECT2D
 
 //#ifdef _WITH_DIRECT2D
 //#define _WITH_DIRECT2D_IMAGE_EFFECT
