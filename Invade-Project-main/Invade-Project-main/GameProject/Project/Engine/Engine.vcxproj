@@ -169,6 +169,8 @@ call EngineCopy.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\PotaTongServer\PotaTongServer\OverlappedEx.h" />
+    <ClInclude Include="..\..\..\..\..\Protocol.h" />
     <ClInclude Include="Animation2D.h" />
     <ClInclude Include="Animator2D.h" />
     <ClInclude Include="Animator3D.h" />
@@ -235,6 +237,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\PotaTongServer\PotaTongServer\OverlappedEx.cpp" />
     <ClCompile Include="Animation2D.cpp" />
     <ClCompile Include="Animator2D.cpp" />
     <ClCompile Include="Animator3D.cpp" />

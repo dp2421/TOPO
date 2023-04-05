@@ -12,12 +12,17 @@ public:
 	void InitServer();
 	void InitHandler();
 
+	void Run();
 	void Accept();
-	void Reve(const int id, DWORD recvByte, OverlappedEx* overlappedEx);
+	void Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx);
+	void TimerThread();
+
 	void Disconnect(int ID);
 
 	void ProcessPacket(const int id, char* packet);
-	void ProcessInput(const int id, int key);
+
+
+	void ProcessInput(const int id, ClinetKeyInputPacket* key);
 
 private:
 	SOCKET ServerSocket, ClientSocket;

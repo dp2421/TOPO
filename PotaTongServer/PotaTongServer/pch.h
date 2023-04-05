@@ -17,6 +17,8 @@
 
 using namespace std;
 
+#include "Vector3.h"
+
 #include "Event.h"
 #include "ThreadSafeQueue.h"
 

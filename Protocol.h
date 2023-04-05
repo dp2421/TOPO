@@ -1,27 +1,32 @@
 #pragma once
 
+constexpr float DT = 1 / 60;
+constexpr float SPEED = 200.f;
+
 constexpr int PORTNUM = 4000;
 constexpr int BUFFERSIZE = 256;
 constexpr int NAMESIZE = 20;
+constexpr char SERVERIP[] = "127.0.0.1";
 
-constexpr char ClientLogin = 0;
-constexpr char ClientMatching = 1;
+constexpr char ClientLogin = 100;
+constexpr char ClientMatching = 101;
 // 캐릭바꾸기? 색바꾸기 고려
-constexpr char ClientReady = 2;
-constexpr char ClientKeyInput = 3;
+constexpr char ClientReady = 102;
+constexpr char ClientKeyInput = 103;
 
 //-------------------------------------------------------------------------------------
 
-constexpr char ServerLogin = 0;
-constexpr char ServerMatchingOK = 0;
-constexpr char ServerGameStart = 0;
+constexpr char ServerLogin = 201;
+constexpr char ServerMatchingOK = 202;
+constexpr char ServerGameStart = 203;
 
-constexpr char ServerPlayerInfo = 0;
-constexpr char ServerObstacleInfo = 0;
-constexpr char ServerGameTimer = 0;
-constexpr char ServerGameEnd = 0;
+constexpr char ServerAddPlayerInfo = 204;
+constexpr char ServerPlayerInfo = 205;
+constexpr char ServerObstacleInfo = 206;
+constexpr char ServerGameTimer = 207;
+constexpr char ServerGameEnd = 208;
 
-constexpr char ServerGameResult = 0;
+constexpr char ServerGameResult = 208;
 
 #pragma pack (push, 1)
 
@@ -49,7 +54,9 @@ struct ClinetKeyInputPacket
 {
 	unsigned char size;
 	char	type;
-	char	key;
+	int		key;
+	// 플레이어가 바라보고 있는 방향 받아옴
+	float	x, y, z;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -59,6 +66,7 @@ struct ServerLoginPacket
 	unsigned char size;
 	char	type;
 	int		id;
+	float	x, y, z;
 };
 
 struct ServerMatchingOKPacket
@@ -73,12 +81,21 @@ struct ServerGameStartPacket
 	char	type;
 };
 
-struct ServerPlayerInfoPacket
+struct ServerAddPlayerPacket
 {
 	unsigned char size;
 	char	type;
 	int		id;
 	float	x, y, z;
+};
+
+struct ServerPlayerInfoPacket
+{
+	unsigned char size;
+	char	type;
+	int		id;
+	float	xPos, yPos, zPos;
+	float	xDir, yDir, zDir;
 	// 방향도 넣어야 할까? 벡터 느낌으로
 };
 

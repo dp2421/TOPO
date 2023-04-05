@@ -1,4 +1,6 @@
 #include "pch.h"
+#include "Scene.h"
+#include "Layer.h"
 #include "GameFramework.h"
 #include "Device.h"
 #include "KeyMgr.h"
@@ -15,12 +17,14 @@ CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
 
 }
 CGameFramework::~CGameFramework() {
-
+	closesocket(socket);
+	WSACleanup();
 }
 
 
 int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWindow)
 {
+
 	m_hMainhWnd = _hWnd;
 	ChangeWindowSize(m_hMainhWnd, _resolution);
 	ShowWindow(_hWnd, true);
@@ -49,9 +53,64 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 
 	CSceneMgr::GetInst()->Init();
 	
-
 	CEventMgr::GetInst()->Init();
+
+	InitNetwork();
 	return S_OK;
+
+}
+
+void CGameFramework::InitNetwork()
+{
+	WSADATA WSAData;
+	WSAStartup(MAKEWORD(2, 2), &WSAData);
+	socket = WSASocket(AF_INET, SOCK_STREAM, 0, 0, 0, WSA_FLAG_OVERLAPPED);
+	SOCKADDR_IN svr_addr;
+	memset(&svr_addr, 0, sizeof(svr_addr));
+	svr_addr.sin_family = AF_INET;
+	svr_addr.sin_port = htons(PORTNUM);
+	inet_pton(AF_INET, SERVERIP, &svr_addr.sin_addr);
+	WSAConnect(socket, reinterpret_cast<sockaddr*>(&svr_addr), sizeof(svr_addr), 0, 0, 0, 0);
+	RecvPacket();
+}
+
+void CGameFramework::RecvPacket()
+{
+	DWORD recv_flag = 0;
+	memset(&recv.overlapped, 0, sizeof(recv.overlapped));
+	WSARecv(socket, &recv.wsaBuf, 1, NULL, &recv_flag, &recv.overlapped, RecvCallback);
+}
+
+void CGameFramework::SendPacket(char* packet)
+{
+	OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
+	WSASend(socket, &overlappedEx->wsaBuf, 1, 0, 0, &overlappedEx->overlapped, SendCallback);
+}
+
+void CGameFramework::SendClientKeyInputPacket(const int key, Vec3 dir)
+{
+}
+
+void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags)
+{
+	OverlappedEx* overlappedEx = reinterpret_cast<OverlappedEx*>(over);
+	switch(overlappedEx->wsaBuf.buf[0])
+	{
+	case ServerLogin:
+
+		break;
+	case ServerPlayerInfo:
+
+		break;
+	}
+
+	std::vector<CGameObject*> objects;
+	CSceneMgr::GetInst()->FindGameObjectByTag(L"Monster", objects);
+	CGameFramework::GetInst()->RecvPacket();
+}
+
+void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags)
+{
 
 }
 
@@ -61,6 +120,8 @@ void CGameFramework::Progress()
 
 	CKeyMgr::GetInst()->Update();
 
+	SleepEx(1, true);
+
 	CTimeMgr::GetInst()->Update();
 	CSound::g_pFMOD->update();
 	CEventMgr::GetInst()->Clear();
@@ -69,8 +130,6 @@ void CGameFramework::Progress()
 	CRenderMgr::GetInst()->Render();
 
 	CEventMgr::GetInst()->Update();
-
-
 }
 
 void CGameFramework::ProcessInput()

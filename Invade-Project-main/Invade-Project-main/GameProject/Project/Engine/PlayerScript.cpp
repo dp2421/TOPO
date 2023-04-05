@@ -39,13 +39,14 @@ void CPlayerScript::Awake()
 
 void CPlayerScript::Update()
 {
+	if (!isPlayable) return;
 
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
 
 	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
 		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-		vPos += vFront * 200.f * DT;
+		vPos += vFront * 200.f * DT;	
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_S)) {
 		Vec3 vBack = -Transform()->GetWorldDir(DIR_TYPE::RIGHT);

@@ -7,7 +7,16 @@ ServerBase::ServerBase()
 
 	matchingManager = new MatchingManager(IOCPHandle);
 	InitHandler();
+}
 
+ServerBase::~ServerBase()
+{
+	closesocket(ServerSocket);
+	WSACleanup();
+}
+
+void ServerBase::Run()
+{
 	int numThreads = std::thread::hardware_concurrency();
 
 	thread eventThread{ &ServerBase::EventThread, this };
@@ -17,12 +26,6 @@ ServerBase::ServerBase()
 	eventThread.join();
 	for (auto& thread : workerThreads)
 		thread.join();
-}
-
-ServerBase::~ServerBase()
-{
-	closesocket(ServerSocket);
-	WSACleanup();
 }
 
 void ServerBase::WorkerThread(HANDLE IOCP)
@@ -56,7 +59,7 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			Accept();
 			break;
 		case OverlappedType::Recv:
-			Reve(static_cast<int>(ID), numBytes, overlappedEx);
+			Recv(static_cast<int>(ID), numBytes, overlappedEx);
 			break;
 		case OverlappedType::Send:
 			delete overlappedEx;
@@ -104,6 +107,8 @@ void ServerBase::InitServer()
 		0,
 		&GlobalOverlapped.overlapped
 	);
+
+	cout << "Start Server" << endl;
 }
 
 void ServerBase::InitHandler()
@@ -119,6 +124,7 @@ void ServerBase::Accept()
 
 	clients[newID].ID = newID;
 	clients[newID].socket = ClientSocket;
+	clients[newID].position = Vector3(50, 100, 100);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
 	clients[newID].RecvPacket();
 	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -128,25 +134,31 @@ void ServerBase::Accept()
 	AcceptEx(ServerSocket, ClientSocket, GlobalOverlapped.sendBuf, 0, addr_size + 16, addr_size + 16, 0, &GlobalOverlapped.overlapped);
 }
 
-void ServerBase::Reve(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
+void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 {
 	int remainData = recvByte + clients[id].prevRemainData;
-	while (remainData > 0) {
+	char* p = overlappedEx->sendBuf;
+	while (remainData > 0) 
+	{
 		int packet_size = p[0];
-		if (packet_size <= remainData) {
-			ProcessPacket(id, overlappedEx->sendBuf);
+		if (packet_size <= remainData) 
+		{
+			ProcessPacket(id, p);
 			p = p + packet_size;
 			remainData = remainData - packet_size;
 		}
-		else break;
+		else
+		{
+			break;
+		}
 	}
 	clients[id].prevRemainData = remainData;
-	if (remainData > 0) {
+	if (remainData > 0) 
+	{
 		memcpy(overlappedEx->sendBuf, p, remainData);
 	}
 
 	clients[id].RecvPacket();
-	ProcessPacket(id, overlappedEx->sendBuf);
 }
 
 void ServerBase::Disconnect(int ID)
@@ -163,36 +175,63 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	{
 	case ClientLogin:
 		clients[id].SendServerLoginPacket(id);
+		for (auto& client : clients)
+		{
+			if (client.second.ID == id) continue;
+
+			client.second.SendAddPlayerPacket(id, clients[id].position);
+			clients[id].SendAddPlayerPacket(client.second.ID, client.second.position);
+		}
 		break;
 	case ClientKeyInput:
+	{
 		auto p = reinterpret_cast<ClinetKeyInputPacket*>(packet);
-		ProcessInput(id, p->key);
+		ProcessInput(id, p);
 		break;
+	}
 	case ClientMatching:
 		
 		break;
 	}
 }
 
-void ServerBase::ProcessInput(const int id, int key)
+void ServerBase::ProcessInput(const int id, ClinetKeyInputPacket* packet)
 {
-	switch (key)
+	int key = packet->key;
+	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
+	if (key == 'w' || key == 'W')
 	{
-	case 'w':
-		cout << id << " pressed " << 'w' << endl;
-		break;
-	case 'a':
-		cout << id << " pressed " << 'a' << endl;
-		break;
-	case 's':
-		cout << id << " pressed " << 's' << endl;
-		break;
-	case 'd':
-		cout << id << " pressed " << 'd' << endl;
-		break;
-	case VK_CONTROL:
-		cout << id << " pressed " << "CONTROL" << endl;
-		break;
+		clients[id].position += dir * SPEED * DT;
+	}
+	if (key == 'a' || key == 'A')
+	{
+		clients[id].position += dir * SPEED * DT;
+	}
+	if (key == 's' || key == 'S')
+	{
+		clients[id].position += dir * SPEED * DT;
+	}
+	if (key == 'd' || key == 'D')
+	{
+		clients[id].position += dir * SPEED * DT;
+	}
+	if (key == VK_CONTROL)
+	{
+		// ¹ÐÄ¡±â 
+	}
+	if (key == VK_SHIFT)
+	{
+		// ÆøÅºµ¹¸®±â
+	}
+	if (key == VK_SPACE)
+	{
+		// Á¡ÇÁ
+	}
+	
+	for (auto client : clients)
+	{
+		if (client.second.ID == id) continue;
+		client.second.SendPlayerInfoPacket(id, clients[id].position, dir);
 	}
 }
 

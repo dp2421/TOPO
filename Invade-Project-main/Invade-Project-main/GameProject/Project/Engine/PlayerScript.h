@@ -25,11 +25,14 @@ private:
     float m_fArrowSpeed;
 
     float m_fArcherLocation;
+    bool isPlayable = false;
 public:
     virtual void Awake();
     virtual void Update();
     void SetType(ELEMENT_TYPE _iType) { m_iType = _iType; }
-  
+    void SetPlayable(bool value) { isPlayable = value; }
+    bool GetPlayable() { return isPlayable; } const
+
 
     CPlayerScript();
     virtual ~CPlayerScript();

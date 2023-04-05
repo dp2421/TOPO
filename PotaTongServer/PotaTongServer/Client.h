@@ -9,6 +9,10 @@ public:
 
 	SOCKET socket;
 	int prevRemainData;
+
+	Vector3 position;
+	Vector3 direction;
+	Vector3 velocity;
 public:
 	Client();
 	~Client();
@@ -17,6 +21,8 @@ public:
 	void RecvPacket();
 
 	void SendServerLoginPacket(const int id);
+	void SendAddPlayerPacket(const int id, const Vector3 pos);
+	void SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir);
 private:
 	OverlappedEx recv;
 };

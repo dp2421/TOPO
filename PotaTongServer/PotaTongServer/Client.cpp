@@ -30,6 +30,38 @@ void Client::SendServerLoginPacket(const int id)
 	packet.size = sizeof(ServerLoginPacket);
 	packet.type = ClientLogin;
 	packet.id = id;
+	packet.x = position.x;
+	packet.y = position.y;
+	packet.z = position.z;
+
+	SendPacket(&packet);
+}
+
+void Client::SendAddPlayerPacket(const int id, const Vector3 vec)
+{
+	ServerAddPlayerPacket packet;
+	packet.size = sizeof(ServerPlayerInfoPacket);
+	packet.type = ServerPlayerInfo;
+	packet.id = id;
+	packet.x = vec.x;
+	packet.y = vec.y;
+	packet.z = vec.z;
+
+	SendPacket(&packet);
+}
+
+void Client::SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir)
+{
+	ServerPlayerInfoPacket packet;
+	packet.size = sizeof(ServerPlayerInfoPacket);
+	packet.type = ServerPlayerInfo;
+	packet.id = id;
+	packet.xPos = pos.x;
+	packet.yPos = pos.y;
+	packet.zPos = pos.z;
+	packet.xDir = dir.x;
+	packet.yDir = dir.y;
+	packet.zDir = dir.z;
 
 	SendPacket(&packet);
 }
