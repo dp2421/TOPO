@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameFramework.h"
 #include "PlayerScript.h"
 #include "ArrowScript.h"
 #include "MeshRender.h"
@@ -46,19 +47,19 @@ void CPlayerScript::Update()
 
 	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
 		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-		vPos += vFront * 200.f * DT;	
+		CGameFramework::GetInst()->SendClientKeyInputPacket('w', vFront);
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_S)) {
 		Vec3 vBack = -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-		vPos += vBack * 200.f * DT;
+		CGameFramework::GetInst()->SendClientKeyInputPacket('w', vBack);
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_A)) {
 		Vec3 vLeft = Transform()->GetWorldDir(DIR_TYPE::FRONT);
-		vPos += vLeft * 200.f * DT;
+		CGameFramework::GetInst()->SendClientKeyInputPacket('w', vLeft);
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_D)) {
 		Vec3 vRight = -Transform()->GetWorldDir(DIR_TYPE::FRONT);
-		vPos += vRight * 200.f * DT;
+		CGameFramework::GetInst()->SendClientKeyInputPacket('w', vRight);
 	}
 	if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
 		CGameObject* pObj=GetObj()->GetChild()[0];

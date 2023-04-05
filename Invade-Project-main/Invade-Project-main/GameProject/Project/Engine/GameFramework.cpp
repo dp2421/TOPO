@@ -14,6 +14,7 @@
 #include "SceneMgr.h"
 #include "EventMgr.h"
 #include "InstancingMgr.h"
+#include "PlayerScript.h"
 
 CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
 
@@ -127,6 +128,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWO
 	{
 		auto p = reinterpret_cast<ServerLoginPacket*>(recvBuf);
 		CGameFramework::GetInst()->networkObjects[p->id] = CSceneMgr::GetInst()->AddNetworkGameObject(true);
+		CGameFramework::GetInst()->networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayable(true);
 		break;
 	}
 	case ServerAddPlayer:
