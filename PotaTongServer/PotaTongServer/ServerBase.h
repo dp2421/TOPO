@@ -22,7 +22,7 @@ public:
 	void ProcessPacket(const int id, char* packet);
 
 
-	void ProcessInput(const int id, ClinetKeyInputPacket* key);
+	void ProcessInput(const int id, ClientKeyInputPacket* key);
 
 private:
 	SOCKET ServerSocket, ClientSocket;

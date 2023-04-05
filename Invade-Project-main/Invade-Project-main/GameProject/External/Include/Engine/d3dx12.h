@@ -2749,7 +2749,7 @@ public:
         }
         // For subobjects with pointer fields, create a new copy of those subobject definitions
         // with fixed pointers
-        for (UINT i = 0; i < m_Desc.NumSubobjects; ++i)
+        for (UINT i = 0; i < m_Desc.NumSubobjects; i++)
         {
             if (m_SubobjectArray[i].Type == D3D12_STATE_SUBOBJECT_TYPE_SUBOBJECT_TO_EXPORTS_ASSOCIATION)
             {
@@ -2946,14 +2946,14 @@ public:
     template<size_t N>
     void DefineExports(LPCWSTR(&Exports)[N])
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             DefineExport(Exports[i]);
         }
     }
     void DefineExports(LPCWSTR* Exports, UINT N)
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             DefineExport(Exports[i]);
         }
@@ -3013,14 +3013,14 @@ public:
     template<size_t N>
     void DefineExports(LPCWSTR(&Exports)[N])
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             DefineExport(Exports[i]);
         }
     }
     void DefineExports(LPCWSTR* Exports, UINT N)
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             DefineExport(Exports[i]);
         }
@@ -3074,14 +3074,14 @@ public:
     template<size_t N>
     void AddExports(LPCWSTR (&Exports)[N])
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             AddExport(Exports[i]);
         }
     }
     void AddExports(LPCWSTR* Exports, UINT N)
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             AddExport(Exports[i]);
         }
@@ -3133,14 +3133,14 @@ public:
     template<size_t N>
     void AddExports(LPCWSTR (&Exports)[N])
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             AddExport(Exports[i]);
         }
     }
     void AddExports(LPCWSTR* Exports, UINT N)
     {
-        for (UINT i = 0; i < N; ++i)
+        for (UINT i = 0; i < N; i++)
         {
             AddExport(Exports[i]);
         }
@@ -3209,7 +3209,7 @@ private:
     {
         SUBOBJECT_HELPER_BASE::Init();
         m_Desc = {};
-        for (UINT i = 0; i < m_NumStrings; ++i)
+        for (UINT i = 0; i < m_NumStrings; i++)
         {
             m_Strings[i].clear();
         }

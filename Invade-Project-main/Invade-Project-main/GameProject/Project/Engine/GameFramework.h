@@ -5,6 +5,8 @@ class CGameFramework
 public:
 	HWND m_hMainhWnd;
 	SOCKET socket;
+
+	std::unordered_map<int, CGameObject*> networkObjects;
 private:
 
 	POINT m_ptOldCursorPos;
@@ -21,14 +23,21 @@ public:
 
 	void InitNetwork();
 	void RecvPacket();
-	void SendPacket(char* packet);
+	void SendPacket(void* packet);
+	void SendClientLoginPacket();
 	void SendClientKeyInputPacket(const int key, Vec3 dir);
 private:
 	void ChangeWindowSize(HWND _hWnd, const tResolution _resolution);
 
 };
 
+WSAOVERLAPPED overlapped;
+WSABUF wsaBuf;
+char sendBuf[BUFFERSIZE];
 
-OverlappedEx recv;
+WSAOVERLAPPED recvOverlapped;
+WSABUF recvWsaBuf;
+char recvBuf[BUFFERSIZE];
+
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags);
 void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags);

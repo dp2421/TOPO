@@ -34,7 +34,7 @@ private:
 	CStructuredBuffer* m_pBoneOffset;
 public:
 	void Create(UINT _iVtxSize, UINT _iVtxCount, BYTE* _pVtxSysMem, DXGI_FORMAT _iIdxFormat, UINT _iIdxCount, BYTE* _pIdxSysMem);
-	static CMesh* CreateFromContainer(CFBXLoader& _Loader, int index);
+	static CMesh* CreateFromContainer(CFBXLoader& _Loader);
 	void Render(UINT _iSubset=0);
 	void Render_Particle(UINT _iInstanceCount, UINT _iSubset = 0);
 

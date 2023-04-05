@@ -37,11 +37,6 @@ static type* GetInst()\
 
 #define MAX_LAYER 32
 
-//#define _WITH_DIRECT2D
-
-//#ifdef _WITH_DIRECT2D
-//#define _WITH_DIRECT2D_IMAGE_EFFECT
-//#endif
 typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
@@ -295,8 +290,6 @@ enum class RT_TYPE
 	POSTEFFECT1,
 	POSTEFFECT2,
 
-	OUTLINE,
-
 	END,
 };
 
@@ -308,8 +301,6 @@ enum class MRT_TYPE
 	LIGHT,		// LIGHT, SPECULAR
 	SHADOWMAP,	// SHADOWMAP
 	POSTEFFECT, // POSTEFFECT1, POSTEFFECT2
-	OUTLINE,
-	UI,
 	END,
 };
 
@@ -322,7 +313,6 @@ enum class SHADER_POV
 	PARTICLE,
 	COMPUTE, // GPGPU
 	SHADOWMAP,
-	OUTLINE,
 };
 // State Description
 

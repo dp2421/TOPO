@@ -12,7 +12,10 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include <iostream>
+#include <mutex>
+#include <thread>
 #include <WS2tcpip.h>
+#include <MSWSock.h>
 #include <Windows.h>
 
 #include "global.h"

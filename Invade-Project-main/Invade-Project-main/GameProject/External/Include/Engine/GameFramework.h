@@ -18,7 +18,6 @@ public:
 
 	const Vec2& GetMouseMove() { return m_vMouseMove; }
 
-
 private:
 	void ChangeWindowSize(HWND _hWnd, const tResolution _resolution);
 

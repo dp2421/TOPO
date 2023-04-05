@@ -71,7 +71,7 @@ void CSceneMgr::Init()
 	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"Sky02", L"Texture\\Skybox\\Sky02.jpg");
 	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
-	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
+	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Textux1re\\Particle\\HardCircle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	Ptr<CTexture> pColor = CResMgr::GetInst()->Load<CTexture>(L"Tile", L"Texture\\Tile\\TILE_03.tga");
 	Ptr<CTexture> pNormal = CResMgr::GetInst()->Load<CTexture>(L"Tile_n", L"Texture\\Tile\\TILE_03_N.tga");
@@ -108,17 +108,17 @@ void CSceneMgr::Init()
 	CGameObject* pMainCam = nullptr;
 
 	// Camera Object
-	pMainCam = new CGameObject;
-	pMainCam->SetName(L"MainCam");
-	pMainCam->AddComponent(new CTransform);
-	pMainCam->AddComponent(new CCamera);
-	pMainCam->AddComponent(new CCameraScript);
-
-	pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
-
-	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
-	pMainCam->Camera()->SetFar(100000.f);
-	pMainCam->Camera()->SetLayerAllCheck();
+	//pMainCam = new CGameObject;
+	//pMainCam->SetName(L"MainCam");
+	//pMainCam->AddComponent(new CTransform);
+	//pMainCam->AddComponent(new CCamera);
+	//pMainCam->AddComponent(new CCameraScript);
+	//
+	//pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+	//
+	////pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+	//pMainCam->Camera()->SetFar(100000.f);
+	//pMainCam->Camera()->SetLayerAllCheck();
 
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pMainCam);
 
@@ -191,31 +191,31 @@ void CSceneMgr::Init()
 
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
-	pObject = new CGameObject;
-
-	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"Monster");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-
-	pObject->AddComponent(new CPlayerScript);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(50.f, 100.f, 100.f));
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	
-	pMainCam->Transform()->SetLocalPos(Vec3(-60,40,-10));
-//	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
-	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	
-	pObject->AddChild(pMainCam);
-//
-//
-	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+	//pObject = new CGameObject;
+	//
+	//pObject = pMeshData->Instantiate();
+	//pObject->SetName(L"Monster");
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//
+	//pObject->AddComponent(new CPlayerScript);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(50.f, 100.f, 100.f));
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	//
+	//pMainCam->Transform()->SetLocalPos(Vec3(-60,40,-10));
+//	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+	//pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
+	//
+	//pObject->AddChild(pMainCam);
+//	//
+//	//
+	//m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
 
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
 	pObject = pMeshData->Instantiate();
@@ -527,6 +527,54 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 			}
 		}
 	}
+}
+
+CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer)
+{
+	CGameObject* pObject = nullptr;
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
+	pObject = new CGameObject;
+
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"Monster");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+
+	pObject->AddComponent(new CPlayerScript);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(50.f, 100.f, 100.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+
+	if (isPlayer)
+	{
+		CGameObject* pMainCam = nullptr;
+		pMainCam = new CGameObject;
+		pMainCam->SetName(L"MainCam");
+		pMainCam->AddComponent(new CTransform);
+		pMainCam->AddComponent(new CCamera);
+		pMainCam->AddComponent(new CCameraScript);
+
+		pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+
+		//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+		pMainCam->Camera()->SetFar(100000.f);
+		pMainCam->Camera()->SetLayerAllCheck();
+
+		pMainCam->Transform()->SetLocalPos(Vec3(-60, 40, -10));
+		//	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+		pMainCam->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
+
+		m_pCurScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+		pObject->AddChild(pMainCam);
+	}
+	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+
+	return pObject;
 }
 
 bool Compare(CGameObject* _pLeft, CGameObject* _pRight)

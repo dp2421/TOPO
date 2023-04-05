@@ -8,15 +8,6 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 
-#include <d2d1_3.h>
-#include <dwrite.h>
-#include <dwrite_1.h>
-#include <d3d11on12.h>
-#include <d2d1_1helper.h>
-
-#include <d2d1effects.h>
-#include <wincodec.h>
-
 #include <algorithm>
 #include "SimpleMath.h"
 
@@ -24,10 +15,6 @@
 #pragma comment(lib,"dxgi")
 #pragma comment(lib, "dxguid")
 #pragma comment(lib, "d3dcompiler")
-#pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "dwrite.lib")
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "d3d11.lib")
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
@@ -57,6 +44,4 @@ using std::make_pair;
 #include "struct.h"
 #include "func.h"
 #include "extern.h"
-#include "imgui.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_internal.h"
+
