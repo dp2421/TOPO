@@ -41,6 +41,8 @@ public:
 	void Render_ShadowMap();
 	void Render_Lights();
 	void Merge_Light();
+
+	//void Render_OutLine();
 private:
 
 

@@ -3,6 +3,11 @@ class CConstantBuffer;
 class CStructuredBuffer;
 #include "Ptr.h"
 #include "Texture.h"
+#include "imgui.h"
+#include "imgui_impl_dx12.h"
+#include "imgui_internal.h"
+#include "imgui_impl_win32.h"
+
 class CDevice
 {
 	SINGLE(CDevice)
@@ -53,6 +58,41 @@ private:
 
 	ComPtr<ID3D12Fence> m_pFenceCompute;
 	ComPtr<ID3D12DescriptorHeap> m_pDummyDescriptorCompute;
+
+#ifdef _WITH_DIRECT2D
+	static const UINT			m_nSwapChainBuffers = 2;
+	UINT						m_nSwapChainBufferIndex=0;
+
+
+	ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
+	ComPtr<ID3D11On12Device> m_pd3d11On12Device = NULL;
+	ComPtr<ID3D11DeviceContext> m_pd3d11DeviceContext = NULL;
+	ComPtr<ID2D1Factory3> m_pd2dFactory = NULL;
+	ComPtr<IDWriteFactory> m_pdWriteFactory = NULL;
+	ComPtr<ID2D1Device2> m_pd2dDevice = NULL;
+	ComPtr<ID2D1DeviceContext2> m_pd2dDeviceContext = NULL;
+
+	ComPtr<ID3D11Resource> m_ppd3d11WrappedBackBuffers = NULL;
+	//ID3D11Resource* m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
+	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets = NULL;
+
+	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBackground = NULL;
+	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBorder = NULL;
+	ComPtr<IDWriteTextFormat> m_pdwFont = NULL;
+	ComPtr<IDWriteTextLayout> m_pdwTextLayout = NULL;
+	ComPtr<ID2D1SolidColorBrush> m_pd2dbrText = NULL;
+
+#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
+	ComPtr<IWICImagingFactory> m_pwicImagingFactory = NULL;
+	ComPtr<ID2D1Effect> m_pd2dfxBitmapSource = NULL;
+	ComPtr<ID2D1Effect> m_pd2dfxGaussianBlur = NULL;
+	ComPtr<ID2D1Effect> m_pd2dfxEdgeDetection = NULL;
+	ComPtr<ID2D1DrawingStateBlock1> m_pd2dsbDrawingState = NULL;
+	ComPtr<IWICFormatConverter> m_pwicFormatConverter = NULL;
+	int							m_nDrawEffectImage = 0;
+#endif
+#endif
+
 private:
 	ComPtr<ID3D12RootSignature> m_arrSig[(UINT)ROOT_SIG_TYPE::END];
 public:
@@ -80,7 +120,9 @@ public:
 	void UpdateTable();
 	void ExcuteResourceLoad();
 
-
+#ifdef _WITH_DIRECT2D
+	void CreateDirect2DDevice();
+#endif
 
 	void SetBufferToRegister(CStructuredBuffer* _pBuffer, TEXTURE_REGISTER _eRegister);
 	void SetBufferToSRVRegister_CS(CStructuredBuffer* _pBuffer, TEXTURE_REGISTER _eRegister);

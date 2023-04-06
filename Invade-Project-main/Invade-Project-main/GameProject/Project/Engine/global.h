@@ -18,9 +18,10 @@
 #include <wincodec.h>
 
 #include <algorithm>
-#include <unordered_map>
+#include <functional>
 #include "SimpleMath.h"
 #include "../../../../../Protocol.h"
+#include "../../../../../PotaTongServer/PotaTongServer/OverlappedEx.h"
 
 #pragma comment(lib,"d3d12")
 #pragma comment(lib,"dxgi")
@@ -30,8 +31,7 @@
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "WS2_32.lib")
-#pragma comment(lib, "MSWSock.lib")
+#pragma comment(lib, "WS2_32.LIB")
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;

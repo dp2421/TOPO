@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Scene.h"
 #include "Layer.h"
-#include "GameObject.h"
-#include "Transform.h"
 #include "GameFramework.h"
 #include "Device.h"
 #include "KeyMgr.h"
@@ -58,7 +56,6 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CEventMgr::GetInst()->Init();
 
 	InitNetwork();
-	SendClientLoginPacket();
 	return S_OK;
 
 }
@@ -80,78 +77,46 @@ void CGameFramework::InitNetwork()
 void CGameFramework::RecvPacket()
 {
 	DWORD recv_flag = 0;
-	memset(&recvOverlapped, 0, sizeof(recvOverlapped));
-	WSARecv(socket, &recvWsaBuf, 1, NULL, &recv_flag, &recvOverlapped, RecvCallback);
+	memset(&recv.overlapped, 0, sizeof(recv.overlapped));
+	WSARecv(socket, &recv.wsaBuf, 1, NULL, &recv_flag, &recv.overlapped, RecvCallback);
 }
 
-void CGameFramework::SendPacket(void* packet)
+void CGameFramework::SendPacket(char* packet)
 {
-	wsaBuf.len = BUFFERSIZE;
-	wsaBuf.buf = sendBuf;
-	ZeroMemory(&overlapped, sizeof(overlapped));
-	auto pack = reinterpret_cast<char*>(packet);
-	memcpy(sendBuf, pack, pack[0]);
-
-	WSASend(socket, &wsaBuf, 1, 0, 0, &overlapped, SendCallback);
-}
-
-void CGameFramework::SendClientLoginPacket()
-{
-	ClientLoginPacket packet;
-	packet.size = sizeof(ClientLoginPacket);
-	packet.type = ClientLogin;
-	string playerName{ "p" };
-	strcpy_s(packet.name, playerName.c_str());
-
-	SendPacket(&packet);
+	OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
+	WSASend(socket, &overlappedEx->wsaBuf, 1, 0, 0, &overlappedEx->overlapped, SendCallback);
 }
 
 void CGameFramework::SendClientKeyInputPacket(const int key, Vec3 dir)
 {
-	ClientKeyInputPacket packet;
-	packet.size = sizeof(ClientKeyInputPacket);
-	packet.type = ClientKeyInput;
-	packet.key = key;
-	packet.x = dir.x;
-	packet.y = dir.y;
-	packet.z = dir.z;
-
-	SendPacket(&packet);
 }
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags)
 {
-	switch(recvWsaBuf.buf[0])
+	OverlappedEx* overlappedEx = reinterpret_cast<OverlappedEx*>(over);
+	switch(overlappedEx->wsaBuf.buf[0])
 	{
 	case ServerLogin:
-	{
-		auto p = reinterpret_cast<ServerLoginPacket*>(recvBuf);
-		CGameFramework::GetInst()->networkObjects[p->id] = CSceneMgr::GetInst()->AddNetworkGameObject(true);
+
 		break;
-	}
-	case ServerAddPlayer:
-	{
-		auto p = reinterpret_cast<ServerAddPlayerPacket*>(recvBuf);
-		CGameFramework::GetInst()->networkObjects[p->id] = CSceneMgr::GetInst()->AddNetworkGameObject(false);
-		CGameFramework::GetInst()->networkObjects[p->id]->Transform()->SetLocalPos(Vec3(p->x, p->y, p->z));
-		break;
-	}
 	case ServerPlayerInfo:
-		auto p = reinterpret_cast<ServerPlayerInfoPacket*>(recvBuf);
-		CGameFramework::GetInst()->networkObjects[p->id]->Transform()->SetLocalPos(Vec3(p->xPos, p->yPos, p->zPos));
 
 		break;
 	}
+
+	std::vector<CGameObject*> objects;
+	CSceneMgr::GetInst()->FindGameObjectByTag(L"Monster", objects);
 	CGameFramework::GetInst()->RecvPacket();
 }
 
 void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED over, DWORD flags)
 {
-	delete over;
+
 }
 
 void CGameFramework::Progress()
 {
+
 
 	CKeyMgr::GetInst()->Update();
 

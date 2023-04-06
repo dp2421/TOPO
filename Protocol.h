@@ -8,49 +8,49 @@ constexpr int BUFFERSIZE = 256;
 constexpr int NAMESIZE = 20;
 constexpr char SERVERIP[] = "127.0.0.1";
 
-constexpr char ClientLogin = 0;
-constexpr char ClientMatching = 1;
+constexpr char ClientLogin = 100;
+constexpr char ClientMatching = 101;
 // 캐릭바꾸기? 색바꾸기 고려
-constexpr char ClientReady = 2;
-constexpr char ClientKeyInput = 3;
+constexpr char ClientReady = 102;
+constexpr char ClientKeyInput = 103;
 
 //-------------------------------------------------------------------------------------
 
-constexpr char ServerLogin = 4;
-constexpr char ServerMatchingOK = 5;
-constexpr char ServerGameStart = 6;
+constexpr char ServerLogin = 201;
+constexpr char ServerMatchingOK = 202;
+constexpr char ServerGameStart = 203;
 
-constexpr char ServerAddPlayer = 7;
-constexpr char ServerPlayerInfo = 8;
-constexpr char ServerObstacleInfo = 9;
-constexpr char ServerGameTimer = 10;
-constexpr char ServerGameEnd = 11;
+constexpr char ServerAddPlayerInfo = 204;
+constexpr char ServerPlayerInfo = 205;
+constexpr char ServerObstacleInfo = 206;
+constexpr char ServerGameTimer = 207;
+constexpr char ServerGameEnd = 208;
 
 constexpr char ServerGameResult = 208;
 
 #pragma pack (push, 1)
 
-struct ClientLoginPacket
+struct ClinetLoginPacket
 {
 	unsigned char size;
 	char	type;
 	char	name[NAMESIZE];
 };
 
-struct ClientMatchingPacket
+struct ClinetMatchingPacket
 {
 	unsigned char size;
 	char	type;
 	char	gameMode;
 };
 
-struct ClientReadyPacket
+struct ClinetReadyPacket
 {
 	unsigned char size;
 	char	type;
 };
 
-struct ClientKeyInputPacket
+struct ClinetKeyInputPacket
 {
 	unsigned char size;
 	char	type;

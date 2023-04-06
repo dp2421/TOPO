@@ -133,7 +133,7 @@ void ServerBase::Accept()
 	int addr_size = sizeof(SOCKADDR_IN);
 	AcceptEx(ServerSocket, ClientSocket, GlobalOverlapped.sendBuf, 0, addr_size + 16, addr_size + 16, 0, &GlobalOverlapped.overlapped);
 }
-	
+
 void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 {
 	int remainData = recvByte + clients[id].prevRemainData;
@@ -185,7 +185,7 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		break;
 	case ClientKeyInput:
 	{
-		auto p = reinterpret_cast<ClientKeyInputPacket*>(packet);
+		auto p = reinterpret_cast<ClinetKeyInputPacket*>(packet);
 		ProcessInput(id, p);
 		break;
 	}
@@ -195,7 +195,7 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	}
 }
 
-void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
+void ServerBase::ProcessInput(const int id, ClinetKeyInputPacket* packet)
 {
 	int key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
