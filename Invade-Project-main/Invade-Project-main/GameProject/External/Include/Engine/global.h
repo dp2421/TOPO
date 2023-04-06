@@ -14,11 +14,15 @@
 #include <d3d11on12.h>
 #include <d2d1_1helper.h>
 
+#include <WS2tcpip.h>
+#include <MSWSock.h>
+
 #include <d2d1effects.h>
 #include <wincodec.h>
 
 #include <algorithm>
 #include "SimpleMath.h"
+#include "../../../../../Protocol.h"
 
 #pragma comment(lib,"d3d12")
 #pragma comment(lib,"dxgi")
@@ -29,6 +33,9 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3d11.lib")
 
+#pragma comment(lib, "WS2_32.lib")
+#pragma comment(lib, "MSWSock.lib")
+
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
@@ -37,6 +44,7 @@ using namespace Microsoft::WRL;
 #include <vector>
 #include <list>
 #include <map>
+#include <unordered_map>
 
 #include <fbxsdk.h>
 #ifdef _DEBUG

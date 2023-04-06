@@ -12,7 +12,6 @@
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include <iostream>
-#include <WS2tcpip.h>
 #include <Windows.h>
 
 #include "global.h"

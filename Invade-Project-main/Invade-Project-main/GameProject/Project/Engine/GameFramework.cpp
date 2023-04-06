@@ -9,6 +9,7 @@
 #include "RenderMgr.h"
 #include "SceneMgr.h"
 #include "EventMgr.h"
+#include "NetworkMgr.h"
 #include "InstancingMgr.h"
 
 CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
@@ -48,6 +49,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CResMgr::GetInst()->Init();
 
 	CSceneMgr::GetInst()->Init();
+	NetworkMgr::GetInst()->Init();
 	
 	CEventMgr::GetInst()->Init();
 
@@ -59,6 +61,7 @@ void CGameFramework::Progress()
 {
 	CKeyMgr::GetInst()->Update();
 
+	NetworkMgr::GetInst()->Update();
 	CTimeMgr::GetInst()->Update();
 	CSound::g_pFMOD->update();
 	CEventMgr::GetInst()->Clear();

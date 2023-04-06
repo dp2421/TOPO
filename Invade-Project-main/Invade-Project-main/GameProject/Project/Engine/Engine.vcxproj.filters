@@ -7,9 +7,6 @@
     <Filter Include="Header">
       <UniqueIdentifier>{dec040a5-3102-43a7-91f1-c908fb4b12ed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ShaderCode">
-      <UniqueIdentifier>{45867d64-9470-4e6e-8863-30818d0ce7cf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{f6923fd3-e440-45be-853f-7922a6a25de0}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="Module\Imgui">
       <UniqueIdentifier>{0688a947-fe0a-4cd3-9b64-3dd2e934a644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderCode">
+      <UniqueIdentifier>{45867d64-9470-4e6e-8863-30818d0ce7cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +273,9 @@
     <ClInclude Include="..\..\..\..\..\Protocol.h">
       <Filter>Default</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkMgr.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -451,6 +454,9 @@
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
       <Filter>Module\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkMgr.cpp">
+      <Filter>Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

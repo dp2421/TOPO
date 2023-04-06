@@ -47,6 +47,15 @@ typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
 using DirectX::SimpleMath::Matrix;
 
+enum class OverlappedType
+{
+	Accept,
+	Recv,
+	Send,
+	ServerEvent
+};
+
+
 enum class CONST_REGISTER
 {
 	b0 = 0,
