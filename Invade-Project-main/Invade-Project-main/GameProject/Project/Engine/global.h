@@ -18,10 +18,8 @@
 #include <wincodec.h>
 
 #include <algorithm>
-#include <functional>
 #include "SimpleMath.h"
 #include "../../../../../Protocol.h"
-#include "../../../../../PotaTongServer/PotaTongServer/OverlappedEx.h"
 
 #pragma comment(lib,"d3d12")
 #pragma comment(lib,"dxgi")

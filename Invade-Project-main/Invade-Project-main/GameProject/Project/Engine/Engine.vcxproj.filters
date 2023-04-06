@@ -273,9 +273,6 @@
     <ClInclude Include="..\..\..\..\..\Protocol.h">
       <Filter>Default</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\PotaTongServer\PotaTongServer\OverlappedEx.h">
-      <Filter>Default</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -454,9 +451,6 @@
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
       <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\PotaTongServer\PotaTongServer\OverlappedEx.cpp">
-      <Filter>Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
