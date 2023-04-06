@@ -12,6 +12,7 @@
 #include "SceneMgr.h"
 #include "EventMgr.h"
 #include "InstancingMgr.h"
+#include "PlayerScript.h"
 
 CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
 
