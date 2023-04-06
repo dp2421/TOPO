@@ -71,14 +71,55 @@ struct PS_STD3D_OUTPUT
 
 PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
 {
+    PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT)0.f;
 
-    /*
-    float4 texColor = g_Texture.Sample(g_Sampler, input.Tex);
-    float3 emissive = g_EmissiveColor * texColor.rgb;
+    // ----------------------------------
+    //   ** Outline Code **
+    // ----------------------------------
+   
+    //// Sobel X 커널
+    //float3x3 sobelX = float3x3(-1, 0, 1,
+    //    -2, 0, 2,
+    //    -1, 0, 1);
 
-    return float4(emissive, texColor.a);
-    */
-    PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT) 0.f;
+    //// Sobel Y 커널
+    //float3x3 sobelY = float3x3(-1, -2, -1,
+    //    0, 0, 0,
+    //    1, 2, 1);
+    //// Sobel 커널을 사용하여 이미지의 외곽선 계산
+    //float textureWidth;
+    //float textureHeight;
+    //g_tex_0.GetDimensions(textureWidth, textureHeight);
+    //float2 texelSize = 1.0 / float2(textureWidth, textureHeight);
+    //float3 c00 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, -1)).rgb;
+    //float3 c01 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 0)).rgb;
+    //float3 c02 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 1)).rgb;
+    //float3 c10 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, -1)).rgb;
+    //float3 c11 = g_tex_0.Sample(g_sam_0, _in.vUV).rgb;
+    //float3 c12 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, 1)).rgb;
+    //float3 c20 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, -1)).rgb;
+    //float3 c21 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 0)).rgb;
+    //float3 c22 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 1)).rgb;
+
+    //// Sobel X 커널을 사용하여 가로 방향의 엣지 검출
+    //float3 gx = dot(float3(c00.r, c01.r, c02.r), sobelX[0]) +
+    //    dot(float3(c10.r, c11.r, c12.r), sobelX[1]) +
+    //    dot(float3(c20.r, c21.r, c22.r), sobelX[2]);
+
+    //// Sobel Y 커널을 사용하여 세로 방향의 엣지 검출
+    //float3 gy = dot(float3(c00.r, c01.r, c02.r), sobelY[0]) +
+    //    dot(float3(c10.r, c11.r, c12.r), sobelY[1]) +
+    //    dot(float3(c20.r, c21.r, c22.r), sobelY[2]);
+
+    //float3 sobel = sqrt(gx * gx + gy * gy);
+    //output.vTarget0 = float4(sobel, 1.f);
+
+    // 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
+
+    // ----------------------------------
+    //   ** Cartoon Shader Code **
+    // ----------------------------------
+   
     float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
     float stepIntensity = saturate(brightness);
         float3 stepColor = float3(1, 1, 1);
@@ -104,7 +145,8 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
         output.vTarget0 = float4(stepColor, 1.f);
         //output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
     }
-        
+
+
     float3 vViewNormal = _in.vViewNormal;
     // 노말맵이 있는경우
     if (tex_1)
