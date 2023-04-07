@@ -30,27 +30,27 @@ constexpr char ServerGameResult = 208;
 
 #pragma pack (push, 1)
 
-struct ClinetLoginPacket
+struct ClientLoginPacket
 {
 	unsigned char size;
 	char	type;
 	char	name[NAMESIZE];
 };
 
-struct ClinetMatchingPacket
+struct ClientMatchingPacket
 {
 	unsigned char size;
 	char	type;
 	char	gameMode;
 };
 
-struct ClinetReadyPacket
+struct ClientReadyPacket
 {
 	unsigned char size;
 	char	type;
 };
 
-struct ClinetKeyInputPacket
+struct ClientKeyInputPacket
 {
 	unsigned char size;
 	char	type;
