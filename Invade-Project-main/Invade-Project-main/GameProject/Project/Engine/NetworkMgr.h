@@ -5,6 +5,8 @@ class NetworkMgr
 public:
 	SOCKET socket;
 	OverlappedEx recv;
+
+	int clientID;
 public:
 
 	void Init();

@@ -43,10 +43,26 @@ void NetworkMgr::DoSend(void* packet)
 
 void NetworkMgr::SendClientLoginPacket()
 {
+    ClientLoginPacket packet;
+    packet.size = sizeof(ClientLoginPacket);
+    packet.type = ClientLogin;
+    string name{ "p" };
+    strcpy_s(packet.name, name.c_str());
+
+    DoSend(&packet);
 }
 
 void NetworkMgr::SendClientKeyInputPacket(const int key, Vec3 dir)
 {
+    ClientKeyInputPacket packet;
+    packet.size = sizeof(ClientKeyInputPacket);
+    packet.type = ClientKeyInput;
+    packet.key = key;
+    packet.x = dir.x;
+    packet.y = dir.y;
+    packet.z = dir.z;
+
+    DoSend(&packet);
 }
 
 void NetworkMgr::DoRecv()
@@ -62,6 +78,7 @@ void NetworkMgr::ProcessPacket()
     {
     case ServerLogin:
     {
+
         break;
     }
     case ServerAddPlayerInfo:
