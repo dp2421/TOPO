@@ -1,5 +1,6 @@
 #pragma once
 #define _XM_NO_INTRINSICS_
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
 #include <d3d12.h>
 #include <wrl/client.h>

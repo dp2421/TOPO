@@ -6,7 +6,8 @@ public:
 	SOCKET socket;
 	OverlappedEx recv;
 
-	int clientID;
+	int CurID;
+	std::unordered_map<int, CGameObject*> networkObjects;
 public:
 
 	void Init();
@@ -22,3 +23,4 @@ private:
 };
 
 void CALLBACK RecvCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag);
+void CALLBACK SendCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag);

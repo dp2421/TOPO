@@ -4,6 +4,7 @@
 #include "MeshRender.h"
 #include "Camera.h"
 #include"CameraScript.h"
+#include "NetworkMgr.h"
 
 
 void CPlayerScript::Awake()
@@ -39,23 +40,28 @@ void CPlayerScript::Awake()
 
 void CPlayerScript::Update()
 {
-	//if (!isPlayable) return;
+	if (!isPlayable) return;
 
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
 
 	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
-		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket('w', vFront);
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_S)) {
-		Vec3 vBack = -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		Vec3 vBack = -Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket('s', vBack);
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_A)) {
-		Vec3 vLeft = Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		Vec3 vLeft = -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket('a', vLeft);
 	}
 	if (KEY_HOLD(KEY_TYPE::KEY_D)) {
-		Vec3 vRight = -Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		Vec3 vRight = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket('d', vRight);
 	}
+	/*
 	if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
 		CGameObject* pObj=GetObj()->GetChild()[0];
 		Vec3 vPos=pObj->Transform()->GetLocalPos();
@@ -68,13 +74,14 @@ void CPlayerScript::Update()
 		m_fArrowSpeed = 200.f;
 		
 	}
+	
 	if (KEY_HOLD(KEY_TYPE::KEY_LBTN)) {
 		m_fArrowSpeed += 1000.f*DT;
 		if (m_fArrowSpeed > 2000.f) {
 			m_fArrowSpeed = 2000.f;
 		}
 	}
-
+	
 	if (KEY_AWAY(KEY_TYPE::KEY_LBTN)) {
 		CGameObject* pObj = GetObj()->GetChild()[0];
 		Vec3 vPos = pObj->Transform()->GetLocalPos();
@@ -116,6 +123,7 @@ void CPlayerScript::Update()
 		if (m_iCurArrow == 0) {
 			int a = 0;
 		}
+		
 		
 		Vec3 vFront2 = vArrowPos;
 		Vec3 vRight2 = Vec3(1, 0, 0);
@@ -166,7 +174,7 @@ void CPlayerScript::Update()
 		}
 
 	}
-
+	*/
 	Vec2 vDrag = CKeyMgr::GetInst()->GetDragDir();
 	if (!m_bCheckStartMousePoint) {
 		m_bCheckStartMousePoint = true;
@@ -188,7 +196,7 @@ void CPlayerScript::Update()
 
 
 	Transform()->SetLocalRot(vRot);
-	Transform()->SetLocalPos(vPos);
+	//Transform()->SetLocalPos(vPos);
 
 }
 

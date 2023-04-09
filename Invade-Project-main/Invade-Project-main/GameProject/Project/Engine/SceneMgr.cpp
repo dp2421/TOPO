@@ -189,35 +189,8 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 
-	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
-	pObject = new CGameObject;
 
-	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"Monster");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-
-	pObject->AddComponent(new CPlayerScript);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(50.f, 100.f, 100.f));
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	
-	pMainCam->Transform()->SetLocalPos(Vec3(-60,40,-10));
-//	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
-	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	
-	pObject->AddChild(pMainCam);
-//
-//
-	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
-
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
+	auto pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -527,6 +500,49 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 			}
 		}
 	}
+}
+
+CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
+{
+	std::cout << "add obj" << std::endl;
+	CGameObject* pObject = nullptr;
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
+	pObject = new CGameObject;
+
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"Monster");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(pos);
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+
+	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+
+	if (isPlayer)
+	{
+		std::cout << "Player";
+		pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+
+		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
+		{
+			if (obj->GetName().compare(L"MainCam") == 0)
+			{
+				pObject->AddChild(obj);
+				break;
+			}
+		}
+	}
+	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+
+	return pObject;
 }
 
 bool Compare(CGameObject* _pLeft, CGameObject* _pRight)

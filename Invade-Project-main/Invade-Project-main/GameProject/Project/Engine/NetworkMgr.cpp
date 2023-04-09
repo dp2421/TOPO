@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "NetworkMgr.h"
+#include "SceneMgr.h"
+#include "GameObject.h"
+#include "Transform.h"
 
 NetworkMgr::NetworkMgr()
 {
@@ -27,7 +30,12 @@ void NetworkMgr::Init()
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORTNUM);
     inet_pton(AF_INET, SERVERIP, &addr.sin_addr);
-    WSAConnect(socket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr), 0, 0, 0, 0);
+    if (WSAConnect(socket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr), 0, 0, 0, 0))
+    {
+        std::cout << WSAGetLastError() << std::endl;
+    }
+    SendClientLoginPacket();
+    DoRecv();
 }
 
 void NetworkMgr::Update()
@@ -38,7 +46,10 @@ void NetworkMgr::Update()
 void NetworkMgr::DoSend(void* packet)
 {
     OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
-    WSASend(socket, &overlappedEx->wsaBuf, 1, 0, 0, &overlappedEx->overlapped, 0);
+    if (WSASend(socket, &overlappedEx->wsaBuf, 1, 0, 0, &overlappedEx->overlapped, SendCallback))
+    {
+        std::cout << WSAGetLastError() << std::endl;
+    }
 }
 
 void NetworkMgr::SendClientLoginPacket()
@@ -74,23 +85,28 @@ void NetworkMgr::DoRecv()
 
 void NetworkMgr::ProcessPacket()
 {
-    switch (recv.wsaBuf.buf[0])
+    switch ((unsigned char)recv.wsaBuf.buf[1])
     {
     case ServerLogin:
     {
-
+        ServerLoginPacket* packet = reinterpret_cast<ServerLoginPacket*>(recv.wsaBuf.buf);
+        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(true, Vec3(packet->x, packet->y, packet->z));
+        networkObjects[packet->id] = obj;
         break;
     }
-    case ServerAddPlayerInfo:
+    case ServerAddPlayer:
     {
+        ServerAddPlayerPacket* packet = reinterpret_cast<ServerAddPlayerPacket*>(recv.wsaBuf.buf);
+        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(packet->x, packet->y, packet->z));
+        networkObjects[packet->id] = obj;
         break;
     }
     case ServerPlayerInfo:
     {
-    
-    }
-    default:
+        ServerPlayerInfoPacket* packet = reinterpret_cast<ServerPlayerInfoPacket*>(recv.wsaBuf.buf);
+        networkObjects[packet->id]->Transform()->SetLocalPos(Vec3(packet->xPos, packet->yPos, packet->zPos));
         break;
+    }
     } 
 }
 
@@ -98,4 +114,9 @@ void RecvCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag)
 {
     NetworkMgr::GetInst()->ProcessPacket();
     NetworkMgr::GetInst()->DoRecv();
+}
+
+void SendCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag)
+{
+    delete over;
 }

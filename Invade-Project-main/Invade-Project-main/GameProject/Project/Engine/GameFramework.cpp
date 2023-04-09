@@ -61,12 +61,12 @@ void CGameFramework::Progress()
 {
 	CKeyMgr::GetInst()->Update();
 
-	NetworkMgr::GetInst()->Update();
 	CTimeMgr::GetInst()->Update();
 	CSound::g_pFMOD->update();
 	CEventMgr::GetInst()->Clear();
 
 	CSceneMgr::GetInst()->Update();
+	NetworkMgr::GetInst()->Update();
 	CRenderMgr::GetInst()->Render();
 
 	CEventMgr::GetInst()->Update();
