@@ -22,14 +22,14 @@ public:
 	void ProcessPacket(const int id, char* packet);
 
 
-	void ProcessInput(const int id, ClinetKeyInputPacket* key);
+	void ProcessInput(const int id, ClientKeyInputPacket* key);
 
 private:
 	SOCKET ServerSocket, ClientSocket;
 	HANDLE IOCPHandle;
 	OverlappedEx GlobalOverlapped;
 
-	concurrency::concurrent_unordered_map<int, Client> clients;
+	concurrency::concurrent_unordered_map<int, Client*> clients;
 	MatchingManager* matchingManager;
 
 	concurrency::concurrent_unordered_map<unsigned short,

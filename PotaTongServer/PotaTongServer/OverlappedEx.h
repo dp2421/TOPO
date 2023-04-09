@@ -24,9 +24,9 @@ public:
 		ZeroMemory(&overlapped, sizeof(overlapped));
 	}
 
-	OverlappedEx(void* packet)
+	OverlappedEx(char* packet)
 	{
-		wsaBuf.len = BUFFERSIZE;
+		wsaBuf.len = packet[0];
 		wsaBuf.buf = sendBuf;
 		type = OverlappedType::Send;
 		ZeroMemory(&overlapped, sizeof(overlapped));

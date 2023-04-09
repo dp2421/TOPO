@@ -5,7 +5,9 @@ class Client
 {
 public:
 	int ID;
-	int RoomID = -1;
+	int RoomID;
+
+	mutex lock;
 
 	SOCKET socket;
 	int prevRemainData;

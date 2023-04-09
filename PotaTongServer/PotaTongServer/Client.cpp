@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "Client.h"
 
-Client::Client()
+Client::Client() :
+	ID(-1),
+	RoomID(-1),
+	prevRemainData(0)
 {
 }
 
@@ -28,7 +31,7 @@ void Client::SendServerLoginPacket(const int id)
 {
 	ServerLoginPacket packet;
 	packet.size = sizeof(ServerLoginPacket);
-	packet.type = ClientLogin;
+	packet.type = ServerLogin;
 	packet.id = id;
 	packet.x = position.x;
 	packet.y = position.y;
@@ -41,7 +44,7 @@ void Client::SendAddPlayerPacket(const int id, const Vector3 vec)
 {
 	ServerAddPlayerPacket packet;
 	packet.size = sizeof(ServerPlayerInfoPacket);
-	packet.type = ServerPlayerInfo;
+	packet.type = ServerAddPlayer;
 	packet.id = id;
 	packet.x = vec.x;
 	packet.y = vec.y;

@@ -19,11 +19,11 @@ void ServerBase::Run()
 {
 	int numThreads = std::thread::hardware_concurrency();
 
-	thread eventThread{ &ServerBase::EventThread, this };
+	//thread eventThread{ &ServerBase::EventThread, this };
 	for (int i = 0; i < numThreads; ++i)
 		workerThreads.emplace_back(&ServerBase::WorkerThread, this, IOCPHandle);
 
-	eventThread.join();
+	//eventThread.join();
 	for (auto& thread : workerThreads)
 		thread.join();
 }
@@ -66,8 +66,6 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			break;
 		case OverlappedType::ServerEvent:
 			break;
-		default:
-			break;
 		}
 	}
 }
@@ -87,7 +85,7 @@ void ServerBase::InitServer()
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(PORTNUM);
 	server_addr.sin_addr.S_un.S_addr = INADDR_ANY;
-	bind(ServerSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
+	::bind(ServerSocket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr));
 	listen(ServerSocket, SOMAXCONN);
 	SOCKADDR_IN cl_addr;
 	int addr_size = sizeof(cl_addr);
@@ -119,15 +117,16 @@ void ServerBase::InitHandler()
 
 void ServerBase::Accept()
 {
-	cout << "Accept Success" << endl;
 	int newID = clientID++;
 
-	clients[newID].ID = newID;
-	clients[newID].socket = ClientSocket;
-	clients[newID].position = Vector3(50, 100, 100);
+	clients[newID] = new Client;
+	clients[newID]->ID = newID;
+	clients[newID]->socket = ClientSocket;
+	clients[newID]->position = Vector3(50, 100, 100);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
-	clients[newID].RecvPacket();
+	clients[newID]->RecvPacket();
 	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	cout << "Accept Success" << endl;
 
 	ZeroMemory(&GlobalOverlapped.overlapped, sizeof(GlobalOverlapped.overlapped));
 	int addr_size = sizeof(SOCKADDR_IN);
@@ -136,8 +135,8 @@ void ServerBase::Accept()
 
 void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 {
-	int remainData = recvByte + clients[id].prevRemainData;
-	char* p = overlappedEx->sendBuf;
+	int remainData = recvByte + clients[id]->prevRemainData;
+	char* p = overlappedEx->wsaBuf.buf;
 	while (remainData > 0) 
 	{
 		int packet_size = p[0];
@@ -152,13 +151,13 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 			break;
 		}
 	}
-	clients[id].prevRemainData = remainData;
+	clients[id]->prevRemainData = remainData;
 	if (remainData > 0) 
 	{
 		memcpy(overlappedEx->sendBuf, p, remainData);
 	}
 
-	clients[id].RecvPacket();
+	clients[id]->RecvPacket();
 }
 
 void ServerBase::Disconnect(int ID)
@@ -174,18 +173,18 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	switch (packet[1])
 	{
 	case ClientLogin:
-		clients[id].SendServerLoginPacket(id);
+		clients[id]->SendServerLoginPacket(id);
 		for (auto& client : clients)
 		{
-			if (client.second.ID == id) continue;
+			if (client.second->ID == id) continue;
 
-			client.second.SendAddPlayerPacket(id, clients[id].position);
-			clients[id].SendAddPlayerPacket(client.second.ID, client.second.position);
+			client.second->SendAddPlayerPacket(id, clients[id]->position);
+			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}
 		break;
 	case ClientKeyInput:
 	{
-		auto p = reinterpret_cast<ClinetKeyInputPacket*>(packet);
+		auto p = reinterpret_cast<ClientKeyInputPacket*>(packet);
 		ProcessInput(id, p);
 		break;
 	}
@@ -195,25 +194,28 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	}
 }
 
-void ServerBase::ProcessInput(const int id, ClinetKeyInputPacket* packet)
+void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 {
 	int key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
-	if (key == 'w' || key == 'W')
 	{
-		clients[id].position += dir * SPEED * DT;
-	}
-	if (key == 'a' || key == 'A')
-	{
-		clients[id].position += dir * SPEED * DT;
-	}
-	if (key == 's' || key == 'S')
-	{
-		clients[id].position += dir * SPEED * DT;
-	}
-	if (key == 'd' || key == 'D')
-	{
-		clients[id].position += dir * SPEED * DT;
+		//lock_guard<mutex> lock{ clients[id]->lock };
+		if (key == 'w' || key == 'W')
+		{
+			clients[id]->position += dir * SPEED * DT;
+		}
+		if (key == 'a' || key == 'A')
+		{
+			clients[id]->position += dir * SPEED * DT;
+		}
+		if (key == 's' || key == 'S')
+		{
+			clients[id]->position += dir * SPEED * DT;
+		}
+		if (key == 'd' || key == 'D')
+		{
+			clients[id]->position += dir * SPEED * DT;
+		}
 	}
 	if (key == VK_CONTROL)
 	{
@@ -227,11 +229,9 @@ void ServerBase::ProcessInput(const int id, ClinetKeyInputPacket* packet)
 	{
 		// มกวม
 	}
-	
 	for (auto client : clients)
 	{
-		if (client.second.ID == id) continue;
-		client.second.SendPlayerInfoPacket(id, clients[id].position, dir);
+		client.second->SendPlayerInfoPacket(id, clients[id]->position, dir);
 	}
 }
 
