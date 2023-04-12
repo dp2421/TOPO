@@ -673,6 +673,51 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 	}
 }
 
+
+CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
+{
+	std::cout << "add obj" << std::endl;
+	CGameObject* pObject = nullptr;
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
+	pObject = new CGameObject;
+
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"Monster");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(pos);
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+
+	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+
+	if (isPlayer)
+	{
+		std::cout << "Player";
+		pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+
+		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
+		{
+			if (obj->GetName().compare(L"MainCam") == 0)
+			{
+				pObject->AddChild(obj);
+				break;
+			}
+		}
+	}
+	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+
+	return pObject;
+}
+
+
 bool Compare(CGameObject* _pLeft, CGameObject* _pRight)
 {
 	return (_pLeft->Transform()->GetWorldPos().z < _pRight->Transform()->GetWorldPos().z);
