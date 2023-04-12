@@ -28,6 +28,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	if (FAILED(CDevice::GetInst()->Init(_hWnd, _resolution, _bWindow)))
 		return E_FAIL;
 	CRenderMgr::GetInst()->Init(_hWnd, _resolution, _bWindow);
+	
 	CDevice::GetInst()->CreateConstantBuffer(L"TRANSFORM_MATRIX", sizeof(tTransform), 2048, CONST_REGISTER::b0);
 	CDevice::GetInst()->CreateConstantBuffer(L"MATERIAL_PARAM", sizeof(tMtrlParam), 2048, CONST_REGISTER::b1);
 	CDevice::GetInst()->CreateConstantBuffer(L"ANIM2D", sizeof(tMtrlParam), 2048, CONST_REGISTER::b2);

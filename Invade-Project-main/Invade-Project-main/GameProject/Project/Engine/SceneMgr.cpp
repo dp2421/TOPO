@@ -68,7 +68,7 @@ void CSceneMgr::Init()
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
 	Ptr<CTexture> pBlackTex = CResMgr::GetInst()->Load<CTexture>(L"Black", L"Texture\\asd.png");
 	Ptr<CTexture> pSky01 = CResMgr::GetInst()->Load<CTexture>(L"Sky01", L"Texture\\Skybox\\Sky01.png");
-	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"Sky02", L"Texture\\Skybox\\Sky02.jpg");
+	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS000_Day_01", L"Texture\\Skybox\\FS000_Day_01.png");
 	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
@@ -101,6 +101,7 @@ void CSceneMgr::Init()
 	m_pCurScene->GetLayer(5)->SetName(L"Tower");
 	m_pCurScene->GetLayer(6)->SetName(L"temp");
 	m_pCurScene->GetLayer(7)->SetName(L"Racing");
+	m_pCurScene->GetLayer(8)->SetName(L"Obstacle");
 
 
 	m_pCurScene->GetLayer(31)->SetName(L"Tool");
@@ -131,7 +132,7 @@ void CSceneMgr::Init()
 	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
 	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
 	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
-	pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
+	pObject->Light3D()->SetAmbient(Vec3(0.4f, 0.4f, 0.4f));
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
@@ -189,26 +190,68 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\testpl1.fbx");
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
+	pObject = new CGameObject;
 
-	auto pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"Monster");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(50.f, 100.f, 100.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	
+	pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+//	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
+	pObject->Animator3D()->SetClipIndex(1);
+
+	pObject->AddChild(pMainCam);
+//
+//
+	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(100.f, 100.f, 150.f));
+	//pObject->Transform()->SetLocalScale(Vec3(0.25f, 0.25f, 0.25f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+
+	//pObject->MeshRender()->GetMesh()->GetAnimClip();
+
+	//m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
+
+	 pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C25.fbx");
+
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
-	
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(100.f, 100.f, 150.f));
-	pObject->Transform()->SetLocalScale(Vec3(0.25f, 0.25f, 0.25f));
+	pObject->Transform()->SetLocalPos(Vec3(300.f, 110.f, 300.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
-
-	pObject->MeshRender()->GetMesh()->GetAnimClip();
+	//pObject->Animator3D()->SetClipIndex(0);
 
 	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 
-	 pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
- //    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\sword_min.mdat", L"MeshData\\sword_min.mdat");
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
 
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -217,7 +260,22 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(300.f, 100.f, 300.f));
+	pObject->Transform()->SetLocalPos(Vec3(400.f, 100.f, 300.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
+
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(500.f, 100.f, 300.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
@@ -225,21 +283,58 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 
 
-	//맵테스트
-	//bubunhapchimmap.fbx <= 기존타일맵에서 타일들 합친버전
-	//디버깅할땐 한줄한줄 돌아가는데 디버그없이 돌리면 터짐(왜)
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\bubunhapchimmap.fbx");
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\C07.fbx");
+	//장애물테스트
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle1.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 200.f));
-	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(500.f, 230.f, -50.f));
+
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObject);
+
+
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle2.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(1000.f, 230.f, -200.f));
+
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObject);
+
+
+	//맵테스트 ====================================================
+	//단위(unity추출기준) : 5 => 10 => 1000 (1 tile:100. 보정값 700 )
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\aspalt_1.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 200.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -248,23 +343,99 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafetest.fbx");
-	////pMeshData->Save(pMeshData->GetPath());
-	//pObject = pMeshData->Instantiate();
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	//pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(300.f, 400.f, 100.f));
-	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\aspalt_2.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(1000.f, 10.f, 0.f));
 
-	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->MeshRender()->SetDynamicShadow(true);
-	////pObject->Animator3D()->SetClipIndex(1);
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
 
-	//m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\pavement.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(4700.f, 10.f, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\pavement_2.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(5800.f, 10.f, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+
+
+	////pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\grass.fbx");
+	//////pMeshData->Save(pMeshData->GetPath());
+	////pObject = pMeshData->Instantiate();
+	////pObject->AddComponent(new CTransform);
+	////pObject->AddComponent(new CCollider3D);
+	////pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	////pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	////pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	////pObject->FrustumCheck(false);
+	////pObject->Transform()->SetLocalPos(Vec3(300.f, 10.f, 0.f));
+	////pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+
+	////pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	////pObject->MeshRender()->SetDynamicShadow(true);
+	//////pObject->Animator3D()->SetClipIndex(1);
+
+	////m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafetest.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(300.f, 400.f, 100.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
 	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafeganpan.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
@@ -285,136 +456,136 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
 
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\wizard_min.mdat", L"MeshData\\wizard_min.mdat");
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(200.f, 100.f, 150.f));
-	pObject->Transform()->SetLocalScale(Vec3(0.25f, 0.25f, 0.25f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\wizard_min.mdat", L"MeshData\\wizard_min.mdat");
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(200.f, 100.f, 150.f));
+	//pObject->Transform()->SetLocalScale(Vec3(0.25f, 0.25f, 0.25f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
 
-	//auto p=pObject->MeshRender()->GetMesh()->GetAnimClip()->at(4);
+	////auto p=pObject->MeshRender()->GetMesh()->GetAnimClip()->at(4);
 
-	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
+	//m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 
 
 
 //	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\FirstTower.fbx");
-    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower.mdat", L"MeshData\\FirstTower.mdat");
-	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 200.f)); 
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f/2, 0.f, 0.f));
+ //   pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower.mdat", L"MeshData\\FirstTower.mdat");
+	////pMeshData->Save(pMeshData->GetPath());
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 200.f)); 
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f/2, 0.f, 0.f));
 
-	pObject->Transform()->SetLocalScale(Vec3(7.f, 7.f, 7.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->Animator3D()->SetClipIndex(1);
-
-
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
-
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\SecondTower.fbx");
-//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower.mdat", L"MeshData\\SecondTower.mdat");
-	pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 400.f));
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Transform()->SetLocalScale(Vec3(7.f, 7.f, 7.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	////pObject->Animator3D()->SetClipIndex(1);
 
 
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+	//m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
-    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
+//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\SecondTower.fbx");
+////	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower.mdat", L"MeshData\\SecondTower.mdat");
 //	pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 200.f, -200.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 3.14f, 0.f));
-
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->Animator3D()->SetClipIndex(1);
-
-
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+//	pObject = pMeshData->Instantiate();
+//	pObject->AddComponent(new CTransform);
+//	pObject->AddComponent(new CCollider3D);
+//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+//	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+//	pObject->FrustumCheck(false);
+//	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, 400.f));
+//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+//	pObject->MeshRender()->SetDynamicShadow(true);
+//
+//
+//	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+//
+//    pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\FirstTower01.mdat", L"MeshData\\FirstTower01.mdat");
+////	pMeshData->Save(pMeshData->GetPath());
+//	pObject = pMeshData->Instantiate();
+//	pObject->AddComponent(new CTransform);
+//	pObject->AddComponent(new CCollider3D);
+//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+//	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+//	pObject->FrustumCheck(false);
+//	pObject->Transform()->SetLocalPos(Vec3(150.f, 200.f, -200.f));
+//	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 3.14f, 0.f));
+//
+//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+//	pObject->MeshRender()->SetDynamicShadow(true);
+//	//pObject->Animator3D()->SetClipIndex(1);
+//
+//
+//	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\SecondTower01.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower01.mdat", L"MeshData\\SecondTower01.mdat");
-	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, -400.f));
-	pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-
-
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
-
-
-//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Nexus01.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Nexus01.mdat", L"MeshData\\Nexus01.mdat");
-	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(2.f, 2.f, 2.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(30.f, 10.f, 50.f));
-	
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 135.f, -700.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f/6, 0.F, 0.f));
-
-	pObject->Transform()->SetLocalScale(Vec3(70.f, 70.f, 70.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
-
-
-//	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Nexus.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Nexus.mdat", L"MeshData\\Nexus.mdat");
-	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(2.f, 2.f, 2.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(30.f, 10.f, 50.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 135.f, 700.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 6, 3.14f, 0.f));
-
-	pObject->Transform()->SetLocalScale(Vec3(70.f, 70.f, 70.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\SecondTower01.mdat", L"MeshData\\SecondTower01.mdat");
+//	//pMeshData->Save(pMeshData->GetPath());
+//	pObject = pMeshData->Instantiate();
+//	pObject->AddComponent(new CTransform);
+//	pObject->AddComponent(new CCollider3D);
+//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+//	pObject->Collider3D()->SetOffsetScale(Vec3(10.f, 40.f, 10.f));
+//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+//	pObject->FrustumCheck(false);
+//	pObject->Transform()->SetLocalPos(Vec3(150.f, 100.f, -400.f));
+//	pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+//	pObject->MeshRender()->SetDynamicShadow(true);
+//
+//
+//	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+//
+//
+////	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Nexus01.fbx");
+//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Nexus01.mdat", L"MeshData\\Nexus01.mdat");
+//	//pMeshData->Save(pMeshData->GetPath());
+//	pObject = pMeshData->Instantiate();
+//	pObject->AddComponent(new CTransform);
+//	pObject->AddComponent(new CCollider3D);
+//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+//	pObject->Collider3D()->SetOffsetScale(Vec3(2.f, 2.f, 2.f));
+//	pObject->Collider3D()->SetOffsetPos(Vec3(30.f, 10.f, 50.f));
+//	
+//	pObject->FrustumCheck(false);
+//	pObject->Transform()->SetLocalPos(Vec3(150.f, 135.f, -700.f));
+//	pObject->Transform()->SetLocalRot(Vec3(-3.14f/6, 0.F, 0.f));
+//
+//	pObject->Transform()->SetLocalScale(Vec3(70.f, 70.f, 70.f));
+//	pObject->MeshRender()->SetDynamicShadow(true);
+//
+//	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+//
+//
+////	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Nexus.fbx");
+//	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Nexus.mdat", L"MeshData\\Nexus.mdat");
+//	//pMeshData->Save(pMeshData->GetPath());
+//	pObject = pMeshData->Instantiate();
+//	pObject->AddComponent(new CTransform);
+//	pObject->AddComponent(new CCollider3D);
+//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+//	pObject->Collider3D()->SetOffsetScale(Vec3(2.f, 2.f, 2.f));
+//	pObject->Collider3D()->SetOffsetPos(Vec3(30.f, 10.f, 50.f));
+//	pObject->FrustumCheck(false);
+//	pObject->Transform()->SetLocalPos(Vec3(150.f, 135.f, 700.f));
+//	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 6, 3.14f, 0.f));
+//
+//	pObject->Transform()->SetLocalScale(Vec3(70.f, 70.f, 70.f));
+//	pObject->MeshRender()->SetDynamicShadow(true);
+//	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
 
 //	pObject = new CGameObject;
@@ -500,49 +671,6 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 			}
 		}
 	}
-}
-
-CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
-{
-	std::cout << "add obj" << std::endl;
-	CGameObject* pObject = nullptr;
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
-	pObject = new CGameObject;
-
-	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"Monster");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new CPlayerScript);
-
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(pos);
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-
-	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
-	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-
-	if (isPlayer)
-	{
-		std::cout << "Player";
-		pObject->GetScript<CPlayerScript>()->SetPlayable(true);
-
-		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
-		{
-			if (obj->GetName().compare(L"MainCam") == 0)
-			{
-				pObject->AddChild(obj);
-				break;
-			}
-		}
-	}
-	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
-
-	return pObject;
 }
 
 bool Compare(CGameObject* _pLeft, CGameObject* _pRight)
