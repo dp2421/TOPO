@@ -99,6 +99,7 @@ int CDevice::Init(HWND _hWnd, const tResolution& _res, bool _bWindow)
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(m_hWnd);
 	ImGui_ImplDX12_Init(m_pDevice.Get(), 3,
 		DXGI_FORMAT_R8G8B8A8_UNORM, m_pInitDescriptor.Get(),
@@ -156,7 +157,6 @@ void CDevice::Render_Present()
 
 	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
 	{
-		static float f = 0.0f;
 		static int counter = 0;
 
 		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
@@ -180,7 +180,7 @@ void CDevice::Render_Present()
 	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	// Indicate that the back buffer will now be used to present.
 	D3D12_RESOURCE_BARRIER barrier = {};
-	
+
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE; 
 	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
