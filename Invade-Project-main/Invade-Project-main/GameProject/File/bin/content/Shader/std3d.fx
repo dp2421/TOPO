@@ -122,18 +122,18 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
    
     float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
     float stepIntensity = saturate(brightness);
-        float3 stepColor = float3(1, 1, 1);
+    float3 stepColor = float3(1, 1, 1);
         if (stepIntensity > 0.95) {
             stepColor = float3(1, 1, 1);
         }
         else if (stepIntensity > 0.5) {
-            stepColor = float3(0.8, 0.8, 0.8);
+            stepColor = float3(0.9, 0.9, 0.9);
         }
-        else if (stepIntensity > 0.2) {
-            stepColor = float3(0.6, 0.6, 0.6);
+        else if (stepIntensity > 0.1) {
+            stepColor = float3(0.7, 0.7, 0.7);
         }
         else {
-            stepColor = float3(0.4, 0.4, 0.4);
+            stepColor = float3(0.5, 0.5, 0.5);
         }
     if (tex_0)
     {

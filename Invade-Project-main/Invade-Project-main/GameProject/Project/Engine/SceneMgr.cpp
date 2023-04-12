@@ -190,7 +190,7 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\player.fbx");
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\testpl1.fbx");
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\monster.mdat", L"MeshData\\monster.mdat");
 	pObject = new CGameObject;
 
@@ -198,7 +198,6 @@ void CSceneMgr::Init()
 	pObject->SetName(L"Monster");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
-
 	pObject->AddComponent(new CPlayerScript);
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
@@ -209,10 +208,11 @@ void CSceneMgr::Init()
 	pObject->MeshRender()->SetDynamicShadow(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	
-	pMainCam->Transform()->SetLocalPos(Vec3(-60,40,-10));
+	pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
 //	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	
+	pObject->Animator3D()->SetClipIndex(1);
+
 	pObject->AddChild(pMainCam);
 //
 //
@@ -247,7 +247,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(300.f, 110.f, 300.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->Animator3D()->SetClipIndex(1);
+	//pObject->Animator3D()->SetClipIndex(0);
 
 	m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 
