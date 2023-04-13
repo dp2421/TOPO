@@ -168,6 +168,7 @@ CGameObject* CMeshData::Instantiate()
 
 		pAnimator->SetBones(m_vecMesh[i]->GetBones());
 		pAnimator->SetAnimClip(m_vecMesh[i]->GetAnimClip());
+
 	}
 
 

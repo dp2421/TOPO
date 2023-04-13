@@ -573,6 +573,7 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _Loader, int index)
 		tClip.eMode = vecAnimClip[i]->eMode;
 
 		pMesh->m_vecAnimClip.push_back(tClip);
+		
 	}
 
 	if (pMesh->IsAnimMesh()) {
