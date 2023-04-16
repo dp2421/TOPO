@@ -70,6 +70,7 @@ CMeshData* CMeshData::LoadFromFBX(const wstring& _strPath)
 
 void CMeshData::Load(const wstring& _strFilePath, bool _bFBX, bool _bVecMesh)
 {
+	wstring meshname = CPathMgr::GetFileName(_strFilePath.c_str());
 	if (_bVecMesh == false)
 	{
 		FILE* pFile = NULL;
@@ -116,7 +117,7 @@ void CMeshData::Load(const wstring& _strFilePath, bool _bFBX, bool _bVecMesh)
 			//strMeshPath = LoadWString(pFile, i);
 			//m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
 			//m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
-			if (i == 1)
+			if (i == 0)
 			{
 				wstring strMeshKey, strMeshPath;
 				strMeshKey = LoadWString(pFile);
@@ -145,8 +146,8 @@ void CMeshData::Load(const wstring& _strFilePath, bool _bFBX, bool _bVecMesh)
 			else
 			{
 				wstring strMeshKey, strMeshPath;
-				strMeshKey = LoadWString(pFile, i);
-				strMeshPath = LoadWString(pFile, i);
+				strMeshKey = LoadWString(pFile, i, meshname);
+				strMeshPath = LoadWString(pFile, i, meshname);
 				m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
 				m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
 			}
@@ -157,61 +158,62 @@ void CMeshData::Load(const wstring& _strFilePath, bool _bFBX, bool _bVecMesh)
 	}
 }
 
-void CMeshData::VecMeshLoad(const wstring& _strFilePath, bool _bFBX)
-{
-	FILE* pFile = NULL;
-	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
-	UINT iMtrlCount = 0;
-
-	// Mesh Load
-	for (int i=0; i < 25; ++i)
-	{
-		//wstring strMeshKey, strMeshPath;
-		//strMeshKey = LoadWString(pFile, i);
-		//strMeshPath = LoadWString(pFile, i);
-		//m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
-		//m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
-		if (i == 1)
-		{
-			wstring strMeshKey, strMeshPath;
-			strMeshKey = LoadWString(pFile);
-			strMeshPath = LoadWString(pFile);
-			m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
-			m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
-
-			//UINT iMtrlCount = 0;
-			fread(&iMtrlCount, sizeof(UINT), 1, pFile);
-			m_vecMtrl.resize(iMtrlCount);
-
-			for (UINT i = 0; i < iMtrlCount; ++i)
-			{
-				UINT idx = -1;
-				fread(&idx, 4, 1, pFile);
-				if (idx == -1)
-					break;
-
-				wstring strKey = LoadWString(pFile);
-				wstring strPath = LoadWString(pFile);
-
-				Ptr<CMaterial> pMtrl = CResMgr::GetInst()->Load<CMaterial>(strKey, strPath,true);
-				m_vecMtrl[i] = pMtrl;
-			}
-		}
-		else
-		{
-			wstring strMeshKey, strMeshPath;
-			strMeshKey = LoadWString(pFile, i);
-			strMeshPath = LoadWString(pFile, i);
-			m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
-			m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
-		}
-	}
-	// material 정보 읽기
-
-
-
-	fclose(pFile);
-}
+//void CMeshData::VecMeshLoad(const wstring& _strFilePath, bool _bFBX)
+//{
+//	FILE* pFile = NULL;
+//	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
+//	UINT iMtrlCount = 0;
+//	wstring strFullPath = CPathMgr::GetResPath();
+//	
+//	 Mesh Load
+//	for (int i=0; i < 25; ++i)
+//	{
+//		wstring strMeshKey, strMeshPath;
+//		strMeshKey = LoadWString(pFile, i);
+//		strMeshPath = LoadWString(pFile, i);
+//		m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
+//		m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
+//		if (i == 1)
+//		{
+//			wstring strMeshKey, strMeshPath;
+//			strMeshKey = LoadWString(pFile);
+//			strMeshPath = LoadWString(pFile);
+//			m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
+//			m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
+//
+//			UINT iMtrlCount = 0;
+//			fread(&iMtrlCount, sizeof(UINT), 1, pFile);
+//			m_vecMtrl.resize(iMtrlCount);
+//
+//			for (UINT i = 0; i < iMtrlCount; ++i)
+//			{
+//				UINT idx = -1;
+//				fread(&idx, 4, 1, pFile);
+//				if (idx == -1)
+//					break;
+//
+//				wstring strKey = LoadWString(pFile);
+//				wstring strPath = LoadWString(pFile);
+//
+//				Ptr<CMaterial> pMtrl = CResMgr::GetInst()->Load<CMaterial>(strKey, strPath,true);
+//				m_vecMtrl[i] = pMtrl;
+//			}
+//		}
+//		else
+//		{
+//			wstring strMeshKey, strMeshPath;
+//			strMeshKey = LoadWString(pFile, i);
+//			strMeshPath = LoadWString(pFile, i);
+//			m_pMesh = CResMgr::GetInst()->Load<CMesh>(strMeshKey, strMeshPath);
+//			m_vecMesh.push_back(m_pMesh); // 메쉬 전부 읽어오도록 해.
+//		}
+//	}
+//	 material 정보 읽기
+//
+//
+//
+//	fclose(pFile);
+//}
 
 void CMeshData::Save(const wstring& _strFilePath)
 {

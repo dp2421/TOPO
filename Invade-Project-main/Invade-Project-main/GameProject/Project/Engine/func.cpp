@@ -172,10 +172,10 @@ wchar_t* LoadWString(FILE* _pFile)
  	return szStr;
 }
 
-wstring LoadWString(FILE* _pFile, int index)
+wstring LoadWString(FILE* _pFile, int index, const wstring _strFilePath)
 {
 	static wstring szStr = {};
-	szStr = L"Mesh\\JPlayerv1_" + std::to_wstring(index) + L".mesh";
+	szStr = L"Mesh\\" + _strFilePath + L"_" + std::to_wstring(index) + L".mesh";
 
 
 	return szStr;
