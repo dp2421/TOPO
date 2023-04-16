@@ -133,7 +133,7 @@ void CMaterial::Dispatch(UINT _x, UINT _y, UINT _z)
 	CDevice::GetInst()->ClearDummyDescriptorHeap_CS();
 }
 
-void CMaterial::Load(const wstring& _strFullPath,bool _bFBX)
+void CMaterial::Load(const wstring& _strFullPath,bool _bFBX, bool _bVecMesh)
 {
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, _strFullPath.c_str(), L"rb");

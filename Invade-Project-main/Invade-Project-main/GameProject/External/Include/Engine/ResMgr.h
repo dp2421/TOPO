@@ -37,7 +37,7 @@ public:
 	Ptr<T> FindRes(const wstring& _strKey);
 
 	template<typename T>
-	Ptr<T> Load(const wstring& _strKey, const wstring& _strPath, bool _bFBX = false);
+	Ptr<T> Load(const wstring& _strKey, const wstring& _strPath, bool _bFBX = false, bool _bVecMesh = false);
 	template<typename T>
 	Ptr<T> LoadFBXTexture(const wstring& _strKey, const wstring& _strPath/*��� ���*/);
 	
@@ -116,7 +116,7 @@ inline Ptr<T> CResMgr::FindRes(const wstring& _strKey)
 }
 
 template<typename T>
-inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath, bool _bFBX)
+inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath, bool _bFBX, bool _bVecMesh)
 {
 	Ptr<T> pRes = FindRes<T>(_strKey);
 
@@ -188,7 +188,7 @@ inline Ptr<T> CResMgr::Load(const wstring& _strKey, const wstring& _strPath, boo
 		strFullPath += _strPath;
 	}
 
-	pRes->Load(strFullPath, _bFBX);
+	pRes->Load(strFullPath, _bFBX, _bVecMesh);
 
 
 	RES_TYPE eType = GetType<T>();
