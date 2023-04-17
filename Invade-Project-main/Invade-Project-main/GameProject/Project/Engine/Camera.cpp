@@ -92,7 +92,7 @@ void CCamera::SortGameObject()
 		{
 			const vector<CGameObject*>& vecObj = pCurScene->GetLayer(i)->GetObjects();
 
-			for (UINT j = 0; j < vecObj.size(); ++j)
+  			for (UINT j = 0; j < vecObj.size(); ++j)
 			{
 				//Ptr<CMesh> temp = vecObj[j]->MeshRender()->GetMesh();
 				if (!vecObj[j]->GetFrustumCheck()

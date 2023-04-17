@@ -349,3 +349,13 @@ enum class MINION_CAMP {
 	BLUE,
 	RED,
 };
+
+
+//PLAYER STATE
+
+enum class PLAYER_STATE {
+	IDLE,
+	WALK,
+	RUN,
+	HAPPY,
+};

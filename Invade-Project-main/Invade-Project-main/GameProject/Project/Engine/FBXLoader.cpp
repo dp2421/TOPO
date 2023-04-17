@@ -399,7 +399,7 @@ void CFBXLoader::LoadTexture()
 
 			}
 			else {
-				strPath = CPathMgr::GetRelativePath(m_vecContainer[i].vecMtrl[j].strDiff.c_str());
+				//strPath = CPathMgr::GetRelativePath(m_vecContainer[i].vecMtrl[j].strDiff.c_str());
 				strPath = m_vecContainer[i].vecMtrl[j].strDiff.c_str();
 				strFileName = CPathMgr::GetFileName(m_vecContainer[i].vecMtrl[j].strDiff.c_str());
 				CResMgr::GetInst()->LoadFBXTexture<CTexture>(strFileName, strPath);
@@ -411,7 +411,7 @@ void CFBXLoader::LoadTexture()
 
 			}
 			else {
-				strPath = CPathMgr::GetRelativePath(m_vecContainer[i].vecMtrl[j].strNormal.c_str());
+				//strPath = CPathMgr::GetRelativePath(m_vecContainer[i].vecMtrl[j].strNormal.c_str());
 				strPath = m_vecContainer[i].vecMtrl[j].strDiff.c_str();
 				strFileName = CPathMgr::GetFileName(m_vecContainer[i].vecMtrl[j].strNormal.c_str());
 				CResMgr::GetInst()->LoadFBXTexture<CTexture>(strFileName, strPath);
@@ -423,7 +423,7 @@ void CFBXLoader::LoadTexture()
 
 			}
 			else{
-				strPath = CPathMgr::GetRelativePath(m_vecContainer[i].vecMtrl[j].strSpec.c_str());
+				//strPath = CPathMgr::GetRelativePath(m_vecContainer[i].vecMtrl[j].strSpec.c_str());
 				strPath = m_vecContainer[i].vecMtrl[j].strDiff.c_str();
 				strFileName = CPathMgr::GetFileName(m_vecContainer[i].vecMtrl[j].strSpec.c_str());
 				CResMgr::GetInst()->LoadFBXTexture<CTexture>(strFileName, strPath);

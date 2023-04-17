@@ -22,6 +22,7 @@ private:
     Ptr<CTexture>pBlackTex;
     int m_iPower;
     ELEMENT_TYPE m_iType;
+    PLAYER_STATE m_iState;
     float m_fArrowSpeed;
 
     float m_fArcherLocation;
@@ -30,6 +31,8 @@ public:
     virtual void Awake();
     virtual void Update();
     void SetType(ELEMENT_TYPE _iType) { m_iType = _iType; }
+    void SetState(PLAYER_STATE _iState) { m_iState = _iState; }
+    PLAYER_STATE GetState() { return m_iState; }
     void SetPlayable(bool value) { isPlayable = value; }
     bool GetPlayable() { return isPlayable; } const
 

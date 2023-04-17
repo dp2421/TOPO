@@ -213,10 +213,7 @@ void CSceneMgr::Init()
 //	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
 	pObject->Animator3D()->SetClipIndex(0);
-
 	pObject->AddChild(pMainCam);
-//
-//
 	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
 
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
@@ -330,83 +327,107 @@ void CSceneMgr::Init()
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Idle.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
-pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	
 	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
 	pObject->Transform()->SetLocalPos(Vec3(100.f, 115.f, 100.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
-
-	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Run.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
-
 	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
-	pObject->Transform()->SetLocalPos(Vec3(150.f, 115.f, 100.f));
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(100.f, 115.f, 100.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
+	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::RUN);
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
+	pObject->SetActive(false);
 
-	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	//pMeshData->Save(pMeshData->GetPath());
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Walk.fbx");
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Walk.mdat", L"MeshData\\Player_Walk.mdat", false, true);
-
 	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
-	pObject->Transform()->SetLocalPos(Vec3(200.f, 115.f, 100.f));
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(100.f, 115.f, 100.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
+	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::WALK);
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
+	pObject->SetActive(false);
 
-	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Happy.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Happy.mdat", L"MeshData\\Player_Happy.mdat", false, true);
-
 	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"HappyPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+
 	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
-	pObject->Transform()->SetLocalPos(Vec3(250.f, 115.f, 100.f));
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(100.f, 115.f, 100.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
+	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
+	pObject->SetActive(false);
 
-	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	////맵테스트 ====================================================
 	////단위(unity추출기준) : 5 => 10 => 1000 (1 tile:100. 보정값 700 )
@@ -513,7 +534,6 @@ pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
-
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafetest.fbx");
 	////pMeshData->Save(pMeshData->GetPath());
@@ -720,7 +740,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject = new CGameObject;
 
 	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"Monster");
+	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
 	pObject->AddComponent(new CPlayerScript);
@@ -752,7 +772,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 			}
 		}
 	}
-	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	return pObject;
 }

@@ -35,7 +35,6 @@ void CMeshRender::Render()
 	}
 	for (size_t h = 0; h < m_vecMesh.size(); ++h)
 	{
-
 		for (size_t i = 0; i < m_vecMtrl.size(); ++i)
 		{
 			if (nullptr == m_vecMtrl[i] || nullptr == m_vecMtrl[i]->GetShader())

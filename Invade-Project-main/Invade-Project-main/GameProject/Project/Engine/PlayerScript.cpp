@@ -38,14 +38,15 @@ void CPlayerScript::Awake()
 	m_iPower = 1;
 }
 
-void CPlayerScript::Update()
+void CPlayerScript::Update()	// 여기서 상태바꿔주면될듯?
 {
 	if (!isPlayable) return;
 
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
-
+	
 	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
+
 		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 		NetworkMgr::GetInst()->SendClientKeyInputPacket('w', vFront);
 	}
