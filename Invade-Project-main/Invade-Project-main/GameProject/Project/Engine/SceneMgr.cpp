@@ -212,7 +212,6 @@ void CSceneMgr::Init()
 	pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
 //	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	pObject->Animator3D()->SetClipIndex(0);
 	pObject->AddChild(pMainCam);
 	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
 
@@ -350,6 +349,7 @@ void CSceneMgr::Init()
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
+	pObject->SetActive(false);
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Run.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
@@ -381,7 +381,7 @@ void CSceneMgr::Init()
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Walk.fbx");
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Walk.mdat", L"MeshData\\Player_Walk.mdat", false, true);
 	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"RunPlayer");
+	pObject->SetName(L"WalkPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
 	pObject->AddComponent(new CPlayerScript);
@@ -401,7 +401,6 @@ void CSceneMgr::Init()
 	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::WALK);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	pObject->SetActive(false);
-
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Happy.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
@@ -736,7 +735,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 {
 	std::cout << "add obj" << std::endl;
 	CGameObject* pObject = nullptr;
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\JPlayerv1.mdat", L"MeshData\\JPlayerv1.mdat",false,true);
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat",false,true);
 	pObject = new CGameObject;
 
 	pObject = pMeshData->Instantiate();
@@ -757,6 +756,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
 
 	if (isPlayer)
 	{
@@ -772,6 +772,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 			}
 		}
 	}
+	pObject->SetActive(true);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	return pObject;
