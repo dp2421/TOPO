@@ -50,6 +50,18 @@ void NetworkMgr::DoSend(void* packet)
     {
         std::cout << WSAGetLastError() << std::endl;
     }
+    else
+    {
+        switch (reinterpret_cast<char*>(packet)[1])
+        {
+        case ClientLogin:
+            std::cout << "Send Login" << std::endl;
+            break;
+        case ClientKeyInput:
+            std::cout << "Send KeyInput" << std::endl;
+            break;
+        }
+    }
 }
 
 void NetworkMgr::SendClientLoginPacket()
