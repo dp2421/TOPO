@@ -301,7 +301,7 @@ void CSceneMgr::Init()
 	//pObject->Animator3D()->SetClipIndex(1);
 	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
+	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	pObject->SetActive(false);
 
@@ -326,7 +326,7 @@ void CSceneMgr::Init()
 	//pObject->Animator3D()->SetClipIndex(1);
 	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::RUN);
+	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::RUN);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	pObject->SetActive(false);
 
@@ -352,7 +352,7 @@ void CSceneMgr::Init()
 	//pObject->Animator3D()->SetClipIndex(1);
 	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::WALK);
+	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::WALK);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	pObject->SetActive(false);
 
@@ -377,7 +377,7 @@ void CSceneMgr::Init()
 	//pObject->Animator3D()->SetClipIndex(1);
 	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
+	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	pObject->SetActive(false);
 
@@ -477,24 +477,25 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part2.mdat", L"MeshData\\2part2.mdat");
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part2.fbx");
+	////pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part2.mdat", L"MeshData\\2part2.mdat");
 
 	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
-	pObject->Transform()->SetLocalPos(Vec3(3800.f, 10.f, 0.f));
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	//pObject->Transform()->SetLocalPos(Vec3(3800.f, 10.f, 0.f));
 
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->Animator3D()->SetClipIndex(1);
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	////pObject->Animator3D()->SetClipIndex(1);
 
-	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+	//m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\jcube.mdat", L"MeshData\\jcube.mdat");
@@ -557,24 +558,24 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part6.mdat", L"MeshData\\2part6.mdat");
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part6.mdat", L"MeshData\\2part6.mdat");
 
-	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(16700.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	////pMeshData->Save(pMeshData->GetPath());
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(16700.f, 10.f, 0.f));
+	//pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
 
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->Animator3D()->SetClipIndex(1);
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	////pObject->Animator3D()->SetClipIndex(1);
 
-	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+	//m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
 
@@ -841,7 +842,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
+	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
 
 	if (isPlayer)
 	{
