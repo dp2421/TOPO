@@ -9,6 +9,9 @@
 
 #include <SDKDDKVer.h>
 #define WIN32_LEAN_AND_MEAN   
+#define MAXHUDDLE 5
+#define MAXMOVEOBSTACLEA 5
+#define MAXMOVEOBSTACLEB 3
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include <iostream>
