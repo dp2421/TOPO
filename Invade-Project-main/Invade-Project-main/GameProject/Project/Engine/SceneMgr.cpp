@@ -193,27 +193,27 @@ void CSceneMgr::Init()
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\JPlayerv1.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\JPlayerv1.mdat", L"MeshData\\JPlayerv1.mdat", false, true);
-	pObject = new CGameObject;
-
-	pObject = pMeshData->Instantiate();
-	pObject->SetName(L"Monster");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new CPlayerScript);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	
-	pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
-//	pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
-	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	pObject->AddChild(pMainCam);
-	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+	//pObject = new CGameObject;
+	//
+	//pObject = pMeshData->Instantiate();
+	//pObject->SetName(L"Monster");
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->AddComponent(new CPlayerScript);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	//
+	//pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+//	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+	//pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
+	//pObject->AddChild(pMainCam);
+	//m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
 
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
 	//pObject = pMeshData->Instantiate();
@@ -299,7 +299,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
-	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	//pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
@@ -324,7 +324,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
-	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	//pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::RUN);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
@@ -350,7 +350,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
-	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	//pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::WALK);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
@@ -375,7 +375,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
-	pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+	//pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
@@ -786,7 +786,7 @@ void CSceneMgr::Update()
 	m_pCurScene->LateUpdate();
 
 	// rendermgr 카메라 초기화
-	CRenderMgr::GetInst()->ClearCamera();
+	//CRenderMgr::GetInst()->ClearCamera();
 
 	m_pCurScene->FinalUpdate();
 
@@ -846,7 +846,6 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 	if (isPlayer)
 	{
-		std::cout << "Player";
 		pObject->GetScript<CPlayerScript>()->SetPlayable(true);
 
 		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
@@ -854,6 +853,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
 				pObject->AddChild(obj);
+				obj->Transform()->SetLocalPos(Vec3(-60,45,-10));
+				obj->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
 				break;
 			}
 		}
