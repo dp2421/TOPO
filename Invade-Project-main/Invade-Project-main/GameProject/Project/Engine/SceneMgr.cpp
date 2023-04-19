@@ -811,90 +811,67 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 {
 	std::cout << "add obj" << std::endl;
-	CGameObject* pObject = nullptr;
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat",false,true);
-	pObject = new CGameObject;
 
+	CGameObject* pPlayer = nullptr;
+	pPlayer = new CGameObject;
+
+	pPlayer->SetName((L"Player"));
+	pPlayer->AddComponent(new CTransform);
+	pPlayer->AddComponent(new CCollider3D);
+	pPlayer->AddComponent(new CPlayerScript);
+	pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pPlayer->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pPlayer->FrustumCheck(false);
+	pPlayer->Transform()->SetLocalPos(pos);
+	pPlayer->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
+	pPlayer->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+
+	pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
+	pPlayer->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	pPlayer->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
+
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	CGameObject* pObject = nullptr;
+
+	pObject = new CGameObject;
 	pObject = pMeshData->Instantiate();
 	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new CPlayerScript);
-
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(pos);
-	pObject->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
-
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-
-	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
-	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
-
-	if (isPlayer)
-	{
-		pObject->GetScript<CPlayerScript>()->SetPlayable(true);
-
-		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
-		{
-			if (obj->GetName().compare(L"MainCam") == 0)
-			{
-				pObject->AddChild(obj);
-				obj->Transform()->SetLocalPos(Vec3(-60,45,-10));
-				obj->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-				break;
-			}
-		}
-	}
-	pObject->SetActive(false);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+
+	pPlayer->AddChild(pObject);
+	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
 
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	pObject = new CGameObject;
-
 	pObject = pMeshData->Instantiate();
 	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->AddComponent(new CPlayerScript);
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(pos);
-	pObject->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
-
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-
-	pObject->GetScript<CPlayerScript>()->SetPlayable(false);
-	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
+	pPlayer->AddChild(pObject);
+	pPlayer->GetScript<CPlayerScript>()->SetIdlePlayer(pObject);
 
 	if (isPlayer)
 	{
-		pObject->GetScript<CPlayerScript>()->SetPlayable(true);
+		pPlayer->GetScript<CPlayerScript>()->SetPlayable(true);
 
 		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
 		{
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
-				pObject->AddChild(obj);
+				pPlayer->AddChild(obj);
 				obj->Transform()->SetLocalPos(Vec3(-60, 45, -10));
 				obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
 				break;
 			}
 		}
 	}
-	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
-	return pObject;
+	m_pCurScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
+
+	return pPlayer;
 }
 
 

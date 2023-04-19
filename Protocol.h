@@ -6,7 +6,7 @@ constexpr float SPEED = 200.f;
 constexpr int PORTNUM = 20150;
 constexpr int BUFFERSIZE = 256;
 constexpr int NAMESIZE = 20;
-constexpr char SERVERIP[] = "127.0.0.1";
+constexpr char SERVERIP[] = "210.117.115.67";
 
 constexpr unsigned char ClientLogin = 100;
 constexpr unsigned char ClientMatching = 101;

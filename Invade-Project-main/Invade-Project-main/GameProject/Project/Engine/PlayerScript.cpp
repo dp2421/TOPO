@@ -9,33 +9,7 @@
 
 void CPlayerScript::Awake()
 {
-	//pBlackTex = CResMgr::GetInst()->FindRes<CTexture>(L"Black");
-	//CScene* pCurScene=CSceneMgr::GetInst()->GetCurScene();
-	//for (int i = 0; i < 20; ++i) {
-	//	m_pArrow[i] = new CGameObject;
-	//	m_pArrow[i]->SetName(L"Arrow");
-	//
-	//
-	//	m_pArrow[i]->AddComponent(new CTransform());
-	//	Vec3 vPos = m_pArrow[i]->Transform()->GetLocalPos();
-	//	m_pArrow[i]->Transform()->SetLocalPos(vPos);
-	//	m_pArrow[i]->Transform()->SetLocalScale(Vec3(100.f, 1.f, 1.f));
 
-	//	m_pArrow[i]->AddComponent(new CMeshRender);
-	//	m_pArrow[i]->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"CubeMesh"));
-	//	m_pArrow[i]->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
-	////	m_pArrow[i]->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pBlackTex.GetPointer());
-
-	//	m_pArrow[i]->AddComponent(new CCollider2D);
-	//	m_pArrow[i]->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-
-	//	m_pArrow[i]->AddComponent(new CArrowScript(m_iType));
-	//	pCurScene->FindLayer(L"Arrow")->AddGameObject(m_pArrow[i]);
-	//	m_pArrow[i]->SetActive(false);
-	//}
-
-	//m_iCurArrow = 0;
-	//m_iPower = 1;
 }
 
 void CPlayerScript::Update()	// 여기서 상태바꿔주면될듯?
@@ -44,12 +18,30 @@ void CPlayerScript::Update()	// 여기서 상태바꿔주면될듯?
 
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
+
+	//if (KEY_HOLD(KEY_TYPE::KEY_W) || KEY_HOLD(KEY_TYPE::KEY_S) || KEY_HOLD(KEY_TYPE::KEY_A) || KEY_HOLD(KEY_TYPE::KEY_D))
+	//{
+	//	if(!runPlayer->IsActive())
+	//		runPlayer->SetActive(true);
+	//	if(IdlePlayer->IsActive())
+	//		IdlePlayer->SetActive(false);
+	//}
+	//else
+	//{
+	//	if (runPlayer->IsActive())
+	//		runPlayer->SetActive(false);
+	//	if (!IdlePlayer->IsActive())
+	//		IdlePlayer->SetActive(true);
+	//}
+
+	runPlayer->Transform()->SetLocalPos(Vec3::Zero);
+	IdlePlayer->Transform()->SetLocalPos(Vec3::Zero);
 	
 	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
-		if (m_iState == PLAYER_STATE::IDLE)
-			SetActive(false);
-		else if (m_iState == PLAYER_STATE::WALK)
-			SetActive(true);
+		if (!runPlayer->IsActive())
+			runPlayer->SetActive(true);
+		if (IdlePlayer->IsActive())
+			IdlePlayer->SetActive(false);
 		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::FRONT);
 		NetworkMgr::GetInst()->SendClientKeyInputPacket('w', vFront);
 	}

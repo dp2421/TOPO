@@ -14,6 +14,9 @@ class CPlayerScript :
     public CScript
 {
 private:
+    CGameObject* runPlayer;
+    CGameObject* IdlePlayer;
+
     bool m_bCheckStartMousePoint;
     Vec3 m_vZoomPos;
     Vec3 m_vRestorePos;
@@ -40,7 +43,8 @@ public:
     CPlayerScript();
     virtual ~CPlayerScript();
 
-
+    void SetRunPlayer(CGameObject* obj) { runPlayer = obj; }
+    void SetIdlePlayer(CGameObject* obj) { IdlePlayer = obj; }
 
     CLONE(CPlayerScript);
 };
