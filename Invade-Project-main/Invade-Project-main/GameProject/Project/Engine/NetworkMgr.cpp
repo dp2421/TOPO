@@ -88,6 +88,19 @@ void NetworkMgr::SendClientKeyInputPacket(const int key, Vec3 dir)
     DoSend(&packet);
 }
 
+void NetworkMgr::SendClientMovePacket(Vec3 dir)
+{
+    ClientMovePacket packet;
+    packet.size = sizeof(ClientMovePacket);
+    packet.type = ClientMove;
+    packet.x = dir.x;
+    packet.y = dir.y;
+    packet.z = dir.z;
+
+    DoSend(&packet);
+}
+
+
 void NetworkMgr::DoRecv()
 {
     DWORD recv_flag = 0;

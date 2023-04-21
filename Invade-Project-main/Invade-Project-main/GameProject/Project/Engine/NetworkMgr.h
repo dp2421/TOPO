@@ -16,6 +16,7 @@ public:
 	void DoSend(void* packet);
 	void SendClientLoginPacket();
 	void SendClientKeyInputPacket(const int key, Vec3 dir);
+	void SendClientMovePacket(Vec3 dir);
 
 	void DoRecv();
 	void ProcessPacket();

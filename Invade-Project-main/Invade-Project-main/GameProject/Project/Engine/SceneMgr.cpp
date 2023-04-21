@@ -862,8 +862,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
 				pPlayer->AddChild(obj);
-				obj->Transform()->SetLocalPos(Vec3(-60, 45, -10));
-				obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
+				obj->Transform()->SetLocalPos(Vec3(0, 45, -10));
+				//obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
 				break;
 			}
 		}

@@ -6,13 +6,15 @@ constexpr float SPEED = 200.f;
 constexpr int PORTNUM = 20150;
 constexpr int BUFFERSIZE = 256;
 constexpr int NAMESIZE = 20;
-constexpr char SERVERIP[] = "210.117.115.67";
+//constexpr char SERVERIP[] = "210.117.115.67";
+constexpr char SERVERIP[] = "127.0.0.1";
 
 constexpr unsigned char ClientLogin = 100;
 constexpr unsigned char ClientMatching = 101;
 // 캐릭바꾸기? 색바꾸기 고려
 constexpr unsigned char ClientReady = 102;
 constexpr unsigned char ClientKeyInput = 103;
+constexpr unsigned char ClientMove = 104;
 
 //-------------------------------------------------------------------------------------
 
@@ -57,6 +59,13 @@ struct ClientKeyInputPacket
 	int		key;
 	// 플레이어가 바라보고 있는 방향 받아옴
 	float	x, y, z;
+};
+
+struct ClientMovePacket
+{
+	unsigned char size;
+	unsigned char type;
+	float x, y, z;
 };
 
 //-------------------------------------------------------------------------------------------------

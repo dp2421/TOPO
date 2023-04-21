@@ -36,6 +36,34 @@ void CPlayerScript::Update()	// 여기서 상태바꿔주면될듯?
 
 	runPlayer->Transform()->SetLocalPos(Vec3::Zero);
 	IdlePlayer->Transform()->SetLocalPos(Vec3::Zero);
+
+
+	Vec3 dir = Vec3::Zero;
+	if (KEY_TAB(KEY_TYPE::KEY_W))
+	{
+		isMove = true;
+		dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
+	}
+	if (KEY_TAB(KEY_TYPE::KEY_S))
+	{
+		isMove = true;
+		dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
+	}
+	if (KEY_TAB(KEY_TYPE::KEY_A))
+	{
+		isMove = true;
+		dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+	}
+	if (KEY_TAB(KEY_TYPE::KEY_D))
+	{
+		isMove = true;
+		dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+	}
+
+	if (isMove)
+	{
+
+	}
 	
 	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
 		if (!runPlayer->IsActive())

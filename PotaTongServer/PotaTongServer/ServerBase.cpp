@@ -188,6 +188,13 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		ProcessInput(id, p);
 		break;
 	}
+	case ClientMove:
+	{
+		auto p = reinterpret_cast<ClientMovePacket*>(packet);
+		Vector3 dir = Vector3(p->x, p->y, p->z);
+		clients[id]->position += dir * SPEED * DT;
+		break;
+	}
 	case ClientMatching:
 		
 		break;
