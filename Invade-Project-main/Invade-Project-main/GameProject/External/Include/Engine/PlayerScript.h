@@ -30,6 +30,7 @@ private:
 
     float m_fArcherLocation;
     bool isPlayable = false;
+    bool isMove = false;
 public:
     virtual void Awake();
     virtual void Update();
