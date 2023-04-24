@@ -164,8 +164,6 @@ wchar_t* LoadWString(FILE* _pFile)
 
 	BYTE c = 0;
 	fread(&c, 1, 1, _pFile);
-	if (c == '\0' && c == 255)
-		LoadWString(_pFile);
 	fread(szStr, 2, c, _pFile);
 	szStr[c] = 0;
 	int temp = int(c);

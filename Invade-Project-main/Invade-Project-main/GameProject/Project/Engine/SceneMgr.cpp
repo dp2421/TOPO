@@ -193,27 +193,27 @@ void CSceneMgr::Init()
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\JPlayerv1.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\JPlayerv1.mdat", L"MeshData\\JPlayerv1.mdat", false, true);
-	//pObject = new CGameObject;
-	//
-	//pObject = pMeshData->Instantiate();
-	//pObject->SetName(L"Monster");
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->AddComponent(new CPlayerScript);
-	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
-	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	//pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
-	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	//
-	//pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
-//	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
-	//pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	//pObject->AddChild(pMainCam);
-	//m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
+	pObject = new CGameObject;
+	
+	pObject = pMeshData->Instantiate();
+	pObject->SetName(L"Monster");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->AddComponent(new CPlayerScript);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f,1.f,1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
+	
+	pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
+	pObject->AddChild(pMainCam);
+	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
 
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
 	//pObject = pMeshData->Instantiate();
@@ -280,7 +280,8 @@ void CSceneMgr::Init()
 	//m_pCurScene->FindLayer(L"Minion")->AddGameObject(pObject);
 
 
-
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Idle.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	
 	pObject = pMeshData->Instantiate();
@@ -331,8 +332,8 @@ void CSceneMgr::Init()
 	pObject->SetActive(false);
 
 
-	//pMeshData->Save(pMeshData->GetPath());
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Walk.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Walk.mdat", L"MeshData\\Player_Walk.mdat", false, true);
 	pObject = pMeshData->Instantiate();
 	pObject->SetName(L"WalkPlayer");
@@ -470,10 +471,10 @@ void CSceneMgr::Init()
 	////¸ÊÅ×½ºÆ® ====================================================
 	////´ÜÀ§(unityÃßÃâ±âÁØ) : ¿øº»*400
 	/// 2Ãþ
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\water.fbx");
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part0.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part0.mdat", L"MeshData\\2part0.mdat");
 
-	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -491,8 +492,8 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part1.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part1.mdat", L"MeshData\\2part1.mdat");
 	//pMeshData->Save(pMeshData->GetPath());
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part1.mdat", L"MeshData\\2part1.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -508,6 +509,7 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part2.fbx");
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part2.mdat", L"MeshData\\2part2.mdat");
 	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
@@ -524,9 +526,12 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1jinggum.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1jinggum.mdat", L"MeshData\\1jinggum.mdat");
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part3.mdat", L"MeshData\\2part3.mdat");
-	pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -542,10 +547,10 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
-
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part4.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part4.mdat", L"MeshData\\2part4.mdat");
 
-	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -562,7 +567,8 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
-
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part5.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part5.mdat", L"MeshData\\2part5.mdat");
 
 	//pMeshData->Save(pMeshData->GetPath());
@@ -582,7 +588,8 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
-
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part6.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part6.mdat", L"MeshData\\2part6.mdat");
 
 	//pMeshData->Save(pMeshData->GetPath());
@@ -603,10 +610,10 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
-
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part7.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part7.mdat", L"MeshData\\2part7.mdat");
 
-	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -623,10 +630,9 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
-
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part8.mdat", L"MeshData\\2part8.mdat");
-
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part8.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part8.mdat", L"MeshData\\2part8.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
@@ -644,6 +650,10 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	//1Ãþ ==============================================================================================
+
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1water.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1water.mdat", L"MeshData\\1water.mdat");
 
 	//pMeshData->Save(pMeshData->GetPath());
@@ -664,6 +674,9 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1part1.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1part1.mdat", L"MeshData\\1part1.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -681,6 +694,8 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1part2.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1part2.mdat", L"MeshData\\1part2.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -697,6 +712,9 @@ void CSceneMgr::Init()
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1part3.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1part3.mdat", L"MeshData\\1part3.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -733,22 +751,24 @@ void CSceneMgr::Init()
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafetest.fbx");
-	////pMeshData->Save(pMeshData->GetPath());
-	//pObject = pMeshData->Instantiate();
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	//pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(300.f, 400.f, 100.f));
-	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	//pMeshData->Save(pMeshData->GetPath());
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\cafetest.mdat", L"MeshData\\cafetest.mdat",false, true);
 
-	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->MeshRender()->SetDynamicShadow(true);
-	////pObject->Animator3D()->SetClipIndex(1);
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(300.f, 400.f, 100.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
-	//m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(1);
+
+	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafeganpan.fbx");
 	////pMeshData->Save(pMeshData->GetPath());
