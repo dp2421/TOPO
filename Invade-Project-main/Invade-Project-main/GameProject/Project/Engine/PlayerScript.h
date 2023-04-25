@@ -9,6 +9,16 @@ enum class ELEMENT_TYPE {
     WIND=4
 };
 
+enum class Direction : int
+{
+    None = 0,
+    Front = 1 << 0,
+    Back = 1 << 1,
+    Right = 1 << 2,
+    Left = 1 << 3,
+    END
+};
+
 class CTexture;
 class CPlayerScript :
     public CScript
@@ -29,8 +39,10 @@ private:
     float m_fArrowSpeed;
 
     float m_fArcherLocation;
-    bool isPlayable = false;
+
+    int moveState = 0;
     bool isMove = false;
+    bool isPlayable = false;
 public:
     virtual void Awake();
     virtual void Update();
@@ -40,6 +52,7 @@ public:
     void SetPlayable(bool value) { isPlayable = value; }
     bool GetPlayable() { return isPlayable; } const
 
+    void SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir);
 
     CPlayerScript();
     virtual ~CPlayerScript();

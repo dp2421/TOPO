@@ -9,6 +9,16 @@ enum class ELEMENT_TYPE {
     WIND=4
 };
 
+enum class Direction
+{
+    None = 0,
+    Front = 1 << 0,
+    Back = 1 << 1,
+    Right = 1 << 2,
+    Left = 1 << 3,
+    END
+};
+
 class CTexture;
 class CPlayerScript :
     public CScript

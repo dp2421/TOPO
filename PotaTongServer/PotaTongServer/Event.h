@@ -11,7 +11,7 @@ class Event
 {
 public:
 	int objID;
-	int targetID;
+	EventType eventType;
 	chrono::system_clock::time_point excuteTime;
 
 	constexpr bool operator < (const Event& L) const

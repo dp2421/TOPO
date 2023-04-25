@@ -15,7 +15,7 @@ public:
 	void Run();
 	void Accept();
 	void Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx);
-	void TimerThread();
+	void ServerEvent(OverlappedEx* overlappedEx);
 
 	void Disconnect(int ID);
 
@@ -35,6 +35,8 @@ private:
 	concurrency::concurrent_unordered_map<unsigned short,
 		std::function<void(unsigned char*)>> handlerMap;
 	concurrency::concurrent_unordered_map<unsigned short, GameMode*> gameRoomMap;
+
+	concurrency::concurrent_priority_queue<Event> eventQueue;
 
 	std::vector<thread> workerThreads;
 

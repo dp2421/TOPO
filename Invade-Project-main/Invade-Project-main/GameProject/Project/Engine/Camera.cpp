@@ -150,23 +150,7 @@ void CCamera::Render_Deferred()
 
 	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
 	{
-		CKeyMgr* pCurKey = CKeyMgr::GetInst();
-		if (KEY(KEY_TYPE::KEY_W, KEY_STATE::STATE_HOLD) || KEY(KEY_TYPE::KEY_A, KEY_STATE::STATE_HOLD) || KEY(KEY_TYPE::KEY_S, KEY_STATE::STATE_HOLD) || KEY(KEY_TYPE::KEY_D, KEY_STATE::STATE_HOLD))
-		{			
-			if (m_vecDeferred[i]->GetName() == L"RunPlayer")
-				m_vecDeferred[i]->SetActive(true);
-			else if(m_vecDeferred[i]->GetName()==L"IdlePlayer")
-				m_vecDeferred[i]->SetActive(false);
-		}
-		else
-		{
-			if (m_vecDeferred[i]->GetName() == L"RunPlayer")
-				m_vecDeferred[i]->SetActive(false);
-			else if (m_vecDeferred[i]->GetName() == L"IdlePlayer")
-				m_vecDeferred[i]->SetActive(true);
-		}
-		if (m_vecDeferred[i]->IsActive() == true)
-			m_vecDeferred[i]->MeshRender()->Render();
+		m_vecDeferred[i]->MeshRender()->Render();
 	}
 }
 

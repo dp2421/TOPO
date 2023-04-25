@@ -12,79 +12,54 @@ void CPlayerScript::Awake()
 
 }
 
-void CPlayerScript::Update()	// 여기서 상태바꿔주면될듯?
+void CPlayerScript::Update()
 {
 	if (!isPlayable) return;
 
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
 
-	//if (KEY_HOLD(KEY_TYPE::KEY_W) || KEY_HOLD(KEY_TYPE::KEY_S) || KEY_HOLD(KEY_TYPE::KEY_A) || KEY_HOLD(KEY_TYPE::KEY_D))
-	//{
-	//	if(!runPlayer->IsActive())
-	//		runPlayer->SetActive(true);
-	//	if(IdlePlayer->IsActive())
-	//		IdlePlayer->SetActive(false);
-	//}
-	//else
-	//{
-	//	if (runPlayer->IsActive())
-	//		runPlayer->SetActive(false);
-	//	if (!IdlePlayer->IsActive())
-	//		IdlePlayer->SetActive(true);
-	//}
-
 	runPlayer->Transform()->SetLocalPos(Vec3::Zero);
 	IdlePlayer->Transform()->SetLocalPos(Vec3::Zero);
 
 
 	Vec3 dir = Vec3::Zero;
-	if (KEY_TAB(KEY_TYPE::KEY_W))
+	bool isMove = true;
+	if (moveState == 0)
 	{
-		isMove = true;
-		dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
-	}
-	if (KEY_TAB(KEY_TYPE::KEY_S))
-	{
-		isMove = true;
-		dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
-	}
-	if (KEY_TAB(KEY_TYPE::KEY_A))
-	{
-		isMove = true;
-		dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-	}
-	if (KEY_TAB(KEY_TYPE::KEY_D))
-	{
-		isMove = true;
-		dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		isMove = false;
 	}
 
-	if (isMove)
+	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_D, KEY_STATE::STATE_TAB, dir);
+	if (dir != Vec3::Zero && !isMove)
 	{
-
+		// 이동
+		isMove = true;
 	}
-	
-	if (KEY_HOLD(KEY_TYPE::KEY_W)) {
+
+	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_D, KEY_STATE::STATE_AWAY, dir);
+
+	if (moveState > 0)
+	{
 		if (!runPlayer->IsActive())
 			runPlayer->SetActive(true);
 		if (IdlePlayer->IsActive())
 			IdlePlayer->SetActive(false);
-		Vec3 vFront = Transform()->GetWorldDir(DIR_TYPE::FRONT);
-		NetworkMgr::GetInst()->SendClientKeyInputPacket('w', vFront);
 	}
-	if (KEY_HOLD(KEY_TYPE::KEY_S)) {
-		Vec3 vBack = -Transform()->GetWorldDir(DIR_TYPE::FRONT);
-		NetworkMgr::GetInst()->SendClientKeyInputPacket('s', vBack);
+	else
+	{
+		if (runPlayer->IsActive())
+			runPlayer->SetActive(false);
+		if (!IdlePlayer->IsActive())
+			IdlePlayer->SetActive(true);
 	}
-	if (KEY_HOLD(KEY_TYPE::KEY_A)) {
-		Vec3 vLeft = -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-		NetworkMgr::GetInst()->SendClientKeyInputPacket('a', vLeft);
-	}
-	if (KEY_HOLD(KEY_TYPE::KEY_D)) {
-		Vec3 vRight = Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-		NetworkMgr::GetInst()->SendClientKeyInputPacket('d', vRight);
-	}
+
 	/*
 	if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
 		CGameObject* pObj=GetObj()->GetChild()[0];
@@ -224,8 +199,45 @@ void CPlayerScript::Update()	// 여기서 상태바꿔주면될듯?
 
 }
 
+const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir)
+{
+	if (KEY(key, state))
+	{
+		if (state == KEY_STATE::STATE_TAB)
+		{
+			moveState |= (int)key;
+			switch (key)
+			{
+			case KEY_TYPE::KEY_W:
+				dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
+				break;
+			case KEY_TYPE::KEY_S:
+				dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
+				break;
+			case KEY_TYPE::KEY_A:
+				dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+				break;
+			case KEY_TYPE::KEY_D:
+				dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+				break;
+			default:
+				break;
+			}
+		}
+		else if (state == KEY_STATE::STATE_AWAY)
+		{
+			moveState &= ~(int)Direction::Front;
+			if (moveState == 0)
+			{
+				// 이동 중지
+			}
+		}
+	}
+}
+
 CPlayerScript::CPlayerScript() :CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT), m_bCheckStartMousePoint(false), m_fArcherLocation(20.f)
 {
+
 }
 
 CPlayerScript::~CPlayerScript()

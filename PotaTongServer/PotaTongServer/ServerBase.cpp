@@ -19,11 +19,11 @@ void ServerBase::Run()
 {
 	int numThreads = std::thread::hardware_concurrency();
 
-	//thread eventThread{ &ServerBase::EventThread, this };
+	thread eventThread{ &ServerBase::EventThread, this };
 	for (int i = 0; i < numThreads; ++i)
 		workerThreads.emplace_back(&ServerBase::WorkerThread, this, IOCPHandle);
 
-	//eventThread.join();
+	eventThread.join();
 	for (auto& thread : workerThreads)
 		thread.join();
 }
@@ -64,7 +64,8 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 		case OverlappedType::Send:
 			delete overlappedEx;
 			break;
-		case OverlappedType::ServerEvent:
+		default:
+			ServerEvent(overlappedEx);
 			break;
 		}
 	}
@@ -72,7 +73,39 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 
 void ServerBase::EventThread()
 {
-
+	Event event;
+	event.objID = -1;
+	while (true) {
+		auto current_time = chrono::system_clock::now();
+		if (event.objID == -1)
+		{
+			if (true == eventQueue.try_pop(event))
+				continue;
+			else
+				event.objID = -1;
+		}
+		else
+		{
+			if (event.excuteTime > current_time) 
+			{
+				this_thread::sleep_for(1ms);
+				continue;
+			}
+			switch (event.eventType)
+			{
+			case EventType::MatchingStart:
+			{
+				OverlappedEx* overlappedEx = new OverlappedEx;
+				overlappedEx->type = OverlappedType::ServerEvent;
+				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
+				event.objID = -1;
+				break;
+			}
+			}
+			continue;
+		}
+		this_thread::sleep_for(1ms);
+	}
 }
 
 void ServerBase::InitServer()
@@ -158,6 +191,21 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 	}
 
 	clients[id]->RecvPacket();
+}
+
+void ServerBase::ServerEvent(OverlappedEx* overlappedEx)
+{
+	switch (overlappedEx->type)
+	{
+	case OverlappedType::MatchingStart:
+		break;
+	case OverlappedType::MatchingComplete:
+		break;
+	case OverlappedType::Update:
+		break;
+	default:
+		break;
+	}
 }
 
 void ServerBase::Disconnect(int ID)

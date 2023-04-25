@@ -5,7 +5,9 @@ enum class OverlappedType
 	Accept,
 	Recv,
 	Send,
-	ServerEvent
+	MatchingStart,
+	MatchingComplete,
+	Update
 };
 
 class OverlappedEx
