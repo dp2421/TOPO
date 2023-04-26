@@ -15,7 +15,7 @@ public:
 	void Run();
 	void Accept();
 	void Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx);
-	void ServerEvent(OverlappedEx* overlappedEx);
+	void ServerEvent(const int id, OverlappedEx* overlappedEx);
 
 	void Disconnect(int ID);
 

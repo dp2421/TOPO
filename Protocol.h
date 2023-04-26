@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr float DT = 1.f / 60.f;
+constexpr auto DT = chrono::round<chrono::milliseconds>(chrono::duration<float>(1.f / 60.f));
 constexpr float SPEED = 200.f;
 
 constexpr int PORTNUM = 20150;
@@ -15,6 +15,15 @@ constexpr unsigned char ClientMatching = 101;
 constexpr unsigned char ClientReady = 102;
 constexpr unsigned char ClientKeyInput = 103;
 constexpr unsigned char ClientMove = 104;
+
+enum class KeyType : int
+{
+	MoveStart,
+	MoveEnd,
+	Jump,
+	Push,
+	Boom,
+};
 
 //-------------------------------------------------------------------------------------
 
@@ -54,11 +63,11 @@ struct ClientReadyPacket
 
 struct ClientKeyInputPacket
 {
-	unsigned char size;
+	unsigned char	size;
 	unsigned char	type;
-	int		key;
+	KeyType			key;
 	// 플레이어가 바라보고 있는 방향 받아옴
-	float	x, y, z;
+	float			x, y, z;
 };
 
 struct ClientMovePacket
