@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 
+
 NetworkMgr::NetworkMgr()
 {
 
@@ -17,7 +18,10 @@ NetworkMgr::~NetworkMgr()
 
 void NetworkMgr::Init()
 {
-	WSADATA wsaData;
+#if LOCALPLAY 
+    return;
+#else
+    WSADATA wsaData;
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "WSAStartup failed: " << WSAGetLastError() << std::endl;
@@ -36,15 +40,23 @@ void NetworkMgr::Init()
     }
     SendClientLoginPacket();
     DoRecv();
+#endif // NETWORK
 }
 
 void NetworkMgr::Update()
 {
+#if LOCALPLAY
+    return;
+#else
     SleepEx(1, true);
+#endif // NETWORK
 }
 
 void NetworkMgr::DoSend(void* packet)
 {
+#if LOCALPLAY
+    return;
+#else
     OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
     if (WSASend(socket, &overlappedEx->wsaBuf, 1, 0, 0, &overlappedEx->overlapped, SendCallback))
     {
@@ -62,6 +74,7 @@ void NetworkMgr::DoSend(void* packet)
             break;
         }
     }
+#endif
 }
 
 void NetworkMgr::SendClientLoginPacket()
@@ -103,9 +116,13 @@ void NetworkMgr::SendClientMovePacket(Vec3 dir)
 
 void NetworkMgr::DoRecv()
 {
+#if LOCALPLAY
+    return;
+#else
     DWORD recv_flag = 0;
     memset(&recv.overlapped, 0, sizeof(recv.overlapped));
     WSARecv(socket, &recv.wsaBuf, 1, NULL, &recv_flag, &recv.overlapped, RecvCallback);
+#endif
 }
 
 void NetworkMgr::ProcessPacket()

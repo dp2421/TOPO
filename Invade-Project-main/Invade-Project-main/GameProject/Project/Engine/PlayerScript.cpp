@@ -24,6 +24,41 @@ void CPlayerScript::Update()
 
 
 	Vec3 dir = Vec3::Zero;
+
+#if LOCALPLAY
+
+	if (KEY_HOLD(KEY_TYPE::KEY_W))
+	{
+		dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
+	}
+	if (KEY_HOLD(KEY_TYPE::KEY_S))
+	{
+		dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
+	}
+	if (KEY_HOLD(KEY_TYPE::KEY_A))
+	{
+		dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+	}
+	if (KEY_HOLD(KEY_TYPE::KEY_D))
+	{
+		dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+	}
+
+	if (dir != Vec3::Zero)
+	{
+		runPlayer->SetActive(true);
+		IdlePlayer->SetActive(false);
+	}
+	else
+	{
+		runPlayer->SetActive(false);
+		IdlePlayer->SetActive(true);
+	}
+
+	vPos += dir.Normalize() * SPEED * DT;
+	Transform()->SetLocalPos(vPos);
+
+#else
 	bool isMove = true;
 	if (moveState == 0)
 	{
@@ -59,6 +94,7 @@ void CPlayerScript::Update()
 		if (!IdlePlayer->IsActive())
 			IdlePlayer->SetActive(true);
 	}
+#endif
 
 	/*
 	if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
@@ -195,8 +231,6 @@ void CPlayerScript::Update()
 
 
 	Transform()->SetLocalRot(vRot);
-	//Transform()->SetLocalPos(vPos);
-
 }
 
 const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir)

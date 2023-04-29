@@ -138,6 +138,8 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 
+
+
 	//pObject = new CGameObject;
 	//pObject->AddComponent(new CTransform);
 	//pObject->AddComponent(new CLight3D);
@@ -167,7 +169,10 @@ void CSceneMgr::Init()
 //	pMeshData->Save(pMeshData->GetPath());
 	// MeshData ·Îµå
 
-
+#if LOCALPLAY
+	AddNetworkGameObject(true, Vec3::Zero);
+#else
+#endif
 
 
 	// Temp Object
@@ -964,8 +969,13 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 	pPlayer->FrustumCheck(false);
-	pPlayer->Transform()->SetLocalPos(pos);
+
+#if LOCALPLAY
 	pPlayer->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
+#else
+	pPlayer->Transform()->SetLocalPos(pos);
+#endif
+
 	pPlayer->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 
 	pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
@@ -979,20 +989,22 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject = pMeshData->Instantiate();
 	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
+	pObject->SetActive(false);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	pPlayer->AddChild(pObject);
-	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
+	pPlayer->GetScript<CPlayerScript>()->SetIdlePlayer(pObject);
 
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	pObject = new CGameObject;
 	pObject = pMeshData->Instantiate();
 	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
+	pObject->SetActive(false);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	pPlayer->AddChild(pObject);
-	pPlayer->GetScript<CPlayerScript>()->SetIdlePlayer(pObject);
+	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
 
 	if (isPlayer)
 	{
@@ -1004,7 +1016,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 			{
 				pPlayer->AddChild(obj);
 				obj->Transform()->SetLocalPos(Vec3(0, 45, -10));
-				//obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
+				obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
 				break;
 			}
 		}
