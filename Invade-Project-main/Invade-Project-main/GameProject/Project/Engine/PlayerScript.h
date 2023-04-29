@@ -56,8 +56,12 @@ public:
     CPlayerScript();
     virtual ~CPlayerScript();
 
-    void SetRunPlayer(CGameObject* obj) { runPlayer = obj; }
-    void SetIdlePlayer(CGameObject* obj) { IdlePlayer = obj; }
+    void SetRunPlayer(CGameObject* obj) { 
+        runPlayer = obj; 
+    }
+    void SetIdlePlayer(CGameObject* obj) { 
+        IdlePlayer = obj; 
+    }
 
     CLONE(CPlayerScript);
 };

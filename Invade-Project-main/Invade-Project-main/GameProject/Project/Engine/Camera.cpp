@@ -150,7 +150,8 @@ void CCamera::Render_Deferred()
 
 	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
 	{
-		m_vecDeferred[i]->MeshRender()->Render();
+		if (m_vecDeferred[i]->IsActive() == true)
+			m_vecDeferred[i]->MeshRender()->Render();
 	}
 }
 

@@ -336,7 +336,6 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	pObject->SetActive(false);
 
-
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Walk.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Walk.mdat", L"MeshData\\Player_Walk.mdat", false, true);
@@ -980,7 +979,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 	pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
 	pPlayer->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	pPlayer->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
+	pPlayer->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
 
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	CGameObject* pObject = nullptr;
@@ -1010,13 +1009,13 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	{
 		pPlayer->GetScript<CPlayerScript>()->SetPlayable(true);
 
-		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetObjects())
+		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetParentObj())
 		{
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
-				pPlayer->AddChild(obj);
 				obj->Transform()->SetLocalPos(Vec3(0, 45, -10));
 				obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
+				pPlayer->AddChild(obj);
 				break;
 			}
 		}
