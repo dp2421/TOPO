@@ -46,6 +46,7 @@ using namespace Microsoft::WRL;
 #include <list>
 #include <map>
 #include <unordered_map>
+#include <chrono>
 
 #include <fbxsdk.h>
 #ifdef _DEBUG

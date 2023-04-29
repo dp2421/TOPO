@@ -88,7 +88,7 @@ void NetworkMgr::SendClientLoginPacket()
     DoSend(&packet);
 }
 
-void NetworkMgr::SendClientKeyInputPacket(const int key, Vec3 dir)
+void NetworkMgr::SendClientKeyInputPacket(KeyType key, Vec3 dir)
 {
     ClientKeyInputPacket packet;
     packet.size = sizeof(ClientKeyInputPacket);

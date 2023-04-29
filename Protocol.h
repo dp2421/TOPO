@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr auto DT = chrono::round<chrono::milliseconds>(chrono::duration<float>(1.f / 60.f));
+//constexpr auto DT = chrono::round<chrono::milliseconds>(chrono::duration<float>(1.f / 60.f));
 constexpr float SPEED = 200.f;
 
 constexpr int PORTNUM = 20150;
