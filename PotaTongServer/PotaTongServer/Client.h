@@ -12,6 +12,8 @@ public:
 	SOCKET socket;
 	int prevRemainData;
 
+	bool isMove = false;
+
 	Vector3 position;
 	Vector3 direction;
 	Vector3 velocity;

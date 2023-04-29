@@ -93,10 +93,10 @@ void ServerBase::EventThread()
 			}
 			switch (event.eventType)
 			{
-			case EventType::MatchingStart:
+			case OverlappedType::Update:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = OverlappedType::ServerEvent;
+				overlappedEx->type = OverlappedType::Update;
 				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
 				event.objID = -1;
 				break;
@@ -193,8 +193,9 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 	clients[id]->RecvPacket();
 }
 
-void ServerBase::ServerEvent(OverlappedEx* overlappedEx)
+void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
+	auto client = clients[id];	
 	switch (overlappedEx->type)
 	{
 	case OverlappedType::MatchingStart:
@@ -202,6 +203,7 @@ void ServerBase::ServerEvent(OverlappedEx* overlappedEx)
 	case OverlappedType::MatchingComplete:
 		break;
 	case OverlappedType::Update:
+		client->position = client->direction;
 		break;
 	default:
 		break;
@@ -240,7 +242,7 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	{
 		auto p = reinterpret_cast<ClientMovePacket*>(packet);
 		Vector3 dir = Vector3(p->x, p->y, p->z);
-		clients[id]->position += dir * SPEED * DT;
+		clients[id]->direction = dir;
 		break;
 	}
 	case ClientMatching:
@@ -251,42 +253,39 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 
 void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 {
-	int key = packet->key;
+	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
+	auto client = clients[id];
+	switch (key)
 	{
-		//lock_guard<mutex> lock{ clients[id]->lock };
-		if (key == 'w' || key == 'W')
-		{
-			clients[id]->position += dir * SPEED * DT;
-		}
-		if (key == 'a' || key == 'A')
-		{
-			clients[id]->position += dir * SPEED * DT;
-		}
-		if (key == 's' || key == 'S')
-		{
-			clients[id]->position += dir * SPEED * DT;
-		}
-		if (key == 'd' || key == 'D')
-		{
-			clients[id]->position += dir * SPEED * DT;
-		}
-	}
-	if (key == VK_CONTROL)
+	case KeyType::MoveStart: // 이동
 	{
-		// 밀치기 
+		client->direction = dir;
+		client->position = client->direction;
+		client->isMove = true;
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DT};
+		eventQueue.push(event);
+		break;
+	}	
+	case KeyType::MoveEnd: 
+
+		break;
+	case KeyType::Jump: // 점프 
+
+		break;
+	case KeyType::Push: // 밀치기
+
+		break;
+	case KeyType::Boom: // 폭탄돌리기
+
+		break;
+	default:
+		break;
 	}
-	if (key == VK_SHIFT)
-	{
-		// 폭탄돌리기
-	}
-	if (key == VK_SPACE)
-	{
-		// 점프
-	}
-	for (auto client : clients)
-	{
-		client.second->SendPlayerInfoPacket(id, clients[id]->position, dir);
-	}
+
+	//for (auto client : clients)
+	//{
+	//	client.second->SendPlayerInfoPacket(id, clients[id]->position, dir);
+	//}
 }
 
