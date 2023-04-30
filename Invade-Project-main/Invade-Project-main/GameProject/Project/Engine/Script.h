@@ -17,6 +17,7 @@ enum class SCRIPT_TYPE {
     PLAYERSCRIPT,
     MINIONSCRIPT,
     CAMERASRIPT,
+    OBSTACLESCRIPT,
     END,
 };
 

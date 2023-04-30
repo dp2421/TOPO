@@ -76,6 +76,9 @@
     <Filter Include="ShaderCode">
       <UniqueIdentifier>{45867d64-9470-4e6e-8863-30818d0ce7cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Script\Obstacle">
+      <UniqueIdentifier>{adbb3f64-1abc-48a5-a721-57d6941d956b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -276,6 +279,9 @@
     <ClInclude Include="NetworkMgr.h">
       <Filter>Manager</Filter>
     </ClInclude>
+    <ClInclude Include="ObstacleScript.h">
+      <Filter>Script\Obstacle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -457,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="NetworkMgr.cpp">
       <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ObstacleScript.cpp">
+      <Filter>Script\Obstacle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

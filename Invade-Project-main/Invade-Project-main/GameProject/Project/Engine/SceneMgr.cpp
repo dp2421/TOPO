@@ -34,6 +34,7 @@
 #include "CameraScript.h"
 #include "PlayerScript.h"
 #include "MonsterScript.h"
+#include "ObstacleScript.h"
 #include "ParticleSystem.h"
 #include "ArrowScript.h"
 #include "GameFramework.h"
@@ -102,6 +103,7 @@ void CSceneMgr::Init()
 	m_pCurScene->GetLayer(6)->SetName(L"temp");
 	m_pCurScene->GetLayer(7)->SetName(L"Racing");
 	m_pCurScene->GetLayer(8)->SetName(L"Obstacle");
+	m_pCurScene->GetLayer(9)->SetName(L"ObstacleMove");
 
 
 	m_pCurScene->GetLayer(31)->SetName(L"Tool");
@@ -390,7 +392,35 @@ void CSceneMgr::Init()
 
 	///////////////////////////////////////////////////////////////
 
+
 	////장애물테스트
+	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10.fbx");
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
+	pMeshData->Save(pMeshData->GetPath());
+	CGameObject* pMoveObs = nullptr;
+	pMoveObs = new CGameObject;
+
+	pMoveObs = pMeshData->Instantiate();
+	pMoveObs->AddComponent(new CTransform);
+	pMoveObs->AddComponent(new CCollider3D);
+	pMoveObs->AddComponent(new CObstacleScript);
+	pMoveObs->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVE);
+
+	//pMoveObs->AddComponent(new CMeshRender);
+	pMoveObs->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pMoveObs->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pMoveObs->FrustumCheck(false);
+	pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pMoveObs->Transform()->SetLocalPos(Vec3(500.f, 150.f, 50.f));
+
+	pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pMoveObs->MeshRender()->SetDynamicShadow(true);
+	//pObject->Animator3D()->SetClipIndex(0);
+
+	m_pCurScene->FindLayer(L"ObstacleMove")->AddGameObject(pMoveObs);
+
+
 	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\huddle2.fbx");
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
 	//pMeshData->Save(pMeshData->GetPath());
@@ -756,23 +786,24 @@ void CSceneMgr::Init()
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafetest.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\cafetest.mdat", L"MeshData\\cafetest.mdat",false, true);
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\cafetest.mdat", L"MeshData\\cafetest.mdat",false, true);
 
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(300.f, 400.f, 100.f));
-	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(300.f, 400.f, 100.f));
+	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	//pObject->Animator3D()->SetClipIndex(1);
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	////pObject->Animator3D()->SetClipIndex(1);
 
-	m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+	//m_pCurScene->FindLayer(L"Tower")->AddGameObject(pObject);
+
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafeganpan.fbx");
 	////pMeshData->Save(pMeshData->GetPath());

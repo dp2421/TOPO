@@ -362,3 +362,10 @@ enum class PLAYER_STATE {
 	RUN,
 	HAPPY,
 };
+
+enum class OBSTACLE_STATE {
+	STOP,
+	MOVE,
+	MOVEA,
+	MOVEB,
+};

@@ -215,6 +215,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="MonsterScript.h" />
     <ClInclude Include="MRT.h" />
     <ClInclude Include="NetworkMgr.h" />
+    <ClInclude Include="ObstacleScript.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PathMgr.h" />
     <ClInclude Include="pch.h" />
@@ -292,6 +293,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="MonsterScript.cpp" />
     <ClCompile Include="MRT.cpp" />
     <ClCompile Include="NetworkMgr.cpp" />
+    <ClCompile Include="ObstacleScript.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PathMgr.cpp" />
     <ClCompile Include="pch.cpp">
