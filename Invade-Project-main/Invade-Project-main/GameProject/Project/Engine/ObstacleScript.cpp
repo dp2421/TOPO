@@ -10,12 +10,11 @@ void CObstacleScript::Update()
 
 	Vec3 vRot = Transform()->GetLocalRot();
 	m_fSpeed += 5.f;
+	vRot.y = XMConvertToRadians(m_fSpeed);
 	//float fDegree = XMConvertToDegrees(m_fSpeed);
 	if (m_fSpeed > 360) {
 		m_fSpeed -= 360.f;
-		vRot.y = XMConvertToRadians(m_fSpeed);
 	}
-
 	Transform()->SetLocalRot(vRot);
 }
 

@@ -392,7 +392,6 @@ void CSceneMgr::Init()
 
 	///////////////////////////////////////////////////////////////
 
-
 	////장애물테스트
 	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10.fbx");
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
