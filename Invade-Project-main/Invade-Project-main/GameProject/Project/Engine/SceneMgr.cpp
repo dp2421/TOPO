@@ -215,11 +215,11 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	pObject->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	
-	pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
-	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
-	pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
-	pObject->AddChild(pMainCam);
+	//
+	//pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+	////pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+	//pMainCam->Transform()->SetLocalRot(Vec3(0, PI/2, -PI/18));
+	//pObject->AddChild(pMainCam);
 	m_pCurScene->FindLayer(L"Monster")->AddGameObject(pObject, false);
 
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Canon_min.mdat", L"MeshData\\Canon_min.mdat");
@@ -986,18 +986,27 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 {
 	std::cout << "add obj" << std::endl;
-
+	// MeshRender 설정
 	CGameObject* pPlayer = nullptr;
 	pPlayer = new CGameObject;
 
 	pPlayer->SetName((L"Player"));
 	pPlayer->AddComponent(new CTransform);
+	pPlayer->AddComponent(new CMeshRender);
 	pPlayer->AddComponent(new CCollider3D);
 	pPlayer->AddComponent(new CPlayerScript);
 	pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 	pPlayer->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
 	pPlayer->FrustumCheck(false);
+	pPlayer->MeshRender()->SetDynamicShadow(true);
+
+
+	// Transform 설정
+
+	// MeshRender 설정
+	pPlayer->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
 	pPlayer->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
@@ -1043,7 +1052,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 		{
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
-				obj->Transform()->SetLocalPos(Vec3(0, 45, -10));
+				obj->Transform()->SetLocalPos(Vec3(0, 55, -20));
 				obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
 				pPlayer->AddChild(obj);
 				break;
