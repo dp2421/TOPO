@@ -4,17 +4,29 @@
 
 void CObstacleScript::Update()
 {
-
-	//아래처럼 레이어이름 받아와서 따로 처리해줄까 아니면 걍 아예 분리를 할까
-	//if (L"ObstacleMove" == _pOther->GetObj()->GetName())
-
 	Vec3 vRot = Transform()->GetLocalRot();
-	m_fSpeed += 5.f;
-	vRot.y = XMConvertToRadians(m_fSpeed);
-	//float fDegree = XMConvertToDegrees(m_fSpeed);
-	if (m_fSpeed > 360) {
-		m_fSpeed -= 360.f;
+
+	//state 가 MOVE이면 360도 회전
+	if (m_iState == OBSTACLE_STATE::MOVE)
+	{
+		m_fSpeed += 5.f;
+		vRot.y = XMConvertToRadians(m_fSpeed);
+		//float fDegree = XMConvertToDegrees(m_fSpeed);
+		if (m_fSpeed > 360) {
+			m_fSpeed -= 360.f;
+		}
 	}
+	//state가 MOVEB면 시계추처럼 회전
+	else if (m_iState == OBSTACLE_STATE::MOVEB)
+	{
+		m_fSpeed += 5.f;
+		vRot.z = sinf(XMConvertToRadians(m_fSpeed));
+		//float fDegree = XMConvertToDegrees(m_fSpeed);
+		if (m_fSpeed > 360) {
+			m_fSpeed -= 360.f;
+		}
+	}
+
 	Transform()->SetLocalRot(vRot);
 }
 
