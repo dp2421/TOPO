@@ -411,7 +411,7 @@ void CSceneMgr::Init()
 	pMoveObs->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pMoveObs->FrustumCheck(false);
-	pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 	pMoveObs->Transform()->SetLocalPos(Vec3(600.f, 150.f, 50.f));
 
 	pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -465,7 +465,7 @@ void CSceneMgr::Init()
 		phuddles[i]->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 		phuddles[i]->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 		phuddles[i]->FrustumCheck(false);
-		phuddles[i]->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+		phuddles[i]->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 		phuddles[i]->Transform()->SetLocalPos(Vec3(500.f, 150.f, -50.f+ 150.f * i));
 
 		phuddles[i]->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -540,7 +540,7 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -558,8 +558,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(1000.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 1000.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 
@@ -576,8 +576,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(3800.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 3800.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 
@@ -596,8 +596,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(5000.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 5000.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
@@ -615,8 +615,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(8000.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 8000.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -636,8 +636,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(13000.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 13000.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -657,8 +657,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(16700.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 16700.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -678,8 +678,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(20800.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 20800.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -697,8 +697,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(21400.f, 10.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 21400.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -721,8 +721,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(4760.f, -390.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -390.f, 4760.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -742,8 +742,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(8200.f, -390.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -390.f, 8200.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -761,8 +761,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(12600.f, -390.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -390.f, 12600.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -780,8 +780,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(16800.f, -390.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -390.f, 16800.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
@@ -797,8 +797,8 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(19100.f, -390.f, 0.f));
-	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, -3.14f / 2, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -390.f, 19100.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
