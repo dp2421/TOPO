@@ -387,16 +387,10 @@ void CSceneMgr::Init()
 	//m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	//pObject->SetActive(false);
 
-
-
 	///////////////////////////////////////////////////////////////
 	////장애물테스트
 	//360도
-<<<<<<< HEAD
-	pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
-=======
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10.fbx");
->>>>>>> e20588b29789847b71ec57927bda2f39eaa8578c
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
 	pMeshData->Save(pMeshData->GetPath());
 	CGameObject* pMoveObs = nullptr;
@@ -900,8 +894,6 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	//1층 ==============================================================================================
-
-
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1water.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1water.mdat", L"MeshData\\1water.mdat");
@@ -922,7 +914,6 @@ void CSceneMgr::Init()
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
-
 
 
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\1part1.fbx");
