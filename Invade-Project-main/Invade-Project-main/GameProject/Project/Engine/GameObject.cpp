@@ -211,7 +211,7 @@ void CGameObject::Update()
 			m_arrCom[i]->Update();
 	}
 
-	for (size_t i = 0; i < m_vecChild.size(); ++i)
+ 	for (size_t i = 0; i < m_vecChild.size(); ++i)
 	{
 		if (m_vecChild[i]->IsActive())
 			m_vecChild[i]->Update();
