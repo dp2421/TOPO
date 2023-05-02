@@ -7,7 +7,7 @@ void CObstacleScript::Update()
 	Vec3 vRot = Transform()->GetLocalRot();
 
 	//state 가 MOVE이면 360도 회전
-	if (m_iState == OBSTACLE_STATE::MOVE)
+	if (m_iState == OBSTACLE_STATE::MOVEA)
 	{
 		m_fSpeed += 5.f;
 		vRot.y = XMConvertToRadians(m_fSpeed);

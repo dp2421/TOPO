@@ -8,10 +8,13 @@
 #define PCH_H
 
 #include <SDKDDKVer.h>
-#define WIN32_LEAN_AND_MEAN   
-#define MAXHUDDLE 5
-#define MAXMOVEOBSTACLEA 5
-#define MAXMOVEOBSTACLEB 3
+#define WIN32_LEAN_AND_MEAN  
+#define FLOORHEIGET 400  //맵 2층 1층 간격
+#define MAXOBSTACLE2A 26 //2층 360도회전 장애물 개수
+#define MAXOBSTACLE2B 14 //2층 시계추 장애물 개수
+#define MAXOBSTACLE2H 9 //2층 허들 장애물 개수
+
+
 
 // 여기에 미리 컴파일하려는 헤더 추가
 #include <iostream>
