@@ -38,8 +38,8 @@ void CLight3D::SetLightType(LIGHT_TYPE _eType)
 		m_pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
 		m_pCamObj->Camera()->SetScale(1.f);
 		m_pCamObj->Camera()->SetFar(100000.f);
-		m_pCamObj->Camera()->SetWidth(1024.f);
-		m_pCamObj->Camera()->SetHeight(1024.f);
+		m_pCamObj->Camera()->SetWidth(2048);
+		m_pCamObj->Camera()->SetHeight(2048);
 	}
 	else if (LIGHT_TYPE::POINT == (LIGHT_TYPE)m_tLightInfo.iLightType)
 	{

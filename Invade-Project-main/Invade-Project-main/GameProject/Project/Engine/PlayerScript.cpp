@@ -19,8 +19,6 @@ void CPlayerScript::Update()
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
 
-	runPlayer->Transform()->SetLocalPos(Vec3::Zero);
-	IdlePlayer->Transform()->SetLocalPos(Vec3::Zero);
 
 	Vec3 dir = Vec3::Zero;
 
@@ -57,6 +55,8 @@ void CPlayerScript::Update()
 	vPos += dir.Normalize() * SPEED * DT;
 	Transform()->SetLocalPos(vPos);
 
+	runPlayer->Transform()->SetLocalPos(vPos);
+	IdlePlayer->Transform()->SetLocalPos(vPos);
 #else
 	bool isMove = true;
 	if (moveState == 0)

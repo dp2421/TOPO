@@ -45,7 +45,6 @@ struct VS_STD3D_OUTPUT
 VS_STD3D_OUTPUT VS_Std3D(VS_STD3D_INPUT _in)
 {
     VS_STD3D_OUTPUT output = (VS_STD3D_OUTPUT) 0.f;
-    float2 unityTex = _in.vUV;
 
     if (g_int_0)
     {

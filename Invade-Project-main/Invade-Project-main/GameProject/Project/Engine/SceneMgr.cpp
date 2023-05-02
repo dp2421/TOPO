@@ -1216,7 +1216,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(50.f, 115.f, 100.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
 #else
 	pPlayer->Transform()->SetLocalPos(pos);
 #endif
@@ -1234,8 +1234,10 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject = pMeshData->Instantiate();
 	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
+	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
 	pObject->SetActive(true);
-	pPlayer->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	//pPlayer->AddChild(pObject);
@@ -1247,7 +1249,10 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->SetActive(true);
-	pPlayer->MeshRender()->SetDynamicShadow(true);
+	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
+	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+	pObject->MeshRender()->SetDynamicShadow(true);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	//pPlayer->AddChild(pObject);
@@ -1261,9 +1266,12 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 		{
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
-				obj->Transform()->SetLocalPos(Vec3(0, 45, -20));
-				obj->Transform()->SetLocalRot(Vec3(0, PI / 2, -PI / 18));
-				pPlayer->AddChild(obj);
+				obj->Transform()->SetLocalPos(Vec3(0, 70.f, 300.f));
+				obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+				pObject->AddChild(obj);
+
+				////pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+		//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 				break;
 			}
 		}
