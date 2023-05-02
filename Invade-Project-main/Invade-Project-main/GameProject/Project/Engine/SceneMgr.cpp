@@ -139,6 +139,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 
+#pragma region TempObj
 
 
 	//pObject = new CGameObject;
@@ -170,11 +171,14 @@ void CSceneMgr::Init()
 //	pMeshData->Save(pMeshData->GetPath());
 	// MeshData 로드
 
+#pragma endregion
+
 #if LOCALPLAY
 	AddNetworkGameObject(true, Vec3::Zero);
 #else
 #endif
 
+#pragma region TempObj
 
 	//// Temp Object
 	//pObject = new CGameObject;
@@ -386,6 +390,8 @@ void CSceneMgr::Init()
 	//pObject->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::HAPPY);
 	//m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
 	//pObject->SetActive(false);
+
+#pragma endregion
 
 	///////////////////////////////////////////////////////////////
 	////장애물테스트
@@ -638,7 +644,6 @@ void CSceneMgr::Init()
 		}
 	}
 
-
 	//허들 장애물 : 2층(7) + 1층(34)
 	{
 		pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\huddle_2.fbx");
@@ -709,8 +714,6 @@ void CSceneMgr::Init()
 			}
 		}
 	}
-
-
 
 	//맵 ====================================================
 	//단위(unity추출기준) : 원본*400
@@ -991,6 +994,8 @@ void CSceneMgr::Init()
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#pragma region TempObj
+
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\cafetest.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\cafetest.mdat", L"MeshData\\cafetest.mdat",false, true);
@@ -1120,6 +1125,9 @@ void CSceneMgr::Init()
 //
 //	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 //
+
+#pragma endregion
+
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Particle");
