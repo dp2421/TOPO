@@ -59,33 +59,49 @@ void CPlayerScript::Update()
 	Transform()->SetLocalPos(vPos);
 
 #else
-	bool isMove = true;
-	if (moveState == 0)
+	bool isMove = moveState;
+
+	SetPlayerMoveState(Direction::Front, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(Direction::Back, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(Direction::Left, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(Direction::Right, KEY_STATE::STATE_TAB, dir);
+
+	SetPlayerMoveState(Direction::Front, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(Direction::Back, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(Direction::Left, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(Direction::Right, KEY_STATE::STATE_AWAY, dir);
+
+	if (moveState != (int)Direction::None && !isMove)
 	{
-		isMove = false;
+		dir.Normalize();
+		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::MoveStart, dir);
 	}
-
-	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_TAB, dir);
-	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_TAB, dir);
-	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_TAB, dir);
-	SetPlayerMoveState(KEY_TYPE::KEY_D, KEY_STATE::STATE_TAB, dir);
-	if (dir != Vec3::Zero && !isMove)
-	{
-		// 이동
-		isMove = true;
-	}
-
-	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_AWAY, dir);
-	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_AWAY, dir);
-	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_AWAY, dir);
-	SetPlayerMoveState(KEY_TYPE::KEY_D, KEY_STATE::STATE_AWAY, dir);
-
-	if (moveState > 0)
+	if (moveState != (int)Direction::None)
 	{
 		if (!runPlayer->IsActive())
 			runPlayer->SetActive(true);
 		if (IdlePlayer->IsActive())
 			IdlePlayer->SetActive(false);
+
+		if ((moveState & (int)Direction::Front) == (int)Direction::Front)
+		{
+			dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		}
+		if ((moveState & (int)Direction::Back) == (int)Direction::Back)
+		{
+			dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
+		}
+		if ((moveState & (int)Direction::Left) == (int)Direction::Left)
+		{
+			dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		}
+		if ((moveState & (int)Direction::Right) == (int)Direction::Right)
+		{
+			dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+		}
+
+		dir.Normalize();
+		NetworkMgr::GetInst()->SendClientMovePacket(dir);
 	}
 	else
 	{
@@ -226,14 +242,11 @@ void CPlayerScript::Update()
 			vRot.y = XMConvertToRadians(fDegree);
 		}
 	}
-	
-
-
 
 	Transform()->SetLocalRot(vRot);
 }
 
-const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir)
+const void CPlayerScript::SetPlayerMoveState(Direction key, KEY_STATE state, Vec3& dir)
 {
 	if (KEY(key, state))
 	{
@@ -242,16 +255,16 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 			moveState |= (int)key;
 			switch (key)
 			{
-			case KEY_TYPE::KEY_W:
+			case Direction::Front:
 				dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
 				break;
-			case KEY_TYPE::KEY_S:
+			case Direction::Back:
 				dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
 				break;
-			case KEY_TYPE::KEY_A:
+			case Direction::Left:
 				dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 				break;
-			case KEY_TYPE::KEY_D:
+			case Direction::Right:
 				dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 				break;
 			default:
@@ -260,10 +273,10 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 		}
 		else if (state == KEY_STATE::STATE_AWAY)
 		{
-			moveState &= ~(int)Direction::Front;
+			moveState &= ~(int)key;
 			if (moveState == 0)
 			{
-				// 이동 중지
+				NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::MoveEnd, dir);
 			}
 		}
 	}
