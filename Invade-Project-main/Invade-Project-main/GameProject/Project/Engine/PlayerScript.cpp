@@ -22,7 +22,6 @@ void CPlayerScript::Update()
 	runPlayer->Transform()->SetLocalPos(Vec3::Zero);
 	IdlePlayer->Transform()->SetLocalPos(Vec3::Zero);
 
-
 	Vec3 dir = Vec3::Zero;
 
 #if LOCALPLAY
