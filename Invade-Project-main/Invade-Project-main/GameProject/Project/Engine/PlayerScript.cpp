@@ -6,7 +6,6 @@
 #include"CameraScript.h"
 #include "NetworkMgr.h"
 
-
 void CPlayerScript::Awake()
 {
 
@@ -60,15 +59,15 @@ void CPlayerScript::Update()
 #else
 	bool isMove = moveState;
 
-	SetPlayerMoveState(Direction::Front, KEY_STATE::STATE_TAB, dir);
-	SetPlayerMoveState(Direction::Back, KEY_STATE::STATE_TAB, dir);
-	SetPlayerMoveState(Direction::Left, KEY_STATE::STATE_TAB, dir);
-	SetPlayerMoveState(Direction::Right, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_TAB, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_D, KEY_STATE::STATE_TAB, dir);
 
-	SetPlayerMoveState(Direction::Front, KEY_STATE::STATE_AWAY, dir);
-	SetPlayerMoveState(Direction::Back, KEY_STATE::STATE_AWAY, dir);
-	SetPlayerMoveState(Direction::Left, KEY_STATE::STATE_AWAY, dir);
-	SetPlayerMoveState(Direction::Right, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_AWAY, dir);
+	SetPlayerMoveState(KEY_TYPE::KEY_D, KEY_STATE::STATE_AWAY, dir);
 
 	if (moveState != (int)Direction::None && !isMove)
 	{
@@ -245,25 +244,28 @@ void CPlayerScript::Update()
 	Transform()->SetLocalRot(vRot);
 }
 
-const void CPlayerScript::SetPlayerMoveState(Direction key, KEY_STATE state, Vec3& dir)
+const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir)
 {
 	if (KEY(key, state))
 	{
 		if (state == KEY_STATE::STATE_TAB)
 		{
-			moveState |= (int)key;
 			switch (key)
 			{
-			case Direction::Front:
+			case KEY_TYPE::KEY_W:
+				moveState |= (int)Direction::Front;
 				dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
 				break;
-			case Direction::Back:
+			case KEY_TYPE::KEY_A:
+				moveState |= (int)Direction::Back;
 				dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
 				break;
-			case Direction::Left:
+			case KEY_TYPE::KEY_S:
+				moveState |= (int)Direction::Left;
 				dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 				break;
-			case Direction::Right:
+			case KEY_TYPE::KEY_D:
+				moveState |= (int)Direction::Right;
 				dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 				break;
 			default:
