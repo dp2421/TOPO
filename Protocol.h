@@ -1,17 +1,14 @@
 #pragma once
 
-//constexpr auto DT = chrono::round<chrono::milliseconds>(chrono::duration<float>(1.f / 60.f));
-constexpr float SPEED = 200.f;
-
 constexpr int PORTNUM = 20150;
 constexpr int BUFFERSIZE = 256;
 constexpr int NAMESIZE = 20;
-//constexpr char SERVERIP[] = "210.117.115.67";
-constexpr char SERVERIP[] = "127.0.0.1";
+
+constexpr char SERVERIP[] = "210.117.115.67";
+//constexpr char SERVERIP[] = "127.0.0.1";
 
 constexpr unsigned char ClientLogin = 100;
 constexpr unsigned char ClientMatching = 101;
-// 캐릭바꾸기? 색바꾸기 고려
 constexpr unsigned char ClientReady = 102;
 constexpr unsigned char ClientKeyInput = 103;
 constexpr unsigned char ClientMove = 104;
@@ -32,12 +29,12 @@ constexpr char ServerMatchingOK = 202;
 constexpr char ServerGameStart = 203;
 
 constexpr unsigned char ServerAddPlayer = 204;
-constexpr unsigned char ServerPlayerInfo = 205;
-constexpr unsigned char ServerObstacleInfo = 206;
-constexpr unsigned char ServerGameTimer = 207;
-constexpr unsigned char ServerGameEnd = 208;
-
-constexpr unsigned char ServerGameResult = 208;
+constexpr unsigned char ServerRemovePlayer = 205;
+constexpr unsigned char ServerPlayerInfo = 206;
+constexpr unsigned char ServerObstacleInfo = 207;
+constexpr unsigned char ServerGameTimer = 208;
+constexpr unsigned char ServerGameEnd = 209;
+constexpr unsigned char ServerGameResult = 210;
 
 #pragma pack (push, 1)
 
@@ -105,6 +102,13 @@ struct ServerAddPlayerPacket
 	unsigned char	type;
 	int		id;
 	float	x, y, z;
+};
+
+struct ServerRemovePlayerPacket
+{
+	unsigned char size;
+	unsigned char	type;
+	int		id;
 };
 
 struct ServerPlayerInfoPacket

@@ -25,7 +25,7 @@ void MatchingManager::DoMatching(Client* client, concurrency::concurrent_priorit
 	{
 		this->isDoMatching = true;
 		OverlappedEx* over = new OverlappedEx;
-		over->type = OverlappedType::ServerEvent;
+		over->type = OverlappedType::Update;
 
 		Event matchingEvent;
 		matchingEvent.objID = roomID;

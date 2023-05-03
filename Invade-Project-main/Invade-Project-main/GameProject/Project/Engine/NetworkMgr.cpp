@@ -3,6 +3,7 @@
 #include "SceneMgr.h"
 #include "GameObject.h"
 #include "Transform.h"
+#include "PlayerScript.h"
 
 
 NetworkMgr::NetworkMgr()
@@ -121,32 +122,56 @@ void NetworkMgr::DoRecv()
 #else
     DWORD recv_flag = 0;
     memset(&recv.overlapped, 0, sizeof(recv.overlapped));
+    recv.wsaBuf.len = BUFFERSIZE - prevRemainData;
+    recv.wsaBuf.buf = recv.sendBuf + prevRemainData;
     WSARecv(socket, &recv.wsaBuf, 1, NULL, &recv_flag, &recv.overlapped, RecvCallback);
 #endif
 }
 
-void NetworkMgr::ProcessPacket()
+void NetworkMgr::AssemblyPacket(int recvData)
 {
-    switch ((unsigned char)recv.wsaBuf.buf[1])
+    int remain_data = recvData + prevRemainData;
+    char* p = recv.wsaBuf.buf;
+    while (remain_data > 0) 
+    {
+        int packet_size = (unsigned char)p[0];
+        if (packet_size <= remain_data) 
+        {
+            ProcessPacket(p);
+            p = p + packet_size;
+            remain_data = remain_data - packet_size;
+        }
+        else break;
+    }
+    prevRemainData = remain_data;
+    if (remain_data > 0) {
+        memcpy(recv.wsaBuf.buf, p, remain_data);
+    }
+}
+
+void NetworkMgr::ProcessPacket(char* packet)
+{
+    switch ((unsigned char)packet[1])
     {
     case ServerLogin:
     {
-        ServerLoginPacket* packet = reinterpret_cast<ServerLoginPacket*>(recv.wsaBuf.buf);
-        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(true, Vec3(packet->x, packet->y, packet->z));
-        networkObjects[packet->id] = obj;
+        ServerLoginPacket* p = reinterpret_cast<ServerLoginPacket*>(packet);
+        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(true, Vec3(p->x, p->y, p->z));
+        networkObjects[p->id] = obj;
         break;
     }
     case ServerAddPlayer:
     {
-        ServerAddPlayerPacket* packet = reinterpret_cast<ServerAddPlayerPacket*>(recv.wsaBuf.buf);
-        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(packet->x, packet->y, packet->z));
-        networkObjects[packet->id] = obj;
+        ServerAddPlayerPacket* p = reinterpret_cast<ServerAddPlayerPacket*>(packet);
+        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(p->x, p->y, p->z));
+        networkObjects[p->id] = obj;
         break;
     }
     case ServerPlayerInfo:
     {
-        ServerPlayerInfoPacket* packet = reinterpret_cast<ServerPlayerInfoPacket*>(recv.wsaBuf.buf);
-        networkObjects[packet->id]->Transform()->SetLocalPos(Vec3(packet->xPos, packet->yPos, packet->zPos));
+        ServerPlayerInfoPacket* p = reinterpret_cast<ServerPlayerInfoPacket*>(packet);
+        if (networkObjects.find(p->id) != networkObjects.end())
+            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos));
         break;
     }
     } 
@@ -154,7 +179,8 @@ void NetworkMgr::ProcessPacket()
 
 void RecvCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag)
 {
-    NetworkMgr::GetInst()->ProcessPacket();
+    //NetworkMgr::GetInst()->AssemblyPacket(numBytes);
+    NetworkMgr::GetInst()->ProcessPacket(NetworkMgr::GetInst()->recv.wsaBuf.buf);
     NetworkMgr::GetInst()->DoRecv();
 }
 

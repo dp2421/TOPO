@@ -11,6 +11,7 @@ public:
 
 	void InitServer();
 	void InitHandler();
+	void InitObsatacleInfo();
 
 	void Run();
 	void Accept();
@@ -42,4 +43,3 @@ private:
 
 	atomic<int> clientID = 0;	
 };
-

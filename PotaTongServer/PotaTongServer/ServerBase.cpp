@@ -7,6 +7,7 @@ ServerBase::ServerBase()
 
 	matchingManager = new MatchingManager(IOCPHandle);
 	InitHandler();
+	InitObsatacleInfo();
 }
 
 ServerBase::~ServerBase()
@@ -37,6 +38,8 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 		WSAOVERLAPPED* over = nullptr;
 		BOOL ret = GetQueuedCompletionStatus(IOCP, &numBytes, &ID, &over, INFINITE);
 		OverlappedEx* overlappedEx = reinterpret_cast<OverlappedEx*>(over);
+		
+		const int id = static_cast<int>(ID);
 
 		if (FALSE == ret)
 		{
@@ -46,8 +49,8 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			}
 			else
 			{
-				cout << "GQCS Error on client [" << static_cast<int>(ID) << "]\n";
-				Disconnect(static_cast<int>(ID));
+				cout << "GQCS Error on client [" << id << "]\n";
+				Disconnect(id);
 				if (overlappedEx->type == OverlappedType::Send) delete overlappedEx;
 				continue;
 			}
@@ -59,13 +62,13 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			Accept();
 			break;
 		case OverlappedType::Recv:
-			Recv(static_cast<int>(ID), numBytes, overlappedEx);
+			Recv(id, numBytes, overlappedEx);
 			break;
 		case OverlappedType::Send:
 			delete overlappedEx;
 			break;
 		default:
-			ServerEvent(overlappedEx);
+			ServerEvent(id, overlappedEx);
 			break;
 		}
 	}
@@ -76,7 +79,7 @@ void ServerBase::EventThread()
 	Event event;
 	event.objID = -1;
 	while (true) {
-		auto current_time = chrono::system_clock::now();
+		auto currentTime = chrono::system_clock::now();
 		if (event.objID == -1)
 		{
 			if (true == eventQueue.try_pop(event))
@@ -86,17 +89,24 @@ void ServerBase::EventThread()
 		}
 		else
 		{
-			if (event.excuteTime > current_time) 
+			if (event.excuteTime > currentTime) 
 			{
+				//eventQueue.push(event);
 				this_thread::sleep_for(1ms);
 				continue;
 			}
+
 			switch (event.eventType)
 			{
 			case OverlappedType::Update:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
 				overlappedEx->type = OverlappedType::Update;
+
+				// 시간 보간
+				//auto diff = chrono::duration<float>((currentTime - event.excuteTime) / DeltaTimeMilli);
+				//memcpy(overlappedEx->sendBuf, &diff, sizeof(diff));
+
 				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
 				event.objID = -1;
 				break;
@@ -148,6 +158,24 @@ void ServerBase::InitHandler()
 	// 패킷 처리 구조 초기화
 }
 
+void ServerBase::InitObsatacleInfo()
+{
+	// 바이너리 파일 읽기
+	ifstream inFile("obstacles.bin", std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		std::cerr << "Failed to open obstacles.bin" << std::endl;
+		return;
+	}
+
+	while (!inFile.eof()) {
+		ObstacleInfo obstacle;
+		inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
+		//obstacles.push_back(obstacle);
+	}
+	inFile.close();
+}
+
 void ServerBase::Accept()
 {
 	int newID = clientID++;
@@ -196,6 +224,8 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
 	auto client = clients[id];	
+	if (client->ID < 0) return;
+
 	switch (overlappedEx->type)
 	{
 	case OverlappedType::MatchingStart:
@@ -203,8 +233,44 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	case OverlappedType::MatchingComplete:
 		break;
 	case OverlappedType::Update:
-		client->position = client->direction;
+	{
+		if (client->ID < 0) return;
+
+		{
+			lock_guard<mutex> lock{ client->lock };
+			if (client->isMove)
+			{
+				auto delta = client->direction * SPEED * DeltaTimefloat.count();
+				client->position += delta;
+			}
+			if (client->isJump)
+			{
+				client->velocity.y -= GRAVITY * DeltaTimefloat.count();
+				client->position += client->velocity * DeltaTimefloat.count();
+
+				if (client->position.y <= 0)
+				{
+					client->position.y = 0;
+					client->isJump = false;
+					client->velocity.y = 0;
+				}
+			}
+		}
+
+		client->SendPlayerInfoPacket(id, client->position, client->direction);
+
+		for (auto cl : clients)
+		{
+			ClientException(cl, id);
+
+			cl.second->SendPlayerInfoPacket(id, client->position, client->direction);
+		}
+
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
+
 		break;
+	}
 	default:
 		break;
 	}
@@ -216,6 +282,25 @@ void ServerBase::Disconnect(int ID)
 	// 게임중, 로비 구별
 	// 게임중이면 같은 그룹에게 전달
 	// 로비면 그냥 끊기
+	auto client = clients[ID];	
+
+	lock_guard<mutex> lock{ clients[ID]->lock };
+
+	// 매칭 이후 추가
+	//if (client->RoomID > 0)
+	//{
+	//
+	//}
+
+	for (auto cl : clients)
+	{
+		ClientException(cl, ID);
+
+		cl.second->SendRemovePlayerPacket(ID);
+	}
+
+	closesocket(clients[ID]->socket);
+	clients[ID]->ID = -1;
 }
 
 void ServerBase::ProcessPacket(const int id, char* packet)
@@ -223,15 +308,19 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	switch (packet[1])
 	{
 	case ClientLogin:
+	{
 		clients[id]->SendServerLoginPacket(id);
 		for (auto& client : clients)
 		{
-			if (client.second->ID == id) continue;
+			ClientException(client, id);
 
 			client.second->SendAddPlayerPacket(id, clients[id]->position);
 			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
 		break;
+	}
 	case ClientKeyInput:
 	{
 		auto p = reinterpret_cast<ClientKeyInputPacket*>(packet);
@@ -260,19 +349,32 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	{
 	case KeyType::MoveStart: // 이동
 	{
-		client->direction = dir;
-		client->position = client->direction;
-		client->isMove = true;
-		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DT};
-		eventQueue.push(event);
+		{
+			cout << "move start" << endl;
+			lock_guard<mutex> lock{ client->lock };
+			client->direction = dir;
+			client->isMove = true;
+		}
 		break;
 	}	
-	case KeyType::MoveEnd: 
-
+	case KeyType::MoveEnd:
+	{
+		{
+			cout << "move end" << endl;
+			lock_guard<mutex> lock{ client->lock };
+			client->isMove = false;
+		}
 		break;
+	}
 	case KeyType::Jump: // 점프 
-
+	{
+		if (!client->isJump)
+		{
+			client->isJump = true;
+			client->velocity.y = JUMPVEL;
+		}
 		break;
+	}
 	case KeyType::Push: // 밀치기
 
 		break;
@@ -282,10 +384,5 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	default:
 		break;
 	}
-
-	//for (auto client : clients)
-	//{
-	//	client.second->SendPlayerInfoPacket(id, clients[id]->position, dir);
-	//}
 }
 

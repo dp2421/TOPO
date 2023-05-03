@@ -13,6 +13,7 @@ public:
 	int prevRemainData;
 
 	bool isMove = false;
+	bool isJump = false;
 
 	Vector3 position;
 	Vector3 direction;
@@ -26,6 +27,7 @@ public:
 
 	void SendServerLoginPacket(const int id);
 	void SendAddPlayerPacket(const int id, const Vector3 pos);
+	void SendRemovePlayerPacket(const int id);
 	void SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir);
 private:
 	OverlappedEx recv;

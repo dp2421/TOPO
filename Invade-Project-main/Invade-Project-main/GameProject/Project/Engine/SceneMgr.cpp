@@ -410,8 +410,8 @@ void CSceneMgr::Init()
 
 	//pMoveObs->AddComponent(new CMeshRender);
 	pMoveObs->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pMoveObs->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pMoveObs->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 100.f));
+	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 100.f, 100.f));
 	pMoveObs->FrustumCheck(false);
 	pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 	pMoveObs->Transform()->SetLocalPos(Vec3(600.f, 10.f, 50.f));

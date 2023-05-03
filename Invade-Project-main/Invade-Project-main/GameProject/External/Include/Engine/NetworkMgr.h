@@ -8,6 +8,8 @@ public:
 
 	int CurID;
 	std::unordered_map<int, CGameObject*> networkObjects;
+
+	int prevRemainData = 0;
 public:
 
 	void Init();
@@ -19,7 +21,8 @@ public:
 	void SendClientMovePacket(Vec3 dir);
 
 	void DoRecv();
-	void ProcessPacket();
+	void AssemblyPacket(int recvData);
+	void ProcessPacket(char* packet);
 private:
 };
 

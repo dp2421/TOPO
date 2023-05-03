@@ -279,9 +279,9 @@ void readObstaclesDate()
 	}
 	inFile.close();
 
-	////테스트
-	//for (ObstacleObject i : obstacles)
-	//	cout << i.vPos.x << endl;
+	//테스트
+	for (ObstacleObject i : obstacles)
+		cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << i.state << endl;
 }
 
 int main()

@@ -43,12 +43,22 @@ void Client::SendServerLoginPacket(const int id)
 void Client::SendAddPlayerPacket(const int id, const Vector3 vec)
 {
 	ServerAddPlayerPacket packet;
-	packet.size = sizeof(ServerPlayerInfoPacket);
+	packet.size = sizeof(ServerAddPlayerPacket);
 	packet.type = ServerAddPlayer;
 	packet.id = id;
 	packet.x = vec.x;
 	packet.y = vec.y;
 	packet.z = vec.z;
+
+	SendPacket(&packet);
+}
+
+void Client::SendRemovePlayerPacket(const int id)
+{
+	ServerRemovePlayerPacket packet;
+	packet.size = sizeof(ServerRemovePlayerPacket);
+	packet.type = ServerRemovePlayer;
+	packet.id = id;
 
 	SendPacket(&packet);
 }
