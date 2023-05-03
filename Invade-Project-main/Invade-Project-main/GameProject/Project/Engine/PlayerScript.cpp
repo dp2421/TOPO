@@ -243,7 +243,6 @@ void CPlayerScript::Update()
 		}
 	}
 
-
 	IdlePlayer->Transform()->SetLocalRot(vRot);
 	runPlayer->Transform()->SetLocalRot(vRot);
 	Transform()->SetLocalRot(vRot);

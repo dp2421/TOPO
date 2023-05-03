@@ -17,8 +17,12 @@ struct ObstacleInfo
 
 class Obstacle
 {
-	ObstacleInfo data;
+public:
+	Obstacle(ObstacleInfo info);
+	~Obstacle();
 
+	ObstacleInfo data;
 	XMFLOAT3 position;
+	Collider collider;
 };
 
