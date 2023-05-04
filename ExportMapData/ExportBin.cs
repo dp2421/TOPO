@@ -1,0 +1,144 @@
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+
+
+[System.Serializable] public struct SerializedVector3
+{
+    public float x;
+    public float y;
+    public float z;
+
+    public SerializedVector3(float x, float y, float z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public SerializedVector3(Vector3 v)
+    {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if ((obj is SerializedVector3) == false)
+        {
+            return false;
+        }
+
+        var s = (SerializedVector3)obj;
+        return x == s.x && y == s.y && z == s.z;
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = 373119288;
+        hashCode = hashCode * -1521134295 + x.GetHashCode();
+        hashCode = hashCode * -1521134295 + y.GetHashCode();
+        hashCode = hashCode * -1521134295 + z.GetHashCode();
+        return hashCode;
+    }
+
+    public Vector3 ToVector3()
+    {
+        return new Vector3(x, y, z);
+    }
+
+    public static bool operator ==(SerializedVector3 a, SerializedVector3 b)
+    {
+        return a.x == b.x && a.y == b.y && a.z == b.z;
+    }
+
+    public static bool operator !=(SerializedVector3 a, SerializedVector3 b)
+    {
+        return a.x != b.x || a.y != b.y || a.z != b.z;
+    }
+
+    public static implicit operator Vector3(SerializedVector3 x)
+    {
+        return new Vector3(x.x, x.y, x.z);
+    }
+
+    public static implicit operator SerializedVector3(Vector3 x)
+    {
+        return new SerializedVector3(x.x, x.y, x.z);
+    }
+
+}
+
+[System.Serializable] class MapObject
+{
+    public SerializedVector3 vPos;
+    public SerializedVector3 vScale;
+
+    public void SetValue(SerializedVector3 _vPos, SerializedVector3 _vScale)
+    {
+        vPos = _vPos;
+        vScale = _vScale;
+    }
+};
+
+public class ExportBin : MonoBehaviour
+{
+    public string pathName = "MapPosition.bin";
+    float fValue = 400f; //유니티->프레임워크 단위 보정값
+    int FLOORHEIGET = 400;
+
+    //맵오브젝트들을 저장
+    private List<MapObject> mapObjects = new List<MapObject>(); // MapObject 객체를 저장할 List
+    private void SaveMapObjects()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(pathName);
+        bf.Serialize(file, mapObjects);
+        file.Close();
+    }
+
+    // 바이너리 형식으로 저장된 Vector Container를 읽어오는 함수
+    private void LoadMapObjects()
+    {
+        if (File.Exists(pathName))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(pathName, FileMode.Open);
+            mapObjects = (List<MapObject>)bf.Deserialize(file);
+            file.Close();
+        }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        ////씬에 있는 모든 오브젝트들을 내보낸다
+        ////2층 : y 10 고정 || 1층 : 10 - FLOORHEIGET(=400)
+        //GameObject[] objects = FindObjectsOfType<GameObject>();
+        //foreach (GameObject obj in objects)
+        //{
+        //    MapObject mpobj = new MapObject(); // 객체 인스턴스화
+        //    mpobj.SetValue(obj.transform.position * fValue, obj.transform.localScale);
+        //    mpobj.vPos.y = 10.0f - FLOORHEIGET;
+        //    mapObjects.Add(mpobj);
+        //}
+        //SaveMapObjects();
+        ////////////////////////////////////////////////////////////////////////////
+        LoadMapObjects();
+        //읽어오기 테스트
+        for (int i = 0; i < 3; ++i)
+        {
+            print(mapObjects[i].vPos.z);
+            print(mapObjects[i].vPos.y);
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
