@@ -417,7 +417,7 @@ void CSceneMgr::Init()
 	pMoveObs->Transform()->SetLocalPos(Vec3(600.f, 10.f, 50.f));
 
 	pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pMoveObs->MeshRender()->SetDynamicShadow(true);
+	pMoveObs->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(0);
 
 	m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pMoveObs);
@@ -441,7 +441,7 @@ void CSceneMgr::Init()
 	pMoveObs->Transform()->SetLocalPos(Vec3(500.f, 330.f, 50.f));
 
 	pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pMoveObs->MeshRender()->SetDynamicShadow(true);
+	pMoveObs->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(0);
 	m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pMoveObs);
 
@@ -473,7 +473,7 @@ void CSceneMgr::Init()
 					pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 					pObstaclesA->Transform()->SetLocalPos(Vec3(k*(1280.f + 280.f * i + 640.f * j), 10.f, 1200.f + 400.f * i));
 					pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-					pObstaclesA->MeshRender()->SetDynamicShadow(true);
+					pObstaclesA->MeshRender()->SetDynamicShadow(false);
 					m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 				}
 			}
@@ -494,7 +494,7 @@ void CSceneMgr::Init()
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesA->Transform()->SetLocalPos(Vec3(-1600.f + 600.f * i + 640.f, 10.f, 8960.f + 1280.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesA->MeshRender()->SetDynamicShadow(true);
+				pObstaclesA->MeshRender()->SetDynamicShadow(false);
 				m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 			}
 		}
@@ -512,7 +512,7 @@ void CSceneMgr::Init()
 			pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesA->Transform()->SetLocalPos(Vec3(500.f -i*(500.f), 10.f, 21000.f));
 			pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesA->MeshRender()->SetDynamicShadow(true);
+			pObstaclesA->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 		}
 
@@ -533,7 +533,7 @@ void CSceneMgr::Init()
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 560.f * i, 10.f - FLOORHEIGET, 8400.f + 1600.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesA->MeshRender()->SetDynamicShadow(true);
+				pObstaclesA->MeshRender()->SetDynamicShadow(false);
 				m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 			}
 		}
@@ -551,7 +551,7 @@ void CSceneMgr::Init()
 			pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesA->Transform()->SetLocalPos(Vec3(-2560.f + 480.f * i, 10.f - FLOORHEIGET, 14720.f));
 			pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesA->MeshRender()->SetDynamicShadow(true);
+			pObstaclesA->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 		}
 	}
@@ -582,7 +582,7 @@ void CSceneMgr::Init()
 				pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesB->Transform()->SetLocalPos(Vec3(-840.f + 840.f*i, 330.f, 8400.f + 1200.f*j));
 				pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesB->MeshRender()->SetDynamicShadow(true);
+				pObstaclesB->MeshRender()->SetDynamicShadow(false);
 				m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
 			}
 		}
@@ -600,7 +600,7 @@ void CSceneMgr::Init()
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-1680.f + 1680.f*i, 330.f, 14800.f));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesB->MeshRender()->SetDynamicShadow(true);
+			pObstaclesB->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
 		}
 
@@ -619,7 +619,7 @@ void CSceneMgr::Init()
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-640.f - 640.f * i, 330.f-FLOORHEIGET, 12800.f + 600.f*i));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesB->MeshRender()->SetDynamicShadow(true);
+			pObstaclesB->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
 		}
 		for (int i = 0; i < 2; ++i)
@@ -638,7 +638,7 @@ void CSceneMgr::Init()
 				pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesB->Transform()->SetLocalPos(Vec3(-480.f + 960.f * i, 330.f - FLOORHEIGET, 16800.f + 800.f * j));
 				pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesB->MeshRender()->SetDynamicShadow(true);
+				pObstaclesB->MeshRender()->SetDynamicShadow(false);
 				m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
 			}
 		}
@@ -667,7 +667,7 @@ void CSceneMgr::Init()
 			pObstaclesH->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesH->Transform()->SetLocalPos(Vec3(-160.f + 160.f * i, 80.f, 21000.f));
 			pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesH->MeshRender()->SetDynamicShadow(true);
+			pObstaclesH->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
 			
 		}
@@ -687,7 +687,7 @@ void CSceneMgr::Init()
 				pObstaclesH->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesH->Transform()->SetLocalPos(Vec3(j*(800.f + 160.f * i), 80.f, 21000.f));
 				pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesH->MeshRender()->SetDynamicShadow(true);
+				pObstaclesH->MeshRender()->SetDynamicShadow(false);
 				m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
 			}
 		}
@@ -709,7 +709,7 @@ void CSceneMgr::Init()
 				pObstaclesH->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesH->Transform()->SetLocalPos(Vec3(-1280.f + 160.f * i, 80.f-FLOORHEIGET, 9160.f +1680.f*j));
 				pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesH->MeshRender()->SetDynamicShadow(true);
+				pObstaclesH->MeshRender()->SetDynamicShadow(false);
 				m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
 			}
 		}
@@ -733,7 +733,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -751,7 +751,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 1000.f));
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -769,7 +769,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 3800.f));
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -789,7 +789,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 5000.f));
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -809,7 +809,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -830,7 +830,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -851,7 +851,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -872,7 +872,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -891,7 +891,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -913,7 +913,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
@@ -933,7 +933,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -952,7 +952,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -971,7 +971,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -988,7 +988,7 @@ void CSceneMgr::Init()
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -1244,7 +1244,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject->AddComponent(new CTransform);
 	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
 	pObject->SetActive(true);
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
@@ -1260,7 +1260,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
-	pObject->MeshRender()->SetDynamicShadow(true);
+	pObject->MeshRender()->SetDynamicShadow(false);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	//pPlayer->AddChild(pObject);
