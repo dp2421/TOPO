@@ -923,8 +923,7 @@ void CSceneMgr::Init()
 	pObject->FrustumCheck(false);
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f-FLOORHEIGET, 4760.f));
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(4.f, 4.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(true);
 	//pObject->Animator3D()->SetClipIndex(1);
 
@@ -988,7 +987,7 @@ void CSceneMgr::Init()
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1part1.mdat", L"MeshData\\1part1.mdat");
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\1part4.mdat", L"MeshData\\1part4.mdat");
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CCollider3D);
