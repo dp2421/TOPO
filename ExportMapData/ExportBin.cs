@@ -5,6 +5,24 @@ using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 
 
+public enum LayerState
+{    
+    L2Part0 = 6,
+    L2Part1,
+    L2Part2,
+    LJinggum,
+    L2Part4,
+    L2Part5,
+    L2Part6,
+    L2Part7,
+    L2Part8,
+    L1Water,
+    L1Part1,
+    L1Part2,
+    L1Part3,
+    L1Part4
+}
+
 [System.Serializable] public struct SerializedVector3
 {
     public float x;
@@ -74,13 +92,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 [System.Serializable] class MapObject
 {
+
     public SerializedVector3 vPos;
     public SerializedVector3 vScale;
+    public LayerState eState;
 
-    public void SetValue(SerializedVector3 _vPos, SerializedVector3 _vScale)
+    public void SetValue(SerializedVector3 _vPos, SerializedVector3 _vScale, LayerState _eState)
     {
         vPos = _vPos;
         vScale = _vScale;
+        eState = _eState;
     }
 };
 
@@ -121,19 +142,24 @@ public class ExportBin : MonoBehaviour
         //foreach (GameObject obj in objects)
         //{
         //    MapObject mpobj = new MapObject(); // 객체 인스턴스화
-        //    mpobj.SetValue(obj.transform.position * fValue, obj.transform.localScale);
-        //    mpobj.vPos.y = 10.0f - FLOORHEIGET;
+        //    mpobj.SetValue(obj.transform.position * fValue , obj.transform.localScale, (LayerState)obj.layer);
+        //    mpobj.vPos.y = 10.0f - FLOORHEIGET; 
         //    mapObjects.Add(mpobj);
+
         //}
         //SaveMapObjects();
         ////////////////////////////////////////////////////////////////////////////
         LoadMapObjects();
         //읽어오기 테스트
-        for (int i = 0; i < 3; ++i)
-        {
-            print(mapObjects[i].vPos.z);
-            print(mapObjects[i].vPos.y);
-        }
+
+        print(mapObjects[0].vPos.z);
+        print(mapObjects[0].vPos.y);
+        print(mapObjects[0].eState);
+        print("================");
+        print(mapObjects[600].vPos.z);
+        print(mapObjects[600].vPos.y);
+        print(mapObjects[600].eState);
+
     }
 
     // Update is called once per frame
