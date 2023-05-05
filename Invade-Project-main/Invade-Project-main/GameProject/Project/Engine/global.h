@@ -1,5 +1,6 @@
 #pragma once
 #define _XM_NO_INTRINSICS_
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
 #include <d3d12.h>
@@ -47,6 +48,9 @@ using namespace Microsoft::WRL;
 #include <map>
 #include <unordered_map>
 #include <chrono>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 #include <fbxsdk.h>
 #ifdef _DEBUG

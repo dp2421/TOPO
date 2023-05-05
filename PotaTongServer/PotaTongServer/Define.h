@@ -1,7 +1,7 @@
 #pragma once
 
 #define ClientException(client, id) if (client.second->ID == id) continue;\
-								if (client.second->ID < 0) continue;
+								if (client.second->ID == -1) continue;
 
 constexpr int Frame = 30;
 constexpr auto DeltaTimeMilli = chrono::duration_cast<chrono::milliseconds>(chrono::duration<float>(1.f / Frame));

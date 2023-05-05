@@ -74,6 +74,8 @@ void CSceneMgr::Init()
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
+	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
@@ -1209,9 +1211,10 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 	}
 }
 
-
 CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 {
+	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;
 	// MeshRender 설정
 	CGameObject* pPlayer = nullptr;
@@ -1223,11 +1226,9 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->AddComponent(new CCollider3D);
 	pPlayer->AddComponent(new CPlayerScript);
 	pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pPlayer->Collider3D()->SetOffsetScale(Vec3(50.f, 80.f, 50.f));
-	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 40.f, 0.f));
+	pPlayer->Collider3D()->SetOffsetScale(Vec3(100.0f, 160.0f, 100.0f));
+	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 90.0f, 0.f));
 	pPlayer->FrustumCheck(false);
-
-
 	// Transform 설정
 
 	// MeshRender 설정
@@ -1245,12 +1246,10 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
 	pPlayer->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
 	pPlayer->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
-
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	CGameObject* pObject = nullptr;
 
 	pObject = new CGameObject;
-	pObject = pMeshData->Instantiate();
+	pObject = idleData->Instantiate();
 	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->Transform()->SetLocalScale(Vec3(7, 7, 7));
@@ -1262,9 +1261,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	//pPlayer->AddChild(pObject);
 	pPlayer->GetScript<CPlayerScript>()->SetIdlePlayer(pObject);
 
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	pObject = new CGameObject;
-	pObject = pMeshData->Instantiate();
+	pObject = runMeshData->Instantiate();
 	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->SetActive(true);
@@ -1277,28 +1275,15 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	//pPlayer->AddChild(pObject);
 	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
 
-	if (isPlayer)
-	{
-		pPlayer->GetScript<CPlayerScript>()->SetPlayable(true);
-
-		for (auto obj : m_pCurScene->FindLayer(L"Default")->GetParentObj())
-		{
-			if (obj->GetName().compare(L"MainCam") == 0)
-			{
-				obj->Transform()->SetLocalPos(Vec3(0, 60.f, 220.f));
-				obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-				pObject->AddChild(obj);
-
-				////pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
-		//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
-				break;
-			}
-		}
-	}
-
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
 
 	return pPlayer;
+}
+
+void CSceneMgr::RemoveNetworkGameObject(CGameObject* obj)
+{
+	obj->SetActive(false);
+	m_pCurScene->GetLayer(obj->GetLayerIdx())->RemoveParentObj(obj);
 }
 
 

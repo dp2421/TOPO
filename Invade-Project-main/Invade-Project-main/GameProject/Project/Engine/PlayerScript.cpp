@@ -13,7 +13,29 @@ void CPlayerScript::Awake()
 
 void CPlayerScript::Update()
 {
-	if (!isPlayable) return;
+#if LOCALPLAY
+#else
+
+	if (!isPlayable)
+	{
+		if (prePosition.x != Transform()->GetLocalPos().x || prePosition.y != Transform()->GetLocalPos().y)
+		{
+			if (!runPlayer->IsActive())
+				runPlayer->SetActive(true);
+			if (IdlePlayer->IsActive())
+				IdlePlayer->SetActive(false);
+		}
+		else
+		{
+			if (runPlayer->IsActive())
+				runPlayer->SetActive(false);
+			if (!IdlePlayer->IsActive())
+				IdlePlayer->SetActive(true);
+		}
+		prePosition = Transform()->GetLocalPos();
+		return;
+	}
+#endif
 
 	Vec3 vPos = Transform()->GetLocalPos();
 	Vec3 vRot = Transform()->GetLocalRot();
@@ -93,14 +115,13 @@ void CPlayerScript::Update()
 		}
 		if ((moveState & (int)Direction::Left) == (int)Direction::Left)
 		{
-			dir += +Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+			dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 		}
 		if ((moveState & (int)Direction::Right) == (int)Direction::Right)
 		{
-			dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+			dir += +Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 		}
 
-		dir.Normalize();
 		NetworkMgr::GetInst()->SendClientMovePacket(dir);
 	}
 	else
@@ -248,6 +269,27 @@ void CPlayerScript::Update()
 	Transform()->SetLocalRot(vRot);
 }
 
+void CPlayerScript::SetPlayable(bool value)
+{
+	isPlayable = value;
+	if (isPlayable == true)
+	{
+		for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+		{
+			if (obj->GetName().compare(L"MainCam") == 0)
+			{
+				obj->Transform()->SetLocalPos(Vec3(0, 60.f * 7, 220.f * 7));
+				obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+				GetObj()->AddChild(obj);
+
+				////pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+		//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+				break;
+			}
+		}
+	}
+}
+
 const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir)
 {
 	if (KEY(key, state))
@@ -306,6 +348,7 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 
 void CPlayerScript::SetPlayerPos(Vec3 pos)
 {
+	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
 	runPlayer->Transform()->SetLocalPos(pos);
 	IdlePlayer->Transform()->SetLocalPos(pos);
