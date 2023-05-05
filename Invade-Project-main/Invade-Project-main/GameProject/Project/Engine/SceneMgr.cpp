@@ -408,10 +408,22 @@ void CSceneMgr::Init()
 	pMoveObs->AddComponent(new CObstacleScript);
 	pMoveObs->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
 
+	auto TempObj = new CGameObject;
+	TempObj->AddComponent(new CTransform);
+	TempObj->AddComponent(new CCollider3D);
+	TempObj->Transform()->SetLocalRot(Vec3(0.0f, 0.0f, 0.0f));
+	TempObj->Transform()->SetLocalPos(Vec3(0.0, 0.0f, 0.0f));
+	TempObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	TempObj->Collider3D()->SetOffsetScale(Vec3(90.f, 90.f, 230.f));
+	TempObj->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 115.f));
+	m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(TempObj);
+
+	pMoveObs->AddChild(TempObj);
+
 	//pMoveObs->AddComponent(new CMeshRender);
 	pMoveObs->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pMoveObs->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 100.f));
-	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 100.f, 100.f));
+	pMoveObs->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
+	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 	pMoveObs->FrustumCheck(false);
 	pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 	pMoveObs->Transform()->SetLocalPos(Vec3(600.f, 10.f, 50.f));
@@ -434,11 +446,11 @@ void CSceneMgr::Init()
 
 	//pMoveObs->AddComponent(new CMeshRender);
 	pMoveObs->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pMoveObs->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pMoveObs->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+	pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 	pMoveObs->FrustumCheck(false);
 	pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-	pMoveObs->Transform()->SetLocalPos(Vec3(500.f, 330.f, 50.f));
+	pMoveObs->Transform()->SetLocalPos(Vec3(1300.f, 330.f, 50.f));
 
 	pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pMoveObs->MeshRender()->SetDynamicShadow(true);
@@ -467,8 +479,8 @@ void CSceneMgr::Init()
 					pObstaclesA->AddComponent(new CObstacleScript);
 					pObstaclesA->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
 					pObstaclesA->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-					pObstaclesA->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-					pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+					pObstaclesA->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
+					pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 					pObstaclesA->FrustumCheck(false);
 					pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 					pObstaclesA->Transform()->SetLocalPos(Vec3(k*(1280.f + 280.f * i + 640.f * j), 10.f, 1200.f + 400.f * i));
@@ -488,8 +500,8 @@ void CSceneMgr::Init()
 				pObstaclesA->AddComponent(new CObstacleScript);
 				pObstaclesA->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
 				pObstaclesA->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-				pObstaclesA->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+				pObstaclesA->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
+				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 				pObstaclesA->FrustumCheck(false);
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesA->Transform()->SetLocalPos(Vec3(-1600.f + 600.f * i + 640.f, 10.f, 8960.f + 1280.f * j));
@@ -506,8 +518,8 @@ void CSceneMgr::Init()
 			pObstaclesA->AddComponent(new CObstacleScript);
 			pObstaclesA->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
 			pObstaclesA->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-			pObstaclesA->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+			pObstaclesA->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
+			pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 			pObstaclesA->FrustumCheck(false);
 			pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesA->Transform()->SetLocalPos(Vec3(500.f -i*(500.f), 10.f, 21000.f));
@@ -527,8 +539,8 @@ void CSceneMgr::Init()
 				pObstaclesA->AddComponent(new CObstacleScript);
 				pObstaclesA->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
 				pObstaclesA->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-				pObstaclesA->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+				pObstaclesA->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
+				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 				pObstaclesA->FrustumCheck(false);
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 560.f * i, 10.f - FLOORHEIGET, 8400.f + 1600.f * j));
@@ -545,8 +557,8 @@ void CSceneMgr::Init()
 			pObstaclesA->AddComponent(new CObstacleScript);
 			pObstaclesA->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
 			pObstaclesA->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-			pObstaclesA->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+			pObstaclesA->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
+			pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 			pObstaclesA->FrustumCheck(false);
 			pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesA->Transform()->SetLocalPos(Vec3(-2560.f + 480.f * i, 10.f - FLOORHEIGET, 14720.f));
@@ -576,8 +588,8 @@ void CSceneMgr::Init()
 				pObstaclesB->AddComponent(new CObstacleScript);
 				pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEB);
 				pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-				pObstaclesB->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+				pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+				pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 				pObstaclesB->FrustumCheck(false);
 				pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesB->Transform()->SetLocalPos(Vec3(-840.f + 840.f*i, 330.f, 8400.f + 1200.f*j));
@@ -594,8 +606,8 @@ void CSceneMgr::Init()
 			pObstaclesB->AddComponent(new CObstacleScript);
 			pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEB);
 			pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 			pObstaclesB->FrustumCheck(false);
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-1680.f + 1680.f*i, 330.f, 14800.f));
@@ -613,8 +625,8 @@ void CSceneMgr::Init()
 			pObstaclesB->AddComponent(new CObstacleScript);
 			pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEB);
 			pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 			pObstaclesB->FrustumCheck(false);
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-640.f - 640.f * i, 330.f-FLOORHEIGET, 12800.f + 600.f*i));
@@ -632,8 +644,8 @@ void CSceneMgr::Init()
 				pObstaclesB->AddComponent(new CObstacleScript);
 				pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEB);
 				pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-				pObstaclesB->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-				pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+				pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+				pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 				pObstaclesB->FrustumCheck(false);
 				pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 				pObstaclesB->Transform()->SetLocalPos(Vec3(-480.f + 960.f * i, 330.f - FLOORHEIGET, 16800.f + 800.f * j));
@@ -1212,8 +1224,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->AddComponent(new CCollider3D);
 	pPlayer->AddComponent(new CPlayerScript);
 	pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pPlayer->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 50.f, 0.f));
+	pPlayer->Collider3D()->SetOffsetScale(Vec3(50.f, 80.f, 50.f));
+	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 40.f, 0.f));
 	pPlayer->FrustumCheck(false);
 
 
