@@ -3,17 +3,22 @@ class NetworkMgr
 {
 	SINGLE(NetworkMgr)
 public:
+	HANDLE IOCPHandle;
 	SOCKET socket;
 	OverlappedEx recv;
 
 	int CurID;
 	std::unordered_map<int, CGameObject*> networkObjects;
+	std::unordered_map<int, std::mutex> mutexList;
 
 	int prevRemainData = 0;
+	vector <std::thread> workerThreads;
+
+	CGameObject* tempPlayerObj;
 public:
 
 	void Init();
-	void Update();
+	void NetworkWorkerThread();
 
 	void DoSend(void* packet);
 	void SendClientLoginPacket();
@@ -25,6 +30,3 @@ public:
 	void ProcessPacket(char* packet);
 private:
 };
-
-void CALLBACK RecvCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag);
-void CALLBACK SendCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag);

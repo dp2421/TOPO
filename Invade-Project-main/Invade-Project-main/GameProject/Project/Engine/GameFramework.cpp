@@ -13,7 +13,13 @@
 #include "InstancingMgr.h"
 
 CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
-
+	CRenderMgr::GetInst();
+	NetworkMgr::GetInst(); 
+	CSceneMgr::GetInst();
+	CResMgr::GetInst();
+	CTimeMgr::GetInst();
+	CKeyMgr::GetInst();
+	CEventMgr::GetInst();
 }
 CGameFramework::~CGameFramework() {
 }
@@ -67,7 +73,6 @@ void CGameFramework::Progress()
 	CEventMgr::GetInst()->Clear();
 
 	CSceneMgr::GetInst()->Update();
-	NetworkMgr::GetInst()->Update();
 	CRenderMgr::GetInst()->Render();
 
 	CEventMgr::GetInst()->Update();

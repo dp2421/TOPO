@@ -91,8 +91,9 @@ void ServerBase::EventThread()
 		{
 			if (event.excuteTime > currentTime) 
 			{
-				//eventQueue.push(event);
-				this_thread::sleep_for(1ms);
+				eventQueue.push(event);
+				this_thread::sleep_for(1ns);
+				event.objID = -1;
 				continue;
 			}
 
@@ -114,7 +115,7 @@ void ServerBase::EventThread()
 			}
 			continue;
 		}
-		this_thread::sleep_for(1ms);
+		this_thread::sleep_for(1ns);
 	}
 }
 
@@ -173,6 +174,27 @@ void ServerBase::InitObsatacleInfo()
 		inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
 		//obstacles.push_back(obstacle);
 	}
+	inFile.close();
+}
+
+void ServerBase::InitMapInfo()
+{
+	ifstream inFile("NewMapPos1F.bin", std::ios::in | std::ios::binary);
+
+	//if (!inFile) {
+	//	std::cerr << "Failed to open obstacles.bin" << std::endl;
+	//	return;
+	//}
+	//
+	//while (!inFile.eof()) {
+	//	ObstacleInfo obstacle;
+	//	inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
+	//	//obstacles.push_back(obstacle);
+	//}
+	inFile.close();
+	inFile.open("NewMapPos1FF.bin", std::ios::in | std::ios::binary);
+	inFile.close();
+	inFile.open("NewMapPos2F.bin", std::ios::in | std::ios::binary);
 	inFile.close();
 }
 
@@ -237,14 +259,15 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		if (client->ID < 0) return;
 
 		{
-			lock_guard<mutex> lock{ client->lock };
 			if (client->isMove)
 			{
+				lock_guard<mutex> lock{ client->lock };
 				auto delta = client->direction * SPEED * DeltaTimefloat.count();
 				client->position += delta;
 			}
 			if (client->isJump)
 			{
+				lock_guard<mutex> lock{ client->lock };
 				client->velocity.y -= GRAVITY * DeltaTimefloat.count();
 				client->position += client->velocity * DeltaTimefloat.count();
 
@@ -278,6 +301,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 void ServerBase::Disconnect(int ID)
 {
+	cout << "DISCONNECT \n";
 	// 연결끊기
 	// 게임중, 로비 구별
 	// 게임중이면 같은 그룹에게 전달
@@ -310,10 +334,12 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	case ClientLogin:
 	{
 		clients[id]->SendServerLoginPacket(id);
+		cout << "CurID : " << id << endl;
 		for (auto& client : clients)
 		{
 			ClientException(client, id);
 
+			cout << "Send ID : " << client.second->ID << endl;
 			client.second->SendAddPlayerPacket(id, clients[id]->position);
 			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}

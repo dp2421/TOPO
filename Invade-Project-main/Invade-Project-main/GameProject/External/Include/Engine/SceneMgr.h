@@ -7,7 +7,6 @@ class CSceneMgr
 	SINGLE(CSceneMgr)
 private:
 	CScene* m_pCurScene;
-
 public:
 	void Init();
 	void Update();
@@ -17,5 +16,6 @@ public:
 	void ChangeScene(CScene* _pNextScene);
 	void FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>& _vecFindObj);
 	CGameObject* AddNetworkGameObject(bool isPlayer, Vec3 pos);
+	void RemoveNetworkGameObject(CGameObject* obj);
 };
 

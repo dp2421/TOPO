@@ -27,7 +27,6 @@ private:
 	bool m_bActive;
 	bool m_bFrustumCheck;
 
-
 public:
 	void Awake();
 	void Start();
