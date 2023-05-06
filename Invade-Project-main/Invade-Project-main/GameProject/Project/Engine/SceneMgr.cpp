@@ -1282,8 +1282,14 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 void CSceneMgr::RemoveNetworkGameObject(CGameObject* obj)
 {
-	obj->SetActive(false);
+	auto runPlayer = obj->GetScript<CPlayerScript>()->runPlayer;
+	auto IdlePlayer = obj->GetScript<CPlayerScript>()->IdlePlayer;
 	m_pCurScene->GetLayer(obj->GetLayerIdx())->RemoveParentObj(obj);
+	CSceneMgr::GetInst()->GetCurScene()->GetLayer(runPlayer->GetLayerIdx())->RemoveParentObj(runPlayer);
+	CSceneMgr::GetInst()->GetCurScene()->GetLayer(IdlePlayer->GetLayerIdx())->RemoveParentObj(IdlePlayer);
+	runPlayer->SetActive(false);
+	IdlePlayer->SetActive(false);
+	obj	->SetActive(false);
 }
 
 

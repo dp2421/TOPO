@@ -177,6 +177,27 @@ void ServerBase::InitObsatacleInfo()
 	inFile.close();
 }
 
+void ServerBase::InitMapInfo()
+{
+	ifstream inFile("NewMapPos1F.bin", std::ios::in | std::ios::binary);
+
+	//if (!inFile) {
+	//	std::cerr << "Failed to open obstacles.bin" << std::endl;
+	//	return;
+	//}
+	//
+	//while (!inFile.eof()) {
+	//	ObstacleInfo obstacle;
+	//	inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
+	//	//obstacles.push_back(obstacle);
+	//}
+	inFile.close();
+	inFile.open("NewMapPos1FF.bin", std::ios::in | std::ios::binary);
+	inFile.close();
+	inFile.open("NewMapPos2F.bin", std::ios::in | std::ios::binary);
+	inFile.close();
+}
+
 void ServerBase::Accept()
 {
 	int newID = clientID++;

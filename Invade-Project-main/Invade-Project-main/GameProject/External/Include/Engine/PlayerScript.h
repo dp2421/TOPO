@@ -24,8 +24,6 @@ class CPlayerScript :
     public CScript
 {
 private:
-    CGameObject* runPlayer;
-    CGameObject* IdlePlayer;
 
     bool m_bCheckStartMousePoint;
     Vec3 m_vZoomPos;
@@ -44,6 +42,9 @@ private:
     int moveState = 0;
     bool isPlayable = false;
 public:
+    CGameObject* runPlayer;
+    CGameObject* IdlePlayer;
+
     virtual void Awake();
     virtual void Update();
     void SetType(ELEMENT_TYPE _iType) { m_iType = _iType; }
