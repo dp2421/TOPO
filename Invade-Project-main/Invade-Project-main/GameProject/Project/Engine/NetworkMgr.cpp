@@ -230,7 +230,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerPlayerInfoPacket* p = reinterpret_cast<ServerPlayerInfoPacket*>(packet);
         if (networkObjects.find(p->id) != networkObjects.end())
         {
-            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos));
+            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->isMove);
         }
         else
         {

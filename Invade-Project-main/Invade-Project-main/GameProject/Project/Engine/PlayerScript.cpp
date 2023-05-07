@@ -18,7 +18,7 @@ void CPlayerScript::Update()
 
 	if (!isPlayable)
 	{
-		if (moveState)
+		if (moveState == 1)
 		{
 			if (!runPlayer->IsActive())
 				runPlayer->SetActive(true);
@@ -350,7 +350,7 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, bool isMove)
 {
 	if (!isPlayable)
 	{
-		moveState = isMove;
+		moveState = (int)isMove;
 	}
 	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
