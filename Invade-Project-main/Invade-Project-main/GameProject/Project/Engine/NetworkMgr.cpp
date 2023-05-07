@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Transform.h"
 #include "PlayerScript.h"
+#include "ObstacleScript.h"
 
 
 NetworkMgr::NetworkMgr()
@@ -127,7 +128,7 @@ void NetworkMgr::SendClientLoginPacket()
     DoSend(&packet);
 }
 
-void NetworkMgr::SendClientKeyInputPacket(KeyType key, Vec3 dir)
+void NetworkMgr::SendClientKeyInputPacket(KeyType key, Vec3 dir, float degree)
 {
     ClientKeyInputPacket packet;
     packet.size = sizeof(ClientKeyInputPacket);
@@ -136,11 +137,12 @@ void NetworkMgr::SendClientKeyInputPacket(KeyType key, Vec3 dir)
     packet.x = dir.x;
     packet.y = dir.y;
     packet.z = dir.z;
+    packet.degree = degree;
 
     DoSend(&packet);
 }
 
-void NetworkMgr::SendClientMovePacket(Vec3 dir)
+void NetworkMgr::SendClientMovePacket(Vec3 dir, float degree)
 {
     ClientMovePacket packet;
     packet.size = sizeof(ClientMovePacket);
@@ -148,6 +150,7 @@ void NetworkMgr::SendClientMovePacket(Vec3 dir)
     packet.x = dir.x;
     packet.y = dir.y;
     packet.z = dir.z;
+    packet.degree = degree;
 
     DoSend(&packet);
 }
@@ -230,12 +233,22 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerPlayerInfoPacket* p = reinterpret_cast<ServerPlayerInfoPacket*>(packet);
         if (networkObjects.find(p->id) != networkObjects.end())
         {
-            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->isMove);
+            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove);
         }
         else
         {
             auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(p->xPos, p->yPos, p->zPos));
             networkObjects[p->id] = obj;
+        }
+        break;
+    }
+    case ServerObstacleInfo:
+    {
+        std::cout << "ObstacleInfo " << "\n";
+        ServerObstacleInfoPacket* p = reinterpret_cast<ServerObstacleInfoPacket*>(packet);
+        for (int i = 0; i < 66; ++i)
+        {
+            CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->Rotate(((float)p->degree[i])/100);
         }
         break;
     }

@@ -14,6 +14,7 @@
 #include <concurrent_priority_queue.h>
 #include <DirectXMath.h>
 #include <directxcollision.h>
+#include <random>
 #include "../../Protocol.h"
 
 #pragma comment(lib, "WS2_32.lib")
@@ -32,6 +33,7 @@ using namespace std;
 #include "Client.h"
 #include "Obstacle.h"
 #include "Tile.h"
+#include "AI.h"
 
 #include "MatchingManager.h"
 #include "GameMode.h"

@@ -22,8 +22,8 @@ public:
 
 	void DoSend(void* packet);
 	void SendClientLoginPacket();
-	void SendClientKeyInputPacket(KeyType key, Vec3 dir);
-	void SendClientMovePacket(Vec3 dir);
+	void SendClientKeyInputPacket(KeyType key, Vec3 dir, float degree);
+	void SendClientMovePacket(Vec3 dir, float degree);
 
 	void DoRecv();
 	void AssemblyPacket(int recvData);

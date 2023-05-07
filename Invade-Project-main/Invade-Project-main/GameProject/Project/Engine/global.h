@@ -71,6 +71,3 @@ using std::make_pair;
 #include "struct.h"
 #include "func.h"
 #include "extern.h"
-#include "imgui.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_internal.h"

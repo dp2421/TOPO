@@ -1,7 +1,7 @@
 #pragma once
 
 constexpr int PORTNUM = 20150;
-constexpr int BUFFERSIZE = 256;
+constexpr int BUFFERSIZE = 512;
 constexpr int NAMESIZE = 20;
 
 constexpr char SERVERIP[] = "210.117.115.67";
@@ -20,6 +20,13 @@ enum class KeyType : int
 	Jump,
 	Push,
 	Boom,
+};
+
+enum class ObsType : int
+{
+	Rotate,
+	Pendulum,
+	Stop
 };
 
 //-------------------------------------------------------------------------------------
@@ -65,6 +72,7 @@ struct ClientKeyInputPacket
 	KeyType			key;
 	// 플레이어가 바라보고 있는 방향 받아옴
 	float			x, y, z;
+	float degree;
 };
 
 struct ClientMovePacket
@@ -72,6 +80,7 @@ struct ClientMovePacket
 	unsigned char size;
 	unsigned char type;
 	float x, y, z;
+	float degree;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -118,7 +127,7 @@ struct ServerPlayerInfoPacket
 	int		id;
 	bool	isMove;
 	float	xPos, yPos, zPos;
-	float	xDir, yDir, zDir;
+	float	degree;
 	// 방향도 넣어야 할까? 벡터 느낌으로
 };
 
@@ -126,6 +135,7 @@ struct ServerObstacleInfoPacket
 {
 	unsigned char size;
 	unsigned char	type;
+	short		degree[66] = { 0, };
 	//타입에 따라서 내용이 달라질 것 같음
 	//장애물에 번호 부여?
 	//NPC같은 느낌으로 따로 클래스?
