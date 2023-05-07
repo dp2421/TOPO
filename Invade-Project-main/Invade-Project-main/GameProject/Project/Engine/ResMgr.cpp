@@ -611,9 +611,8 @@ void CResMgr::CreateDefaultShader()
 	pShader->CreatePixelShader(L"Shader\\std.fx", "PS_Collider2D", "ps_5_0");
 
 	// DepthStencilState ¼³Á¤
-	//pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::NO_DEPTH_TEST);
-
-	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::NO_DEPTH_TEST);
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 
 	pShader->Create(SHADER_POV::FORWARD, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 	AddRes(L"Collider2DShader", pShader);
