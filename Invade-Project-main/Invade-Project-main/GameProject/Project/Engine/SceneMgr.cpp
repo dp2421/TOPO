@@ -679,7 +679,7 @@ void CSceneMgr::Init()
 			pObstaclesH->Collider3D()->SetOffsetPos(Vec3(0.f, 0.0f, 0.f));
 			pObstaclesH->FrustumCheck(false);
 			pObstaclesH->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-			pObstaclesH->Transform()->SetLocalPos(Vec3(-160.f + 160.f * i, 80.f, 210.f));
+			pObstaclesH->Transform()->SetLocalPos(Vec3(-160.f + 160.f * i, 80.f, 21000.f));
 			pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesH->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
