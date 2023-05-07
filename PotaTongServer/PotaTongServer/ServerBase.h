@@ -44,7 +44,5 @@ private:
 	std::vector<Tile> tiles;
 	std::vector<thread> workerThreads;
 
-	ServerObstacleInfoPacket* obsInfoPacket = new ServerObstacleInfoPacket;
-
 	atomic<int> clientID = 0;	
 };

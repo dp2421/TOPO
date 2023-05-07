@@ -56,6 +56,17 @@ void Client::SendAddPlayerPacket(const int id, const Vector3 vec)
 	SendPacket(&packet);
 }
 
+void Client::SendObstacleInfoPacket(const int id, const short degree)
+{
+	ServerObstacleInfoPacket packet;
+	packet.size = sizeof(ServerObstacleInfoPacket);
+	packet.type = ServerObstacleInfo;
+	packet.id = id;
+	packet.degree = degree;
+
+	SendPacket(&packet);
+}
+
 void Client::SendRemovePlayerPacket(const int id)
 {
 	ServerRemovePlayerPacket packet;

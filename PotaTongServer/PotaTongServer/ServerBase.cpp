@@ -186,8 +186,8 @@ void ServerBase::InitObsatacleInfo()
 	}
 	inFile.close();
 
-	//Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
-	//eventQueue.push(event);
+	Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+	eventQueue.push(event);
 }
 
 void ServerBase::InitMapInfo()
@@ -266,7 +266,7 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 
 void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
-
+	short degree[66] = { 0, };
 	switch (overlappedEx->type)
 	{
 	case OverlappedType::MatchingStart:
@@ -275,35 +275,25 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		break;
 	case OverlappedType::RotateObs:
 	{
-		//obsInfoPacket->size = sizeof(ServerObstacleInfoPacket);
-		//obsInfoPacket->type = ServerObstacleInfo;
-		//int i = 0;
-		//for (auto& obs : obstacles)
-		//{
-		//	if (obs.data.state != OBSTACLE_STATE::STOP)
-		//	{
-		//		obs.rotate += obs.deltaRotate;
-		//		if (obs.rotate > 360)
-		//			obs.rotate -= 360;
-		//		
-		//		obsInfoPacket->degree[i] = (short)(obs.rotate * 100);
-		//		++i;
-		//	}
-		//}
-		//while (i == 66)
-		//{
-		//	obsInfoPacket->degree[i] = 0;
-		//	++i;
-		//}
-		//
-		//for (auto client : clients)
-		//{
-		//	if (client.second->ID != -1)
-		//		client.second->SendPacket(obsInfoPacket);
-		//}
-		//
-		//Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
-		//eventQueue.push(event);
+		int i = 0;
+		for (auto& obs : obstacles)
+		{
+			if (obs.data.state != OBSTACLE_STATE::STOP)
+			{
+				obs.rotate += obs.deltaRotate;
+				if (obs.rotate > 360)
+					obs.rotate -= 360;
+
+				for (auto client : clients)
+				{
+					if (client.second->ID != -1)
+						client.second->SendObstacleInfoPacket(i, (short)(obs.rotate * 100));
+				}
+			}
+		}
+		
+		Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
 		
 		break;
 	}
@@ -356,7 +346,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				lock_guard<mutex> lock{ client->lock };
 				client->position += client->velocity * DeltaTimefloat.count();
-				if (client->position.y < -1000)
+				if (client->position.y < -2000)
 				{
 					client->velocity = Vector3::Zero();
 					client->position = Vector3(50, 100, 100);

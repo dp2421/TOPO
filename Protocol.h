@@ -135,7 +135,8 @@ struct ServerObstacleInfoPacket
 {
 	unsigned char size;
 	unsigned char	type;
-	short		degree[66] = { 0, };
+	int			id;
+	short		degree;
 	//타입에 따라서 내용이 달라질 것 같음
 	//장애물에 번호 부여?
 	//NPC같은 느낌으로 따로 클래스?
