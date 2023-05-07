@@ -158,7 +158,14 @@ void ServerBase::InitServer()
 		addr_size + 16,
 		0,
 		&GlobalOverlapped.overlapped
-	);
+	); 
+	
+	int option = TRUE;               
+	setsockopt(ServerSocket,         
+		IPPROTO_TCP,          
+		TCP_NODELAY,          
+		(const char*)&option, 
+		sizeof(option));      
 
 	cout << "Start Server" << endl;
 }
@@ -266,7 +273,6 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 
 void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
-	short degree[66] = { 0, };
 	switch (overlappedEx->type)
 	{
 	case OverlappedType::MatchingStart:
@@ -275,6 +281,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		break;
 	case OverlappedType::RotateObs:
 	{
+		short degree[66] = { 0, };
 		int i = 0;
 		for (auto& obs : obstacles)
 		{
@@ -284,12 +291,15 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				if (obs.rotate > 360)
 					obs.rotate -= 360;
 
-				for (auto client : clients)
-				{
-					if (client.second->ID != -1)
-						client.second->SendObstacleInfoPacket(i, (short)(obs.rotate * 100));
-				}
+				degree[i] = obs.rotate;
+				++i;
 			}
+		}
+
+		for (auto client : clients)
+		{
+			if (client.second->ID != -1)
+				client.second->SendObstacleInfoPacket(degree, 66 * sizeof(short));
 		}
 		
 		Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
