@@ -66,7 +66,7 @@ void Client::SendRemovePlayerPacket(const int id)
 	SendPacket(&packet);
 }
 
-void Client::SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir, const bool isMove)
+void Client::SendPlayerInfoPacket(const int id, const Vector3 pos, const float degree, const bool isMove)
 {
 	ServerPlayerInfoPacket packet;
 	packet.size = sizeof(ServerPlayerInfoPacket);
@@ -76,9 +76,7 @@ void Client::SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3
 	packet.xPos = pos.x;
 	packet.yPos = pos.y;
 	packet.zPos = pos.z;
-	packet.xDir = dir.x;
-	packet.yDir = dir.y;
-	packet.zDir = dir.z;
+	packet.degree = degree;
 
 	SendPacket(&packet);
 }

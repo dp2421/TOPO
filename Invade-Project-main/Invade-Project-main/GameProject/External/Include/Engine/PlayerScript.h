@@ -54,7 +54,7 @@ public:
     bool GetPlayable() { return isPlayable; } const
 
     void SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir);
-    void SetPlayerPos(Vec3 pos, bool isMove = false);
+    void SetPlayerPos(Vec3 pos, float degree = 0, bool isMove = false);
 
     CPlayerScript();
     virtual ~CPlayerScript();

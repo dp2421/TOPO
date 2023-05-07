@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Protocol.h" />
+    <ClInclude Include="AI.h" />
     <ClInclude Include="BombMode.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Collider.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="BombMode.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Collider.cpp" />

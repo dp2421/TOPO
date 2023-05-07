@@ -15,6 +15,7 @@ public:
 	bool isMove = false;
 	bool isJump = false;
 
+	float degree;
 	Vector3 position;
 	Vector3 direction;
 	Vector3 velocity;
@@ -30,7 +31,7 @@ public:
 	void SendServerLoginPacket(const int id);
 	void SendAddPlayerPacket(const int id, const Vector3 pos);
 	void SendRemovePlayerPacket(const int id);
-	void SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir, const bool isMove);
+	void SendPlayerInfoPacket(const int id, const Vector3 pos, const float degree, const bool isMove);
 private:
 	OverlappedEx recv;
 };

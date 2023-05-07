@@ -7,6 +7,7 @@ enum class OverlappedType
 	Send,
 	MatchingStart,
 	MatchingComplete,
+	RotateObs,
 	Update
 };
 

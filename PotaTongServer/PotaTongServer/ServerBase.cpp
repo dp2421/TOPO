@@ -100,6 +100,15 @@ void ServerBase::EventThread()
 
 			switch (event.eventType)
 			{
+			case OverlappedType::RotateObs:
+			{
+				OverlappedEx* overlappedEx = new OverlappedEx;
+				overlappedEx->type = OverlappedType::RotateObs;
+
+				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
+				event.objID = -1;
+				break;
+			}
 			case OverlappedType::Update:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
@@ -176,6 +185,9 @@ void ServerBase::InitObsatacleInfo()
 		obstacles.push_back(obstacle);
 	}
 	inFile.close();
+
+	//Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+	//eventQueue.push(event);
 }
 
 void ServerBase::InitMapInfo()
@@ -254,8 +266,6 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 
 void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
-	auto client = clients[id];	
-	if (client->ID < 0) return;
 
 	switch (overlappedEx->type)
 	{
@@ -263,8 +273,43 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		break;
 	case OverlappedType::MatchingComplete:
 		break;
+	case OverlappedType::RotateObs:
+	{
+		//obsInfoPacket->size = sizeof(ServerObstacleInfoPacket);
+		//obsInfoPacket->type = ServerObstacleInfo;
+		//int i = 0;
+		//for (auto& obs : obstacles)
+		//{
+		//	if (obs.data.state != OBSTACLE_STATE::STOP)
+		//	{
+		//		obs.rotate += obs.deltaRotate;
+		//		if (obs.rotate > 360)
+		//			obs.rotate -= 360;
+		//		
+		//		obsInfoPacket->degree[i] = (short)(obs.rotate * 100);
+		//		++i;
+		//	}
+		//}
+		//while (i == 66)
+		//{
+		//	obsInfoPacket->degree[i] = 0;
+		//	++i;
+		//}
+		//
+		//for (auto client : clients)
+		//{
+		//	if (client.second->ID != -1)
+		//		client.second->SendPacket(obsInfoPacket);
+		//}
+		//
+		//Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+		//eventQueue.push(event);
+		
+		break;
+	}
 	case OverlappedType::Update:
 	{
+		auto client = clients[id];
 		if (client->ID < 0) return;
 		{
 			{
@@ -283,6 +328,15 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				for (auto& tile : tiles)
 				{
+					if (client->position.y > 0)
+					{
+						if (tile.data.state == LayerState::L1Water ||
+							tile.data.state == LayerState::L1Part1 ||
+							tile.data.state == LayerState::L1Part2 ||
+							tile.data.state == LayerState::L1Part3 ||
+							tile.data.state == LayerState::L1Part4)
+							continue;
+					}
 					if (client->collider.isCollisionAABB(tile.collider))
 					{
 						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
@@ -302,7 +356,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				lock_guard<mutex> lock{ client->lock };
 				client->position += client->velocity * DeltaTimefloat.count();
-				if (client->position.y < -600)
+				if (client->position.y < -1000)
 				{
 					client->velocity = Vector3::Zero();
 					client->position = Vector3(50, 100, 100);
@@ -310,13 +364,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
-		client->SendPlayerInfoPacket(id, client->position, client->direction, client->isMove);
+		client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
 
 		for (auto cl : clients)
 		{
 			ClientException(cl, id);
 
-			cl.second->SendPlayerInfoPacket(id, client->position, client->direction, client->isMove);
+			cl.second->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
 		}
 
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
@@ -386,6 +440,7 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		auto p = reinterpret_cast<ClientMovePacket*>(packet);
 		Vector3 dir = Vector3(p->x, p->y, p->z);
 		clients[id]->direction = dir;
+		clients[id]->degree = p->degree;
 		break;
 	}
 	case ClientMatching:
@@ -399,6 +454,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
 	auto client = clients[id];
+	client->degree = packet->degree;
 	switch (key)
 	{
 	case KeyType::MoveStart: // ¿Ãµø
@@ -415,7 +471,8 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 		{
 			lock_guard<mutex> lock{ client->lock };
 			client->direction = Vector3::Zero();
-			client->velocity = Vector3::Zero();
+			client->velocity.x = 0;
+			client->velocity.z = 0;
 			client->isMove = false;
 		}
 		break;

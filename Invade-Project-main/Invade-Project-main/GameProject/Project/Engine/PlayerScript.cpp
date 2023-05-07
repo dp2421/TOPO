@@ -41,6 +41,23 @@ void CPlayerScript::Update()
 	Vec3 vRot = Transform()->GetLocalRot();
 
 	Vec3 dir = Vec3::Zero;
+	
+	float fDegree = XMConvertToDegrees(vRot.y);
+	Vec2 vDrag = CKeyMgr::GetInst()->GetDragDir();
+	if (!m_bCheckStartMousePoint) {
+		m_bCheckStartMousePoint = true;
+	}
+	else {
+		vRot.y += vDrag.x * DT * 1.f;
+		if (fDegree < -360) {
+			fDegree += 360.f;
+			vRot.y = XMConvertToRadians(fDegree);
+		}
+		else if (fDegree > 360) {
+			fDegree -= 360.f;
+			vRot.y = XMConvertToRadians(fDegree);
+		}
+	}
 
 #if LOCALPLAY
 
@@ -80,7 +97,7 @@ void CPlayerScript::Update()
 
 	if (KEY_TAB(KEY_TYPE::KEY_SPACE))
 	{
-		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::Jump, dir);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::Jump, dir, fDegree);
 	}
 
 	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_TAB, dir);
@@ -96,7 +113,7 @@ void CPlayerScript::Update()
 	if (moveState != (int)Direction::None && !isMove)
 	{
 		dir.Normalize();
-		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::MoveStart, dir);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::MoveStart, dir, fDegree);
 	}
 	if (moveState != (int)Direction::None)
 	{
@@ -122,7 +139,7 @@ void CPlayerScript::Update()
 			dir += +Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 		}
 
-		NetworkMgr::GetInst()->SendClientMovePacket(dir);
+		NetworkMgr::GetInst()->SendClientMovePacket(dir, fDegree);
 	}
 	else
 	{
@@ -247,22 +264,6 @@ void CPlayerScript::Update()
 
 	}
 	*/
-	Vec2 vDrag = CKeyMgr::GetInst()->GetDragDir();
-	if (!m_bCheckStartMousePoint) {
-		m_bCheckStartMousePoint = true;
-	}
-	else {
-		vRot.y += vDrag.x * DT * 1.f;
-		float fDegree = XMConvertToDegrees(vRot.y);
-		if (fDegree < -360) {
-			 fDegree+= 360.f;
-			 vRot.y = XMConvertToRadians(fDegree);
-		}
-		else if (fDegree > 360) {
-			fDegree -= 360.f;
-			vRot.y = XMConvertToRadians(fDegree);
-		}
-	}
 
 	IdlePlayer->Transform()->SetLocalRot(vRot);
 	runPlayer->Transform()->SetLocalRot(vRot);
@@ -340,17 +341,23 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 
 			if (moveState == 0)
 			{
-				NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::MoveEnd, dir);
+				Vec3 vRot = Transform()->GetLocalRot();
+				NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::MoveEnd, dir, XMConvertToDegrees(vRot.y));
 			}
 		}
 	}
 }
 
-void CPlayerScript::SetPlayerPos(Vec3 pos, bool isMove)
+void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove)
 {
 	if (!isPlayable)
 	{
 		moveState = (int)isMove;
+		Vec3 vRot = Transform()->GetLocalRot();
+		vRot.y = XMConvertToRadians(degree);
+		IdlePlayer->Transform()->SetLocalRot(vRot);
+		runPlayer->Transform()->SetLocalRot(vRot);
+		Transform()->SetLocalRot(vRot);
 	}
 	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
