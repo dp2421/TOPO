@@ -148,6 +148,11 @@ Vector3& Vector3::operator=(const Vector3& vec)
     return (*this);
 }
 
+DirectX::XMFLOAT3 Vector3::ConvertXMFLOAT3()
+{
+    return DirectX::XMFLOAT3(x, y, z);
+}
+
 bool Vector3::operator==(const Vector3& vec) const
 {
     return (x == vec.x) && (y == vec.y) && (z == vec.z);

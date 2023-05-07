@@ -3,7 +3,6 @@
 
 Collider::Collider()
 {
-
 }
 
 Collider::~Collider()
@@ -13,16 +12,37 @@ Collider::~Collider()
 
 bool Collider::isCollisionOBB(Collider& rhs)
 {
-	BoundingOrientedBox thisBox{ this->center, this->extents, this->orientation };
-	BoundingOrientedBox rhsBox{ rhs.center, rhs.extents, rhs.orientation };
+	BoundingOrientedBox thisBox
+	{ 
+		(*this->position + this->offset).ConvertXMFLOAT3(),
+		this->size.ConvertXMFLOAT3(),
+		this->orientation
+	};
+
+	BoundingOrientedBox rhsBox
+	{ 
+		(*rhs.position + rhs.offset).ConvertXMFLOAT3(), 
+		rhs.size.ConvertXMFLOAT3(),
+		rhs.orientation
+	};
 
 	return thisBox.Intersects(rhsBox);
 }
 
 bool Collider::isCollisionAABB(Collider& rhs)
 {
-	BoundingBox thisBox{ this->center, this->extents };
-	BoundingBox rhsBox{ rhs.center, rhs.extents };
+	DirectX::XMFLOAT3 test = (*this->position + this->offset).ConvertXMFLOAT3();
+	BoundingBox thisBox
+	{
+		test,
+		this->size.ConvertXMFLOAT3(),
+	};
+
+	BoundingBox rhsBox
+	{
+		(*rhs.position + rhs.offset).ConvertXMFLOAT3(),
+		rhs.size.ConvertXMFLOAT3(),
+	};
 
 	return thisBox.Intersects(rhsBox);
 }

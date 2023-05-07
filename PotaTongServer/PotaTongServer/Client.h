@@ -18,6 +18,8 @@ public:
 	Vector3 position;
 	Vector3 direction;
 	Vector3 velocity;
+
+	Collider collider;
 public:
 	Client();
 	~Client();

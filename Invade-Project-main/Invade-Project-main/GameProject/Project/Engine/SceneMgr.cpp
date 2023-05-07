@@ -675,11 +675,11 @@ void CSceneMgr::Init()
 			pObstaclesH->AddComponent(new CObstacleScript);
 			pObstaclesH->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::STOP);
 			pObstaclesH->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-			pObstaclesH->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-			pObstaclesH->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+			pObstaclesH->Collider3D()->SetOffsetScale(Vec3(140.0, 20, 50));
+			pObstaclesH->Collider3D()->SetOffsetPos(Vec3(0.f, 0.0f, 0.f));
 			pObstaclesH->FrustumCheck(false);
 			pObstaclesH->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-			pObstaclesH->Transform()->SetLocalPos(Vec3(-160.f + 160.f * i, 80.f, 21000.f));
+			pObstaclesH->Transform()->SetLocalPos(Vec3(-160.f + 160.f * i, 80.f, 210.f));
 			pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesH->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
@@ -1237,6 +1237,19 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 #if LOCALPLAY
 	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
+	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+	{
+		if (obj->GetName().compare(L"MainCam") == 0)
+		{
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 7, 220.f * 7));
+			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			pPlayer->AddChild(obj);
+
+			////pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
+	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+			break;
+		}
+	}
 #else
 	pPlayer->Transform()->SetLocalPos(pos);
 #endif

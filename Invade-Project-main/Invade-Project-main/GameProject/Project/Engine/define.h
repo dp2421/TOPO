@@ -36,7 +36,7 @@ static type* GetInst()\
 #define DBG_MSG(pStr) CDebugMgr::GetInst()->AddDbgMsg(DBG_TYPE::DBG_MSG, pStr);
 
 #define MAX_LAYER 32
-#define SPEED 200
+#define SPEED 2000
 
 // 1 네트워크 사용 안함, 0 네트워크 사용 함
 #define LOCALPLAY 0

@@ -20,10 +20,10 @@
 #pragma comment(lib, "MSWSock.lib")
 
 using namespace std;
+#include "Vector3.h"
 
 #include "Define.h"
 
-#include "Vector3.h"
 #include "OverlappedEx.h"
 #include "Event.h"
 #include "ThreadSafeQueue.h"
@@ -31,6 +31,7 @@ using namespace std;
 
 #include "Client.h"
 #include "Obstacle.h"
+#include "Tile.h"
 
 #include "MatchingManager.h"
 #include "GameMode.h"

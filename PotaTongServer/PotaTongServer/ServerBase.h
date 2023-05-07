@@ -40,6 +40,8 @@ private:
 
 	concurrency::concurrent_priority_queue<Event> eventQueue;
 
+	std::vector<Obstacle> obstacles;
+	std::vector<Tile> tiles;
 	std::vector<thread> workerThreads;
 
 	atomic<int> clientID = 0;	

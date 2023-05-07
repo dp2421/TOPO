@@ -9,8 +9,8 @@
 
 #include <SDKDDKVer.h>
 #define WIN32_LEAN_AND_MEAN  
-#define FLOORHEIGET 400  //맵 2층 1층 간격
-#define MAXOBSTACLE2A 26 //2층 360도회전 장애물 개수
+	#define FLOORHEIGET 400  //맵 2층 1층 간격
+	#define MAXOBSTACLE2A 26 //2층 360도회전 장애물 개수
 #define MAXOBSTACLE2B 14 //2층 시계추 장애물 개수
 #define MAXOBSTACLE2H 9 //2층 허들 장애물 개수
 

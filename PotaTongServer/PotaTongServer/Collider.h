@@ -8,8 +8,10 @@ public:
     Collider();
     ~Collider();
 
-    XMFLOAT3 center;
-    XMFLOAT3 extents;
+    Vector3* position;
+
+    Vector3 offset;
+    Vector3 size;
     XMFLOAT4 orientation; // Quaternion
 
     bool isCollisionOBB(Collider& rhs);

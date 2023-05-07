@@ -136,8 +136,8 @@ public class ExportBin : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ////씬에 있는 모든 오브젝트들을 내보낸다
-        ////2층 : y 10 고정 || 1층 : 10 - FLOORHEIGET(=400)
+        //씬에 있는 모든 오브젝트들을 내보낸다
+        //2층 : y 10 고정 || 1층 : 10 - FLOORHEIGET(=400)
         //GameObject[] objects = FindObjectsOfType<GameObject>();
         //foreach (GameObject obj in objects)
         //{
@@ -145,7 +145,7 @@ public class ExportBin : MonoBehaviour
         //    mpobj.SetValue(obj.transform.position * fValue , obj.transform.localScale, (LayerState)obj.layer);
         //    mpobj.vPos.y = 10.0f - FLOORHEIGET; 
         //    mapObjects.Add(mpobj);
-
+        //
         //}
         //SaveMapObjects();
         ////////////////////////////////////////////////////////////////////////////

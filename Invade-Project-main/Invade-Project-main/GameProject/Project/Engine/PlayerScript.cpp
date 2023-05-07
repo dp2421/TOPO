@@ -18,7 +18,7 @@ void CPlayerScript::Update()
 
 	if (!isPlayable)
 	{
-		if (prePosition.x != Transform()->GetLocalPos().x || prePosition.y != Transform()->GetLocalPos().y)
+		if (prePosition.x != Transform()->GetLocalPos().x || prePosition.z != Transform()->GetLocalPos().z)
 		{
 			if (!runPlayer->IsActive())
 				runPlayer->SetActive(true);

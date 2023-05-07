@@ -23,6 +23,6 @@ public:
 
 	ObstacleInfo data;
 	XMFLOAT3 position;
-	Collider collider;
+	vector<Collider> collider;
 };
 

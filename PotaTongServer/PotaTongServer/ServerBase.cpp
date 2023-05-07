@@ -8,6 +8,7 @@ ServerBase::ServerBase()
 	matchingManager = new MatchingManager(IOCPHandle);
 	InitHandler();
 	InitObsatacleInfo();
+	InitMapInfo();
 }
 
 ServerBase::~ServerBase()
@@ -172,30 +173,38 @@ void ServerBase::InitObsatacleInfo()
 	while (!inFile.eof()) {
 		ObstacleInfo obstacle;
 		inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
-		//obstacles.push_back(obstacle);
+		obstacles.push_back(obstacle);
 	}
 	inFile.close();
 }
 
 void ServerBase::InitMapInfo()
 {
-	ifstream inFile("NewMapPos1F.bin", std::ios::in | std::ios::binary);
+	const char* FileNames[] = { "MapPosition1FF.bin", "MapPosition1F.bin", "MapPosition2F.bin" };
 
-	//if (!inFile) {
-	//	std::cerr << "Failed to open obstacles.bin" << std::endl;
-	//	return;
-	//}
-	//
-	//while (!inFile.eof()) {
-	//	ObstacleInfo obstacle;
-	//	inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
-	//	//obstacles.push_back(obstacle);
-	//}
-	inFile.close();
-	inFile.open("NewMapPos1FF.bin", std::ios::in | std::ios::binary);
-	inFile.close();
-	inFile.open("NewMapPos2F.bin", std::ios::in | std::ios::binary);
-	inFile.close();
+	for (int i = 0; i < 3; ++i)
+	{
+		ifstream inFile(FileNames[i], std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " <<  FileNames[i] << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			TileInfo tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			if (i == 0)
+			{
+				tile.xScale *= 4;
+				tile.yScale *= 4;
+				tile.zScale *= 4;
+			}
+			tiles.push_back(tile);
+		}
+
+		inFile.close();
+	}
 }
 
 void ServerBase::Accept()
@@ -257,26 +266,43 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	case OverlappedType::Update:
 	{
 		if (client->ID < 0) return;
-
 		{
+			{
+				lock_guard<mutex> lock{ client->lock };
+				client->velocity.y -= GRAVITY;
+			}
 			if (client->isMove)
 			{
 				lock_guard<mutex> lock{ client->lock };
-				auto delta = client->direction * SPEED * DeltaTimefloat.count();
-				client->position += delta;
+				auto delta = client->direction * SPEED;
+				client->velocity.x = delta.x;
+				client->velocity.z = delta.z;
 			}
-			if (client->isJump)
+
+			if (client->velocity.y < 0)
+			{
+				for (auto& tile : tiles)
+				{
+					if (client->collider.isCollisionAABB(tile.collider))
+					{
+						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
+
+						lock_guard<mutex> lock{ client->lock };
+						client->position.y = tile.collider.position->y;
+						client->velocity.y = 0;
+						if (client->isJump)
+						{
+							client->isJump = false;
+						}
+						break;
+					}
+				}
+			}
+
 			{
 				lock_guard<mutex> lock{ client->lock };
-				client->velocity.y -= GRAVITY * DeltaTimefloat.count();
 				client->position += client->velocity * DeltaTimefloat.count();
-
-				if (client->position.y <= 0)
-				{
-					client->position.y = 0;
-					client->isJump = false;
-					client->velocity.y = 0;
-				}
+				//if (client->position.y < -395) client->position.y = -395;
 			}
 		}
 
@@ -334,12 +360,10 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	case ClientLogin:
 	{
 		clients[id]->SendServerLoginPacket(id);
-		cout << "CurID : " << id << endl;
 		for (auto& client : clients)
 		{
 			ClientException(client, id);
 
-			cout << "Send ID : " << client.second->ID << endl;
 			client.second->SendAddPlayerPacket(id, clients[id]->position);
 			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}
@@ -376,7 +400,6 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	case KeyType::MoveStart: // ¿Ãµø
 	{
 		{
-			cout << "move start" << endl;
 			lock_guard<mutex> lock{ client->lock };
 			client->direction = dir;
 			client->isMove = true;
@@ -386,8 +409,9 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	case KeyType::MoveEnd:
 	{
 		{
-			cout << "move end" << endl;
 			lock_guard<mutex> lock{ client->lock };
+			client->direction = Vector3::Zero();
+			client->velocity = Vector3::Zero();
 			client->isMove = false;
 		}
 		break;

@@ -146,6 +146,7 @@
     <ClInclude Include="ServerBase.h" />
     <ClInclude Include="SurviveMode.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClCompile Include="ServerBase.cpp" />
     <ClCompile Include="SurviveMode.cpp" />
     <ClCompile Include="ThreadSafeQueue.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

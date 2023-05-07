@@ -6,6 +6,9 @@ Client::Client() :
 	RoomID(-1),
 	prevRemainData(0)
 {
+	collider.position = &this->position;
+	collider.offset = PlayerOffset;
+	collider.size = PlayerCollider;
 }
 
 Client::~Client()
