@@ -138,7 +138,7 @@ void CMeshData::Load(const wstring& _strFilePath, bool _bFBX, bool _bVecMesh)
 			m_vecMtrl[j] = pMtrl;
 		}
 
-		for (int i = 0; i < std::stoi(strMeshSize)-1; ++i)
+		for (int i = 0; i < std::stoi(strMeshSize); ++i)
 		{
 			wstring strMeshKey, strMeshPath;
 			strMeshKey = LoadWString(pFile, i, meshname);

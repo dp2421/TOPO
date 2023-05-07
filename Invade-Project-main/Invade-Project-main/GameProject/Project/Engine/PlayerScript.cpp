@@ -132,11 +132,11 @@ void CPlayerScript::Update()
 		}
 		if ((moveState & (int)Direction::Left) == (int)Direction::Left)
 		{
-			dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+			dir += +Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 		}
 		if ((moveState & (int)Direction::Right) == (int)Direction::Right)
 		{
-			dir += +Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+			dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 		}
 
 		NetworkMgr::GetInst()->SendClientMovePacket(dir, fDegree);
@@ -304,16 +304,22 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 				dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
 				break;
 			case KEY_TYPE::KEY_A:
+
+				moveState |= (int)Direction::Left;
+				dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+				//moveState |= (int)Direction::Back;
+				//dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
+				break;
+			case KEY_TYPE::KEY_S:
+				//moveState |= (int)Direction::Left;
+				//dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+
 				moveState |= (int)Direction::Back;
 				dir += Transform()->GetWorldDir(DIR_TYPE::FRONT);
 				break;
-			case KEY_TYPE::KEY_S:
-				moveState |= (int)Direction::Left;
-				dir += Transform()->GetWorldDir(DIR_TYPE::RIGHT);
-				break;
 			case KEY_TYPE::KEY_D:
 				moveState |= (int)Direction::Right;
-				dir += -Transform()->GetWorldDir(DIR_TYPE::RIGHT);
+				dir += +Transform()->GetWorldDir(DIR_TYPE::RIGHT);
 				break;
 			default:
 				break;
@@ -327,10 +333,10 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 				moveState &= ~(int)Direction::Front;
 				break;
 			case KEY_TYPE::KEY_A:
-				moveState &= ~(int)Direction::Back;
+				moveState &= ~(int)Direction::Left;
 				break;
 			case KEY_TYPE::KEY_S:
-				moveState &= ~(int)Direction::Left;
+				moveState &= ~(int)Direction::Back;
 				break;
 			case KEY_TYPE::KEY_D:
 				moveState &= ~(int)Direction::Right;
