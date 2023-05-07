@@ -130,7 +130,6 @@ enum class OBSTACLE_STATE {
 // 오브젝트 정보를 담는 구조체
 struct ObstacleObject
 {
-   // string name;
 	OBSTACLE_STATE state;
 	Vec3 vPos;
 };
@@ -150,6 +149,7 @@ void writeObstacleDate()
 			{
 				tempObstacle.state = OBSTACLE_STATE::MOVEA;
 				tempObstacle.vPos = Vec3((1280.f + 280.f * i + 640.f * j), 10.f, 1200.f + 400.f * i);
+				obstacles.push_back(tempObstacle);
 			}
 		}
 	}
@@ -257,11 +257,14 @@ void writeObstacleDate()
 		outFile.write(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
 	}
 	outFile.close();
+
+	cout << obstacles.size() << endl;
 }
 
 
 void readObstaclesDate()
 {
+
 	vector<ObstacleObject> obstacles;
 
 	// 바이너리 파일 읽기
@@ -272,6 +275,8 @@ void readObstaclesDate()
 		return;
 	}
 
+	//vector<ObstacleObject> obstacles(istream_iterator<ObstacleObject>{inFile}, {});
+
 	while (!inFile.eof()) {
 		ObstacleObject obstacle;
 		inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
@@ -279,14 +284,18 @@ void readObstaclesDate()
 	}
 	inFile.close();
 
+	obstacles.pop_back(); //수동지우기;
+	cout << obstacles.size() << endl;
+
 	//테스트
 	for (ObstacleObject i : obstacles)
-		cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << i.state << endl;
+		cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << endl;
 }
 
 int main()
 {
-	//writeObstacleDate();
-	readObstaclesDate();
+	writeObstacleDate();
+	//readObstaclesDate();
+
 	return 0;
 }
