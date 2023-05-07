@@ -70,9 +70,6 @@
     <Filter Include="GameObject\Component\Terrain">
       <UniqueIdentifier>{84247d70-f99f-4f79-852d-78d0fbb6f0e2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Module\Imgui">
-      <UniqueIdentifier>{0688a947-fe0a-4cd3-9b64-3dd2e934a644}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ShaderCode">
       <UniqueIdentifier>{45867d64-9470-4e6e-8863-30818d0ce7cf}</UniqueIdentifier>
     </Filter>
@@ -249,30 +246,6 @@
     <ClInclude Include="Terrain.h">
       <Filter>GameObject\Component\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="imconfig.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_internal.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_dx12.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_textedit.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_rectpack.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_truetype.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_win32.h">
-      <Filter>Module\Imgui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Protocol.h">
       <Filter>Default</Filter>
     </ClInclude>
@@ -439,27 +412,6 @@
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>GameObject\Component\Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui.cpp">
-      <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_dx12.cpp">
-      <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_widgets.cpp">
-      <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_draw.cpp">
-      <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_tables.cpp">
-      <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>Module\Imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
-      <Filter>Module\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="NetworkMgr.cpp">
       <Filter>Manager</Filter>

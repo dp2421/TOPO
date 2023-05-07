@@ -94,23 +94,6 @@ int CDevice::Init(HWND _hWnd, const tResolution& _res, bool _bWindow)
 	CreateRootSignature();
 
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(m_hWnd);
-	ImGui_ImplDX12_Init(m_pDevice.Get(), 3,
-		DXGI_FORMAT_R8G8B8A8_UNORM, m_pInitDescriptor.Get(),
-		m_pInitDescriptor.Get()->GetCPUDescriptorHandleForHeapStart(),
-		m_pInitDescriptor.Get()->GetGPUDescriptorHandleForHeapStart());
-
-	// ImGui 창을 생성합니다.
-
-
-
-
 	return S_OK;
 }
 
@@ -151,31 +134,7 @@ void CDevice::Render_Start(float(&_arrFloat)[4])
 
 void CDevice::Render_Present()
 {
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 
-	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-	{
-		static int counter = 0;
-
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-
-		//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
-
-		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		ImGui::End();
-	}
-	ImGui::Render();
 
 	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	// Indicate that the back buffer will now be used to present.
@@ -188,7 +147,6 @@ void CDevice::Render_Present()
 	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 다시 출력으로 지정
 	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
 
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_pCmdListGraphic.Get());
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
