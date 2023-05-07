@@ -398,8 +398,8 @@ void CSceneMgr::Init()
 	///////////////////////////////////////////////////////////////
 	////Àå¾Ö¹°Å×½ºÆ®
 	//360µµ
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
-	////pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
 	//pMeshData->Save(pMeshData->GetPath());
 	//CGameObject* pMoveObs = nullptr;
 	//pMoveObs = new CGameObject;
@@ -463,8 +463,8 @@ void CSceneMgr::Init()
 
 	//360µµÈ¸ÀüÀå¾Ö¹° : 2Ãþ(26) + 1Ãþ(17)
 	{	//2Ãþ
-		pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
-		//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
+		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
 		//pMeshData->Save(pMeshData->GetPath());
 		CGameObject* pObstaclesA;
 		pObstaclesA = nullptr;
@@ -573,8 +573,8 @@ void CSceneMgr::Init()
 
 	//½Ã°èÃßÈ¸ÀüÀå¾Ö¹° : 2Ãþ(14) + 1Ãþ(9)
 	{
-		pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
-		//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
+		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle5_2.mdat", L"MeshData\\Obstacle5_2.mdat", false, true);
 		//pMeshData->Save(pMeshData->GetPath());
 		CGameObject* pObstaclesB;
 		pObstaclesB = nullptr;
@@ -660,8 +660,8 @@ void CSceneMgr::Init()
 
 	//Çãµé Àå¾Ö¹° : 2Ãþ(7) + 1Ãþ(34)
 	{
-		pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\huddle_2.fbx");
-		//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\huddle_2.fbx");
+		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\huddle_2.mdat", L"MeshData\\huddle_2.mdat", false, true);
 		//pMeshData->Save(pMeshData->GetPath());
 		CGameObject* pObstaclesH;
 		pObstaclesH = nullptr;

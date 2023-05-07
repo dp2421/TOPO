@@ -33,8 +33,13 @@ void CCollider3D::Render()
 	static CConstantBuffer* pCB = CDevice::GetInst()->GetCB(CONST_REGISTER::b0);
 	g_transform.matWorld = m_matColWorld;
 	CDevice::GetInst()->SetConstBufferToRegister(pCB, pCB->AddData(&g_transform));
-	m_pColMtrl->UpdateData();
-	m_pColMesh->Render();
+	m_pColMtrl->UpdateData();	
+	//향후수정
+	if (m_bBoundDraw)
+	{
+		m_pColMesh->Render();
+	}
+	//m_pColMesh->Render();
 	memset(&m_matColWorld, 0, sizeof(Matrix));
 }
 
