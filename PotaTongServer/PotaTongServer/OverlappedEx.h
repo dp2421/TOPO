@@ -29,12 +29,12 @@ public:
 
 	OverlappedEx(char* packet)
 	{
-		wsaBuf.len = packet[0];
+		wsaBuf.len = (unsigned char)packet[0];
 		wsaBuf.buf = sendBuf;
 		type = OverlappedType::Send;
 		ZeroMemory(&overlapped, sizeof(overlapped));
 
 		auto pack = reinterpret_cast<char*>(packet);
-		memcpy(sendBuf, pack, pack[0]);
+		memcpy(sendBuf, pack, (unsigned char)pack[0]);
 	}
 };

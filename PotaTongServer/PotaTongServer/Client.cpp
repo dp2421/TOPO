@@ -56,7 +56,7 @@ void Client::SendAddPlayerPacket(const int id, const Vector3 vec)
 	SendPacket(&packet);
 }
 
-void Client::SendObstacleInfoPacket(const short* degree, int size)
+void Client::SendObstacleInfoPacket(const unsigned short degree[], int size)
 {
 	ServerObstacleInfoPacket packet;
 	packet.size = sizeof(ServerObstacleInfoPacket);

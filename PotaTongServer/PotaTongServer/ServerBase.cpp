@@ -281,7 +281,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		break;
 	case OverlappedType::RotateObs:
 	{
-		short degree[66] = { 0, };
+		unsigned short degree[66] = { 0, };
 		int i = 0;
 		for (auto& obs : obstacles)
 		{
@@ -291,7 +291,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				if (obs.rotate > 360)
 					obs.rotate -= 360;
 
-				degree[i] = obs.rotate;
+				degree[i] = obs.rotate * 100;
 				++i;
 			}
 		}

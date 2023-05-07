@@ -244,10 +244,10 @@ void NetworkMgr::ProcessPacket(char* packet)
     }
     case ServerObstacleInfo:
     {
-        std::cout << "ObstacleInfo " << "\n";
         ServerObstacleInfoPacket* p = reinterpret_cast<ServerObstacleInfoPacket*>(packet);
         for (int i = 0; i < 66; ++i)
         {
+            //std::cout << ((float)p->degree[i]) / 100 << std::endl;
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->Rotate(((float)p->degree[i])/100);
         }
         break;
@@ -255,13 +255,3 @@ void NetworkMgr::ProcessPacket(char* packet)
     } 
     DoRecv();
 }
-
-//void RecvCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag)
-//{
-//    NetworkMgr::GetInst()->ProcessPacket(NetworkMgr::GetInst()->recv.wsaBuf.buf);
-//}
-//
-//void SendCallback(DWORD err, DWORD numBytes, LPWSAOVERLAPPED over, DWORD flag)
-//{
-//    delete over;
-//}

@@ -32,7 +32,7 @@ public:
 	void SendAddPlayerPacket(const int id, const Vector3 pos);
 	void SendRemovePlayerPacket(const int id);
 	void SendPlayerInfoPacket(const int id, const Vector3 pos, const float degree, const bool isMove);
-	void SendObstacleInfoPacket(const short* degree, int size);
+	void SendObstacleInfoPacket(const unsigned short degree[], int size);
 private:
 	OverlappedEx recv;
 };
