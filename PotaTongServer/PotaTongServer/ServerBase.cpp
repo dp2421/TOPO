@@ -302,7 +302,11 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				lock_guard<mutex> lock{ client->lock };
 				client->position += client->velocity * DeltaTimefloat.count();
-				//if (client->position.y < -395) client->position.y = -395;
+				if (client->position.y < -600)
+				{
+					client->velocity = Vector3::Zero();
+					client->position = Vector3(50, 100, 100);
+				}
 			}
 		}
 
