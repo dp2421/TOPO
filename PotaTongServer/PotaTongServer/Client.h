@@ -30,7 +30,7 @@ public:
 	void SendServerLoginPacket(const int id);
 	void SendAddPlayerPacket(const int id, const Vector3 pos);
 	void SendRemovePlayerPacket(const int id);
-	void SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir);
+	void SendPlayerInfoPacket(const int id, const Vector3 pos, const Vector3 dir, const bool isMove);
 private:
 	OverlappedEx recv;
 };

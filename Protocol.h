@@ -116,6 +116,7 @@ struct ServerPlayerInfoPacket
 	unsigned char size;
 	unsigned char	type;
 	int		id;
+	bool	isMove;
 	float	xPos, yPos, zPos;
 	float	xDir, yDir, zDir;
 	// 방향도 넣어야 할까? 벡터 느낌으로

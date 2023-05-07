@@ -306,13 +306,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
-		client->SendPlayerInfoPacket(id, client->position, client->direction);
+		client->SendPlayerInfoPacket(id, client->position, client->direction, client->isMove);
 
 		for (auto cl : clients)
 		{
 			ClientException(cl, id);
 
-			cl.second->SendPlayerInfoPacket(id, client->position, client->direction);
+			cl.second->SendPlayerInfoPacket(id, client->position, client->direction, client->isMove);
 		}
 
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };

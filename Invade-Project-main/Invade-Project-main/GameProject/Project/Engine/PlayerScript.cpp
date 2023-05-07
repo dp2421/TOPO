@@ -18,7 +18,7 @@ void CPlayerScript::Update()
 
 	if (!isPlayable)
 	{
-		if (prePosition.x != Transform()->GetLocalPos().x || prePosition.z != Transform()->GetLocalPos().z)
+		if (moveState)
 		{
 			if (!runPlayer->IsActive())
 				runPlayer->SetActive(true);
@@ -346,8 +346,12 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 	}
 }
 
-void CPlayerScript::SetPlayerPos(Vec3 pos)
+void CPlayerScript::SetPlayerPos(Vec3 pos, bool isMove)
 {
+	if (!isPlayable)
+	{
+		moveState = isMove;
+	}
 	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
 	runPlayer->Transform()->SetLocalPos(pos);
