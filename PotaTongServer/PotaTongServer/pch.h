@@ -32,6 +32,8 @@ using namespace std;
 
 #include "Client.h"
 #include "Obstacle.h"
+#include "PendulumObs.h"
+#include "SpinObs.h"
 #include "Tile.h"
 #include "AI.h"
 

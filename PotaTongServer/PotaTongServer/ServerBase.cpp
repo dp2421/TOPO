@@ -233,7 +233,7 @@ void ServerBase::Accept()
 	clients[newID] = new Client;
 	clients[newID]->ID = newID;
 	clients[newID]->socket = ClientSocket;
-	clients[newID]->position = Vector3(50, 100, 100);
+	clients[newID]->position = PlayerStartPos;
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
 	clients[newID]->RecvPacket();
 	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -353,10 +353,64 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				}
 			}
 
+			if (client->velocity.x != 0 || client->velocity.z != 0)
+			{
+				for (auto& obs : obstacles)
+				{
+					if (obs.data.state == OBSTACLE_STATE::STOP)
+					{
+						if (client->collider.isCollisionAABB(obs.collider[0]))
+						{
+							cout << "COll" << endl;
+							auto boxcenter = obs.collider[0].getBoundingbox().Center;
+							auto center = XMLoadFloat3(&boxcenter);
+							XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(client->collider.getBoundingbox(), center);
+
+							if (XMVectorGetX(faceNormal) > 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								client->direction.x = 0;
+								client->velocity.x = 0;
+							}
+							else if (XMVectorGetX(faceNormal) < 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								client->direction.x = 0;
+								client->velocity.x = 0;
+							}
+
+							if (XMVectorGetY(faceNormal) > 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								if(client->position.y > 0)
+									client->direction.y = 0;
+							}
+							else if (XMVectorGetY(faceNormal) < 0.0f)
+							{
+								// Collision direction is below box1
+							}
+
+							if (XMVectorGetZ(faceNormal) > 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								client->direction.z = 0;
+								client->velocity.z = 0;
+							}
+							else if (XMVectorGetZ(faceNormal) < 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								client->direction.z = 0;
+								client->velocity.z = 0;
+							}
+						}
+					}
+				}
+			}
+
 			{
 				lock_guard<mutex> lock{ client->lock };
 				client->position += client->velocity * DeltaTimefloat.count();
-				if (client->position.y < -2000)
+				if (client->position.y < -3000)
 				{
 					client->velocity = Vector3::Zero();
 					client->position = Vector3(50, 100, 100);

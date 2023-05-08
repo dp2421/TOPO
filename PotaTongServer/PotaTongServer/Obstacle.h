@@ -24,7 +24,7 @@ public:
 	ObstacleInfo data;
 	float rotate = 0;
 	float deltaRotate;
-	XMFLOAT3 position;
+	Vector3 position;
 	vector<Collider> collider;
 };
 

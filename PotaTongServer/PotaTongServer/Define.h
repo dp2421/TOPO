@@ -14,6 +14,8 @@ constexpr float SPEED = 200.f;
 constexpr float JUMPVEL = 300.0f;
 constexpr float GRAVITY = 9.8f;
 
+const Vector3 PlayerStartPos{ 50, 100, 100 };
+
 const Vector3 PlayerCollider{ 100.0f / 2, 160.0f / 2, 100.0f / 2 };
 const Vector3 PlayerOffset{ 0.0f, 90.0f, 0.0f };
 
@@ -28,6 +30,6 @@ const Vector3 RotateObsPillarOffset{ 0.0f, 115.0f, 0.0f };
 const Vector3 PendulumObsCollider{ 100.0f / 2, 300.0f / 2, 100.0f / 2 };
 const Vector3 PendulumObsOffset{ 0.0f, -160.0f, 0.0f };
 
-const Vector3 HurdleObsCollider{ 140.0f / 2, 50.0f / 2, 20.0f / 2};
-const Vector3 HurdleumObsOffset{ 0.0f, 90.0f, 0.0f };
+const Vector3 HurdleObsCollider{ 140.0f , 50.0f , 20.0f };
+const Vector3 HurdleumObsOffset{ 0.0f, 0.0f, 0.0f };
 

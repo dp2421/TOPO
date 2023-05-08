@@ -12,6 +12,7 @@ public:
 	void InitServer();
 	void InitHandler();
 	void InitObsatacleInfo();
+	void InitAI();
 	void InitMapInfo();
 
 	void Run();
