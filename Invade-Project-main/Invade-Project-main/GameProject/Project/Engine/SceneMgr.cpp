@@ -524,7 +524,7 @@ void CSceneMgr::Init()
 			pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 			pObstaclesA->FrustumCheck(false);
 			pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-			pObstaclesA->Transform()->SetLocalPos(Vec3(500.f -i*(500.f), 10.f, 21000.f));
+			pObstaclesA->Transform()->SetLocalPos(Vec3(500.f -i*(1000.f), 10.f, 21000.f));
 			pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesA->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
@@ -612,7 +612,7 @@ void CSceneMgr::Init()
 			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 			pObstaclesB->FrustumCheck(false);
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-			pObstaclesB->Transform()->SetLocalPos(Vec3(-1680.f + 1680.f*i, 330.f, 14800.f));
+			pObstaclesB->Transform()->SetLocalPos(Vec3(-1680.f + 3360.f*i, 330.f, 14800.f));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesB->MeshRender()->SetDynamicShadow(false);
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
@@ -780,7 +780,7 @@ void CSceneMgr::Init()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 3800.f));
+	pObject->Transform()->SetLocalPos(Vec3(100.f, 10.f, 3800.f)); //x좌표 임시수정
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(false);
