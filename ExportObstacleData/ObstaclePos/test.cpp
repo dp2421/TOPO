@@ -4,7 +4,7 @@
 
 using namespace std;
 
-#define FLOORHEIGET 400
+#define FLOORHEIGET 1000  //裘 2類 1類 除問
 
 //歜衛 醴蝶籤 漱攪贗楚蝶
 class Vec3
@@ -165,7 +165,7 @@ void writeObstacleDate()
 	for (int i = 0; i < 2; ++i)
 	{
 		tempObstacle.state = OBSTACLE_STATE::MOVEA;
-		tempObstacle.vPos = Vec3(500.f - i * (500.f), 10.f, 21000.f);
+		tempObstacle.vPos = Vec3(500.f - i * (1000.f), 10.f, 21000.f);
 		obstacles.push_back(tempObstacle);
 	}
 	//1類
@@ -198,7 +198,7 @@ void writeObstacleDate()
 	for (int i = 0; i < 2; ++i)
 	{
 		tempObstacle.state = OBSTACLE_STATE::MOVEB;
-		tempObstacle.vPos = Vec3(-1680.f + 1680.f * i, 330.f, 14800.f);
+		tempObstacle.vPos = Vec3(-1680.f + 3360.f * i, 330.f, 14800.f);
 		obstacles.push_back(tempObstacle);
 	}
 	//1類
