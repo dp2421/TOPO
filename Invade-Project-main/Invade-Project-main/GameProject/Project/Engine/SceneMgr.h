@@ -7,6 +7,7 @@ class CSceneMgr
 	SINGLE(CSceneMgr)
 private:
 	CScene* m_pCurScene;
+	CScene* m_pStartScene;
 public:
 	void Init();
 	void Update();
