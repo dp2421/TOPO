@@ -9,12 +9,15 @@ private:
 	CScene* m_pCurScene;
 	CScene* m_pStartScene;
 public:
-	void Init();
+	void InitMainScene();
+	void InitStartScene();
 	void Update();
 	void Update_Tool();
 
 	CScene* GetCurScene();
 	void ChangeScene(CScene* _pNextScene);
+	void ChangeScene();
+
 	void FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>& _vecFindObj);
 	CGameObject* AddNetworkGameObject(bool isPlayer, Vec3 pos);
 	void RemoveNetworkGameObject(CGameObject* obj);

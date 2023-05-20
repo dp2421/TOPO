@@ -47,7 +47,18 @@ CScene* CSceneMgr::GetCurScene()
 void CSceneMgr::ChangeScene(CScene* _pNextScene)
 {
 	SAFE_DELETE(m_pCurScene);
-	m_pCurScene = _pNextScene;
+	//m_pCurScene = _pNextScene;
+	m_pCurScene = m_pStartScene;
+
+}
+
+
+void CSceneMgr::ChangeScene()
+{
+	SAFE_DELETE(m_pCurScene);
+	//m_pCurScene = _pNextScene;
+	m_pCurScene = m_pStartScene;
+
 }
 
 CSceneMgr::CSceneMgr()
@@ -60,7 +71,7 @@ CSceneMgr::~CSceneMgr()
 	SAFE_DELETE(m_pCurScene);
 }
 
-void CSceneMgr::Init()
+void CSceneMgr::InitMainScene()
 {
 	// 필요한 리소스 로딩
 	// Texture 로드
@@ -86,10 +97,10 @@ void CSceneMgr::Init()
 	Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_3, pSky01.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
 //
 	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_2, pSky01.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
 //
 
 	m_pCurScene = new CScene;
@@ -110,21 +121,6 @@ void CSceneMgr::Init()
 	m_pCurScene->GetLayer(31)->SetName(L"Tool");
 
 
-	m_pStartScene = new CScene;
-	m_pStartScene->SetName(L"Start Scene");
-
-	m_pStartScene->GetLayer(0)->SetName(L"Default");
-	m_pStartScene->GetLayer(1)->SetName(L"Player");
-	m_pStartScene->GetLayer(2)->SetName(L"Monster");
-	m_pStartScene->GetLayer(3)->SetName(L"Arrow");
-	m_pStartScene->GetLayer(4)->SetName(L"Minion");
-	m_pStartScene->GetLayer(5)->SetName(L"Tower");
-	m_pStartScene->GetLayer(6)->SetName(L"temp");
-	m_pStartScene->GetLayer(7)->SetName(L"Racing");
-	m_pStartScene->GetLayer(8)->SetName(L"Obstacle");
-
-
-
 	CGameObject* pMainCam = nullptr;
 
 	// Camera Object
@@ -141,7 +137,6 @@ void CSceneMgr::Init()
 	pMainCam->Camera()->SetLayerAllCheck();
 
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pMainCam);
-	m_pStartScene->FindLayer(L"Default")->AddGameObject(pMainCam);
 
 	CGameObject* pObject = nullptr;
 
@@ -157,7 +152,6 @@ void CSceneMgr::Init()
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
-	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 #pragma region TempObj
 
@@ -877,6 +871,111 @@ void CSceneMgr::Init()
 	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
 
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
+
+
+
+	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+
+	m_pCurScene->Awake();
+	m_pCurScene->Start();
+}
+
+
+void CSceneMgr::InitStartScene()
+{
+	// 필요한 리소스 로딩
+	// Texture 로드
+
+	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
+	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
+	Ptr<CTexture> pBlackTex = CResMgr::GetInst()->Load<CTexture>(L"Black", L"Texture\\asd.png");
+	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS000_Day_1", L"Texture\\Skybox\\FS000_Day_1.png");
+	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
+	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
+	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
+	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
+	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
+
+
+	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
+	Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
+	Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
+
+
+	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+
+	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+	//
+	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
+	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+	//
+
+	m_pStartScene = new CScene;
+	m_pStartScene->SetName(L"Start Scene");
+
+	m_pStartScene->GetLayer(0)->SetName(L"Default");
+	m_pStartScene->GetLayer(1)->SetName(L"Player");
+	m_pStartScene->GetLayer(2)->SetName(L"Monster");
+	m_pStartScene->GetLayer(3)->SetName(L"Arrow");
+	m_pStartScene->GetLayer(4)->SetName(L"Minion");
+	m_pStartScene->GetLayer(5)->SetName(L"Tower");
+	m_pStartScene->GetLayer(6)->SetName(L"temp");
+	m_pStartScene->GetLayer(7)->SetName(L"Racing");
+	m_pStartScene->GetLayer(8)->SetName(L"Obstacle");
+
+
+
+	CGameObject* pMainCam = nullptr;
+
+	// Camera Object
+	pMainCam = new CGameObject;
+	pMainCam->SetName(L"MainCam");
+	pMainCam->AddComponent(new CTransform);
+	pMainCam->AddComponent(new CCamera);
+	pMainCam->AddComponent(new CCameraScript);
+
+	pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+
+	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+	pMainCam->Camera()->SetFar(100000.f);
+	pMainCam->Camera()->SetLayerAllCheck();
+
+	m_pStartScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+
+	CGameObject* pObject = nullptr;
+
+	pObject = new CGameObject;
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetLightPos(Vec3(0.f, 500.f, 0.f));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
+	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
+	pObject->Light3D()->SetAmbient(Vec3(0.4f, 0.4f, 0.4f));
+	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+	pObject->Light3D()->SetLightRange(1000.f);
+	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
+	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
+
+
+#if LOCALPLAY
+	AddNetworkGameObject(true, Vec3::Zero);
+#else
+#endif
+
+	pObject = new CGameObject;
+	pObject->SetName(L"SkyBox");
+	pObject->FrustumCheck(false);
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 
@@ -885,10 +984,8 @@ void CSceneMgr::Init()
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	m_pStartScene->Awake();
 	m_pStartScene->Start();
-
-	//m_pCurScene->Awake();
-	//m_pCurScene->Start();
 }
+
 
 void CSceneMgr::Update()
 {
@@ -901,15 +998,6 @@ void CSceneMgr::Update()
 	m_pCurScene->FinalUpdate();
 
 
-	m_pStartScene->Update();
-	m_pStartScene->LateUpdate();
-
-	// rendermgr 카메라 초기화
-	//CRenderMgr::GetInst()->ClearCamera();
-
-	m_pStartScene->FinalUpdate();
-
-
 	// 충돌 처리
 	CCollisionMgr::GetInst()->Update();
 }
@@ -919,13 +1007,16 @@ void CSceneMgr::Update_Tool()
 	// rendermgr 카메라 초기화
 	CRenderMgr::GetInst()->ClearCamera();
 	m_pCurScene->FinalUpdate();
+
 }
+
 
 void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>& _vecFindObj)
 {
 	for (int i = 0; i < MAX_LAYER; ++i)
 	{
 		const vector<CGameObject*>& vecObject = m_pCurScene->GetLayer(i)->GetObjects();
+
 		for (size_t j = 0; j < vecObject.size(); ++j)
 		{
 			if (_strTag == vecObject[j]->GetName())
@@ -966,12 +1057,12 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
 		{
-			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 7, 160.f * 7));
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 100, 160.f * 7));
 			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 			pPlayer->AddChild(obj);
+			//obj->Transform()->SetLocalPos(Vec3(-60,45,-10));
+			//obj->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 
-			////pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
-	//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 			break;
 		}
 	}
@@ -995,6 +1086,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject->MeshRender()->SetDynamicShadow(false);
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+
 
 	//pPlayer->AddChild(pObject);
 	pPlayer->GetScript<CPlayerScript>()->SetIdlePlayer(pObject);
@@ -1009,11 +1102,13 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 	pObject->MeshRender()->SetDynamicShadow(false);
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	//pPlayer->AddChild(pObject);
 	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
 
 	m_pCurScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
+	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
 
 	return pPlayer;
 }
