@@ -47,8 +47,7 @@ CScene* CSceneMgr::GetCurScene()
 void CSceneMgr::ChangeScene(CScene* _pNextScene)
 {
 	SAFE_DELETE(m_pCurScene);
-	//m_pCurScene = _pNextScene;
-	m_pCurScene = m_pStartScene;
+	m_pCurScene = _pNextScene;
 
 }
 
@@ -1057,7 +1056,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
 		{
-			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 100, 160.f * 7));
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
 			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 			pPlayer->AddChild(obj);
 			//obj->Transform()->SetLocalPos(Vec3(-60,45,-10));
