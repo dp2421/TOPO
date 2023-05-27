@@ -1,5 +1,5 @@
 #include "pch.h"
-
+#include "Tile.h"
 #include "SceneMgr.h"
 
 #include "Scene.h"
@@ -68,6 +68,25 @@ CSceneMgr::CSceneMgr()
 CSceneMgr::~CSceneMgr()
 {
 	SAFE_DELETE(m_pCurScene);
+}
+
+void CSceneMgr::LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles)
+{
+	// 맵 타일 로드
+	std::ifstream inFile(FileName, std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		//std::cerr << "Failed to open Map File: " << FileNames << std::endl;
+		return;
+	}
+
+	while (!inFile.eof()) {
+		TileInfo tile;
+		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+		tiles.push_back(tile);
+	}
+	tiles.pop_back(); //ㅋㅋ수동지우기
+	inFile.close();
 }
 
 void CSceneMgr::InitMainScene()
@@ -553,6 +572,18 @@ void CSceneMgr::InitMainScene()
 	//2층
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part0.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
+
+	LoadMapInfoFromFile(L"MapPos2F.bin",tiles);
+
+	//소팅이 제일 비용이 적게 든다는 게 아이러니하군요
+	sort(tiles.begin(), tiles.end(), [](const Tile& a, const Tile& b) {
+		return a.GetTileZPos() < b.GetTileZPos();
+		});
+
+	
+
+
+
 	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\2part0.mdat", L"MeshData\\2part0.mdat");
 
 	pObject = pMeshData->Instantiate();
@@ -562,7 +593,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
+	pObject->Transform()->SetLocalPos(tiles[0].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -570,6 +601,10 @@ void CSceneMgr::InitMainScene()
 	//pObject->Animator3D()->SetClipIndex(1);
 
 	m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+
+
+
 	
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part1.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
@@ -581,7 +616,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 1000.f));
+	pObject->Transform()->SetLocalPos(tiles[1].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(false);
@@ -599,7 +634,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(100.f, 10.f, 3800.f)); //x좌표 임시수정
+	pObject->Transform()->SetLocalPos(tiles[2].GetTilePos()); //x좌표 임시수정
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(false);
@@ -619,7 +654,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 5000.f));
+	pObject->Transform()->SetLocalPos(tiles[3].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	pObject->MeshRender()->SetDynamicShadow(false);
@@ -638,7 +673,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 8000.f));
+	pObject->Transform()->SetLocalPos(tiles[4].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -659,7 +694,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 13000.f));
+	pObject->Transform()->SetLocalPos(tiles[5].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -680,7 +715,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 16700.f));
+	pObject->Transform()->SetLocalPos(tiles[6].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -701,7 +736,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 20800.f));
+	pObject->Transform()->SetLocalPos(tiles[7].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
@@ -720,7 +755,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f, 21400.f));
+	pObject->Transform()->SetLocalPos(tiles[8].GetTilePos());
 	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 
 	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));

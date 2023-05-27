@@ -2,13 +2,16 @@
 class CScene;
 class CCamera;
 class CGameObject;
+class Tile;
 class CSceneMgr
 {
 	SINGLE(CSceneMgr)
 private:
 	CScene* m_pCurScene;
 	CScene* m_pStartScene;
+	vector<Tile> tiles;
 public:
+	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
 	void InitMainScene();
 	void InitStartScene();
 	void Update();

@@ -255,6 +255,9 @@
     <ClInclude Include="ObstacleScript.h">
       <Filter>Script\Obstacle</Filter>
     </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Manager\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -418,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="ObstacleScript.cpp">
       <Filter>Script\Obstacle</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Manager\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
