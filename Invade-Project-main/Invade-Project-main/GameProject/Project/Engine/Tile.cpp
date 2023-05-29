@@ -18,9 +18,26 @@ Tile::~Tile()
 
 }
 
-wstring Tile::GetMatFile(TileInfo tile, const wstring& path)
+wstring Tile::GetLayerName()
 {
-	wstring temp;
+	static const wstring layerStrings[] = {
+        L"MeshData\\L2Part0.mdat",
+        L"MeshData\\L2Part1.mdat",
+        L"MeshData\\L2Part2.mdat",
+        L"MeshData\\LJinggum.mdat",
+        L"MeshData\\L2Part4.mdat",
+        L"MeshData\\L2Part5.mdat",
+        L"MeshData\\L2Part6.mdat",
+        L"MeshData\\L2Part7.mdat",
+        L"MeshData\\L2Part8.mdat",
+        L"MeshData\\L1Water.mdat",
+        L"MeshData\\L1Part1.mdat",
+        L"MeshData\\L1Part2.mdat",
+        L"MeshData\\L1Part3.mdat",
+        L"MeshData\\L1Part4.mdat"  
+        //타일 레이어 추가시 아래에 반드시 추가
+	};
 
-	return temp;
+    return layerStrings[data.state-6]; //enum LayerState가 6부터 시작하므로 6 빼주기
 }
+
