@@ -41,6 +41,8 @@ private:
 
     int moveState = 0;
     bool isPlayable = false;
+
+    CGameObject* m_pParticle;
 public:
     CGameObject* runPlayer;
     CGameObject* IdlePlayer;
