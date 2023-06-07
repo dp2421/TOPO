@@ -42,6 +42,7 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
+#include <fstream>
 #include <string>
 #include <vector>
 #include <list>

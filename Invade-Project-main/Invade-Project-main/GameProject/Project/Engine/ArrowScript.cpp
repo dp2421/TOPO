@@ -60,8 +60,6 @@ void CArrowScript::Awake()
 
 void CArrowScript::Update()
 {
-	
-
 
 	if (!m_bMove)
 	{
