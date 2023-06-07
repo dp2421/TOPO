@@ -21,9 +21,6 @@ private:
 	tResolution m_tResolution;
 	CMRT* m_arrMRT[(UINT)MRT_TYPE::END];
 
-
-
-
 	tLight2DInfo m_tLight2DInfo;
 	
 	vector<CLight3D*> m_vecLight3D;
@@ -39,12 +36,12 @@ public:
 	void Render();
 	void Render_Tool();
 	void Render_ShadowMap();
+	void Render_UI();
 	void Render_Lights();
 	void Merge_Light();
 
 	//void Render_OutLine();
 private:
-
 
 	void UpdateLight2D();
 	void UpdateLight3D();

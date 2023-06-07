@@ -48,6 +48,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 
 
 	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b5), 0);
+	CDevice::GetInst()->CreateDirect2DDevice();
 
 	CPathMgr::Init();
 	CKeyMgr::GetInst()->Init();
@@ -56,7 +57,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CResMgr::GetInst()->Init();
 
 	CSceneMgr::GetInst()->InitMainScene();
-	//CSceneMgr::GetInst()->InitStartScene();
+	CSceneMgr::GetInst()->InitStartScene();
 	//CSceneMgr::GetInst()->ChangeScene();
 	NetworkMgr::GetInst()->Init();
 	
@@ -76,6 +77,7 @@ void CGameFramework::Progress()
 
 	CSceneMgr::GetInst()->Update();
 	CRenderMgr::GetInst()->Render();
+	CDevice::GetInst()->RenderDirect2Ddevice();
 
 	CEventMgr::GetInst()->Update();
 }

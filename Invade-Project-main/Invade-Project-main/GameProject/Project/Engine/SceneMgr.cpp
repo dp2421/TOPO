@@ -57,7 +57,7 @@ void CSceneMgr::ChangeScene()
 	SAFE_DELETE(m_pCurScene);
 	//m_pCurScene = _pNextScene;
 	m_pCurScene = m_pStartScene;
-
+	//SCENE_TYPE = 1;
 }
 
 CSceneMgr::CSceneMgr()
@@ -95,7 +95,11 @@ void CSceneMgr::InitMainScene()
 
 	Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
+
+
+
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+
 	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
 //
 	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
@@ -904,12 +908,14 @@ void CSceneMgr::InitStartScene()
 
 
 	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+#if SCENE_TYPE
+		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+		pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+		//
+		pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
+		pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
 
-	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
-	//
-	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+#endif // SCENE_TYPE
 	//
 
 	m_pStartScene = new CScene;
@@ -965,6 +971,7 @@ void CSceneMgr::InitStartScene()
 #else
 #endif
 
+#if SCENE_TYPE
 	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
 	pObject->FrustumCheck(false);
@@ -976,7 +983,7 @@ void CSceneMgr::InitStartScene()
 	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
 
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
-
+#endif // SCENE_TYPE
 
 
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");

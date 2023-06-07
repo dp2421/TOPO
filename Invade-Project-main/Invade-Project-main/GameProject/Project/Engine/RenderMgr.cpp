@@ -33,8 +33,7 @@ void CRenderMgr::Render()
 	// SwapChain MRT 초기화
 	UINT iIdx = CDevice::GetInst()->GetSwapChainIndex();
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Clear(iIdx);
-	m_arrMRT[(UINT)MRT_TYPE::UI]->OMSet();
-	m_arrMRT[(UINT)MRT_TYPE::UI]->Clear();
+
 
 	// DeferredMRT 초기화
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Clear();
@@ -56,6 +55,8 @@ void CRenderMgr::Render()
 
 	Merge_Light();
 
+	//Render_UI();
+
 	m_vecCam[0]->Render_Forward(); // skybox, grid, ui
 
 	// 출력
@@ -71,12 +72,12 @@ void CRenderMgr::Render_Tool()
 
 void Render_OutLine()
 {
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->Clear();
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->OMSet();
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->Clear();
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->OMSet();
 
-	// 렌더링 코드
+	//// 렌더링 코드
 
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->TargetToResBarrier();
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->TargetToResBarrier();
 }
 
 
@@ -90,6 +91,14 @@ void CRenderMgr::Render_ShadowMap()
 		m_vecLight3D[i]->Render_ShadowMap();
 	}
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SHADOWMAP)->TargetToResBarrier();
+}
+
+void CRenderMgr::Render_UI()
+{
+
+#ifdef _WITH_DIRECT2D
+	CDevice::GetInst()->RenderDirect2Ddevice();
+#endif
 }
 
 void CRenderMgr::Render_Lights()
@@ -250,18 +259,18 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP]->Create(1, arrRT, pDSTex); // 별도의 깊이버퍼 를 가짐
 	}
 
-	{
-		tRT arrRT[8] = {};
+	//{
+	//	tRT arrRT[8] = {};
 
-		arrRT[0].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
-		arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"OutlineTargetTex"
-			, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
-			, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
-			, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
+	//	arrRT[0].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
+	//	arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"OutlineTargetTex"
+	//		, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
+	//		, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
+	//		, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
 
-		m_arrMRT[(UINT)MRT_TYPE::OUTLINE] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::OUTLINE]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
-	}
+	//	m_arrMRT[(UINT)MRT_TYPE::OUTLINE] = new CMRT;
+	//	m_arrMRT[(UINT)MRT_TYPE::OUTLINE]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
+	//}
 
 	// ============
 	// UI MRT

@@ -41,7 +41,11 @@ static type* GetInst()\
 // 1 네트워크 사용 안함, 0 네트워크 사용 함
 #define LOCALPLAY 1
 
-//#define _WITH_DIRECT2D
+//extern int SCENE_TYPE = 0;
+// 0 레이싱맵 1 로비
+
+#define _WITH_DIRECT2D
+#define _WITH_DIRECT2D_IMAGE_EFFECT
 
 //#ifdef _WITH_DIRECT2D
 //#define _WITH_DIRECT2D_IMAGE_EFFECT
@@ -321,7 +325,6 @@ enum class MRT_TYPE
 	LIGHT,		// LIGHT, SPECULAR
 	SHADOWMAP,	// SHADOWMAP
 	POSTEFFECT, // POSTEFFECT1, POSTEFFECT2
-	OUTLINE,
 	UI,
 	END,
 };

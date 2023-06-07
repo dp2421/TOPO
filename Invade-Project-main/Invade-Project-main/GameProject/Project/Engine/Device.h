@@ -55,39 +55,80 @@ private:
 	ComPtr<ID3D12Fence> m_pFenceCompute;
 	ComPtr<ID3D12DescriptorHeap> m_pDummyDescriptorCompute;
 
+//#ifdef _WITH_DIRECT2D
+//	static const UINT			m_nSwapChainBuffers = 2;
+//	UINT						m_nSwapChainBufferIndex=0;
+//
+//
+//	ComPtr<ID3D12Resource> m_ppd3dSwapChainBackBuffers = NULL;
+//	//ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
+//	ComPtr<ID3D11On12Device> m_pd3d11On12Device = NULL;
+//	ComPtr<ID3D11DeviceContext> m_pd3d11DeviceContext = NULL;
+//	ComPtr<ID2D1Factory3> m_pd2dFactory = NULL;
+//	ComPtr<IDWriteFactory> m_pdWriteFactory = NULL;
+//	ComPtr<ID2D1Device2> m_pd2dDevice = NULL;
+//	ComPtr<ID2D1DeviceContext2> m_pd2dDeviceContext = NULL;
+//
+//	ComPtr<ID3D11Resource> m_ppd3d11WrappedBackBuffers = NULL;
+//	//ID3D11Resource* m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
+//	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets = NULL;
+//	//vector<ComPtr<ID2D1Bitmap1>> m_ppd2dRenderTargets;
+//	//ID2D1Bitmap1* m_ppd2dRenderTargets[m_nSwapChainBuffers];
+//
+//	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBackground = NULL;
+//	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBorder = NULL;
+//	ComPtr<IDWriteTextFormat> m_pdwFont = NULL;
+//	ComPtr<IDWriteTextLayout> m_pdwTextLayout = NULL;
+//	ComPtr<ID2D1SolidColorBrush> m_pd2dbrText = NULL;
+//
+//#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
+//	ComPtr<IWICImagingFactory> m_pwicImagingFactory = NULL;
+//	ComPtr<ID2D1Effect> m_pd2dfxBitmapSource = NULL;
+//	ComPtr<ID2D1Effect> m_pd2dfxGaussianBlur = NULL;
+//	ComPtr<ID2D1Effect> m_pd2dfxEdgeDetection = NULL;
+//	ComPtr<ID2D1DrawingStateBlock1> m_pd2dsbDrawingState = NULL;
+//	ComPtr<IWICFormatConverter> m_pwicFormatConverter = NULL;
+//	int							m_nDrawEffectImage = 0;
+//#endif
+//#endif
+
+
 #ifdef _WITH_DIRECT2D
+
 	static const UINT			m_nSwapChainBuffers = 2;
 	UINT						m_nSwapChainBufferIndex=0;
+	UINT						m_nRtvDescriptorIncrementSize = 0;
 
 
 	ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
-	ComPtr<ID3D11On12Device> m_pd3d11On12Device = NULL;
-	ComPtr<ID3D11DeviceContext> m_pd3d11DeviceContext = NULL;
-	ComPtr<ID2D1Factory3> m_pd2dFactory = NULL;
-	ComPtr<IDWriteFactory> m_pdWriteFactory = NULL;
-	ComPtr<ID2D1Device2> m_pd2dDevice = NULL;
-	ComPtr<ID2D1DeviceContext2> m_pd2dDeviceContext = NULL;
+	ID3D11On12Device* m_pd3d11On12Device = NULL;
+	ID3D11DeviceContext* m_pd3d11DeviceContext = NULL;
+	ID2D1Factory3* m_pd2dFactory = NULL;
+	IDWriteFactory* m_pdWriteFactory = NULL;
+	ID2D1Device2* m_pd2dDevice = NULL;
+	ID2D1DeviceContext2* m_pd2dDeviceContext = NULL;
+	ID3D12DescriptorHeap* m_pd3dRtvDescriptorHeap = NULL;
 
-	ComPtr<ID3D11Resource> m_ppd3d11WrappedBackBuffers = NULL;
-	//ID3D11Resource* m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
-	ComPtr<ID2D1Bitmap1> m_ppd2dRenderTargets = NULL;
+	ID3D11Resource* m_ppd3d11WrappedBackBuffers[m_nSwapChainBuffers];
+	ID2D1Bitmap1* m_ppd2dRenderTargets[m_nSwapChainBuffers];
 
-	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBackground = NULL;
-	ComPtr<ID2D1SolidColorBrush> m_pd2dbrBorder = NULL;
-	ComPtr<IDWriteTextFormat> m_pdwFont = NULL;
-	ComPtr<IDWriteTextLayout> m_pdwTextLayout = NULL;
-	ComPtr<ID2D1SolidColorBrush> m_pd2dbrText = NULL;
+	ID2D1SolidColorBrush* m_pd2dbrBackground = NULL;
+	ID2D1SolidColorBrush* m_pd2dbrBorder = NULL;
+	IDWriteTextFormat* m_pdwFont = NULL;
+	IDWriteTextLayout* m_pdwTextLayout = NULL;
+	ID2D1SolidColorBrush* m_pd2dbrText = NULL;
 
 #ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	ComPtr<IWICImagingFactory> m_pwicImagingFactory = NULL;
-	ComPtr<ID2D1Effect> m_pd2dfxBitmapSource = NULL;
-	ComPtr<ID2D1Effect> m_pd2dfxGaussianBlur = NULL;
-	ComPtr<ID2D1Effect> m_pd2dfxEdgeDetection = NULL;
-	ComPtr<ID2D1DrawingStateBlock1> m_pd2dsbDrawingState = NULL;
-	ComPtr<IWICFormatConverter> m_pwicFormatConverter = NULL;
+	IWICImagingFactory* m_pwicImagingFactory = NULL;
+	ID2D1Effect* m_pd2dfxBitmapSource = NULL;
+	ID2D1Effect* m_pd2dfxGaussianBlur = NULL;
+	ID2D1Effect* m_pd2dfxEdgeDetection = NULL;
+	ID2D1DrawingStateBlock1* m_pd2dsbDrawingState = NULL;
+	IWICFormatConverter* m_pwicFormatConverter = NULL;
 	int							m_nDrawEffectImage = 0;
 #endif
 #endif
+
 
 private:
 	ComPtr<ID3D12RootSignature> m_arrSig[(UINT)ROOT_SIG_TYPE::END];
@@ -116,9 +157,9 @@ public:
 	void UpdateTable();
 	void ExcuteResourceLoad();
 
-#ifdef _WITH_DIRECT2D
 	void CreateDirect2DDevice();
-#endif
+	void RenderDirect2Ddevice();
+	void CreateRtvAndDsvDescriptorHeaps();
 
 	void SetBufferToRegister(CStructuredBuffer* _pBuffer, TEXTURE_REGISTER _eRegister);
 	void SetBufferToSRVRegister_CS(CStructuredBuffer* _pBuffer, TEXTURE_REGISTER _eRegister);
@@ -132,7 +173,9 @@ public:
 	ComPtr<ID3D12GraphicsCommandList>GetCmdList() {return m_pCmdListGraphic;}
 	ComPtr<ID3D12GraphicsCommandList>GetCmdListRes() { return m_pCmdListRes; }
 	ComPtr<ID3D12GraphicsCommandList>GetCmdListCompute() { return m_pCmdListCompute; }
-	ComPtr<ID3D12Device> GetDevice() { return m_pDevice; }
+	ComPtr<ID3D12Device> GetDevice() { 
+		return m_pDevice; 
+	}
 	ComPtr<ID3D12RootSignature> GetRootSignature(ROOT_SIG_TYPE _eType) { return m_arrSig[(UINT)_eType]; }
 	CConstantBuffer* GetCB(CONST_REGISTER _eRegister) { return m_vecCB[(UINT)_eRegister]; }
 	UINT GetSwapChainIndex() { return m_iCurTargetIdx; }
