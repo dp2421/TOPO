@@ -591,7 +591,7 @@ void CResMgr::CreateDefaultShader()
 	pShader->CreatePixelShader(L"Shader\\std.fx", "PS_Tex", "ps_5_0");
 
 	// BlendState ¼³Á¤
-	// pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 
 	// DSState
 	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::NO_DEPTHTEST_NO_WRITE);

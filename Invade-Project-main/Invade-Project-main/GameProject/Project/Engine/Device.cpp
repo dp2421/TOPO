@@ -302,16 +302,16 @@ void CDevice::CreateDirect2DDevice()
 #endif
 }
 #endif
+#ifdef _WITH_DIRECT2D
 void CDevice::RenderDirect2Ddevice()
 {
 
-#ifndef _WITH_DIRECT2D
-	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
-#endif
-#ifdef _WITH_DIRECT2D
+//#ifndef _WITH_DIRECT2D
+//	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+//	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+//	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+//	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+//#endif
 	//std::cout << "log" << std::endl;
 
 	//Direct2D Drawing
@@ -339,8 +339,8 @@ void CDevice::RenderDirect2Ddevice()
 	//m_pd3d11On12Device->ReleaseWrappedResources(ppd3dResources, _countof(ppd3dResources));
 	//m_pd3d11DeviceContext->Flush();
 
-#endif
 }
+#endif
 
 
 void CDevice::WaitForFenceEvent()

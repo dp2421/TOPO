@@ -55,9 +55,15 @@ void CRenderMgr::Render()
 
 	Merge_Light();
 
-	//Render_UI();
 
-	m_vecCam[0]->Render_Forward(); // skybox, grid, ui
+	m_vecCam[0]->Render_Forward(); // skybox, grid
+
+	//m_arrMRT[(UINT)MRT_TYPE::UI]->OMSet();
+	m_vecCam[1]->SortUIObject();
+	m_vecCam[1]->Render_UI();
+	//m_arrMRT[(UINT)MRT_TYPE::UI]->TargetToResBarrier();
+
+
 
 	// Ãâ·Â
 	CDevice::GetInst()->Render_Present();
@@ -95,17 +101,16 @@ void CRenderMgr::Render_ShadowMap()
 
 void CRenderMgr::Render_UI()
 {
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::UI)->Clear();
 
-#ifdef _WITH_DIRECT2D
-	CDevice::GetInst()->RenderDirect2Ddevice();
-#endif
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::UI)->OMSet();
 }
 
 void CRenderMgr::Render_Lights()
 {
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
 
-	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
+	CCamera* pMainCam = CRenderMgr::GetInst()->GetCamera(0);
 	if (nullptr == pMainCam)
 		return;
 	g_transform.matView = pMainCam->GetViewMat();

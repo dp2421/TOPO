@@ -37,15 +37,20 @@ private:
 
     vector<CGameObject*>	m_vecDeferred;
     vector<CGameObject*>	m_vecForward;
+
+    vector<CGameObject*> m_vecUIObject;
 public:
 
     virtual void FinalUpdate();
     void SortGameObject();
     void SortShadowObject();
+    void SortUIObject();
+
     void Render_Deferred();
     void Render_Forward();
     void Render();
     void Render_ShadowMap();
+    void Render_UI();
 
     void SetModule(bool _bModule) { m_bModule = _bModule; }
 

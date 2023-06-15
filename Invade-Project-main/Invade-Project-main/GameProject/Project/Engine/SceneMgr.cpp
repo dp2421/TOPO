@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Tile.h"
 #include "SceneMgr.h"
 
@@ -72,7 +72,7 @@ CSceneMgr::~CSceneMgr()
 
 void CSceneMgr::LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles)
 {
-	// ¸Ê Å¸ÀÏ ·Îµå
+	// ë§µ íƒ€ì¼ ë¡œë“œ
 	std::ifstream inFile(FileName, std::ios::in | std::ios::binary);
 
 	if (!inFile) {
@@ -85,14 +85,14 @@ void CSceneMgr::LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles
 		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
 		tiles.push_back(tile);
 	}
-	tiles.pop_back(); //¤»¤»¼öµ¿Áö¿ì±â
+	tiles.pop_back(); //ã…‹ã…‹ìˆ˜ë™ì§€ìš°ê¸°
 	inFile.close();
 }
 
 void CSceneMgr::InitMainScene()
 {
-	// ÇÊ¿äÇÑ ¸®¼Ò½º ·Îµù
-	// Texture ·Îµå
+	// í•„ìš”í•œ ë¦¬ì†ŒìŠ¤ ë¡œë”©
+	// Texture ë¡œë“œ
 
 	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
@@ -138,6 +138,8 @@ void CSceneMgr::InitMainScene()
 	m_pCurScene->GetLayer(7)->SetName(L"Racing");
 	m_pCurScene->GetLayer(8)->SetName(L"Obstacle");
 	//m_pCurScene->GetLayer(9)->SetName(L"ObstacleMove");
+	m_pCurScene->GetLayer(9)->SetName(L"UI");
+	
 
 
 	m_pCurScene->GetLayer(31)->SetName(L"Tool");
@@ -153,7 +155,6 @@ void CSceneMgr::InitMainScene()
 	pMainCam->AddComponent(new CCameraScript);
 
 	pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
-
 	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
 	pMainCam->Camera()->SetFar(100000.f);
 	pMainCam->Camera()->SetLayerAllCheck();
@@ -174,6 +175,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
+
 
 #pragma region TempObj
 
@@ -205,7 +207,7 @@ void CSceneMgr::InitMainScene()
 	//m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 //	pMeshData->Save(pMeshData->GetPath());
-	// MeshData ·Îµå
+	// MeshData ë¡œë“œ
 
 #pragma endregion
 
@@ -222,12 +224,12 @@ void CSceneMgr::InitMainScene()
 	//pObject->AddComponent(new CTransform);
 	//pObject->AddComponent(new CMeshRender);
 
-	//// Transform ¼³Á¤
+	//// Transform ì„¤ì •
 	//pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f, 0.f));
 	//pObject->Transform()->SetLocalScale(Vec3(1000.f, 1000.f, 100.f));
 	//pObject->Transform()->SetLocalRot(Vec3(XM_PI / 2.f, 0.f, 0.f));
 
-	//// MeshRender ¼³Á¤
+	//// MeshRender ì„¤ì •
 	//pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	//pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 	//pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pColor.GetPointer());
@@ -238,8 +240,8 @@ void CSceneMgr::InitMainScene()
 #pragma endregion
 
 	///////////////////////////////////////////////////////////////
-	////Àå¾Ö¹°Å×½ºÆ®
-	//360µµ
+	////ì¥ì• ë¬¼í…ŒìŠ¤íŠ¸
+	//360ë„
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
 	//pMeshData->Save(pMeshData->GetPath());
@@ -278,7 +280,7 @@ void CSceneMgr::InitMainScene()
 	//
 	//m_pCurScene->FindLayer(L"TestObstacle")->AddGameObject(pMoveObs);
 	//
-	////½Ã°èÃßÈ¸Àü
+	////ì‹œê³„ì¶”íšŒì „
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
 	////pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
 	//pMeshData->Save(pMeshData->GetPath());
@@ -303,8 +305,8 @@ void CSceneMgr::InitMainScene()
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//360µµÈ¸ÀüÀå¾Ö¹° : 2Ãş(26) + 1Ãş(17)
-	{	//2Ãş
+	//360ë„íšŒì „ì¥ì• ë¬¼ : 2ì¸µ(26) + 1ì¸µ(17)
+	{	//2ì¸µ
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
 		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
 		//pMeshData->Save(pMeshData->GetPath());
@@ -372,7 +374,7 @@ void CSceneMgr::InitMainScene()
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 		}
 
-		//1Ãş
+		//1ì¸µ
 		for (int i = 0; i < 5; ++i)
 		{
 			for (int j = 0; j < 3; ++j)
@@ -413,7 +415,7 @@ void CSceneMgr::InitMainScene()
 	}
 
 
-	//½Ã°èÃßÈ¸ÀüÀå¾Ö¹° : 2Ãş(14) + 1Ãş(9)
+	//ì‹œê³„ì¶”íšŒì „ì¥ì• ë¬¼ : 2ì¸µ(14) + 1ì¸µ(9)
 	{
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
 		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle5_2.mdat", L"MeshData\\Obstacle5_2.mdat", false, true);
@@ -421,7 +423,7 @@ void CSceneMgr::InitMainScene()
 		CGameObject* pObstaclesB;
 		pObstaclesB = nullptr;
 
-		//2Ãş
+		//2ì¸µ
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 4; ++j)
@@ -460,7 +462,7 @@ void CSceneMgr::InitMainScene()
 			m_pCurScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
 		}
 
-		//1Ãş
+		//1ì¸µ
 		for (int i = 0; i < 3; ++i)
 		{
 			pObstaclesB = pMeshData->Instantiate();
@@ -500,7 +502,7 @@ void CSceneMgr::InitMainScene()
 		}
 	}
 
-	//Çãµé Àå¾Ö¹° : 2Ãş(7) + 1Ãş(34)
+	//í—ˆë“¤ ì¥ì• ë¬¼ : 2ì¸µ(7) + 1ì¸µ(34)
 	{
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\huddle_2.fbx");
 		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\huddle_2.mdat", L"MeshData\\huddle_2.mdat", false, true);
@@ -508,7 +510,7 @@ void CSceneMgr::InitMainScene()
 		CGameObject* pObstaclesH;
 		pObstaclesH = nullptr;
 
-		//2Ãş
+		//2ì¸µ
 		for (int i = 0; i < 3; ++i)
 		{
 			pObstaclesH = pMeshData->Instantiate();
@@ -548,7 +550,7 @@ void CSceneMgr::InitMainScene()
 			}
 		}
 
-		//1Ãş
+		//1ì¸µ
 		for (int i = 0; i < 17; ++i)
 		{
 			for (int j = 0; j < 2; ++j)
@@ -571,7 +573,7 @@ void CSceneMgr::InitMainScene()
 		}
 	}
 
-	//¸Ê ====================================================
+	//ë§µ ====================================================
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part0.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 
@@ -599,8 +601,8 @@ void CSceneMgr::InitMainScene()
 		}
 	}
 	
-	//¿­¿Ü.. MapPos1FF´Â ÆÄÀÏ¿¡¼­ ¾È ºÒ·¯¿À°í µû·Î ÀĞ½À´Ï´Ù.
-	//ÀÌ»óÇÏ°Ô..1FF.mdat ÆÄÀÏ¸¸ À§ÀÇ ¹æ½ÄÀ¸·Î ºÒ·¯¿À¸é ÅØ½ºÃÄ°¡ ´©´ö´©´ö°Å¸²..
+	//ì—´ì™¸.. MapPos1FFëŠ” íŒŒì¼ì—ì„œ ì•ˆ ë¶ˆëŸ¬ì˜¤ê³  ë”°ë¡œ ì½ìŠµë‹ˆë‹¤.
+	//ì´ìƒí•˜ê²Œ..1FF.mdat íŒŒì¼ë§Œ ìœ„ì˜ ë°©ì‹ìœ¼ë¡œ ë¶ˆëŸ¬ì˜¤ë©´ í…ìŠ¤ì³ê°€ ëˆ„ë•ëˆ„ë•ê±°ë¦¼..
 	{
 		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L1Water.mdat", L"MeshData\\L1Water.mdat");
 		//pMeshData->Save(pMeshData->GetPath());
@@ -677,8 +679,8 @@ void CSceneMgr::InitMainScene()
 
 void CSceneMgr::InitStartScene()
 {
-	// ÇÊ¿äÇÑ ¸®¼Ò½º ·Îµù
-	// Texture ·Îµå
+	// í•„ìš”í•œ ë¦¬ì†ŒìŠ¤ ë¡œë”©
+	// Texture ë¡œë“œ
 
 	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
@@ -757,7 +759,7 @@ void CSceneMgr::InitStartScene()
 
 
 #if LOCALPLAY
-	AddNetworkGameObject(true, Vec3::Zero);
+	//AddNetworkGameObject(true, Vec3::Zero);
 #else
 #endif
 
@@ -782,25 +784,70 @@ void CSceneMgr::InitStartScene()
 	m_pStartScene->Start();
 }
 
+void CSceneMgr::InitUI()
+{
+
+	//CResMgr::GetInst()->Load<CTexture>(L"UI", L"Texture\\UITest.png");
+	Ptr<CTexture> pColor = CResMgr::GetInst()->Load<CTexture>(L"UIButton", L"Texture\\UITest.png");
+
+	CGameObject* pUICam = nullptr;
+
+	// Camera Object
+	pUICam = new CGameObject;
+	pUICam->SetName(L"UICam");
+	pUICam->AddComponent(new CTransform);
+	pUICam->AddComponent(new CCamera);
+	pUICam->AddComponent(new CCameraScript);
+
+	pUICam->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
+
+	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+	pUICam->Camera()->SetFar(100000.f);
+	pUICam->Camera()->SetLayerAllCheck();
+	pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
+	pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pUICam);
+
+	CGameObject* pObject = new CGameObject;
+
+	pObject = new CGameObject;
+	pObject->SetName(L"UI Object");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+
+	// Transform ï¿½ï¿½ï¿½ï¿½
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 300.f, 0.f));
+	pObject->Transform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+
+	// MeshRender ï¿½ï¿½ï¿½ï¿½
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pColor.GetPointer());
+
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+
+}
+
 
 void CSceneMgr::Update()
 {
 	m_pCurScene->Update();
 	m_pCurScene->LateUpdate();
 
-	// rendermgr Ä«¸Ş¶ó ÃÊ±âÈ­
-	//CRenderMgr::GetInst()->ClearCamera();
+	// rendermgr ì¹´ë©”ë¼ ì´ˆê¸°í™”
+	CRenderMgr::GetInst()->ClearCamera();
 
 	m_pCurScene->FinalUpdate();
 
 
-	// Ãæµ¹ Ã³¸®
+	// ì¶©ëŒ ì²˜ë¦¬
 	CCollisionMgr::GetInst()->Update();
 }
 
 void CSceneMgr::Update_Tool()
 {
-	// rendermgr Ä«¸Ş¶ó ÃÊ±âÈ­
+	// rendermgr ì¹´ë©”ë¼ ì´ˆê¸°í™”
 	CRenderMgr::GetInst()->ClearCamera();
 	m_pCurScene->FinalUpdate();
 
@@ -828,7 +875,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;
-	// MeshRender ¼³Á¤
+	// MeshRender ì„¤ì •
 	CGameObject* pPlayer = nullptr;
 	pPlayer = new CGameObject;
 
@@ -841,9 +888,9 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->Collider3D()->SetOffsetScale(Vec3(100.0f, 160.0f, 100.0f));
 	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 90.0f, 0.f));
 	pPlayer->FrustumCheck(false);
-	// Transform ¼³Á¤
+	// Transform ì„¤ì •
 
-	// MeshRender ¼³Á¤
+	// MeshRender ì„¤ì •
 	pPlayer->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 

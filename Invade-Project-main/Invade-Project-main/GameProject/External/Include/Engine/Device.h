@@ -157,8 +157,8 @@ public:
 	void UpdateTable();
 	void ExcuteResourceLoad();
 
-	void CreateDirect2DDevice();
-	void RenderDirect2Ddevice();
+	//void CreateDirect2DDevice();
+	//void RenderDirect2Ddevice();
 	void CreateRtvAndDsvDescriptorHeaps();
 
 	void SetBufferToRegister(CStructuredBuffer* _pBuffer, TEXTURE_REGISTER _eRegister);

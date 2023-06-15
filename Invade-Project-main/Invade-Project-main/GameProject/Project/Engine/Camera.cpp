@@ -39,7 +39,7 @@ CCamera::~CCamera()
 
 void CCamera::FinalUpdate()
 {
-	// ºäÇà·Ä
+	// ºäÇà·Ä 
 	Vec3 vPos = Transform()->GetWorldPos();
 	Matrix matViewTrans = XMMatrixTranslation(-vPos.x, -vPos.y, -vPos.z);
 
@@ -91,29 +91,31 @@ void CCamera::SortGameObject()
 		if (m_iLayerCheck & (1 << i))
 		{
 			const vector<CGameObject*>& vecObj = pCurScene->GetLayer(i)->GetObjects();
-
   			for (UINT j = 0; j < vecObj.size(); ++j)
 			{
-				//Ptr<CMesh> temp = vecObj[j]->MeshRender()->GetMesh();
-				if (!vecObj[j]->GetFrustumCheck()
-					|| m_frustum.CheckFrustumSphere(vecObj[j]->Transform()->GetWorldPos(), vecObj[j]->Transform()->GetMaxScale()))
+				if (vecObj[j]->GetLayerIdx() != 9)
 				{
-					if (vecObj[j]->MeshRender()
-						&& vecObj[j]->MeshRender()->GetMesh() != nullptr
-						&& vecObj[j]->MeshRender()->GetSharedMaterial() != nullptr
-						&& vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader() != nullptr)
+					if (!vecObj[j]->GetFrustumCheck()
+						|| m_frustum.CheckFrustumSphere(vecObj[j]->Transform()->GetWorldPos(), vecObj[j]->Transform()->GetMaxScale()))
 					{
-						if (SHADER_POV::DEFERRED == vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
-							m_vecDeferred.push_back(vecObj[j]);
-						else if (SHADER_POV::FORWARD == vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
-							m_vecForward.push_back(vecObj[j]);
+						if (vecObj[j]->MeshRender()
+							&& vecObj[j]->MeshRender()->GetMesh() != nullptr
+							&& vecObj[j]->MeshRender()->GetSharedMaterial() != nullptr
+							&& vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader() != nullptr)
+						{
+							if (SHADER_POV::DEFERRED == vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
+								m_vecDeferred.push_back(vecObj[j]);
+							else if (SHADER_POV::FORWARD == vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader()->GetShaderPov())
+								m_vecForward.push_back(vecObj[j]);
 					
-					}
-					else if (vecObj[j]->ParticleSystem())
-					{
-						m_vecParticle.push_back(vecObj[j]);
+						}
+						else if (vecObj[j]->ParticleSystem())
+						{
+							m_vecParticle.push_back(vecObj[j]);
+						}
 					}
 				}
+				//Ptr<CMesh> temp = vecObj[j]->MeshRender()->GetMesh();
 			}
 		}
 	}
@@ -137,6 +139,27 @@ void CCamera::SortShadowObject()
 			}
 		}
 	}
+}
+
+void CCamera::SortUIObject()
+{
+	m_vecUIObject.clear();
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	CLayer* pLayer = nullptr;
+	for (UINT i = 0; i < MAX_LAYER; ++i) {
+		pLayer = pCurScene->GetLayer(i);
+		if (nullptr == pLayer || !(m_iLayerCheck & (1 << i)))continue;
+		const vector<CGameObject*>& vecObj = pLayer->GetObjects();
+		for (size_t j = 0; j < vecObj.size(); ++j) {
+			if (vecObj[j]->GetLayerIdx() == 9) {
+				if (vecObj[j]->MeshRender()
+					&& vecObj[j]->MeshRender()->GetMesh() != nullptr
+					&& vecObj[j]->MeshRender()->GetSharedMaterial() != nullptr
+					&& vecObj[j]->MeshRender()->GetSharedMaterial()->GetShader() != nullptr)
+					m_vecUIObject.push_back(vecObj[j]);
+				}
+			}
+		}
 }
 
 void CCamera::Render_Deferred()
@@ -235,6 +258,22 @@ void CCamera::Render_ShadowMap()
 
 	for (UINT i = 0; i < m_vecShadowObj.size(); ++i) {
 		m_vecShadowObj[i]->MeshRender()->Render_ShadowMap();
+	}
+}
+
+void CCamera::Render_UI()
+{
+	g_transform.matView = GetViewMat();
+	g_transform.matProj = GetProjMat();
+	g_transform.matViewInv = m_matViewInv;
+	g_transform.matProjInv = m_matProjInv;
+
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+
+	for (size_t i = 0; i < m_vecUIObject.size(); ++i)
+	{
+		if (m_vecUIObject[i]->IsActive() == true)
+			m_vecUIObject[i]->MeshRender()->Render();
 	}
 }
 

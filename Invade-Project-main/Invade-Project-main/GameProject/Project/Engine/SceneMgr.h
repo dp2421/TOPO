@@ -14,6 +14,7 @@ public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
 	void InitMainScene();
 	void InitStartScene();
+	void InitUI();
 	void Update();
 	void Update_Tool();
 

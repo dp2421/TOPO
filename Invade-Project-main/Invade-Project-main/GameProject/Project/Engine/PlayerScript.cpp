@@ -61,18 +61,18 @@ void CPlayerScript::Awake()
 void CPlayerScript::Update()
 {
 
-	if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
-		CGameObject* pObj = GetObj()->GetChild()[0];
-		Vec3 vPos = pObj->Transform()->GetLocalPos();
-		Vec3 vRight = pObj->Transform()->GetLocalDir(DIR_TYPE::RIGHT);
-		Vec3 vFront = pObj->Transform()->GetLocalDir(DIR_TYPE::FRONT);
-		m_vRestorePos = vPos;
-		vPos += vRight * 10.f;
-		vPos += vFront * 10.f;
-		pObj->Transform()->SetLocalPos(vPos);
-		m_fArrowSpeed = 200.f;
+	//if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
+	//	CGameObject* pObj = GetObj()->GetChild()[0];
+	//	Vec3 vPos = pObj->Transform()->GetLocalPos();
+	//	Vec3 vRight = pObj->Transform()->GetLocalDir(DIR_TYPE::RIGHT);
+	//	Vec3 vFront = pObj->Transform()->GetLocalDir(DIR_TYPE::FRONT);
+	//	m_vRestorePos = vPos;
+	//	vPos += vRight * 10.f;
+	//	vPos += vFront * 10.f;
+	//	pObj->Transform()->SetLocalPos(vPos);
+	//	m_fArrowSpeed = 200.f;
 
-	}
+	//}
 
 #if LOCALPLAY
 #else

@@ -44,8 +44,8 @@ static type* GetInst()\
 //extern int SCENE_TYPE = 0;
 // 0 ∑π¿ÃΩÃ∏  1 ∑Œ∫Ò
 
-#define _WITH_DIRECT2D
-#define _WITH_DIRECT2D_IMAGE_EFFECT
+//#define _WITH_DIRECT2D 0
+//#define _WITH_DIRECT2D_IMAGE_EFFECT 0
 
 //#ifdef _WITH_DIRECT2D
 //#define _WITH_DIRECT2D_IMAGE_EFFECT
