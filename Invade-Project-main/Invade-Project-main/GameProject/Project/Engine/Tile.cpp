@@ -18,7 +18,7 @@ Tile::~Tile()
 
 }
 
-wstring Tile::GetLayerName()
+wstring Tile::GetPathName()
 {
 	static const wstring layerStrings[] = {
         L"MeshData\\L2Part0.mdat",

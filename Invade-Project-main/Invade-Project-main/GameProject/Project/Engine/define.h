@@ -373,3 +373,8 @@ enum class OBSTACLE_STATE {
 	MOVEA,
 	MOVEB,
 };
+
+enum class ITEM_STATE {
+	SUPERJUMP,
+	COIN
+};

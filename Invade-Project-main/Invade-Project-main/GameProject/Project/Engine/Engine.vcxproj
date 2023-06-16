@@ -197,6 +197,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="InstancingMgr.h" />
+    <ClInclude Include="ItemScript.h" />
     <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Light2D.h" />
@@ -255,6 +256,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InstancingMgr.cpp" />
+    <ClCompile Include="ItemScript.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Light2D.cpp" />
