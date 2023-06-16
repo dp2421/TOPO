@@ -577,7 +577,7 @@ void CSceneMgr::InitMainScene()
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part0.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 
-	const wstring FileNames[] = {L"MapPos1F.bin", L"MapPos2F.bin"};
+	const wstring FileNames[] = {L"MapPos1F.bin", L"MapPos2F.bin", L"MapItem.bin"};
 	for (int i = 0; i < 2; ++i)
 	{
 		LoadMapInfoFromFile(FileNames[i], tiles);
@@ -620,6 +620,23 @@ void CSceneMgr::InitMainScene()
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	}
+
+	////슈퍼점프 슈점 테스트
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L1Sujum.mdat", L"MeshData\\L1Sujum.mdat");
+	////pMeshData->Save(pMeshData->GetPath());
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 100.f, 0.f));
+	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->MeshRender()->SetDynamicShadow(false);
+	////pObject->Animator3D()->SetClipIndex(1);
+	//m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma region TempObj

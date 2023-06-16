@@ -34,8 +34,9 @@ wstring Tile::GetLayerName()
         L"MeshData\\L1Part1.mdat",
         L"MeshData\\L1Part2.mdat",
         L"MeshData\\L1Part3.mdat",
-        L"MeshData\\L1Part4.mdat"  
-        //타일 레이어 추가시 아래에 반드시 추가
+        L"MeshData\\L1Part4.mdat",
+         L"MeshData\\L1Sujum.mdat"
+        //타일 레이어 추가시 아래에 추가 (레이어 시작번호 다르면 새로 만들어서해도됨
 	};
 
     return layerStrings[data.state-6]; //enum LayerState가 6부터 시작하므로 6 빼주기
