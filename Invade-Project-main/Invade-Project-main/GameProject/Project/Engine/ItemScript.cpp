@@ -4,6 +4,7 @@
 
 void CItemScript::Awake()
 {
+	//파티클
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	m_pParticle = new CGameObject;
 	m_pParticle->SetName(L"Particle");
@@ -31,18 +32,7 @@ void CItemScript::Awake()
 
 void CItemScript::Update()
 {
-	////코인 아이템 회전
-	////state 가 MOVE이면 360도 회전
-	//if (m_iState == ITEM_STATE::COIN)
-	//{
-	//	Vec3 vRot = Transform()->GetLocalRot();
-	//	m_fSpeed += 5.f;
-	//	vRot.y = XMConvertToRadians(m_fSpeed);
-	//	//float fDegree = XMConvertToDegrees(m_fSpeed);
-	//	if (m_fSpeed > 360) {
-	//		m_fSpeed -= 360.f;
-	//	}
-	//}
+	CoinRotate();
 }
 
 CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1)
@@ -51,4 +41,20 @@ CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1)
 
 CItemScript::~CItemScript()
 {
+}
+
+void CItemScript::CoinRotate()
+{
+	//코인 아이템 제자리 360도 회전
+	if (m_iState == ITEM_STATE::COIN)
+	{
+		Vec3 vRot = Transform()->GetLocalRot();
+		m_fSpeed += 5.f;
+		vRot.y = XMConvertToRadians(m_fSpeed);
+		//float fDegree = XMConvertToDegrees(m_fSpeed);
+		if (m_fSpeed > 360) {
+			m_fSpeed -= 360.f;
+		}
+		Transform()->SetLocalRot(vRot);
+	}
 }

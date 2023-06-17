@@ -639,24 +639,6 @@ void CSceneMgr::InitMainScene()
 		m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	}
 
-	////아이템 테스트
-	////pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LCoin.fbx");
-	////pMeshData->Save(pMeshData->GetPath());
-	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\LCoin.mdat", L"MeshData\\LCoin.mdat");
-	////pMeshData->Save(pMeshData->GetPath());
-	//pObject = pMeshData->Instantiate();
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-	//pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 100.f - FLOORHEIGET, 0.f));
-	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->MeshRender()->SetDynamicShadow(false);
-	////pObject->Animator3D()->SetClipIndex(1);
-	//m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma region TempObj
