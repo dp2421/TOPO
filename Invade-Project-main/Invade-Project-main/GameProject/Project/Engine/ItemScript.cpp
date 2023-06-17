@@ -31,6 +31,18 @@ void CItemScript::Awake()
 
 void CItemScript::Update()
 {
+	////코인 아이템 회전
+	////state 가 MOVE이면 360도 회전
+	//if (m_iState == ITEM_STATE::COIN)
+	//{
+	//	Vec3 vRot = Transform()->GetLocalRot();
+	//	m_fSpeed += 5.f;
+	//	vRot.y = XMConvertToRadians(m_fSpeed);
+	//	//float fDegree = XMConvertToDegrees(m_fSpeed);
+	//	if (m_fSpeed > 360) {
+	//		m_fSpeed -= 360.f;
+	//	}
+	//}
 }
 
 CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1)

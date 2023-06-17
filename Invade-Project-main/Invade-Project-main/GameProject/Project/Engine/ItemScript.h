@@ -5,6 +5,7 @@ class CItemScript : public CScript
 {
 private:
     int m_iDir;
+    float m_fSpeed;
     ITEM_STATE m_iState;
     CGameObject* m_pParticle;
 

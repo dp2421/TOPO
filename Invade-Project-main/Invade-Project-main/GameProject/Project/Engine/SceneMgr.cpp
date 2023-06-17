@@ -608,10 +608,11 @@ void CSceneMgr::InitMainScene()
 					pObject->AddComponent(new CItemScript);
 					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::SUPERJUMP);
 				}
-				//else if (tile.GetPathName() == L"L1Coin")
-				//{
-				//	//여기에 코인관련 추가..
-				//}
+				else if (temp == LayerState::LCoin)
+				{
+					pObject->AddComponent(new CItemScript);
+					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::COIN);
+				}
 			}
 			
 		}
@@ -638,8 +639,10 @@ void CSceneMgr::InitMainScene()
 		m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	}
 
-	////슈퍼점프 슈점 테스트
-	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L1Sujum.mdat", L"MeshData\\L1Sujum.mdat");
+	////아이템 테스트
+	////pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LCoin.fbx");
+	////pMeshData->Save(pMeshData->GetPath());
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\LCoin.mdat", L"MeshData\\LCoin.mdat");
 	////pMeshData->Save(pMeshData->GetPath());
 	//pObject = pMeshData->Instantiate();
 	//pObject->AddComponent(new CTransform);
@@ -648,7 +651,7 @@ void CSceneMgr::InitMainScene()
 	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 	//pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 100.f, 0.f));
+	//pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 100.f - FLOORHEIGET, 0.f));
 	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 	//pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 	//pObject->MeshRender()->SetDynamicShadow(false);

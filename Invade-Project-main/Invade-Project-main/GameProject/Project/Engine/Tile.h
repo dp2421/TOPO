@@ -17,6 +17,7 @@ enum LayerState : int
     L1Part3,
     L1Part4,
     L1Sujum,
+    LCoin,
     // 타일 레이어 추가시 아래에 추가
 };
 
