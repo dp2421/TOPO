@@ -9,6 +9,7 @@ class CSceneMgr
 private:
 	CScene* m_pCurScene;
 	CScene* m_pStartScene;
+	CScene* m_pRacingScene;
 	vector<Tile> tiles;
 	SCENE_TYPE m_pSceneType;
 public:
@@ -16,10 +17,13 @@ public:
 	void InitMainScene();
 	void InitStartScene();
 	void InitUI();
+
+	void InitScene() { m_pCurScene = m_pStartScene; }
 	void Update();
 	void Update_Tool();
 
 	CScene* GetCurScene();
+	SCENE_TYPE GetSceneType() { return m_pSceneType; }
 	void ChangeScene(CScene* _pNextScene);
 	void ChangeScene();
 

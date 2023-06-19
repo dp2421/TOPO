@@ -58,6 +58,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitMainScene();
 	CSceneMgr::GetInst()->InitStartScene();
 	CSceneMgr::GetInst()->InitUI();
+	CSceneMgr::GetInst()->InitScene();
 	CSceneMgr::GetInst()->ChangeScene();
 	NetworkMgr::GetInst()->Init();
 	
@@ -94,7 +95,7 @@ void CGameFramework::ProcessInput()
 
 		m_ptOldCursorPos = ptCursorPos;
 		//std::cout << "mouse - x: " << m_ptOldCursorPos.x << ", y: " << m_ptOldCursorPos.y << std::endl;
-	//	SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+		//SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 	
 }
 

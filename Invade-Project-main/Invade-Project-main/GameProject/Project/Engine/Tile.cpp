@@ -36,7 +36,8 @@ wstring Tile::GetPathName()
         L"MeshData\\L1Part3.mdat",
         L"MeshData\\L1Part4.mdat",
         L"MeshData\\L1Sujum.mdat",
-        L"MeshData\\LCoin.mdat"
+        L"MeshData\\LCoin.mdat",
+        L"MeshData\\LMetor.mdat"
 
         //타일 레이어 추가시 아래에 추가 (레이어 시작번호 다르면 새로 만들어서해도됨
 	};
