@@ -35,6 +35,7 @@
 #include "PlayerScript.h"
 #include "MonsterScript.h"
 #include "ObstacleScript.h"
+#include "ItemScript.h"
 #include "ParticleSystem.h"
 #include "ArrowScript.h"
 #include "GameFramework.h"
@@ -577,14 +578,14 @@ void CSceneMgr::InitMainScene()
 	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\2part0.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 
-	const wstring FileNames[] = {L"MapPos1F.bin", L"MapPos2F.bin"};
-	for (int i = 0; i < 2; ++i)
+	const wstring FileNames[] = {L"MapPos1F.bin", L"MapPos2F.bin", L"MapItem.bin"};
+	for (int i = 0; i < 3; ++i)
 	{
 		LoadMapInfoFromFile(FileNames[i], tiles);
 
 		for (auto& tile : tiles)
 		{
-			pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetLayerName(), tile.GetLayerName());
+			pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
 			pObject = pMeshData->Instantiate();
 			pObject->AddComponent(new CTransform);
 			pObject->AddComponent(new CCollider3D);
@@ -598,7 +599,24 @@ void CSceneMgr::InitMainScene()
 			pObject->MeshRender()->SetDynamicShadow(false);
 			//pObject->Animator3D()->SetClipIndex(1);
 			m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+			if (i == 2)
+			{
+				int temp = tile.GetState();
+				if (temp == LayerState::L1Sujum)
+				{
+					pObject->AddComponent(new CItemScript);
+					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::SUPERJUMP);
+				}
+				else if (temp == LayerState::LCoin)
+				{
+					pObject->AddComponent(new CItemScript);
+					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::COIN);
+				}
+			}
+			
 		}
+
 	}
 	
 	//열외.. MapPos1FF는 파일에서 안 불러오고 따로 읽습니다.
@@ -620,6 +638,7 @@ void CSceneMgr::InitMainScene()
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pCurScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma region TempObj
@@ -936,7 +955,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGET, 0.f));
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)

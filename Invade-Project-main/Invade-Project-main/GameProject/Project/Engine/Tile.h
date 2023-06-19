@@ -15,7 +15,9 @@ enum LayerState : int
     L1Part1,
     L1Part2,
     L1Part3,
-    L1Part4
+    L1Part4,
+    L1Sujum,
+    LCoin,
     // 타일 레이어 추가시 아래에 추가
 };
 
@@ -40,6 +42,6 @@ public:
 
     float GetTileZPos() const { return data.zPos; }; //sort 비교용
     Vec3 GetTilePos() { return Vec3(data.xPos, data.yPos, data.zPos); };
-    wstring GetLayerName(); //for load mdat file, convert enum->wstring
+    wstring GetPathName(); //for load mdat file, convert enum->wstring
     int GetState() { return data.state; };
 };
