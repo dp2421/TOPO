@@ -4,9 +4,9 @@ class CGameFramework
 	SINGLE(CGameFramework)
 public:
 	HWND m_hMainhWnd;
+	POINT m_ptOldCursorPos;
 private:
 
-	POINT m_ptOldCursorPos;
 	Vec2 m_vMouseMove;
 
 public:

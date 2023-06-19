@@ -57,11 +57,11 @@ void CSceneMgr::ChangeScene()
 	SAFE_DELETE(m_pCurScene);
 	//m_pCurScene = _pNextScene;
 	m_pCurScene = m_pStartScene;
-	//SCENE_TYPE = 1;
+	m_pSceneType = SCENE_TYPE::LOBBY;
 }
 
 CSceneMgr::CSceneMgr()
-	: m_pCurScene(nullptr), m_pStartScene(nullptr)
+	: m_pCurScene(nullptr), m_pStartScene(nullptr), m_pSceneType(SCENE_TYPE::RACING)
 {
 }
 
@@ -685,7 +685,7 @@ void CSceneMgr::InitStartScene()
 	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
 	Ptr<CTexture> pBlackTex = CResMgr::GetInst()->Load<CTexture>(L"Black", L"Texture\\asd.png");
-	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS000_Day_1", L"Texture\\Skybox\\FS000_Day_1.png");
+	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
 	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
@@ -700,14 +700,15 @@ void CSceneMgr::InitStartScene()
 
 
 	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-#if SCENE_TYPE
+	if (m_pSceneType == SCENE_TYPE::RACING)
+	{
 		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
 		pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
 		//
 		pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
 		pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
 
-#endif // SCENE_TYPE
+	}
 	//
 
 	m_pStartScene = new CScene;
@@ -722,6 +723,7 @@ void CSceneMgr::InitStartScene()
 	m_pStartScene->GetLayer(6)->SetName(L"temp");
 	m_pStartScene->GetLayer(7)->SetName(L"Racing");
 	m_pStartScene->GetLayer(8)->SetName(L"Obstacle");
+	m_pStartScene->GetLayer(9)->SetName(L"UI");
 
 
 
@@ -758,25 +760,44 @@ void CSceneMgr::InitStartScene()
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 
+
+	{
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L1Water.mdat", L"MeshData\\L1Water.mdat");
+		pMeshData->Save(pMeshData->GetPath());
+		pObject = pMeshData->Instantiate();
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CCollider3D);
+		pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+		pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+		pObject->FrustumCheck(false);
+		pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f - 0, 0));
+		pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+		pObject->Transform()->SetLocalScale(Vec3(4.f, 4.f, 1.f));
+		pObject->MeshRender()->SetDynamicShadow(false);
+		//pObject->Animator3D()->SetClipIndex(1);
+		m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject);
+	}
 #if LOCALPLAY
 	//AddNetworkGameObject(true, Vec3::Zero);
 #else
 #endif
 
-#if SCENE_TYPE
-	pObject = new CGameObject;
-	pObject->SetName(L"SkyBox");
-	pObject->FrustumCheck(false);
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CMeshRender);
+	if (m_pSceneType == SCENE_TYPE::RACING)
+	{
 
-	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
-	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+		pObject = new CGameObject;
+		pObject->SetName(L"SkyBox");
+		pObject->FrustumCheck(false);
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
 
-	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
-#endif // SCENE_TYPE
+		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
+		pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
 
+		m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
+	}
 
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
@@ -788,7 +809,8 @@ void CSceneMgr::InitUI()
 {
 
 	//CResMgr::GetInst()->Load<CTexture>(L"UI", L"Texture\\UITest.png");
-	Ptr<CTexture> pColor = CResMgr::GetInst()->Load<CTexture>(L"UIButton", L"Texture\\UITest.png");
+	Ptr<CTexture> pStartButton = CResMgr::GetInst()->Load<CTexture>(L"UIButton", L"Texture\\startbutton.png");
+	Ptr<CTexture> pCursor = CResMgr::GetInst()->Load<CTexture>(L"Cursor", L"Texture\\cursor.png");
 
 	CGameObject* pUICam = nullptr;
 
@@ -797,7 +819,7 @@ void CSceneMgr::InitUI()
 	pUICam->SetName(L"UICam");
 	pUICam->AddComponent(new CTransform);
 	pUICam->AddComponent(new CCamera);
-	pUICam->AddComponent(new CCameraScript);
+	//pUICam->AddComponent(new CCameraScript);
 
 	pUICam->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
 
@@ -806,7 +828,7 @@ void CSceneMgr::InitUI()
 	pUICam->Camera()->SetLayerAllCheck();
 	pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
 	pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pUICam);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pUICam);
 
 	CGameObject* pObject = new CGameObject;
 
@@ -816,16 +838,35 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CMeshRender);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 300.f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 0.f));
+	
+	pObject->Transform()->SetLocalScale(Vec3(200.f, 100.f, 10.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pColor.GetPointer());
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pStartButton.GetPointer());
 
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+
+
+	pObject = new CGameObject;
+	pObject->SetName(L"Cursor Object");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(-100.f, 400.f, 0.f));
+	pObject->Transform()->SetLocalScale(Vec3(20.f, 20.f, 10.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
+
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 }
 

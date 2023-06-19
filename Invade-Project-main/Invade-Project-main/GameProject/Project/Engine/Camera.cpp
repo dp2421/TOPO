@@ -272,8 +272,22 @@ void CCamera::Render_UI()
 
 	for (size_t i = 0; i < m_vecUIObject.size(); ++i)
 	{
-		if (m_vecUIObject[i]->IsActive() == true)
-			m_vecUIObject[i]->MeshRender()->Render();
+
+
+		if (m_vecUIObject[i]->GetName() == (L"Cursor Object"))
+		{
+			Vec3 mousepos = m_vecUIObject[i]->Transform()->GetLocalPos() - Vec3(CKeyMgr::GetInst()->GetDragDir().x, CKeyMgr::GetInst()->GetDragDir().y,0);
+			m_vecUIObject[i]->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
+			
+			//m_vecUIObject[i]->Transform()->SetLocalPos(Vec3(-100.f, 400.f, 0.f));
+			std::cout << "local mouse x: " << CKeyMgr::GetInst()->GetMousePos().x << ", y: " << CKeyMgr::GetInst()->GetMousePos().y << std::endl;
+
+		}
+		//else
+		//{
+			if (m_vecUIObject[i]->IsActive() == true)
+				m_vecUIObject[i]->MeshRender()->Render();
+		//}
 	}
 }
 

@@ -10,6 +10,7 @@ private:
 	CScene* m_pCurScene;
 	CScene* m_pStartScene;
 	vector<Tile> tiles;
+	SCENE_TYPE m_pSceneType;
 public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
 	void InitMainScene();

@@ -74,7 +74,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
 
         // Game Running
+        ShowCursor(TRUE);
         CGameFramework::GetInst()->Progress();
+
     }
 
 

@@ -44,12 +44,7 @@ static type* GetInst()\
 //extern int SCENE_TYPE = 0;
 // 0 ∑π¿ÃΩÃ∏  1 ∑Œ∫Ò
 
-//#define _WITH_DIRECT2D 0
-//#define _WITH_DIRECT2D_IMAGE_EFFECT 0
 
-//#ifdef _WITH_DIRECT2D
-//#define _WITH_DIRECT2D_IMAGE_EFFECT
-//#endif
 typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
@@ -129,7 +124,13 @@ enum class RS_TYPE
 	END,
 };
 
-
+enum class SCENE_TYPE
+{
+	LOBBY,
+	RACING,
+	SURVIVAL,
+	END,
+};
 namespace RES_TYPE_STR
 {
 	extern const wchar_t* MATERIAL;
