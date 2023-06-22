@@ -94,7 +94,6 @@ void CGameFramework::ProcessInput()
 		m_vMouseMove.y *= -1.f;
 
 		m_ptOldCursorPos = ptCursorPos;
-		//std::cout << "mouse - x: " << m_ptOldCursorPos.x << ", y: " << m_ptOldCursorPos.y << std::endl;
 		//SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 	
 }
@@ -108,12 +107,15 @@ void CGameFramework::OnProcessingMouseMessage(HWND _hWnd, UINT _uMessageID, WPAR
 	case WM_RBUTTONDOWN:
 		SetCapture(_hWnd);
 		GetCursorPos(&m_ptOldCursorPos);
-		GetCursorPos(&m_pClickPos);
 		SetIsClicked(true);
+		std::cout << "true" << std::endl;
 		break;
 	case WM_RBUTTONUP:
 	case WM_LBUTTONUP:
+		SetIsClicked(false);
 		ReleaseCapture();
+		std::cout << "false" << std::endl;
+
 	default:
 		break;
 	}
