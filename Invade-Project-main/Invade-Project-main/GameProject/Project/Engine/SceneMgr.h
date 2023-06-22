@@ -18,7 +18,7 @@ public:
 	void InitStartScene();
 	void InitUI();
 
-	void InitScene() { m_pCurScene = m_pStartScene; }
+	void InitScene() { m_pCurScene = m_pStartScene; m_pSceneType = SCENE_TYPE::LOBBY; }
 	void Update();
 	void Update_Tool();
 
@@ -28,7 +28,7 @@ public:
 	void ChangeScene();
 
 	void FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>& _vecFindObj);
-	CGameObject* AddNetworkGameObject(bool isPlayer, Vec3 pos);
+	CGameObject* AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* curscene = nullptr);
 	void RemoveNetworkGameObject(CGameObject* obj);
 };
 

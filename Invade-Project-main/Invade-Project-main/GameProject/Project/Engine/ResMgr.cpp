@@ -656,9 +656,21 @@ void CResMgr::CreateDefaultShader()
 	pShader = new CShader;
 	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
 	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3D", "ps_5_0");
-	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 	pShader->Create(SHADER_POV::DEFERRED);
 	AddRes(L"Std3DShader", pShader);
+
+
+	// ============
+	// Std3D Shader
+	// ============
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3D", "ps_5_0");
+	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	pShader->Create(SHADER_POV::DEFERRED);
+	AddRes(L"UIShader", pShader);
+
 
 	// =============
 	// Skybox Shader
@@ -882,6 +894,12 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl->DisableFileSave();
 	pMtrl->SetShader(FindRes<CShader>(L"Std3DShader"));
 	AddRes(L"Std3DMtrl", pMtrl);
+
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"UIShader"));
+	AddRes(L"UIMtrl", pMtrl);
+
 
 	pMtrl = new CMaterial;
 	pMtrl->DisableFileSave();

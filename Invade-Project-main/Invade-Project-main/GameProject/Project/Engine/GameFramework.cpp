@@ -59,7 +59,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitStartScene();
 	CSceneMgr::GetInst()->InitUI();
 	CSceneMgr::GetInst()->InitScene();
-	CSceneMgr::GetInst()->ChangeScene();
+	//CSceneMgr::GetInst()->ChangeScene();
 	NetworkMgr::GetInst()->Init();
 	
 	CEventMgr::GetInst()->Init();
@@ -108,6 +108,8 @@ void CGameFramework::OnProcessingMouseMessage(HWND _hWnd, UINT _uMessageID, WPAR
 	case WM_RBUTTONDOWN:
 		SetCapture(_hWnd);
 		GetCursorPos(&m_ptOldCursorPos);
+		GetCursorPos(&m_pClickPos);
+		SetIsClicked(true);
 		break;
 	case WM_RBUTTONUP:
 	case WM_LBUTTONUP:

@@ -69,8 +69,11 @@ private:
 	vector<tKeyState>	m_vecKey;
 	POINT				m_ptMouse;
 	POINT				m_ptOldMouse;
-
+	POINT				m_pClickPos;
 	Vec2 m_vDragDir;
+
+	bool m_isClicked = false;
+
 public:
 	void Init();
 	void Update();
@@ -79,6 +82,11 @@ public:
 	KEY_STATE GetKeyState(KEY_TYPE _eKey) { return m_vecKey[(UINT)_eKey].eState; }
 	const POINT& GetMousePos() { return m_ptMouse; }
 	const POINT& GetPrevMousePos() { return m_ptOldMouse; }
+	const POINT& GetClickPos() { return m_pClickPos; }
+
+	const bool GetClicked() { return m_isClicked; }
+	const void SetClicked(bool is) { m_isClicked = is; }
+
 	Vec2 GetDragDir() { return m_vDragDir; }
 };
 

@@ -113,13 +113,12 @@ void CSceneMgr::InitMainScene()
 	Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
 
 
-	Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 
 
 
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-
 	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
 	//
 	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
@@ -213,7 +212,8 @@ void CSceneMgr::InitMainScene()
 #pragma endregion
 
 #if LOCALPLAY
-	//AddNetworkGameObject(true, Vec3::Zero);
+	m_pCurScene = m_pRacingScene;
+	AddNetworkGameObject(true, Vec3::Zero, m_pRacingScene);
 #else
 #endif
 
@@ -687,7 +687,6 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 
-
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 
@@ -719,7 +718,7 @@ void CSceneMgr::InitStartScene()
 
 
 	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-	if (m_pSceneType == SCENE_TYPE::RACING)
+	if (m_pSceneType == SCENE_TYPE::LOBBY)
 	{
 		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
 		pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
@@ -805,7 +804,8 @@ void CSceneMgr::InitStartScene()
 
 
 #if LOCALPLAY
-	//AddNetworkGameObject(true, Vec3::Zero);
+	m_pCurScene = m_pStartScene;
+	AddNetworkGameObject(true, Vec3::Zero, m_pStartScene);
 #else
 #endif
 
@@ -824,7 +824,6 @@ void CSceneMgr::InitStartScene()
 
 		m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
 	}
-
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	//m_pStartScene->Awake();
@@ -834,7 +833,6 @@ void CSceneMgr::InitStartScene()
 void CSceneMgr::InitUI()
 {
 
-	//CResMgr::GetInst()->Load<CTexture>(L"UI", L"Texture\\UITest.png");
 	Ptr<CTexture> pStartButton = CResMgr::GetInst()->Load<CTexture>(L"UIButton", L"Texture\\startbutton.png");
 	Ptr<CTexture> pCursor = CResMgr::GetInst()->Load<CTexture>(L"Cursor", L"Texture\\cursor.png");
 
@@ -848,8 +846,6 @@ void CSceneMgr::InitUI()
 	//pUICam->AddComponent(new CCameraScript);
 
 	pUICam->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
-
-	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
 	pUICam->Camera()->SetFar(100000.f);
 	pUICam->Camera()->SetLayerAllCheck();
 	pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
@@ -859,38 +855,49 @@ void CSceneMgr::InitUI()
 	CGameObject* pObject = new CGameObject;
 
 	pObject = new CGameObject;
-	pObject->SetName(L"UI Object");
+	pObject->SetName(L"Cursor Object");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CMeshRender);
-
+	pObject->AddComponent(new CCollider2D);
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->Transform()->SetLocalScale(Vec3(20.f, 20.f, 10.f));
 
-	pObject->Transform()->SetLocalScale(Vec3(200.f, 100.f, 10.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pStartButton.GetPointer());
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
+
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
 	pObject = new CGameObject;
-	pObject->SetName(L"Cursor Object");
+	pObject->SetName(L"UI Object");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 600.f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(20.f, 20.f, 10.f));
+	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(200.f, 100.f, 10.f));
 
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
-	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pStartButton.GetPointer());
+
+
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+
 
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
 
@@ -937,7 +944,7 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 	}
 }
 
-CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
+CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* curscene)
 {
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
@@ -963,7 +970,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 
 #if LOCALPLAY
 	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGET, 0.f));
-	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
 		{
@@ -995,7 +1002,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject->SetActive(true);
 	pObject->MeshRender()->SetDynamicShadow(false);
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+	curscene->FindLayer(L"Player")->AddGameObject(pObject, false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 
@@ -1011,13 +1018,13 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos)
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 	pObject->MeshRender()->SetDynamicShadow(false);
-	m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+	curscene->FindLayer(L"Player")->AddGameObject(pObject, false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	//pPlayer->AddChild(pObject);
 	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
 
-	m_pCurScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
+	curscene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
 
 	return pPlayer;
