@@ -77,42 +77,46 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     //   ** Outline Code **
     // ----------------------------------
    
-    //// Sobel X 커널
-    //float3x3 sobelX = float3x3(-1, 0, 1,
-    //    -2, 0, 2,
-    //    -1, 0, 1);
+    // Sobel X 커널
+    float3x3 sobelX = float3x3(-1, 0, 1,
+        -2, 0, 2,
+        -1, 0, 1);
 
-    //// Sobel Y 커널
-    //float3x3 sobelY = float3x3(-1, -2, -1,
-    //    0, 0, 0,
-    //    1, 2, 1);
-    //// Sobel 커널을 사용하여 이미지의 외곽선 계산
-    //float textureWidth;
-    //float textureHeight;
-    //g_tex_0.GetDimensions(textureWidth, textureHeight);
-    //float2 texelSize = 1.0 / float2(textureWidth, textureHeight);
-    //float3 c00 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, -1)).rgb;
-    //float3 c01 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 0)).rgb;
-    //float3 c02 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 1)).rgb;
-    //float3 c10 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, -1)).rgb;
-    //float3 c11 = g_tex_0.Sample(g_sam_0, _in.vUV).rgb;
-    //float3 c12 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, 1)).rgb;
-    //float3 c20 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, -1)).rgb;
-    //float3 c21 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 0)).rgb;
-    //float3 c22 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 1)).rgb;
+    // Sobel Y 커널
+    float3x3 sobelY = float3x3(-1, -2, -1,
+        0, 0, 0,
+        1, 2, 1);
+    // Sobel 커널을 사용하여 이미지의 외곽선 계산
+    float textureWidth;
+    float textureHeight;
+    g_tex_0.GetDimensions(textureWidth, textureHeight);
+    float2 texelSize = 1.0 / float2(textureWidth, textureHeight);
+    float3 c00 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, -1)).rgb;
+    float3 c01 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 0)).rgb;
+    float3 c02 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 1)).rgb;
+    float3 c10 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, -1)).rgb;
+    float3 c11 = g_tex_0.Sample(g_sam_0, _in.vUV).rgb;
+    float3 c12 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, 1)).rgb;
+    float3 c20 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, -1)).rgb;
+    float3 c21 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 0)).rgb;
+    float3 c22 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 1)).rgb;
 
-    //// Sobel X 커널을 사용하여 가로 방향의 엣지 검출
-    //float3 gx = dot(float3(c00.r, c01.r, c02.r), sobelX[0]) +
-    //    dot(float3(c10.r, c11.r, c12.r), sobelX[1]) +
-    //    dot(float3(c20.r, c21.r, c22.r), sobelX[2]);
+    // Sobel X 커널을 사용하여 가로 방향의 엣지 검출
+    float3 gx = dot(float3(c00.r, c01.r, c02.r), sobelX[0]) +
+        dot(float3(c10.r, c11.r, c12.r), sobelX[1]) +
+        dot(float3(c20.r, c21.r, c22.r), sobelX[2]);
 
-    //// Sobel Y 커널을 사용하여 세로 방향의 엣지 검출
-    //float3 gy = dot(float3(c00.r, c01.r, c02.r), sobelY[0]) +
-    //    dot(float3(c10.r, c11.r, c12.r), sobelY[1]) +
-    //    dot(float3(c20.r, c21.r, c22.r), sobelY[2]);
+    // Sobel Y 커널을 사용하여 세로 방향의 엣지 검출
+    float3 gy = dot(float3(c00.r, c01.r, c02.r), sobelY[0]) +
+        dot(float3(c10.r, c11.r, c12.r), sobelY[1]) +
+        dot(float3(c20.r, c21.r, c22.r), sobelY[2]);
 
-    //float3 sobel = sqrt(gx * gx + gy * gy);
-    //output.vTarget0 = float4(sobel, 1.f);
+    float3 sobel = sqrt(gx * gx + gy * gy);
+    output.vTarget0 = float4(sobel, 1.f);
+
+
+    float4 vCartoon;
+
 
     // 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
 
@@ -138,13 +142,27 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     if (tex_0)
     {
         float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
-        output.vTarget0 = texColor * float4(stepColor, 1.f);
+        //output.vTarget0 = texColor * float4(stepColor, 1.f);
+        vCartoon = texColor * float4(stepColor, 1.f);
     }
     else
     {
-        output.vTarget0 = float4(stepColor, 1.f);
-        //output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        //output.vTarget0 = float4(stepColor, 1.f);
+        ////output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        vCartoon = float4(stepColor, 1.f);
     }
+
+    output.vTarget0 = vCartoon;
+
+    //아래주석 풀면 텍스쳐내부 외곽라인 검은색으로 출력됨
+    //if (output.vTarget0.x <= 0.65f && output.vTarget0.y <= 0.65f && output.vTarget0.z <= 0.65f)
+    //{
+    //    output.vTarget0 = vCartoon;
+    //}
+    //else
+    //{
+    //    output.vTarget0 = float4(0, 0, 0, 1);
+    //}
 
 
     float3 vViewNormal = _in.vViewNormal;
