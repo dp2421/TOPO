@@ -132,6 +132,10 @@ void CDevice::Render_Start(float(&_arrFloat)[4])
 	ClearDummyDescriptorHeap(0);
 }
 
+void CDevice::ChangeScene()
+{
+}
+
 void CDevice::Render_Present()
 {
 
@@ -143,9 +147,7 @@ void CDevice::Render_Present()
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE; 
 	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
-	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 백버퍼에서
-	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 다시 출력으로 지정
-	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+	std::cout << m_iCurTargetIdx << std::endl;
 
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

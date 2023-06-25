@@ -21,6 +21,15 @@ enum LayerState : int
     // 타일 레이어 추가시 아래에 추가
 };
 
+enum MetorLayerState : int
+{
+    LMetor1 = 6,
+    LMetor2,
+    LMetor3,
+    LMetor4,
+    LMetor5,
+};
+
 struct TileInfo
 {
     float xPos;
@@ -32,16 +41,36 @@ struct TileInfo
     LayerState state;
 };
 
+struct MetorTile
+{
+    float xPos;
+    float yPos;
+    float zPos;
+    float xScale;
+    float yScale;
+    float zScale;
+    MetorLayerState state;
+};
+
+
 class Tile
 {
 private:
     TileInfo data;
+    MetorTile Mdata;
 public:
     Tile(TileInfo info);
+    Tile(MetorTile info);
     ~Tile();
 
     float GetTileZPos() const { return data.zPos; }; //sort 비교용
+    float GetMTileZPos() const { return Mdata.zPos; }
+
     Vec3 GetTilePos() { return Vec3(data.xPos, data.yPos, data.zPos); };
+    Vec3 GetMTilePos() { return Vec3(Mdata.xPos, Mdata.yPos, Mdata.zPos); };
+
     wstring GetPathName(); //for load mdat file, convert enum->wstring
+    wstring GetMetorPathName();
     int GetState() { return data.state; };
+    int GetMState() { return Mdata.state; }
 };

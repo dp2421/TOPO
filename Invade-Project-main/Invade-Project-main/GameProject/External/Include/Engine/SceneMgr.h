@@ -10,12 +10,16 @@ private:
 	CScene* m_pCurScene;
 	CScene* m_pStartScene;
 	CScene* m_pRacingScene;
+	CScene* m_pMetorScene;
 	vector<Tile> tiles;
 	SCENE_TYPE m_pSceneType;
 public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
+	void LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
+
 	void InitMainScene();
 	void InitStartScene();
+	void InitMetorScene();
 	void InitUI();
 
 	void InitScene() { m_pCurScene = m_pStartScene; m_pSceneType = SCENE_TYPE::LOBBY; }

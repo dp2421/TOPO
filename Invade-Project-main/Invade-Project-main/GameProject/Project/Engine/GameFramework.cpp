@@ -59,6 +59,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitStartScene();
 	CSceneMgr::GetInst()->InitUI();
 	CSceneMgr::GetInst()->InitScene();
+	//CSceneMgr::GetInst()->InitMetorScene();
 	//CSceneMgr::GetInst()->ChangeScene();
 	NetworkMgr::GetInst()->Init();
 	

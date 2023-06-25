@@ -90,6 +90,25 @@ void CSceneMgr::LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles
 	inFile.close();
 }
 
+void CSceneMgr::LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles)
+{
+	// 맵 타일 로드
+	std::ifstream inFile(FileName, std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		//std::cerr << "Failed to open Map File: " << FileNames << std::endl;
+		return;
+	}
+
+	while (!inFile.eof()) {
+		MetorTile tile;
+		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+		tiles.push_back(tile);
+	}
+	tiles.pop_back(); //ㅋㅋ수동지우기
+	inFile.close();
+}
+
 void CSceneMgr::InitMainScene()
 {
 	// 필요한 리소스 로딩
@@ -830,6 +849,190 @@ void CSceneMgr::InitStartScene()
 	//m_pStartScene->Start();
 }
 
+void CSceneMgr::InitMetorScene()
+{
+
+	{
+		// 필요한 리소스 로딩
+		// Texture 로드
+		Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
+		CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
+		Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+		Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
+
+
+		Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
+		Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
+		Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
+
+
+		//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+
+		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+		pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+		//
+		pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
+		pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+
+
+		//
+
+		m_pMetorScene = new CScene;
+		m_pMetorScene->SetName(L"Metor Scene");
+
+		m_pMetorScene->GetLayer(0)->SetName(L"Default");
+		m_pMetorScene->GetLayer(1)->SetName(L"Player");
+		m_pMetorScene->GetLayer(2)->SetName(L"Monster");
+		m_pMetorScene->GetLayer(3)->SetName(L"Arrow");
+		m_pMetorScene->GetLayer(4)->SetName(L"Minion");
+		m_pMetorScene->GetLayer(5)->SetName(L"Tower");
+		m_pMetorScene->GetLayer(6)->SetName(L"temp");
+		m_pMetorScene->GetLayer(7)->SetName(L"Racing");
+		m_pMetorScene->GetLayer(8)->SetName(L"Obstacle");
+		m_pMetorScene->GetLayer(9)->SetName(L"UI");
+
+
+
+		CGameObject* pMainCam = nullptr;
+
+		// Camera Object
+		pMainCam = new CGameObject;
+		pMainCam->SetName(L"MainCam");
+		pMainCam->AddComponent(new CTransform);
+		pMainCam->AddComponent(new CCamera);
+		pMainCam->AddComponent(new CCameraScript);
+
+		pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+
+		//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+		pMainCam->Camera()->SetFar(100000.f);
+		pMainCam->Camera()->SetLayerAllCheck();
+
+		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+
+		CGameObject* pObject = nullptr;
+
+		pObject = new CGameObject;
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CLight3D);
+		pObject->Light3D()->SetLightPos(Vec3(0.f, 500.f, 0.f));
+		pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
+		pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
+		pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
+		pObject->Light3D()->SetAmbient(Vec3(0.4f, 0.4f, 0.4f));
+		pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+		pObject->Light3D()->SetLightRange(1000.f);
+		pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
+		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject);
+
+
+
+		//const wstring FileName = { L"MapPosition.bin" };
+
+		//LoadMapInfoFromFile(FileName, tiles);
+
+		//for (auto& tile : tiles)
+		//{
+		//	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
+		//	pObject = pMeshData->Instantiate();
+		//	pObject->AddComponent(new CTransform);
+		//	pObject->AddComponent(new CCollider3D);
+		//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		//	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+		//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+		//	pObject->FrustumCheck(false);
+		//	pObject->Transform()->SetLocalPos(tile.GetTilePos());
+		//	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+		//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+		//	pObject->MeshRender()->SetDynamicShadow(false);
+		//	//pObject->Animator3D()->SetClipIndex(1);
+		//	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+		//}
+
+
+#if LOCALPLAY
+		//m_pCurScene = m_pMetorScene;
+		//AddNetworkGameObject(true, Vec3::Zero, m_pMetorScene);
+#else
+#endif
+		
+		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor1.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor2.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+
+		// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor3.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor4.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor5.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+
+		const wstring FileNames[] = { L"MapPosition.bin"};
+		for (int i = 0; i < 1; ++i)
+		{
+			tiles.clear();
+			LoadMetorMapInfoFromFile(FileNames[i], tiles);
+
+			for (auto& tile : tiles)
+			{
+				Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetMetorPathName(), tile.GetMetorPathName());
+				pObject = pMeshData->Instantiate();
+				pObject->AddComponent(new CTransform);
+				pObject->AddComponent(new CCollider3D);
+				pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+				pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+				pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+				pObject->FrustumCheck(false);
+				pObject->Transform()->SetLocalPos(tile.GetTilePos());
+				pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+				pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+				pObject->MeshRender()->SetDynamicShadow(false);
+				//pObject->Animator3D()->SetClipIndex(1);
+				m_pMetorScene->FindLayer(L"Metor")->AddGameObject(pObject);
+
+				//if (i == 2)
+				//{
+				//	int temp = tile.GetState();
+				//	if (temp == LayerState::L1Sujum)
+				//	{
+				//		pObject->AddComponent(new CItemScript);
+				//		pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::SUPERJUMP);
+				//	}
+				//	else if (temp == LayerState::LCoin)
+				//	{
+				//		pObject->AddComponent(new CItemScript);
+				//		pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::COIN);
+				//	}
+				//}
+
+			}
+
+		}
+
+
+		pObject = new CGameObject;
+		pObject->SetName(L"SkyBox");
+		pObject->FrustumCheck(false);
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
+
+		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
+		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+
+		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject);
+		//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+		//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+		//m_pStartScene->Awake();
+		//m_pStartScene->Start();
+	}
+}
+
 void CSceneMgr::InitUI()
 {
 
@@ -942,7 +1145,7 @@ void CSceneMgr::FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>
 			}
 		}
 	}
-}
+		}
 
 CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* curscene)
 {
