@@ -59,8 +59,11 @@ void CRenderMgr::Render()
 	m_vecCam[0]->Render_Forward(); // skybox, grid
 
 	//m_arrMRT[(UINT)MRT_TYPE::UI]->OMSet();
-	m_vecCam[1]->SortUIObject();
-	m_vecCam[1]->Render_UI();
+	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::LOBBY)
+	{
+		m_vecCam[1]->SortUIObject();
+		m_vecCam[1]->Render_UI();
+	}
 	//m_arrMRT[(UINT)MRT_TYPE::UI]->TargetToResBarrier();
 
 

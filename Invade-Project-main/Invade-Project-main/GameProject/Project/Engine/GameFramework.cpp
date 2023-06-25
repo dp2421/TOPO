@@ -48,7 +48,6 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 
 
 	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b5), 0);
-	//CDevice::GetInst()->CreateDirect2DDevice();
 
 	CPathMgr::Init();
 	CKeyMgr::GetInst()->Init();
@@ -59,6 +58,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitMainScene();
 	CSceneMgr::GetInst()->InitStartScene();
 	CSceneMgr::GetInst()->InitUI();
+	CSceneMgr::GetInst()->InitScene();
 	//CSceneMgr::GetInst()->ChangeScene();
 	NetworkMgr::GetInst()->Init();
 	
@@ -78,7 +78,6 @@ void CGameFramework::Progress()
 
 	CSceneMgr::GetInst()->Update();
 	CRenderMgr::GetInst()->Render();
-	//CDevice::GetInst()->RenderDirect2Ddevice();
 
 	CEventMgr::GetInst()->Update();
 }
@@ -95,7 +94,7 @@ void CGameFramework::ProcessInput()
 		m_vMouseMove.y *= -1.f;
 
 		m_ptOldCursorPos = ptCursorPos;
-	//	SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+		//SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 	
 }
 
@@ -108,10 +107,15 @@ void CGameFramework::OnProcessingMouseMessage(HWND _hWnd, UINT _uMessageID, WPAR
 	case WM_RBUTTONDOWN:
 		SetCapture(_hWnd);
 		GetCursorPos(&m_ptOldCursorPos);
+		SetIsClicked(true);
+		std::cout << "true" << std::endl;
 		break;
 	case WM_RBUTTONUP:
 	case WM_LBUTTONUP:
+		SetIsClicked(false);
 		ReleaseCapture();
+		std::cout << "false" << std::endl;
+
 	default:
 		break;
 	}

@@ -4,9 +4,11 @@ class CGameFramework
 	SINGLE(CGameFramework)
 public:
 	HWND m_hMainhWnd;
+	POINT m_ptOldCursorPos;
+
+	bool m_isClick = false;
 private:
 
-	POINT m_ptOldCursorPos;
 	Vec2 m_vMouseMove;
 
 public:
@@ -17,6 +19,9 @@ public:
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND _hWnd, UINT _uMessageID, WPARAM _wParam, LPARAM _lParam);
 
 	const Vec2& GetMouseMove() { return m_vMouseMove; }
+	const bool GetIsClicked() { return m_isClick; }
+	const void SetIsClicked(bool click) { m_isClick = click; }
+
 private:
 	void ChangeWindowSize(HWND _hWnd, const tResolution _resolution);
 
