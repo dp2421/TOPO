@@ -147,7 +147,6 @@ void CDevice::Render_Present()
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE; 
 	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
-	std::cout << m_iCurTargetIdx << std::endl;
 
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
@@ -158,7 +157,7 @@ void CDevice::Render_Present()
 	ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
 	m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-	// Present the frame.
+	// Present the frame.	
 	m_pSwapChain->Present(0, 0);
 
 	WaitForFenceEvent();
@@ -173,184 +172,13 @@ void CDevice::Render_Present()
 
 }
 
-#ifdef _WITH_DIRECT2D
-
-void CDevice::CreateRtvAndDsvDescriptorHeaps()
-{
-	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
-	::ZeroMemory(&d3dDescriptorHeapDesc, sizeof(D3D12_DESCRIPTOR_HEAP_DESC));
-	d3dDescriptorHeapDesc.NumDescriptors = m_nSwapChainBuffers;
-	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	d3dDescriptorHeapDesc.NodeMask = 0;
-	HRESULT hResult = m_pDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&m_pd3dRtvDescriptorHeap);
-	m_nRtvDescriptorIncrementSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-}
-
-
-
-void CDevice::CreateDirect2DDevice()
-{
-	UINT nD3D11DeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-#if defined(_DEBUG) || defined(DBG)
-	nD3D11DeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-	CreateRtvAndDsvDescriptorHeaps();
-	ID3D11Device* pd3d11Device = NULL;
-	ID3D12CommandQueue* ppd3dCommandQueues[] = { m_pCmdQueue.Get() };
-	HRESULT hResult = ::D3D11On12CreateDevice(m_pDevice.Get(), nD3D11DeviceFlags, NULL, 0, reinterpret_cast<IUnknown**>(ppd3dCommandQueues), _countof(ppd3dCommandQueues), 0, &pd3d11Device, &m_pd3d11DeviceContext, NULL);
-	hResult = pd3d11Device->QueryInterface(__uuidof(ID3D11On12Device), (void**)&m_pd3d11On12Device);
-	if (pd3d11Device) pd3d11Device->Release();
-
-	D2D1_FACTORY_OPTIONS nD2DFactoryOptions = { D2D1_DEBUG_LEVEL_NONE };
-
-	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
-	{
-		D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-
-		m_pSwapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&m_ppd3dSwapChainBackBuffers[i]);
-
-		m_pDevice->CreateRenderTargetView(m_ppd3dSwapChainBackBuffers[i], NULL, d3dRtvCPUDescriptorHandle);
-		d3dRtvCPUDescriptorHandle.ptr += m_nRtvDescriptorIncrementSize;
-	}
-
-#if defined(_DEBUG) || defined(DBG)
-	nD2DFactoryOptions.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
-	ID3D12InfoQueue* pd3dInfoQueue = NULL;
-	if (SUCCEEDED(m_pDevice->QueryInterface(IID_PPV_ARGS(&pd3dInfoQueue))))
-	{
-		D3D12_MESSAGE_SEVERITY pd3dSeverities[] =
-		{
-			D3D12_MESSAGE_SEVERITY_INFO,
-		};
-
-		D3D12_MESSAGE_ID pd3dDenyIds[] =
-		{
-			D3D12_MESSAGE_ID_INVALID_DESCRIPTOR_HANDLE,
-		};
-
-		D3D12_INFO_QUEUE_FILTER d3dInforQueueFilter = { };
-		d3dInforQueueFilter.DenyList.NumSeverities = _countof(pd3dSeverities);
-		d3dInforQueueFilter.DenyList.pSeverityList = pd3dSeverities;
-		d3dInforQueueFilter.DenyList.NumIDs = _countof(pd3dDenyIds);
-		d3dInforQueueFilter.DenyList.pIDList = pd3dDenyIds;
-
-		pd3dInfoQueue->PushStorageFilter(&d3dInforQueueFilter);
-	}
-	pd3dInfoQueue->Release();
-#endif
-
-	hResult = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory3), &nD2DFactoryOptions, (void**)&m_pd2dFactory);
-
-	IDXGIDevice* pdxgiDevice = NULL;
-	hResult = m_pd3d11On12Device->QueryInterface(__uuidof(IDXGIDevice), (void**)&pdxgiDevice);
-	hResult = m_pd2dFactory->CreateDevice(pdxgiDevice, &m_pd2dDevice);
-	hResult = m_pd2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &m_pd2dDeviceContext);
-	hResult = ::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&m_pdWriteFactory);
-	if (pdxgiDevice) pdxgiDevice->Release();
-
-	m_pd2dDeviceContext->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE);
-
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(0.3f, 0.0f, 0.0f, 0.5f), &m_pd2dbrBackground);
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF(0x9ACD32, 1.0f)), &m_pd2dbrBorder);
-
-	hResult = m_pdWriteFactory->CreateTextFormat(L"궁서체", NULL, DWRITE_FONT_WEIGHT_DEMI_BOLD, DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_NORMAL, 48.0f, L"en-US", &m_pdwFont);
-	hResult = m_pdwFont->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	hResult = m_pdwFont->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Purple, 1.0f), &m_pd2dbrText);
-	hResult = m_pdWriteFactory->CreateTextLayout(L"텍스트 레이아웃", 8, m_pdwFont, 4096.0f, 4096.0f, &m_pdwTextLayout);
-
-	float fDpi = (float)GetDpiForWindow(m_hWnd);
-	D2D1_BITMAP_PROPERTIES1 d2dBitmapProperties = D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), fDpi, fDpi);
-
-	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
-	{
-		D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
-		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&(m_ppd3d11WrappedBackBuffers[i])));
-		IDXGISurface* pdxgiSurface = NULL;
-		m_ppd3d11WrappedBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
-		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &(m_ppd2dRenderTargets[i]));
-		if (pdxgiSurface) pdxgiSurface->Release();
-	}
-
-#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	CoInitialize(NULL);
-	hResult = ::CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_pwicImagingFactory);
-
-	hResult = m_pd2dFactory->CreateDrawingStateBlock(&m_pd2dsbDrawingState);
-	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1BitmapSource, &m_pd2dfxBitmapSource);
-	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1GaussianBlur, &m_pd2dfxGaussianBlur);
-	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1EdgeDetection, &m_pd2dfxEdgeDetection);
-
-	IWICBitmapDecoder* pwicBitmapDecoder;
-	hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"F:/TOPO/Invade-Project-main/Invade-Project-main/GameProject/File/bin/content/Texture/Health.png", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
-	IWICBitmapFrameDecode* pwicFrameDecode;
-	pwicBitmapDecoder->GetFrame(0, &pwicFrameDecode);
-	m_pwicImagingFactory->CreateFormatConverter(&m_pwicFormatConverter);
-	m_pwicFormatConverter->Initialize(pwicFrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
-	m_pd2dfxBitmapSource->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_pwicFormatConverter);
-
-	m_pd2dfxGaussianBlur->SetInputEffect(0, m_pd2dfxBitmapSource);
-
-	m_pd2dfxEdgeDetection->SetInputEffect(0, m_pd2dfxBitmapSource);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_STRENGTH, 0.5f);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_BLUR_RADIUS, 0.0f);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_MODE, D2D1_EDGEDETECTION_MODE_SOBEL);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_OVERLAY_EDGES, false);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_ALPHA_MODE, D2D1_ALPHA_MODE_PREMULTIPLIED);
-
-	if (pwicBitmapDecoder) pwicBitmapDecoder->Release();
-	if (pwicFrameDecode) pwicFrameDecode->Release();
-#endif
-}
-#endif
-#ifdef _WITH_DIRECT2D
-void CDevice::RenderDirect2Ddevice()
-{
-
-//#ifndef _WITH_DIRECT2D
-//	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-//	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-//	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-//	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
-//#endif
-	//std::cout << "log" << std::endl;
-
-	//Direct2D Drawing
-	m_pd2dDeviceContext->SetTarget(m_ppd2dRenderTargets[m_nSwapChainBufferIndex]);
-	ID3D11Resource* ppd3dResources[] = { m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex] };
-	m_pd3d11On12Device->AcquireWrappedResources(ppd3dResources, _countof(ppd3dResources));
-
-	m_pd2dDeviceContext->BeginDraw();
-
-	m_pd2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
-#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	D2D_POINT_2F d2dPoint = { 100.0f, 100.0f };
-	D2D_RECT_F d2dRect = { 300.0f, 300.0f, 750.0f, 550.0f };
-	m_pd2dDeviceContext->DrawImage((m_nDrawEffectImage == 0) ? m_pd2dfxGaussianBlur : m_pd2dfxEdgeDetection, &d2dPoint, &d2dRect);
-#endif
-	D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
-	//m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
-	D2D1_RECT_F rcUpperText = D2D1::RectF(0, 0, szRenderTarget.width, szRenderTarget.height * 0.25f);
-
-	D2D1_RECT_F rcLowerText = D2D1::RectF(0, szRenderTarget.height * 0.5f, szRenderTarget.width, szRenderTarget.height);
-	m_pd2dDeviceContext->DrawTextW(L"한글 테스트", (UINT32)wcslen(L"한글 테스트"), m_pdwFont, &rcLowerText, m_pd2dbrText);
-
-	m_pd2dDeviceContext->EndDraw();
-
-	//m_pd3d11On12Device->ReleaseWrappedResources(ppd3dResources, _countof(ppd3dResources));
-	//m_pd3d11DeviceContext->Flush();
-
-}
-#endif
-
 
 void CDevice::WaitForFenceEvent()
 {
+	m_iFenceValue++;
 	// Signal and increment the fence value.
 	const UINT64 fence = m_iFenceValue;
 	m_pCmdQueue->Signal(m_pFence.Get(), fence);
-	m_iFenceValue++;
 
 	int a = m_pFence->GetCompletedValue();
 	// Wait until the previous frame is finished.

@@ -39,6 +39,8 @@ private:
     vector<CGameObject*>	m_vecForward;
 
     vector<CGameObject*> m_vecUIObject;
+
+    bool isSceneChange = false;
 public:
 
     virtual void FinalUpdate();
@@ -80,6 +82,8 @@ public:
     const Matrix& GetProjMat() { return m_matProj; }
     const Matrix& GetProjInvMat() { return m_matProjInv; }
 
+    bool GetSceneChanged() { return isSceneChange; }
+    
     void SetWidth(float _fWidth) { m_fWidth = _fWidth; }
     void SetHeight(float _fHeight) { m_fHeight = _fHeight; }
     CCamera();

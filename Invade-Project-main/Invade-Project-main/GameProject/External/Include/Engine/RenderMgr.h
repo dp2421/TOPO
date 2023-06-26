@@ -31,6 +31,8 @@ private:
 	bool m_bWindowed;
 
 	UINT m_iRTVHeapSize;
+
+	bool b_SceneChanged = false;
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
