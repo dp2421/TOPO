@@ -288,7 +288,8 @@ void CCamera::Render_UI()
 			m_vecUIObject[i]->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
 
 			if (tempObj->Transform()->IsCasting(mousepos) && CKeyMgr::GetInst()->GetClicked() == true)
-				CSceneMgr::GetInst()->ChangeScene();
+				isSceneChange = true;
+
 		}
 
 	}

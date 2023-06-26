@@ -58,18 +58,23 @@ void CRenderMgr::Render()
 
 	m_vecCam[0]->Render_Forward(); // skybox, grid
 
-	//m_arrMRT[(UINT)MRT_TYPE::UI]->OMSet();
 	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::LOBBY)
 	{
 		m_vecCam[1]->SortUIObject();
 		m_vecCam[1]->Render_UI();
+		if (m_vecCam[1]->GetSceneChanged() == true)
+			b_SceneChanged = true;
 	}
-	//m_arrMRT[(UINT)MRT_TYPE::UI]->TargetToResBarrier();
-
-
 
 	// Ãâ·Â
 	CDevice::GetInst()->Render_Present();
+
+	if (b_SceneChanged == true)
+	{
+		CSceneMgr::GetInst()->ChangeScene();
+		b_SceneChanged = false;
+	}
+
 }
 
 void CRenderMgr::Render_Tool()
