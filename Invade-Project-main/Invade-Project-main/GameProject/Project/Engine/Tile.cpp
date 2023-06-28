@@ -13,17 +13,6 @@ Tile::Tile(TileInfo info)
 	data.state = info.state;
 }
 
-Tile::Tile(MetorTile info)
-{
-    Mdata.xPos = info.xPos;
-    Mdata.yPos = info.yPos;
-    Mdata.zPos = info.zPos;
-    Mdata.xScale = info.xScale;
-    Mdata.yScale = info.yScale;
-    Mdata.zScale = info.zScale;
-    Mdata.state = info.state;
-}
-
 Tile::~Tile()
 {
 
@@ -48,6 +37,9 @@ wstring Tile::GetPathName()
         L"MeshData\\L1Part4.mdat",
         L"MeshData\\L1Sujum.mdat",
         L"MeshData\\LCoin.mdat",
+        L"MeshData\\LGrass.mdat",
+        L"MeshData\\LWood.mdat",
+        L"MeshData\\LAsphalt.mdat",
 
         //타일 레이어 추가시 아래에 추가 (레이어 시작번호 다르면 새로 만들어서해도됨
 	};
@@ -55,19 +47,19 @@ wstring Tile::GetPathName()
     return layerStrings[data.state-6]; //enum LayerState가 6부터 시작하므로 6 빼주기
 }
 
-wstring Tile::GetMetorPathName()
-{
-    static const wstring layerStrings[] = {
-        L"MeshData\\LMetor1.mdat",
-        L"MeshData\\LMetor2.mdat",
-        L"MeshData\\LMetor3.mdat",
-        L"MeshData\\LMetor4.mdat",
-        L"MeshData\\LMetor5.mdat",
-
-
-        //타일 레이어 추가시 아래에 추가 (레이어 시작번호 다르면 새로 만들어서해도됨
-    };
-
-    return layerStrings[Mdata.state - 6]; //enum LayerState가 6부터 시작하므로 6 빼주기
-}
+//wstring Tile::GetMetorPathName()
+//{
+//    static const wstring layerStrings[] = {
+//        L"MeshData\\LMetor1.mdat",
+//        L"MeshData\\LMetor2.mdat",
+//        L"MeshData\\LMetor3.mdat",
+//        L"MeshData\\LMetor4.mdat",
+//        L"MeshData\\LMetor5.mdat",
+//
+//
+//        //타일 레이어 추가시 아래에 추가 (레이어 시작번호 다르면 새로 만들어서해도됨
+//    };
+//
+//    return layerStrings[Mdata.state - 6]; //enum LayerState가 6부터 시작하므로 6 빼주기
+//}
 

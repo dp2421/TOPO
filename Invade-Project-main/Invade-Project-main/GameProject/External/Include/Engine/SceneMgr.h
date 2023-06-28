@@ -11,15 +11,17 @@ private:
 	CScene* m_pStartScene;
 	CScene* m_pRacingScene;
 	CScene* m_pMetorScene;
+	CScene* m_pJumpingScene;
 	vector<Tile> tiles;
 	SCENE_TYPE m_pSceneType;
 public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
-	void LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
+	//void LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
 
 	void InitMainScene();
 	void InitStartScene();
 	void InitMetorScene();
+	void InitJumpingScene();
 	void InitUI();
 
 	void InitScene() { m_pCurScene = m_pStartScene; m_pSceneType = SCENE_TYPE::LOBBY; }
