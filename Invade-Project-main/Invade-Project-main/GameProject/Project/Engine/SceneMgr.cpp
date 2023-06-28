@@ -52,6 +52,19 @@ void CSceneMgr::ChangeScene(CScene* _pNextScene)
 
 }
 
+void CSceneMgr::ChangeScene(SCENE_TYPE _type)
+{
+	if(m_pCurScene)
+		SAFE_DELETE(m_pCurScene);
+
+	m_pSceneType = _type;
+
+	if (_type == SCENE_TYPE::AWARD)
+	{
+		m_pCurScene = m_pAwardScene;
+	}
+		
+}
 
 void CSceneMgr::ChangeScene()
 {
@@ -1239,7 +1252,7 @@ void CSceneMgr::InitAwardScene()
 
 
 	//테스트~
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L2Part6.mdat", L"MeshData\\L2Part6.mdat");
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L2Part8.mdat", L"MeshData\\L2Part8.mdat");
 	//pMeshData->Save(pMeshData->GetPath());
 	pObject = pMeshData->Instantiate();
 	pObject->AddComponent(new CTransform);
@@ -1280,8 +1293,8 @@ void CSceneMgr::InitAwardScene()
 
 
 #if LOCALPLAY
-	m_pCurScene = m_pAwardScene;
-	AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
+	//m_pCurScene = m_pAwardScene;
+	//AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
 #else
 #endif
 

@@ -33,6 +33,7 @@ public:
 	CScene* GetCurScene();
 	SCENE_TYPE GetSceneType() { return m_pSceneType; }
 	void ChangeScene(CScene* _pNextScene);
+	void ChangeScene(SCENE_TYPE _type);
 	void ChangeScene();
 
 	void FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>& _vecFindObj);
