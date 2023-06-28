@@ -129,6 +129,7 @@ enum class SCENE_TYPE
 	LOBBY,
 	RACING,
 	SURVIVAL,
+	AWARD,
 	END,
 };
 namespace RES_TYPE_STR

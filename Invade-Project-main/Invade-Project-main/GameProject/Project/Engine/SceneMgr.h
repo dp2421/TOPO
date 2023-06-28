@@ -12,6 +12,7 @@ private:
 	CScene* m_pRacingScene;
 	CScene* m_pMetorScene;
 	CScene* m_pJumpingScene;
+	CScene* m_pAwardScene;
 	vector<Tile> tiles;
 	SCENE_TYPE m_pSceneType;
 public:
@@ -22,6 +23,7 @@ public:
 	void InitStartScene();
 	void InitMetorScene();
 	void InitJumpingScene();
+	void InitAwardScene();
 	void InitUI();
 
 	void InitScene() { m_pCurScene = m_pStartScene; m_pSceneType = SCENE_TYPE::LOBBY; }

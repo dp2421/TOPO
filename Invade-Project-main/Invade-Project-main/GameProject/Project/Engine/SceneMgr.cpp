@@ -1166,6 +1166,154 @@ void CSceneMgr::InitJumpingScene()
 	m_pJumpingScene->Start();
 }
 
+
+
+void CSceneMgr::InitAwardScene()
+{
+	// 필요한 리소스 로딩
+	// Texture 로드
+	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
+	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
+	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
+
+	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
+	Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
+	Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
+
+	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+
+	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+	//
+	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
+	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+	//
+	m_pAwardScene = new CScene;
+	m_pAwardScene->SetName(L"Award Scene");
+
+	m_pAwardScene->GetLayer(0)->SetName(L"Default");
+	m_pAwardScene->GetLayer(1)->SetName(L"Player");
+	m_pAwardScene->GetLayer(2)->SetName(L"Monster");
+	m_pAwardScene->GetLayer(3)->SetName(L"Arrow");
+	m_pAwardScene->GetLayer(4)->SetName(L"Minion");
+	m_pAwardScene->GetLayer(5)->SetName(L"Tower");
+	m_pAwardScene->GetLayer(6)->SetName(L"temp");
+	m_pAwardScene->GetLayer(7)->SetName(L"Racing");
+	m_pAwardScene->GetLayer(8)->SetName(L"Obstacle");
+	m_pAwardScene->GetLayer(9)->SetName(L"UI");
+	m_pAwardScene->GetLayer(10)->SetName(L"Award");
+
+
+	CGameObject* pMainCam = nullptr;
+
+	// Camera Object
+	pMainCam = new CGameObject;
+	pMainCam->SetName(L"MainCam");
+	pMainCam->AddComponent(new CTransform);
+	pMainCam->AddComponent(new CCamera);
+	pMainCam->AddComponent(new CCameraScript);
+
+	pMainCam->Camera()->SetProjType(PROJ_TYPE::PERSPECTIVE);
+
+	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
+	pMainCam->Camera()->SetFar(100000.f);
+	pMainCam->Camera()->SetLayerAllCheck();
+
+	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+
+	CGameObject* pObject = nullptr;
+
+	pObject = new CGameObject;
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetLightPos(Vec3(0.f, 500.f, 0.f));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
+	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
+	pObject->Light3D()->SetAmbient(Vec3(0.4f, 0.4f, 0.4f));
+	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+	pObject->Light3D()->SetLightRange(1000.f);
+	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
+	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject);
+
+
+	//테스트~
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L2Part6.mdat", L"MeshData\\L2Part6.mdat");
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGET, 4760.f));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	pObject->Transform()->SetLocalScale(Vec3(4.f, 4.f, 1.f));
+	pObject->MeshRender()->SetDynamicShadow(false);
+	//pObject->Animator3D()->SetClipIndex(1);
+	m_pAwardScene->FindLayer(L"Award")->AddGameObject(pObject);
+
+
+	//.bin으로 읽어오기
+	//const wstring FileName = { L"AwardMap.bin" };
+	//tiles.clear();
+	//LoadMapInfoFromFile(FileName, tiles);
+	//for (auto& tile : tiles)
+	//{
+	//	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
+	//	pObject = pMeshData->Instantiate();
+	//	pObject->AddComponent(new CTransform);
+	//	pObject->AddComponent(new CCollider3D);
+	//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	//	pObject->FrustumCheck(false);
+	//	pObject->Transform()->SetLocalPos(tile.GetTilePos());
+	//	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	//	pObject->MeshRender()->SetDynamicShadow(false);
+	//	//pObject->Animator3D()->SetClipIndex(1);
+	//	m_pAwardScene->FindLayer(L"Racing")->AddGameObject(pObject);
+	//}
+
+
+#if LOCALPLAY
+	m_pCurScene = m_pAwardScene;
+	AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
+#else
+#endif
+
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LWood.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LGrass.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+
+	// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LAsphalt.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+
+
+	pObject = new CGameObject;
+	pObject->SetName(L"SkyBox");
+	pObject->FrustumCheck(false);
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+
+	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject);
+	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+	m_pAwardScene->Awake();
+	m_pAwardScene->Start();
+}
+
+
+
 void CSceneMgr::InitUI()
 {
 
