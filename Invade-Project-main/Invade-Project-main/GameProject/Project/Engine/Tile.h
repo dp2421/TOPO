@@ -2,6 +2,7 @@
 
 enum LayerState : int
 {
+    //레이싱맵
     L2Part0 = 6,
     L2Part1,
     L2Part2,
@@ -18,9 +19,20 @@ enum LayerState : int
     L1Part4,
     L1Sujum,
     LCoin,
+
+    //줄넘기맵
     LGrass,
     LWood,
     LAsphalt,
+
+    //시상식 (25~)
+    LAward1,
+    LAward2,
+    LAward3,
+    LAwardGrs,
+    LAwardBk,
+    LAwardTr,
+
     // 타일 레이어 추가시 아래에 추가
 };
 

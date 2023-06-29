@@ -40,6 +40,12 @@ wstring Tile::GetPathName()
         L"MeshData\\LGrass.mdat",
         L"MeshData\\LWood.mdat",
         L"MeshData\\LAsphalt.mdat",
+        L"MeshData\\LAward1.mdat",
+        L"MeshData\\LAward2.mdat",
+        L"MeshData\\LAward3.mdat",
+        L"MeshData\\LAwardGrs.mdat",
+        L"MeshData\\LAwardBk.mdat",
+        L"MeshData\\LAwardTr.mdat",
 
         //타일 레이어 추가시 아래에 추가 (레이어 시작번호 다르면 새로 만들어서해도됨
 	};

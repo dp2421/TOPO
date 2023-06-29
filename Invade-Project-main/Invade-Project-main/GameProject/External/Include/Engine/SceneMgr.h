@@ -14,6 +14,7 @@ private:
 	CScene* m_pJumpingScene;
 	CScene* m_pAwardScene;
 	vector<Tile> tiles;
+	vector<Tile> awardTiles;
 	SCENE_TYPE m_pSceneType;
 public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
