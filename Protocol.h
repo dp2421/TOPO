@@ -42,6 +42,8 @@ constexpr unsigned char ServerObstacleInfo = 207;
 constexpr unsigned char ServerGameTimer = 208;
 constexpr unsigned char ServerGameEnd = 209;
 constexpr unsigned char ServerGameResult = 210;
+constexpr unsigned char ServerObstacleRPS = 211;
+constexpr unsigned char ServerSingleObstacleInfo = 212;
 
 #pragma pack (push, 1)
 
@@ -160,7 +162,23 @@ struct ServerGameResultPacket
 	unsigned char size;
 	unsigned char	type;
 	int		id;
-	// 랭킹만? 스코어만? 둘다?
+	// 경과시간, 랭킹
 };
+
+struct ServerObstacleRPSPacket
+{
+	unsigned char size;
+	unsigned char	type;
+	unsigned short	angularVelocity[66];
+};
+
+struct ServerSingleObstacleInfoPacket
+{
+	unsigned char	size;
+	unsigned char	type;
+	unsigned char	id;
+	unsigned short	degree;
+};
+
 
 #pragma pack (pop)

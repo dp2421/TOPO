@@ -1,15 +1,19 @@
 #include "pch.h"
 #include "Obstacle.h"
 
-Obstacle::Obstacle(ObstacleInfo info):
-	data(info)
+Obstacle::Obstacle(ObstacleInfo info, int i):
+	data(info),
+	index(i)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<float> urd(0.1f, 5.0f);
 	deltaRotate = urd(gen);
+	angularVelocity = deltaRotate * Frame;
 
-	position = Vector3(data.x, data.y, data.z);
+	position.x = data.x;
+	position.y = data.y;
+	position.z = data.z;
 
 	switch (data.state)
 	{
@@ -18,8 +22,9 @@ Obstacle::Obstacle(ObstacleInfo info):
 		Collider coll;
 		coll.offset = HurdleumObsOffset;
 		coll.size = HurdleObsCollider;
-		coll.position = &position;
 		collider.push_back(coll);
+		collider[0].position = new Vector3(data.x, data.y, data.z);
+		index = 0;
 		break;
 	}
 	case OBSTACLE_STATE::SPIN:
@@ -27,22 +32,24 @@ Obstacle::Obstacle(ObstacleInfo info):
 		Collider coll;
 		coll.offset = RotateObsPillarOffset;
 		coll.size = RotateObsPillarCollider;
-		coll.position = &position;
 		collider.push_back(coll);
+		collider[0].position = new Vector3(data.x, data.y, data.z);
 
 		coll.offset = RotateObsRotateBodyOffset;
 		coll.size = RotateObsRotateBodyCollider;
-		coll.position = &position;
 		collider.push_back(coll);
+		collider[1].position = new Vector3(data.x, data.y, data.z);
 		break;
 	}
 	case OBSTACLE_STATE::PENDULUM:
 	{
 		Collider coll;
 		coll.offset = PendulumObsOffset;
+		coll.offset.y += 150;
 		coll.size = PendulumObsCollider;
-		coll.position = &position;
+		coll.size.y += 150;
 		collider.push_back(coll);
+		collider[0].position = new Vector3(data.x, data.y, data.z);
 		break;
 	}
 	default:

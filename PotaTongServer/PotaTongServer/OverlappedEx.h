@@ -8,6 +8,7 @@ enum class OverlappedType
 	MatchingStart,
 	MatchingComplete,
 	RotateObs,
+	SendRotateInfo,
 	AddAI,
 	UpdateAI,
 	Update

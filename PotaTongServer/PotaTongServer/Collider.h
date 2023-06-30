@@ -12,7 +12,7 @@ public:
 
     Vector3 offset;
     Vector3 size;
-    XMFLOAT4 orientation; // Quaternion
+    XMVECTOR orientation{ 0,0,0,1 }; // Quaternion
 
     XMVECTOR XMVectorMin(XMVECTOR v);
     XMVECTOR GetClosestFaceNormal(const BoundingBox& box, FXMVECTOR point);

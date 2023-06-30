@@ -12,41 +12,51 @@ Collider::~Collider()
 
 XMVECTOR Collider::XMVectorMin(XMVECTOR v)
 {
-    XMVECTOR minV = v;
-    minV = DirectX::XMVectorMin(minV, XMVectorSwizzle<1, 0, 3, 2>(minV));
-    minV = DirectX::XMVectorMin(minV, XMVectorSwizzle<2, 3, 0, 1>(minV));
-    return minV;
+	XMVECTOR minValues = XMVectorSplatX(v);
+	minValues = DirectX::XMVectorMin(minValues, XMVectorSplatY(v));
+	minValues = DirectX::XMVectorMin(minValues, XMVectorSplatZ(v));
+	return minValues;
 }
 
 XMVECTOR Collider::GetClosestFaceNormal(const BoundingBox& box, FXMVECTOR point)
 {
 	XMVECTOR boxCenter = XMLoadFloat3(&box.Center);
-	XMVECTOR vectorFromCenter = XMVectorSubtract(point, boxCenter);
-
-	XMVECTOR distances = XMVectorSelect(
-		XMVectorSubtract(point, XMLoadFloat3(&box.Extents)), // Minimum distances
-		XMVectorSubtract(XMLoadFloat3(&box.Extents), point), // Maximum distances
-		XMVectorGreater(vectorFromCenter, XMVectorZero()));         // Choose the right sign
+	XMVECTOR boxExtents = XMLoadFloat3(&box.Extents); 
+	XMVECTOR vectorFromCenter = point - boxCenter;
+	XMVECTOR distances = XMVectorSubtract(XMVectorAbs(vectorFromCenter), boxExtents);
 
 	XMVECTOR closestDistance = XMVectorMin(distances);
-	int faceIndex = XMVectorGetIntX(XMVectorEqual(distances, closestDistance));
+
+	int faceIndex = -1;
+	float minDistanceX = XMVectorGetX(distances);
+	float minDistanceY = XMVectorGetY(distances);
+	float minDistanceZ = XMVectorGetZ(distances);
+
+	if (minDistanceX < minDistanceY && minDistanceX < minDistanceZ)
+		faceIndex = 0; // X face
+	else if (minDistanceY < minDistanceZ)
+		faceIndex = 1; // Y face
+	else
+		faceIndex = 2; // Z face
+
+	cout << distances.m128_f32[0] << " "
+		<< distances.m128_f32[1] << " "
+		<< distances.m128_f32[2] << " "
+		<< faceIndex << endl;
 
 	switch (faceIndex)
 	{
-	case 0: // Left face
-		return XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
-	case 1: // Right face
-		return XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-	case 2: // Bottom face
-		return XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
-	case 3: // Top face
-		return XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	case 4: // Back face
-		return XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
-	case 5: // Front face
-		return XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	case 0: // x
+		cout << "LEFT" << endl;
+		return DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+	case 1: // y
+		cout << "BOTTOM" << endl;
+		return DirectX::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
+	case 2: // z
+		cout << "BACK" << endl;
+		return DirectX::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
 	default:
-		return XMVectorZero();
+		return DirectX::XMVectorZero();
 	}
 }
 
@@ -61,18 +71,24 @@ BoundingBox Collider::getBoundingbox()
 
 bool Collider::isCollisionOBB(Collider& rhs)
 {
+	XMFLOAT4 thisOrientation;
+	XMFLOAT4 rhsOrientation;
+
+	XMStoreFloat4(&thisOrientation, this->orientation);
+	XMStoreFloat4(&rhsOrientation, rhs.orientation);
+
 	BoundingOrientedBox thisBox
 	{ 
 		(*this->position + this->offset).ConvertXMFLOAT3(),
 		this->size.ConvertXMFLOAT3(),
-		this->orientation
+		thisOrientation
 	};
 
 	BoundingOrientedBox rhsBox
 	{ 
 		(*rhs.position + rhs.offset).ConvertXMFLOAT3(), 
 		rhs.size.ConvertXMFLOAT3(),
-		rhs.orientation
+		rhsOrientation
 	};
 
 	return thisBox.Intersects(rhsBox);
