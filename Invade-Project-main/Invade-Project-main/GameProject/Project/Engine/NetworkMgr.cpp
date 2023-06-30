@@ -83,7 +83,8 @@ void NetworkMgr::NetworkWorkerThread()
         switch (overlappedEx->type)
         {
         case OverlappedType::Recv:
-            ProcessPacket(overlappedEx->sendBuf);
+            AssemblyPacket(numBytes);
+            //ProcessPacket(overlappedEx->sendBuf);
             break;
         case OverlappedType::Send:
             delete overlappedEx;
@@ -247,9 +248,25 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerObstacleInfoPacket* p = reinterpret_cast<ServerObstacleInfoPacket*>(packet);
         for (int i = 0; i < 66; ++i)
         {
-            //std::cout << ((float)p->degree[i]) / 100 << std::endl;
+            std::cout << "ROTATE " << ((float)p->degree[i]) / 100 << std::endl;
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->Rotate(((float)p->degree[i])/100);
         }
+        break;
+    }
+    case ServerObstacleRPS:
+    {
+        ServerObstacleRPSPacket* p = reinterpret_cast<ServerObstacleRPSPacket*>(packet);
+        for (int i = 0; i < 66; ++i)
+        {
+            std::cout << " RPS " << ((float)p->angularVelocity[i]) / 100 << std::endl;
+            CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->SetSpeed(((float)p->angularVelocity[i]) / 100);
+        }
+        break;
+    }
+    case ServerSingleObstacleInfo:
+    {
+        ServerSingleObstacleInfoPacket* p = reinterpret_cast<ServerSingleObstacleInfoPacket*>(packet);
+        CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[p->id]->GetScript<CObstacleScript>()->Rotate(((float)p->degree) / 100);
         break;
     }
     } 

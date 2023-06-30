@@ -153,6 +153,11 @@ DirectX::XMFLOAT3 Vector3::ConvertXMFLOAT3()
     return DirectX::XMFLOAT3(x, y, z);
 }
 
+DirectX::XMFLOAT4 Vector3::ConvertXMFLOAT4()
+{
+    return DirectX::XMFLOAT4(x, y, z, 1);
+}
+
 bool Vector3::operator==(const Vector3& vec) const
 {
     return (x == vec.x) && (y == vec.y) && (z == vec.z);

@@ -345,7 +345,7 @@ void CPlayerScript::SetPlayable(bool value)
 				GetObj()->AddChild(obj);
 
 				////pMainCam->Transform()->SetLocalPos(Vec3(-60,45,-10));
-		//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
+			//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 				break;
 			}
 			

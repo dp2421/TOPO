@@ -29,6 +29,7 @@ public:
     Vector3& operator=(const Vector3& vec);
 
     DirectX::XMFLOAT3 ConvertXMFLOAT3();
+    DirectX::XMFLOAT4 ConvertXMFLOAT4();
 
     bool operator==(const Vector3& vec) const;
     bool operator!=(const Vector3& vec) const;

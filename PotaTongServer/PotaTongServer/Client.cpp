@@ -90,3 +90,23 @@ void Client::SendPlayerInfoPacket(const int id, const Vector3 pos, const float d
 
 	SendPacket(&packet);
 }
+
+void Client::SendSingleObstacleInfoPacket(const unsigned char id, const unsigned short degree)
+{
+	ServerSingleObstacleInfoPacket packet;
+	packet.size = sizeof(ServerSingleObstacleInfoPacket);
+	packet.id = id;
+	packet.type = ServerSingleObstacleInfo;
+
+	SendPacket(&packet);
+}
+
+void Client::SendObstacleRPSPacket(const unsigned short angularVelocity[], int size)
+{
+	ServerObstacleRPSPacket packet;
+	packet.size = sizeof(ServerObstacleRPSPacket);
+	packet.type = ServerObstacleRPS;
+	memcpy(packet.angularVelocity, angularVelocity, size);
+
+	SendPacket(&packet);
+}

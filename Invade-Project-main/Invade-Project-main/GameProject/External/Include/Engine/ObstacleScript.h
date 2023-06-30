@@ -17,6 +17,9 @@ public:
     void SetState(OBSTACLE_STATE _iState) { m_iState = _iState; }
     OBSTACLE_STATE GetState() { return m_iState; }
 
+    void SetSpeed(float speed) { m_fSpeed = speed; }
+    float GetSpeed() { return m_fSpeed; }
+
     void Rotate(float value);
 
     CLONE(CObstacleScript);

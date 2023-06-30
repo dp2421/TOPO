@@ -18,12 +18,14 @@ struct ObstacleInfo
 class Obstacle
 {
 public:
-	Obstacle(ObstacleInfo info);
+	Obstacle(ObstacleInfo info, int i);
 	~Obstacle();
 
 	ObstacleInfo data;
+	int index;
 	float rotate = 0;
 	float deltaRotate;
+	float angularVelocity;
 	Vector3 position;
 	vector<Collider> collider;
 };
