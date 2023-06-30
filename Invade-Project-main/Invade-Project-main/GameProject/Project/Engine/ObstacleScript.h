@@ -1,11 +1,13 @@
 #pragma once
 #include "Script.h"
+#include "TimeMgr.h"
 
 class CObstacleScript : public CScript
 {
 private:
     int m_iDir;
     float m_fSpeed;
+    float m_fFrmSpeed;
     OBSTACLE_STATE m_iState;
 
 public:
@@ -24,3 +26,4 @@ public:
 
     CLONE(CObstacleScript);
 };
+

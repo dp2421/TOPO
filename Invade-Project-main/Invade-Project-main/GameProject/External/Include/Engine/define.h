@@ -39,7 +39,7 @@ static type* GetInst()\
 #define SPEED 2000
 
 // 1 네트워크 사용 안함, 0 네트워크 사용 함
-#define LOCALPLAY 1
+#define LOCALPLAY 0
 
 //extern int SCENE_TYPE = 0;
 // 0 레이싱맵 1 로비

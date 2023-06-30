@@ -1,33 +1,30 @@
 #include "pch.h"
 #include "ObstacleScript.h"
-
+#include "TimeMgr.h"
 
 void CObstacleScript::Update()
 {
+	Vec3 vRot = Transform()->GetLocalRot();
+	float fFps = CTimeMgr::GetInst()->GetFPS();
+
+	//맨처음에 프레임 낮을 때 확 튀는 거 방지
+	if (fFps < 30.0f)
+	{
+		fFps = 30.0f;
+	}
+	m_fFrmSpeed += m_fSpeed / fFps;
 
 	//state 가 MOVE이면 360도 회전
-	//if (m_iState == OBSTACLE_STATE::MOVEA)
-	//{
-	//	m_fSpeed += 5.f;
-	//	vRot.y = XMConvertToRadians(m_fSpeed);
-	//	//float fDegree = XMConvertToDegrees(m_fSpeed);
-	//	if (m_fSpeed > 360) {
-	//		m_fSpeed -= 360.f;
-	//	}
-	//}
+	if (m_iState == OBSTACLE_STATE::MOVEA)
+	{
+		vRot.y = XMConvertToRadians(m_fFrmSpeed);
+	}
 	//state가 MOVEB면 시계추처럼 회전
-	//if (m_iState == OBSTACLE_STATE::MOVEB)
-	//{
-	//	Vec3 vRot = Transform()->GetLocalRot();
-	//	m_fSpeed += 5.f;
-	//	vRot.z = sinf(XMConvertToRadians(m_fSpeed));
-	//	//float fDegree = XMConvertToDegrees(m_fSpeed);
-	//	if (m_fSpeed > 360) {
-	//		m_fSpeed -= 360.f;
-	//	}
-	//	Transform()->SetLocalRot(vRot);
-	//}
-
+	if (m_iState == OBSTACLE_STATE::MOVEB)
+	{
+		vRot.z = sinf(XMConvertToRadians(m_fFrmSpeed));
+	}
+	Transform()->SetLocalRot(vRot);
 }
 
 CObstacleScript::CObstacleScript() :CScript((UINT)SCRIPT_TYPE::OBSTACLESCRIPT), m_iDir(1)

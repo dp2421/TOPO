@@ -63,6 +63,10 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 	{
 		m_pCurScene = m_pAwardScene;
 	}
+	else if (_type == SCENE_TYPE::RACING)
+	{
+		m_pCurScene = m_pRacingScene;
+	}
 		
 }
 
