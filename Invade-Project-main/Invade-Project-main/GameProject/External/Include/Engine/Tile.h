@@ -68,8 +68,9 @@ public:
     float GetTileZPos() const { return data.zPos; }; //sort ºñ±³¿ë
 
     Vec3 GetTilePos() { return Vec3(data.xPos, data.yPos, data.zPos); };
+    Vec3 GetTileScale() { return Vec3(data.xScale, data.yScale, data.zScale); };
 
     wstring GetPathName(); //for load mdat file, convert enum->wstring
     wstring GetMetorPathName();
-    int GetState() { return data.state; };
+    LayerState GetState() { return data.state; };
 };
