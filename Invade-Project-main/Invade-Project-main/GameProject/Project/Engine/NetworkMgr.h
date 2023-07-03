@@ -26,7 +26,7 @@ public:
 	void SendClientMovePacket(Vec3 dir, float degree);
 
 	void DoRecv();
-	void AssemblyPacket(int recvData);
+	void AssemblyPacket(int recvData, OverlappedEx* over);
 	void ProcessPacket(char* packet);
 private:
 };

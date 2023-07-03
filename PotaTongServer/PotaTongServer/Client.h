@@ -15,6 +15,9 @@ public:
 	bool isMove = false;
 	bool isJump = false;
 
+	bool isAI = false;
+	float remainChangeAIVelocity = 0;
+
 	float degree;
 	Vector3 position;
 	Vector3 direction;

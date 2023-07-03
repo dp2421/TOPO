@@ -83,7 +83,7 @@ void NetworkMgr::NetworkWorkerThread()
         switch (overlappedEx->type)
         {
         case OverlappedType::Recv:
-            AssemblyPacket(numBytes);
+            AssemblyPacket(numBytes, overlappedEx);
             //ProcessPacket(overlappedEx->sendBuf);
             break;
         case OverlappedType::Send:
@@ -108,10 +108,8 @@ void NetworkMgr::DoSend(void* packet)
         switch (reinterpret_cast<char*>(packet)[1])
         {
         case ClientLogin:
-            std::cout << "Send Login" << std::endl;
             break;
         case ClientKeyInput:
-            std::cout << "Send KeyInput" << std::endl;
             break;
         }
     }
@@ -169,10 +167,11 @@ void NetworkMgr::DoRecv()
 #endif
 }
 
-void NetworkMgr::AssemblyPacket(int recvData)
+void NetworkMgr::AssemblyPacket(int recvData, OverlappedEx* over)
 {
     int remain_data = recvData + prevRemainData;
-    char* p = recv.wsaBuf.buf;
+    char* p = over->wsaBuf.buf;
+    std::cout << recvData << " : RECV" << (int)(unsigned char)p[1] << " Type \n";
     while (remain_data > 0) 
     {
         int packet_size = (unsigned char)p[0];
@@ -186,7 +185,7 @@ void NetworkMgr::AssemblyPacket(int recvData)
     }
     prevRemainData = remain_data;
     if (remain_data > 0) {
-        memcpy(recv.wsaBuf.buf, p, remain_data);
+        memcpy(over->wsaBuf.buf, p, remain_data);
     }
 
     DoRecv();
@@ -203,6 +202,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         tempPlayerObj->GetScript<CPlayerScript>()->SetPlayable(true);
         tempPlayerObj->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->x, p->y, p->z));
         networkObjects[p->id] = tempPlayerObj;
+        std::cout << p->id << " Player ID\n";
         break;
     }
     case ServerAddPlayer:
@@ -211,6 +211,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerAddPlayerPacket* p = reinterpret_cast<ServerAddPlayerPacket*>(packet);
         if (networkObjects.find(p->id) != networkObjects.end())
         {
+            break;
             networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->x, p->y, p->z));
         }
         else
@@ -238,6 +239,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         }
         else
         {
+            break;
             auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(p->xPos, p->yPos, p->zPos));
             networkObjects[p->id] = obj;
         }
@@ -248,7 +250,6 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerObstacleInfoPacket* p = reinterpret_cast<ServerObstacleInfoPacket*>(packet);
         for (int i = 0; i < 66; ++i)
         {
-            std::cout << "ROTATE " << ((float)p->degree[i]) / 100 << std::endl;
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->Rotate(((float)p->degree[i])/100);
         }
         break;
@@ -258,7 +259,6 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerObstacleRPSPacket* p = reinterpret_cast<ServerObstacleRPSPacket*>(packet);
         for (int i = 0; i < 66; ++i)
         {
-            std::cout << " RPS " << ((float)p->angularVelocity[i]) / 100 << std::endl;
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->SetSpeed(((float)p->angularVelocity[i]) / 100);
         }
         break;
