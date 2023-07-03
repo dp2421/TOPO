@@ -9,7 +9,7 @@
 
 #include <SDKDDKVer.h>
 #define WIN32_LEAN_AND_MEAN  
-#define FLOORHEIGET 1000  //맵 2층 1층 간격
+#define FLOORHEIGHT 1000  //맵 2층 1층 간격
 
 
 // 여기에 미리 컴파일하려는 헤더 추가
