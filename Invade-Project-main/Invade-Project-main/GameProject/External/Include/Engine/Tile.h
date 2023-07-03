@@ -38,11 +38,11 @@ enum LayerState : int
 
 enum MetorLayerState : int
 {
-    LMetor1 = 6,
-    LMetor2,
-    LMetor3,
-    LMetor4,
-    LMetor5,
+    LMetorCenter = 6,
+    LMetorStone,
+    LMetorWater,
+    LMetorGrass,
+    LMetorWood,
 };
 
 struct TileInfo
@@ -56,20 +56,34 @@ struct TileInfo
     LayerState state;
 };
 
-
+struct MetorTile
+{
+    float xPos;
+    float yPos;
+    float zPos;
+    float xScale;
+    float yScale;
+    float zScale;
+    MetorLayerState state;
+};
 class Tile
 {
 private:
     TileInfo data;
+    MetorTile Mdata;
 public:
     Tile(TileInfo info);
+    Tile(MetorTile info);
     ~Tile();
 
     float GetTileZPos() const { return data.zPos; }; //sort ºñ±³¿ë
 
     Vec3 GetTilePos() { return Vec3(data.xPos, data.yPos, data.zPos); };
+    Vec3 GetMetorTilePos() { return Vec3(Mdata.xPos, Mdata.yPos, Mdata.zPos); }
+    Vec3 GetTileScale() { return Vec3(data.xScale, data.yScale, data.zScale); };
+
 
     wstring GetPathName(); //for load mdat file, convert enum->wstring
     wstring GetMetorPathName();
-    int GetState() { return data.state; };
+    LayerState GetState() { return data.state; };
 };

@@ -14,6 +14,9 @@ void CObstacleScript::Update()
 	}
 	m_fFrmSpeed += m_fSpeed / fFps;
 
+	if (m_fFrmSpeed > 360)
+		m_fFrmSpeed -= 360.f;
+
 	//state 가 MOVE이면 360도 회전
 	if (m_iState == OBSTACLE_STATE::MOVEA)
 	{

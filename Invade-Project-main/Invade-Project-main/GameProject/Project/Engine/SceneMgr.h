@@ -18,7 +18,7 @@ private:
 	SCENE_TYPE m_pSceneType;
 public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
-	//void LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
+	void LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
 
 	void InitMainScene();
 	void InitStartScene();
