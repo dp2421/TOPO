@@ -74,7 +74,7 @@ void CSceneMgr::ChangeScene()
 {
 	SAFE_DELETE(m_pCurScene);
 	//m_pCurScene = _pNextScene;
-	m_pCurScene = m_pJumpingScene;
+	m_pCurScene = m_pMetorScene;
 	m_pSceneType = SCENE_TYPE::SURVIVAL;
 }
 
@@ -107,24 +107,24 @@ void CSceneMgr::LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles
 	inFile.close();
 }
 
-//void CSceneMgr::LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles)
-//{
-//	// 맵 타일 로드
-//	std::ifstream inFile(FileName, std::ios::in | std::ios::binary);
-//
-//	if (!inFile) {
-//		//std::cerr << "Failed to open Map File: " << FileNames << std::endl;
-//		return;
-//	}
-//
-//	while (!inFile.eof()) {
-//		MetorTile tile;
-//		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
-//		tiles.push_back(tile);
-//	}
-//	tiles.pop_back(); //ㅋㅋ수동지우기
-//	inFile.close();
-//}
+void CSceneMgr::LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles)
+{
+	// 맵 타일 로드
+	std::ifstream inFile(FileName, std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		//std::cerr << "Failed to open Map File: " << FileNames << std::endl;
+		return;
+	}
+
+	while (!inFile.eof()) {
+		MetorTile tile;
+		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+		tiles.push_back(tile);
+	}
+	tiles.pop_back(); //ㅋㅋ수동지우기
+	inFile.close();
+}
 
 void CSceneMgr::InitMainScene()
 {
@@ -944,52 +944,55 @@ void CSceneMgr::InitMetorScene()
 
 
 
-		//const wstring FileName = { L"MapPosition.bin" };
+		const wstring FileName[] = { L"LMetor.bin" };
+		tiles.clear();
+		for (int i = 0; i < 1; ++i)
+		{
+			LoadMetorMapInfoFromFile(FileName[i], tiles);
+		}
+		tiles.pop_back(); // ㅋㅋ 수동지우기
+		for (auto& tile : tiles)
+		{
+			Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetMetorPathName(), tile.GetMetorPathName());
+			pObject = pMeshData->Instantiate();
+			pObject->AddComponent(new CTransform);
+			pObject->AddComponent(new CCollider3D);
+			pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+			pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+			pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+			pObject->FrustumCheck(false);
+			pObject->Transform()->SetLocalPos(tile.GetMetorTilePos());
+			pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+			pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+			pObject->MeshRender()->SetDynamicShadow(false);
+			//pObject->Animator3D()->SetClipIndex(1);
+			m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
-		//LoadMapInfoFromFile(FileName, tiles);
-
-		//for (auto& tile : tiles)
-		//{
-		//	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
-		//	pObject = pMeshData->Instantiate();
-		//	pObject->AddComponent(new CTransform);
-		//	pObject->AddComponent(new CCollider3D);
-		//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-		//	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-		//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-		//	pObject->FrustumCheck(false);
-		//	pObject->Transform()->SetLocalPos(tile.GetTilePos());
-		//	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-		//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-		//	pObject->MeshRender()->SetDynamicShadow(false);
-		//	//pObject->Animator3D()->SetClipIndex(1);
-		//	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject);
-
-		//}
+		}
 
 
 #if LOCALPLAY
-		//m_pCurScene = m_pMetorScene;
-		//AddNetworkGameObject(true, Vec3::Zero, m_pMetorScene);
+		m_pCurScene = m_pMetorScene;
+		AddNetworkGameObject(true, Vec3::Zero, m_pMetorScene);
 #else
 #endif
 		
-		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor1.fbx");
+		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorWater.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 
-		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor2.fbx");
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorStone.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 
-		// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor3.fbx");
+		// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorWood.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 
-		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor4.fbx");
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorCenter.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 
-		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetor5.fbx");
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorGrass.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 
-		const wstring FileNames[] = { L"MapPosition.bin"};
+		//const wstring FileNames[] = { L"MapPosition.bin"};
 		//for (int i = 0; i < 1; ++i)
 		//{
 		//	tiles.clear();
