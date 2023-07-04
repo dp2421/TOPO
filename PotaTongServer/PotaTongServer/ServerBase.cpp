@@ -9,6 +9,7 @@ ServerBase::ServerBase()
 	InitHandler();
 	InitObsatacleInfo();
 	InitMapInfo();
+	InitAI();
 }
 
 ServerBase::~ServerBase()
@@ -103,7 +104,7 @@ void ServerBase::EventThread()
 			case OverlappedType::RotateObs:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = OverlappedType::RotateObs;
+				overlappedEx->type = event.eventType;
 
 				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
 				event.objID = -1;
@@ -112,7 +113,7 @@ void ServerBase::EventThread()
 			case OverlappedType::SendRotateInfo:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = OverlappedType::SendRotateInfo;
+				overlappedEx->type = event.eventType;
 
 				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
 				event.objID = -1;
@@ -121,7 +122,7 @@ void ServerBase::EventThread()
 			case OverlappedType::Update:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = OverlappedType::Update;
+				overlappedEx->type = event.eventType;
 
 				// 시간 보간
 				//auto diff = chrono::duration<float>((currentTime - event.excuteTime) / DeltaTimeMilli);
@@ -131,9 +132,18 @@ void ServerBase::EventThread()
 				event.objID = -1;
 				break;
 			}
+			case OverlappedType::UpdateAI:
+			{
+				OverlappedEx* overlappedEx = new OverlappedEx;
+				overlappedEx->type = event.eventType;
+
+				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
+				event.objID = -1;
+				break;
+			}
 			default:
 			{
-				cout << "EVENT TYPE ERROR!" << endl;
+				cout << (int)event.eventType << " EVENT TYPE ERROR!" << endl;
 			}
 			}
 			continue;
@@ -157,6 +167,13 @@ void ServerBase::InitServer()
 	SOCKADDR_IN cl_addr;
 	int addr_size = sizeof(cl_addr);
 
+	int option = TRUE;
+	setsockopt(ServerSocket,
+		IPPROTO_TCP,
+		TCP_NODELAY,
+		(const char*)&option,
+		sizeof(option));
+
 	IOCPHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ServerSocket), IOCPHandle, 9999, 0);
 	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
@@ -172,13 +189,6 @@ void ServerBase::InitServer()
 		0,
 		&GlobalOverlapped.overlapped
 	); 
-	
-	int option = TRUE;               
-	setsockopt(ServerSocket,         
-		IPPROTO_TCP,          
-		TCP_NODELAY,          
-		(const char*)&option, 
-		sizeof(option));      
 
 	cout << "Start Server" << endl;
 }
@@ -243,6 +253,35 @@ void ServerBase::InitMapInfo()
 	}
 }
 
+void ServerBase::InitAI()
+{
+	for (int i = 0; i < 10; ++i)
+	{
+		int newID = clientID++;
+
+		clients[newID] = new Client;
+		clients[newID]->ID = newID;
+		clients[newID]->isAI = true;
+		clients[newID]->position = PlayerStartPos;
+
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
+		XMVECTOR dir{ urd(gen), 0, urd(gen) };
+
+		XMFLOAT3 normalDir;
+		XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
+
+		clients[newID]->direction = { normalDir.x, 0, normalDir.z };
+
+		Event update{ newID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(update);
+		std::uniform_int_distribution<int> time(1, 10);
+		Event event{ newID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
+		eventQueue.push(event);
+	}
+}
+
 void ServerBase::Accept()
 {
 	int newID = clientID++;
@@ -253,6 +292,7 @@ void ServerBase::Accept()
 	clients[newID]->position = PlayerStartPos;
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
 	clients[newID]->RecvPacket();
+
 	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	cout << "Accept Success" << endl;
 
@@ -328,7 +368,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 		for (auto client : clients)
 		{
-			if (client.second->ID != -1)
+			if (client.second->ID != -1 && !client.second->isAI)
 				client.second->SendObstacleInfoPacket(degree, 66 * sizeof(short));
 		}
 
@@ -449,7 +489,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
 						cout << " COLL SPIN " << endl;
-						auto posMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
+						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
 
 						Vector3 vec = *obs.collider[1].position;
 
@@ -458,7 +498,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, XMConvertToRadians(-obs.rotate), 0);
 						auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, XMConvertToRadians(obs.rotate), 0);
 
-						auto calculMat = rotateMat * transMat * posMat;
+						auto calculMat = transMat * rotateMat * originMat;
 						auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
 						cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
 
@@ -522,11 +562,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
-		client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
+		if(!client->isAI)
+			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
 
 		for (auto cl : clients)
 		{
 			ClientException(cl, id);
+			if (cl.second->isAI) continue;
 
 			cl.second->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
 		}
@@ -534,6 +576,30 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 
+		break;
+	}
+	case OverlappedType::AddAI:
+	{
+		break;
+	}
+	case OverlappedType::UpdateAI:
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
+		XMVECTOR dir{ urd(gen), 0, urd(gen) };
+
+		XMFLOAT3 normalDir;
+		XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
+
+		{
+			lock_guard<mutex> lock{ clients[id]->lock};
+			clients[id]->direction = { normalDir.x, normalDir.y, normalDir.z };
+		}
+
+		std::uniform_int_distribution<int> update(1, 10);
+		Event event{ id, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(update(gen)) };
+		eventQueue.push(event);
 		break;
 	}
 	default:
@@ -565,8 +631,8 @@ void ServerBase::Disconnect(int ID)
 		cl.second->SendRemovePlayerPacket(ID);
 	}
 
-	closesocket(clients[ID]->socket);
 	clients[ID]->ID = -1;
+	closesocket(clients[ID]->socket);
 }
 
 void ServerBase::ProcessPacket(const int id, char* packet)
@@ -580,7 +646,9 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		{
 			ClientException(client, id);
 
-			client.second->SendAddPlayerPacket(id, clients[id]->position);
+			if(!client.second->isAI)
+				client.second->SendAddPlayerPacket(id, clients[id]->position);
+
 			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}
 		unsigned short RPS[66] = { 0, };
@@ -627,7 +695,6 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
 	auto client = clients[id];
 	client->degree = packet->degree;
-	cout << "KETINPUT" << endl;
 	switch (key)
 	{
 	case KeyType::MoveStart: // 이동

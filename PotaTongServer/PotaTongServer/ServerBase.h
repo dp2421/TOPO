@@ -12,8 +12,8 @@ public:
 	void InitServer();
 	void InitHandler();
 	void InitObsatacleInfo();
-	void InitAI();
 	void InitMapInfo();
+	void InitAI();
 
 	void Run();
 	void Accept();
@@ -23,7 +23,6 @@ public:
 	void Disconnect(int ID);
 
 	void ProcessPacket(const int id, char* packet);
-
 
 	void ProcessInput(const int id, ClientKeyInputPacket* key);
 
@@ -45,5 +44,5 @@ private:
 	std::vector<Tile> tiles;
 	std::vector<thread> workerThreads;
 
-	atomic<int> clientID = 0;	
+	atomic<int> clientID = 0;
 };
