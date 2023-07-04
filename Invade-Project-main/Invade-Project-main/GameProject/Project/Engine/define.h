@@ -41,8 +41,6 @@ static type* GetInst()\
 // 1 네트워크 사용 안함, 0 네트워크 사용 함
 #define LOCALPLAY 1
 
-//extern int SCENE_TYPE = 0;
-// 0 레이싱맵 1 로비
 
 
 typedef DirectX::SimpleMath::Vector2 Vec2;
@@ -128,7 +126,8 @@ enum class SCENE_TYPE
 {
 	LOBBY,
 	RACING,
-	SURVIVAL,
+	JUMP,
+	METOR,
 	AWARD,
 	END,
 };

@@ -6,7 +6,7 @@ class CObstacleScript : public CScript
 {
 private:
     int m_iDir;
-    float m_fSpeed;
+    float m_fSpeed = 80.f;
     float m_fFrmSpeed;
     OBSTACLE_STATE m_iState;
 

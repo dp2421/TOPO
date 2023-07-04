@@ -58,14 +58,13 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitMainScene();
 	CSceneMgr::GetInst()->InitStartScene();
 	CSceneMgr::GetInst()->InitMetorScene();
+	CSceneMgr::GetInst()->InitAwardScene();
+	CSceneMgr::GetInst()->InitJumpingScene();
 	CSceneMgr::GetInst()->InitUI();
-	//CSceneMgr::GetInst()->InitJumpingScene();
+	CSceneMgr::GetInst()->InitScene();
 
-	//CSceneMgr::GetInst()->InitScene();
-	//CSceneMgr::GetInst()->InitMetorScene();
 	//CSceneMgr::GetInst()->ChangeScene();
-	//CSceneMgr::GetInst()->InitAwardScene();
-	//CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::RACING);
+	//CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::AWARD);
 
 	NetworkMgr::GetInst()->Init();
 	

@@ -66,10 +66,12 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 	{
 		m_pCurScene = m_pRacingScene;
 	}
-	else if (_type == SCENE_TYPE::SURVIVAL)
+	else if (_type == SCENE_TYPE::JUMP)
 	{
 		m_pCurScene = m_pJumpingScene;
 	}
+	else if (_type == SCENE_TYPE::METOR)
+		m_pCurScene = m_pMetorScene;
 }
 
 void CSceneMgr::ChangeScene()
@@ -77,7 +79,7 @@ void CSceneMgr::ChangeScene()
 	SAFE_DELETE(m_pCurScene);
 	//m_pCurScene = _pNextScene;
 	m_pCurScene = m_pMetorScene;
-	m_pSceneType = SCENE_TYPE::SURVIVAL;
+	m_pSceneType = SCENE_TYPE::METOR;
 }
 
 CSceneMgr::CSceneMgr()
@@ -946,6 +948,24 @@ void CSceneMgr::InitMetorScene()
 
 
 
+		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Meteor.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Meteor.mdat", L"MeshData\\Meteor.mdat");
+		pMeshData->Save(pMeshData->GetPath());
+		pObject = pMeshData->Instantiate();
+		pObject->AddComponent(new CTransform); 
+		pObject->AddComponent(new CCollider3D);
+		pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+		pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+		pObject->FrustumCheck(false);
+		pObject->Transform()->SetLocalPos(Vec3(950.f, 600.f, 100.f));
+		pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+		pObject->Transform()->SetLocalScale(Vec3(80.f, 80.f, 80.f));
+		pObject->MeshRender()->SetDynamicShadow(false);
+		m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
+
+
 		const wstring FileName[] = { L"LMetor.bin" };
 		tiles.clear();
 		for (int i = 0; i < 1; ++i)
@@ -978,7 +998,7 @@ void CSceneMgr::InitMetorScene()
 		AddNetworkGameObject(true, Vec3::Zero, m_pMetorScene);
 #else
 #endif
-		
+
 		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorWater.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 
@@ -1156,21 +1176,70 @@ void CSceneMgr::InitJumpingScene()
 
 
 #if LOCALPLAY
-		m_pCurScene = m_pJumpingScene;
-		AddNetworkGameObject(true, Vec3::Zero, m_pJumpingScene);
+	m_pCurScene = m_pJumpingScene;
+	AddNetworkGameObject(true, Vec3::Zero, m_pJumpingScene);
 #else
 #endif
 
-		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LWood.fbx");
+
+	//시계추회전장애물 : 2층(14) + 1층(9)
+	{
+		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\JumpObstacle.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
+		CGameObject* pObstaclesB;
+		pObstaclesB = nullptr;
 
-		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LGrass.fbx");
+		//2층
+		for (int i = 0; i < 1; ++i)
+		{
+
+			pObstaclesB = pMeshData->Instantiate();
+			pObstaclesB->AddComponent(new CTransform);
+			pObstaclesB->AddComponent(new CCollider3D);
+			pObstaclesB->AddComponent(new CObstacleScript);
+			pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
+			pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
+			pObstaclesB->FrustumCheck(false);
+			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
+			pObstaclesB->Transform()->SetLocalPos(Vec3(-0, 0, -0));
+			pObstaclesB->Transform()->SetLocalScale(Vec3(1, 1, 1));
+			pObstaclesB->MeshRender()->SetDynamicShadow(false);
+			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+		}
+	}
+
+	//시계추회전장애물 : 2층(14) + 1층(9)
+	{
+
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\JumpObstacle (1).fbx");
 		//pMeshData->Save(pMeshData->GetPath());
+		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\JumpObstacle.mdat", L"MeshData\\JumpObstacle.mdat", false, true);
+		CGameObject* pObstaclesB;
+		pObstaclesB = nullptr;
 
-		// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LAsphalt.fbx");
-		//pMeshData->Save(pMeshData->GetPath());
+		//2층
+		for (int i = 0; i < 1; ++i)
+		{
 
-
+			pObstaclesB = pMeshData->Instantiate();
+			pObstaclesB->AddComponent(new CTransform);
+			pObstaclesB->AddComponent(new CCollider3D);
+			pObstaclesB->AddComponent(new CObstacleScript);
+			pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
+			pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
+			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
+			pObstaclesB->FrustumCheck(false);
+			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
+			pObstaclesB->Transform()->SetLocalPos(Vec3(-100, 0, 0));
+			pObstaclesB->Transform()->SetLocalScale(Vec3(5.f, 5.f,2.5f));
+			pObstaclesB->MeshRender()->SetDynamicShadow(false);
+			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+		}
+	}
 	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
 	pObject->FrustumCheck(false);
@@ -1296,8 +1365,8 @@ void CSceneMgr::InitAwardScene()
 
 
 #if LOCALPLAY
-	//m_pCurScene = m_pAwardScene;
-	//AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
+	m_pCurScene = m_pAwardScene;
+	AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
 #else
 #endif
 
@@ -1322,8 +1391,8 @@ void CSceneMgr::InitAwardScene()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
 
 	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject);
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	m_pAwardScene->Awake();
 	m_pAwardScene->Start();
 }
@@ -1400,6 +1469,7 @@ void CSceneMgr::InitUI()
 
 
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene = m_pStartScene;
 
 }
 
