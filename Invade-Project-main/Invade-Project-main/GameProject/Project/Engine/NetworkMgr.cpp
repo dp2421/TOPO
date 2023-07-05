@@ -84,7 +84,6 @@ void NetworkMgr::NetworkWorkerThread()
         {
         case OverlappedType::Recv:
             AssemblyPacket(numBytes, overlappedEx);
-            //ProcessPacket(overlappedEx->sendBuf);
             break;
         case OverlappedType::Send:
             delete overlappedEx;
@@ -171,10 +170,9 @@ void NetworkMgr::AssemblyPacket(int recvData, OverlappedEx* over)
 {
     int remain_data = recvData + prevRemainData;
     char* p = over->wsaBuf.buf;
-    std::cout << recvData << " : RECV" << (int)(unsigned char)p[1] << " Type \n";
-    while (remain_data > 0) 
+    while (remain_data > 0)
     {
-        int packet_size = (unsigned char)p[0];
+        int packet_size = reinterpret_cast<PACKETSIZE*>(p)[0];
         if (packet_size <= remain_data) 
         {
             ProcessPacket(p);
@@ -184,8 +182,10 @@ void NetworkMgr::AssemblyPacket(int recvData, OverlappedEx* over)
         else break;
     }
     prevRemainData = remain_data;
-    if (remain_data > 0) {
-        memcpy(over->wsaBuf.buf, p, remain_data);
+
+    if (remain_data > 0)
+    {
+        memcpy(over->sendBuf, p, remain_data);
     }
 
     DoRecv();
@@ -193,7 +193,7 @@ void NetworkMgr::AssemblyPacket(int recvData, OverlappedEx* over)
 
 void NetworkMgr::ProcessPacket(char* packet)
 {
-    switch ((unsigned char)packet[1])
+    switch ((unsigned char)packet[sizeof(PACKETSIZE)])
     {
     case ServerLogin:
     {
@@ -224,10 +224,10 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerRemovePlayer:
     {
         std::cout << "RECV REMOVEPLAYER Cur count : " << networkObjects.size() << "\n";
-        ServerRemovePlayerPacket* p = reinterpret_cast<ServerRemovePlayerPacket*>(packet);
-        CSceneMgr::GetInst()->RemoveNetworkGameObject(networkObjects[p->id]);
-        networkObjects.erase(p->id);
-        std::cout << "After count : " << networkObjects.size() << "\n";
+        //ServerRemovePlayerPacket* p = reinterpret_cast<ServerRemovePlayerPacket*>(packet);
+        //CSceneMgr::GetInst()->RemoveNetworkGameObject(networkObjects[p->id]);
+        //networkObjects.erase(p->id);
+        //std::cout << "After count : " << networkObjects.size() << "\n";
         break;
     }
     case ServerPlayerInfo:
@@ -270,5 +270,4 @@ void NetworkMgr::ProcessPacket(char* packet)
         break;
     }
     } 
-    DoRecv();
 }

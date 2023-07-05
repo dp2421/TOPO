@@ -120,6 +120,8 @@ void CPlayerScript::Update()
 		}
 	}
 
+	std::cout << fDegree << std::endl;
+
 #if LOCALPLAY
 
 	if (KEY_HOLD(KEY_TYPE::KEY_W))

@@ -32,12 +32,11 @@ public:
 
 	OverlappedEx(char* packet)
 	{
-		wsaBuf.len = (unsigned char)packet[0];
+		wsaBuf.len = reinterpret_cast<PACKETSIZE*>(packet)[0];
 		wsaBuf.buf = sendBuf;
 		type = OverlappedType::Send;
 		ZeroMemory(&overlapped, sizeof(overlapped));
 
-		auto pack = reinterpret_cast<char*>(packet);
-		memcpy(sendBuf, pack, (unsigned char)pack[0]);
+		memcpy(sendBuf, packet, reinterpret_cast<PACKETSIZE*>(packet)[0]);
 	}
 };
