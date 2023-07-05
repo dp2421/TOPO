@@ -17,7 +17,6 @@ Client::~Client()
 
 void Client::SendPacket(void* packet)	
 {
-	if (isAI) return;
 	OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
 	WSASend(socket, &overlappedEx->wsaBuf, 1, 0, 0, &overlappedEx->overlapped, 0);
 }

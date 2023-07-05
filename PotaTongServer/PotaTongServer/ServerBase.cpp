@@ -25,7 +25,7 @@ void ServerBase::Run()
 	thread eventThread{ &ServerBase::EventThread, this };
 	for (int i = 0; i < numThreads; ++i)
 		workerThreads.emplace_back(&ServerBase::WorkerThread, this, IOCPHandle);
-
+	
 	eventThread.join();
 	for (auto& thread : workerThreads)
 		thread.join();
@@ -156,7 +156,7 @@ void ServerBase::InitServer()
 {
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 2), &WSAData);
-	ServerSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	ServerSocket = WSASocketW(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	SOCKADDR_IN server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
@@ -176,7 +176,7 @@ void ServerBase::InitServer()
 
 	IOCPHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ServerSocket), IOCPHandle, 9999, 0);
-	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	ClientSocket = WSASocketW(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	GlobalOverlapped.type = OverlappedType::Accept;
 
 	AcceptEx(
@@ -293,7 +293,7 @@ void ServerBase::Accept()
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
 	clients[newID]->RecvPacket();
 
-	ClientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	ClientSocket = WSASocketW(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	cout << "Accept Success" << endl;
 
 	ZeroMemory(&GlobalOverlapped.overlapped, sizeof(GlobalOverlapped.overlapped));
@@ -307,7 +307,7 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 	char* p = overlappedEx->wsaBuf.buf;
 	while (remainData > 0) 
 	{
-		int packet_size = p[0];
+		int packet_size = (PACKETSIZE)p[0];
 		if (packet_size <= remainData) 
 		{
 			ProcessPacket(id, p);
@@ -488,7 +488,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
-						cout << " COLL SPIN " << endl;
+						std::cout << " COLL SPIN " << endl;
 						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
 
 						Vector3 vec = *obs.collider[1].position;
@@ -586,15 +586,26 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
-		XMVECTOR dir{ urd(gen), 0, urd(gen) };
+		std::uniform_real_distribution<float> x(-1.0f, 1.0f);
+		std::uniform_real_distribution<float> z(0.0f, 1.0f);
+		XMVECTOR dir{ x(gen), 0, z(gen) };
 
 		XMFLOAT3 normalDir;
 		XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
 
 		{
 			lock_guard<mutex> lock{ clients[id]->lock};
+			clients[id]->isMove = true;
 			clients[id]->direction = { normalDir.x, normalDir.y, normalDir.z };
+
+			auto x = clients[id]->direction.x;
+			auto z = clients[id]->direction.z;
+
+			clients[id]->degree = XMConvertToDegrees(atan2(x, z)) - 180;
+			if (clients[id]->degree < -360)
+				clients[id]->degree += 360;
+
+			cout << "Degree : " << clients[id]->degree << endl;
 		}
 
 		std::uniform_int_distribution<int> update(1, 10);
@@ -637,7 +648,7 @@ void ServerBase::Disconnect(int ID)
 
 void ServerBase::ProcessPacket(const int id, char* packet)
 {
-	switch (packet[1])
+	switch ((unsigned char)packet[sizeof(PACKETSIZE)])
 	{
 	case ClientLogin:
 	{

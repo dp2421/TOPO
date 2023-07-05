@@ -1,7 +1,9 @@
 #pragma once
 
+#define PACKETSIZE unsigned short
+
 constexpr int PORTNUM = 20150;
-constexpr int BUFFERSIZE = 512;
+constexpr int BUFFERSIZE = 1024;
 constexpr int NAMESIZE = 20;
 
 constexpr char SERVERIP[] = "210.117.115.67";
@@ -49,27 +51,27 @@ constexpr unsigned char ServerSingleObstacleInfo = 212;
 
 struct ClientLoginPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	char	name[NAMESIZE];
 };
 
 struct ClientMatchingPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	char	gameMode;
 };
 
 struct ClientReadyPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 };
 
 struct ClientKeyInputPacket
 {
-	unsigned char	size;
+	PACKETSIZE	size;
 	unsigned char	type;
 	KeyType			key;
 	// 플레이어가 바라보고 있는 방향 받아옴
@@ -79,7 +81,7 @@ struct ClientKeyInputPacket
 
 struct ClientMovePacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char type;
 	float x, y, z;
 	float degree;
@@ -89,7 +91,7 @@ struct ClientMovePacket
 
 struct ServerLoginPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	int		id;
 	float	x, y, z;
@@ -97,19 +99,19 @@ struct ServerLoginPacket
 
 struct ServerMatchingOKPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 };
 
 struct ServerGameStartPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 };
 
 struct ServerAddPlayerPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	int		id;
 	float	x, y, z;
@@ -117,14 +119,14 @@ struct ServerAddPlayerPacket
 
 struct ServerRemovePlayerPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	int		id;
 };
 
 struct ServerPlayerInfoPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	int		id;
 	bool	isMove;
@@ -135,7 +137,7 @@ struct ServerPlayerInfoPacket
 
 struct ServerObstacleInfoPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	unsigned short		degree[66];
 	//타입에 따라서 내용이 달라질 것 같음
@@ -145,21 +147,21 @@ struct ServerObstacleInfoPacket
 
 struct ServerGameTimerPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	int		time;
 };
 
 struct ServerGameEndPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	char	gameMode;
 };
 
 struct ServerGameResultPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	int		id;
 	// 경과시간, 랭킹
@@ -167,14 +169,14 @@ struct ServerGameResultPacket
 
 struct ServerObstacleRPSPacket
 {
-	unsigned char size;
+	PACKETSIZE size;
 	unsigned char	type;
 	unsigned short	angularVelocity[66];
 };
 
 struct ServerSingleObstacleInfoPacket
 {
-	unsigned char	size;
+	PACKETSIZE	size;
 	unsigned char	type;
 	unsigned char	id;
 	unsigned short	degree;

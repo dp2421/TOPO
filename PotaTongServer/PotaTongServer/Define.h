@@ -16,7 +16,7 @@ constexpr float SPEED = 300.f;
 constexpr float JUMPVEL = 300.0f;
 constexpr float GRAVITY = 9.8f;
 
-const Vector3 PlayerStartPos{ 500, 100, 20000 };
+const Vector3 PlayerStartPos{ 50, 100, 100 };
 
 const Vector3 PlayerCollider{ 100.0f / 2, 160.0f / 2, 100.0f / 2 };
 const Vector3 PlayerOffset{ 0.0f, 90.0f, 0.0f };
