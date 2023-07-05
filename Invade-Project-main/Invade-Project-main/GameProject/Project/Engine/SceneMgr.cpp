@@ -35,6 +35,7 @@
 #include "PlayerScript.h"
 #include "MonsterScript.h"
 #include "ObstacleScript.h"
+#include "Meteor.h"
 #include "ItemScript.h"
 #include "ParticleSystem.h"
 #include "ArrowScript.h"
@@ -955,13 +956,15 @@ void CSceneMgr::InitMetorScene()
 		pObject = pMeshData->Instantiate();
 		pObject->AddComponent(new CTransform); 
 		pObject->AddComponent(new CCollider3D);
+		pObject->AddComponent(new MeteorScript);
+		pObject->GetScript<MeteorScript>()->SetType(MAP_TYPE::METEOR);
 		pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
 		pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 		pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 		pObject->FrustumCheck(false);
 		pObject->Transform()->SetLocalPos(Vec3(950.f, 600.f, 100.f));
 		pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-		pObject->Transform()->SetLocalScale(Vec3(80.f, 80.f, 80.f));
+		pObject->Transform()->SetLocalScale(Vec3(60.f, 60.f, 60.f));
 		pObject->MeshRender()->SetDynamicShadow(false);
 		m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
@@ -979,7 +982,8 @@ void CSceneMgr::InitMetorScene()
 			pObject = pMeshData->Instantiate();
 			pObject->AddComponent(new CTransform);
 			pObject->AddComponent(new CCollider3D);
-			pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+			pObject->AddComponent(new MeteorScript);
+			pObject->GetScript<MeteorScript>()->SetType(MAP_TYPE::GROUND);
 			pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 			pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 			pObject->FrustumCheck(false);
@@ -1251,8 +1255,8 @@ void CSceneMgr::InitJumpingScene()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
 
 	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pObject);
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	m_pJumpingScene->Awake();
 	m_pJumpingScene->Start();
 }

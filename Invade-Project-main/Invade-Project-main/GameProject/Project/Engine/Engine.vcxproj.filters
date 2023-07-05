@@ -264,6 +264,9 @@
     <ClInclude Include="ItemScript.h">
       <Filter>Script\Item</Filter>
     </ClInclude>
+    <ClInclude Include="Meteor.h">
+      <Filter>Script\Obstacle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -433,6 +436,9 @@
     </ClCompile>
     <ClCompile Include="ItemScript.cpp">
       <Filter>Script\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Meteor.cpp">
+      <Filter>Script\Obstacle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
