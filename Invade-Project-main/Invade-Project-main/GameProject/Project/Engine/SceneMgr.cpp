@@ -646,6 +646,8 @@ void CSceneMgr::InitMainScene()
 				int temp = tile.GetState();
 				if (temp == LayerState::L1Sujum)
 				{
+					pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
+					pObject->Transform()->SetLocalScale(Vec3(1.5f, 0.8f, 1.5f));
 					pObject->AddComponent(new CItemScript);
 					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::SUPERJUMP);
 				}
@@ -679,6 +681,7 @@ void CSceneMgr::InitMainScene()
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject);
 	}
+
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1314,6 +1317,7 @@ void CSceneMgr::InitAwardScene()
 	//pMainCam->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
 	pMainCam->Camera()->SetFar(100000.f);
 	pMainCam->Camera()->SetLayerAllCheck();
+	//pMainCam->Transform()->SetLocalPos(Vec3());
 
 	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pMainCam);
 
@@ -1369,20 +1373,10 @@ void CSceneMgr::InitAwardScene()
 
 
 #if LOCALPLAY
-	m_pCurScene = m_pAwardScene;
-	AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
+	//m_pCurScene = m_pAwardScene;
+	//AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
 #else
 #endif
-
-	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LWood.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LGrass.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-
-	// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LAsphalt.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-
 
 	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
@@ -1550,7 +1544,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 0.f));
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
