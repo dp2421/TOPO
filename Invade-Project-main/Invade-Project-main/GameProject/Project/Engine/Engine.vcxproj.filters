@@ -267,6 +267,9 @@
     <ClInclude Include="Meteor.h">
       <Filter>Script\Obstacle</Filter>
     </ClInclude>
+    <ClInclude Include="UIScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -439,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="Meteor.cpp">
       <Filter>Script\Obstacle</Filter>
+    </ClCompile>
+    <ClCompile Include="UIScript.cpp">
+      <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

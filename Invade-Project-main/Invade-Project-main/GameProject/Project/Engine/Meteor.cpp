@@ -5,7 +5,7 @@
 void MeteorScript::Update()
 {
 
-	m_Time += CTimeMgr::GetInst()->GetDeltaTime()*0.1;
+	m_Time += CTimeMgr::GetInst()->GetDeltaTime()*0.3;
 
 	if (m_iType == MAP_TYPE::GROUND)
 	{
@@ -17,13 +17,12 @@ void MeteorScript::Update()
 			}
 			else if (m_Time > 2.0f && m_Time < 4.0f)
 			{
-				float saking = sin(10.0f * m_Time);
+				float saking = sin(100.0f * m_Time);
 				Transform()->SetLocalPos(Vec3(GroundPos.x + saking, GroundPos.y, GroundPos.z + saking));
 			}
 			else
 			{
-				Transform()->SetActive(false);
-				//collide = false;
+				SetActive(false);
 			}
 		//}
 
@@ -72,8 +71,8 @@ MeteorScript::MeteorScript() :CScript((UINT)SCRIPT_TYPE::METEORSCRIPT), m_iDir(1
 #endif //  LOCALPLAY
 	if (m_iType == METEOR)
 	{
-		CGameObject* pObj = GetObj();
-		GroundPos = pObj->Transform()->GetLocalPos();
+		Vec3 pObj = Transform()->GetLocalPos();
+		GroundPos = pObj;
 	}
 }
 

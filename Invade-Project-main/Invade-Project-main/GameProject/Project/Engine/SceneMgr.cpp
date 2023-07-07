@@ -39,6 +39,7 @@
 #include "ItemScript.h"
 #include "ParticleSystem.h"
 #include "ArrowScript.h"
+#include "UIScript.h"
 #include "GameFramework.h"
 
 CScene* CSceneMgr::GetCurScene()
@@ -1408,6 +1409,9 @@ void CSceneMgr::InitUI()
 
 	Ptr<CTexture> pStartButton = CResMgr::GetInst()->Load<CTexture>(L"UIButton", L"Texture\\startbutton.png");
 	Ptr<CTexture> pCursor = CResMgr::GetInst()->Load<CTexture>(L"Cursor", L"Texture\\cursor.png");
+	Ptr<CTexture> pWindow = CResMgr::GetInst()->Load<CTexture>(L"Window", L"Texture\\SWindow.png");;
+	Ptr<CTexture> pSurvival = CResMgr::GetInst()->Load<CTexture>(L"Survival", L"Texture\\SSurvival.png");
+	Ptr<CTexture> pRacing = CResMgr::GetInst()->Load<CTexture>(L"Racing", L"Texture\\SRacing.png");
 
 	CGameObject* pUICam = nullptr;
 
@@ -1417,7 +1421,6 @@ void CSceneMgr::InitUI()
 	pUICam->AddComponent(new CTransform);
 	pUICam->AddComponent(new CCamera);
 	//pUICam->AddComponent(new CCameraScript);
-
 	pUICam->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
 	pUICam->Camera()->SetFar(100000.f);
 	pUICam->Camera()->SetLayerAllCheck();
@@ -1433,20 +1436,16 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(20.f, 20.f, 10.f));
-
+	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 20.f));
+	pObject->Transform()->SetLocalScale(Vec3(20.f, 20.f, 1.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
 	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
-
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
@@ -1455,26 +1454,92 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
-
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::SELECT_BUTTON);
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(200.f, 100.f, 10.f));
-
+	pObject->Transform()->SetLocalScale(Vec3(200.f, 100.f, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pStartButton.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
+	pObject = new CGameObject;
+	pObject->SetName(L"SWindow");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	//pObject->AddComponent(new CUIScript);
+
+	//pObject->GetScript<CUIScript>()->SetType(UI_TYPE::WINDOW);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0, 600, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(900.f, 450.f, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pWindow.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+
+
+	pObject = new CGameObject;
+	pObject->SetName(L"SRacing");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MODE_RACING);
+
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(-200.f, 580.f, 5.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(360.f, 120.f, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pRacing.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+
+
+	pObject = new CGameObject;
+	pObject->SetName(L"SSurvival");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MODE_SURVIVAL);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(200, 580.f, 2.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(360.f, 120.f, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSurvival.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 
 
+
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
 	m_pCurScene = m_pStartScene;
-
 }
 
 

@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
@@ -233,6 +233,7 @@ call EngineCopy.bat</Command>
     <ClInclude Include="TimeMgr.h" />
     <ClInclude Include="CameraScript.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UIScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation2D.cpp" />
@@ -294,6 +295,7 @@ call EngineCopy.bat</Command>
     <ClCompile Include="TimeMgr.cpp" />
     <ClCompile Include="CameraScript.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UIScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl" />

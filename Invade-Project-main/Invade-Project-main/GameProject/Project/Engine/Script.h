@@ -21,6 +21,7 @@ enum class SCRIPT_TYPE {
     PARTICLESCRIPT,
     ITEMSCRIPT,
     METEORSCRIPT,
+    UISCRIPT,
     END,
 };
 

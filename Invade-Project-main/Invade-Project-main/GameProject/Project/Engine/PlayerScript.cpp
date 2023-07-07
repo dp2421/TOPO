@@ -120,7 +120,7 @@ void CPlayerScript::Update()
 		}
 	}
 
-	std::cout << fDegree << std::endl;
+	//std::cout << fDegree << std::endl;
 
 #if LOCALPLAY
 
