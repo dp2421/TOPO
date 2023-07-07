@@ -33,6 +33,8 @@ private:
 	UINT m_iRTVHeapSize;
 
 	bool b_SceneChanged = false;
+	SCENE_TYPE m_sceneType;
+
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
@@ -82,7 +84,8 @@ public:
 	CMRT* GetMRT(MRT_TYPE _eType) { return m_arrMRT[(UINT)_eType]; }
 	friend class CSceneMgr;
 
-
+	void SetSceneChanged(bool sc) { b_SceneChanged = true; }
+	void SetSceneType(SCENE_TYPE type) { m_sceneType = type; }
 
 
 };

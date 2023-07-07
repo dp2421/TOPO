@@ -63,8 +63,6 @@ void CRenderMgr::Render()
 	{
 		m_vecCam[1]->SortUIObject();
 		m_vecCam[1]->Render_UI();
-		if (m_vecCam[1]->GetSceneChanged() == true)
-			b_SceneChanged = true;
 	}
 
 	// Ãâ·Â
@@ -72,7 +70,7 @@ void CRenderMgr::Render()
 
 	if (b_SceneChanged == true)
 	{
-		CSceneMgr::GetInst()->ChangeScene();
+		CSceneMgr::GetInst()->ChangeScene(m_sceneType);
 		b_SceneChanged = false;
 	}
 

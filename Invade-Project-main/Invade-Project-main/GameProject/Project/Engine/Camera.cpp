@@ -273,23 +273,12 @@ void CCamera::Render_UI()
 
 	for (size_t i = 0; i < m_vecUIObject.size(); ++i)
 	{
-		if (m_vecUIObject[i]->GetName() == L"UI Object") {
-			tempObj = m_vecUIObject[i];
-		}
-	}
-	for (size_t i = 0; i < m_vecUIObject.size(); ++i)
-	{
 		if (m_vecUIObject[i]->IsActive() == true)
 			m_vecUIObject[i]->MeshRender()->Render();
-
 		if (m_vecUIObject[i]->GetName() == (L"Cursor Object"))
 		{
 			Vec3 mousepos = Vec3(540 - CKeyMgr::GetInst()->GetMousePos().x, 540 + 310 - CKeyMgr::GetInst()->GetMousePos().y, 0);
 			m_vecUIObject[i]->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
-
-			if (tempObj->Transform()->IsCasting(mousepos) && CKeyMgr::GetInst()->GetClicked() == true)
-				isSceneChange = true;
-
 		}
 
 	}

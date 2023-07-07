@@ -1495,7 +1495,6 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CUIScript);
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MODE_RACING);
 
-
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(-200.f, 580.f, 5.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
