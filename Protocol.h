@@ -31,6 +31,16 @@ enum class ObsType : int
 	Stop
 };
 
+enum class MapType : int
+{
+	Lobby,
+	Racing,
+	Obstacle,
+	Meteo,
+	Bomb,
+	Result
+};
+
 //-------------------------------------------------------------------------------------
 
 constexpr unsigned char ServerLogin = 201;
@@ -46,6 +56,7 @@ constexpr unsigned char ServerGameEnd = 209;
 constexpr unsigned char ServerGameResult = 210;
 constexpr unsigned char ServerObstacleRPS = 211;
 constexpr unsigned char ServerSingleObstacleInfo = 212;
+constexpr unsigned char ServerMeteoInfo = 213;
 
 #pragma pack (push, 1)
 
@@ -101,6 +112,7 @@ struct ServerMatchingOKPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
+	unsigned char gameMode;
 };
 
 struct ServerGameStartPacket
@@ -180,6 +192,14 @@ struct ServerSingleObstacleInfoPacket
 	unsigned char	type;
 	unsigned char	id;
 	unsigned short	degree;
+};
+
+struct ServerMeteoInfoPacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	unsigned char	target;
+	unsigned short	time;
 };
 
 
