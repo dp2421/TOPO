@@ -126,6 +126,16 @@ void NetworkMgr::SendClientLoginPacket()
     DoSend(&packet);
 }
 
+void NetworkMgr::SendClientMatchingPacket(MapType type)
+{
+    ClientMatchingPacket packet;
+    packet.size = sizeof(ClientMatchingPacket);
+    packet.type = ClientMatching;
+    packet.gameMode = static_cast<unsigned char>(type);
+
+    DoSend(&packet);
+}
+
 void NetworkMgr::SendClientKeyInputPacket(KeyType key, Vec3 dir, float degree)
 {
     ClientKeyInputPacket packet;
