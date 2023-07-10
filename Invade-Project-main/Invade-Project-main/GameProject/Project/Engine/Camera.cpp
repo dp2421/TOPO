@@ -20,6 +20,8 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Collider3D.h"
+
+#include "UIScript.h"
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
 	, m_frustum(this)
@@ -280,7 +282,15 @@ void CCamera::Render_UI()
 			Vec3 mousepos = Vec3(540 - CKeyMgr::GetInst()->GetMousePos().x, 540 + 310 - CKeyMgr::GetInst()->GetMousePos().y, 0);
 			m_vecUIObject[i]->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
 		}
-
+		if (b_isClicked == true)
+		{
+			if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_SURVIVAL ||
+				m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_RACING ||
+				m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::WINDOW) 
+			{
+				m_vecUIObject[i]->SetActive(true);
+			}
+		}
 	}
 }
 

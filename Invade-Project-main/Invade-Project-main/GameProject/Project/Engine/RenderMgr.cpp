@@ -9,6 +9,7 @@
 #include "EventMgr.h"
 #include "Light3D.h"
 
+#include "UIScript.h"
 #include "ResMgr.h"
 #include "MRT.h"
 CRenderMgr::CRenderMgr() 
@@ -61,6 +62,7 @@ void CRenderMgr::Render()
 
 	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::LOBBY)
 	{
+
 		m_vecCam[1]->SortUIObject();
 		m_vecCam[1]->Render_UI();
 	}
@@ -73,6 +75,7 @@ void CRenderMgr::Render()
 		CSceneMgr::GetInst()->ChangeScene(m_sceneType);
 		b_SceneChanged = false;
 	}
+
 
 }
 

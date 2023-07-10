@@ -87,6 +87,5 @@ public:
 	void SetSceneChanged(bool sc) { b_SceneChanged = true; }
 	void SetSceneType(SCENE_TYPE type) { m_sceneType = type; }
 
-
 };
 

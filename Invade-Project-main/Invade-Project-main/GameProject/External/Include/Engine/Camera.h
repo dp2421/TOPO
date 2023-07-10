@@ -41,6 +41,8 @@ private:
     vector<CGameObject*> m_vecUIObject;
 
     bool isSceneChange = false;
+    bool b_isClicked = false;
+
 public:
 
     virtual void FinalUpdate();
@@ -90,6 +92,7 @@ public:
     virtual ~CCamera();
     virtual void SaveToScene(FILE* _pFile);
     virtual void LoadFromScene(FILE* _pFile);
+    void SetClicked(bool clicked) { b_isClicked = true; }
 
     CLONE(CCamera);
 
