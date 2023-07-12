@@ -291,6 +291,20 @@ void CCamera::Render_UI()
 				m_vecUIObject[i]->SetActive(true);
 			}
 		}
+		if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
+		{
+			int hundred = 34 / 100;
+			int tens = 34 % 100 / 10;
+			int one = 34 % 10;
+			if (m_vecUIObject[i]->GetScript<CUIScript>()->GetNum() == hundred ||
+				m_vecUIObject[i]->GetScript<CUIScript>()->GetNum() == tens ||
+				m_vecUIObject[i]->GetScript<CUIScript>()->GetNum() == one)
+			{
+				m_vecUIObject[i]->SetActive(true);
+				m_vecUIObject[i]->GetScript<CUIScript>()->NumScript(34, -100.f, 700);
+			}
+
+		}
 	}
 }
 

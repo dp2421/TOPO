@@ -48,6 +48,27 @@ void CUIScript::Update()
 	}
 }
 
+void CUIScript::NumScript(int num, float offsetx, float offsety)
+{
+	int hundred = num / 100;
+	int tens = num % 100/10;
+	int one = num % 10;
+	CGameObject* numObj = GetObj();
+	if (m_iNum == hundred)
+	{
+		numObj->Transform()->SetLocalPos(Vec3(offsetx+50.f, offsety, 0));
+	} 
+	if (m_iNum == tens)
+	{
+		numObj->Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
+	}
+	if (m_iNum == one)
+	{
+		numObj->Transform()->SetLocalPos(Vec3(offsetx-50.f, offsety, 0));
+	}
+
+}
+
 CUIScript::CUIScript() :CScript((UINT)SCRIPT_TYPE::UISCRIPT)
 {
 	m_isClicked = false;

@@ -103,7 +103,11 @@ void CFBXLoader::LoadMeshDataFromNode(FbxNode* _pNode)
 {
 	// 노드의 메쉬정보 읽기
 	FbxNodeAttribute* pAttr = _pNode->GetNodeAttribute();
-
+	if (pAttr)
+	{
+		FbxNodeAttribute::EType temp = pAttr->GetAttributeType();
+		int i = 0;
+	}
 	if (pAttr && FbxNodeAttribute::eMesh == pAttr->GetAttributeType())
 	{
 		FbxMesh* pMesh = _pNode->GetMesh();

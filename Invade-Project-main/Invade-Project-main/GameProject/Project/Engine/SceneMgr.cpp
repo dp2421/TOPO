@@ -324,8 +324,8 @@ void CSceneMgr::InitMainScene()
 	//m_pCurScene->FindLayer(L"TestObstacle")->AddGameObject(pMoveObs);
 	//
 	////시계추회전
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
 	////pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	//pMoveObs = pMeshData->Instantiate();
 	//pMoveObs->AddComponent(new CTransform);
@@ -1569,35 +1569,35 @@ void CSceneMgr::InitUI()
 	{
 		wstring num = std::to_wstring(i);
 		wstring tex = L"Texture\\NUM_";
-		wstring png = L".png";
+ 		wstring png = L".png";
 		wstring finalval = tex + num + png;
 
 		wstring name = L"NUMS";
 		wstring finalname = name + num;
-		Ptr<CTexture> pNumbers = CResMgr::GetInst()->Load<CTexture>(finalname, finalval);
+		pNums[i] = CResMgr::GetInst()->Load<CTexture>(finalname, finalval);
 
 		CGameObject* pObject = new CGameObject;
-		pObject->SetName(L"Number Object");
+		pObject->SetName(finalname);
 		pObject->AddComponent(new CTransform);
 		pObject->AddComponent(new CMeshRender);
 		pObject->AddComponent(new CCollider2D);
 		pObject->AddComponent(new CUIScript);
 
 		pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
+		pObject->GetScript<CUIScript>()->SetNum((NUM_TYPE)i);
 		// Transform ����
-		pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 20.f));
-		pObject->Transform()->SetLocalScale(Vec3(200.f, 200.f, 1.f));
+		pObject->Transform()->SetLocalPos(Vec3(300.f-50.f*i, 600.f, 20.f));
+		pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
 		pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 		// MeshRender ����
 		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
-		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pNumbers.GetPointer());
+		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pNums[i].GetPointer());
 		// Collider2D
 		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 		pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 		pObject->SetActive(false);
 		m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
-
 	}
 
 
@@ -1654,6 +1654,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 		curscene = GetCurScene();
 	}
 
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Dead.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;

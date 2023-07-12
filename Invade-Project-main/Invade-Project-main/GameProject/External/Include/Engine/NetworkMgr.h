@@ -22,6 +22,7 @@ public:
 
 	void DoSend(void* packet);
 	void SendClientLoginPacket();
+	void SendClientMatchingPacket(MapType type);
 	void SendClientKeyInputPacket(KeyType key, Vec3 dir, float degree);
 	void SendClientMovePacket(Vec3 dir, float degree);
 
