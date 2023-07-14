@@ -42,6 +42,7 @@ private:
 
     bool isSceneChange = false;
     bool b_isClicked = false;
+    bool b_isMatching = false;
 
 public:
 
@@ -93,6 +94,7 @@ public:
     virtual void SaveToScene(FILE* _pFile);
     virtual void LoadFromScene(FILE* _pFile);
     void SetClicked(bool clicked) { b_isClicked = true; }
+    void SetMatching(bool matching) { b_isMatching = true; }
 
     CLONE(CCamera);
 

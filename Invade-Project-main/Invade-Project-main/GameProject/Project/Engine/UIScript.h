@@ -31,6 +31,7 @@ class CUIScript : public CScript
 private:
     bool m_isClicked;
     bool m_isSelected;
+    bool m_isMatching;
 
     NUM_TYPE m_iNum;
     UI_TYPE m_iType;

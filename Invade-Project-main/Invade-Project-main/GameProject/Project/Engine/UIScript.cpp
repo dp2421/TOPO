@@ -18,32 +18,37 @@ void CUIScript::Update()
 			CGameObject* curobj = GetObj();
 			curobj->SetActive(false);
 			CRenderMgr::GetInst()->GetCamera(1)->SetClicked(true);
-			m_isSelected = true;
 		}
 		else if (m_iType == MODE_RACING)
 		{
-			CRenderMgr::GetInst()->SetSceneChanged(true);
-			CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
+			//CRenderMgr::GetInst()->SetSceneChanged(true);
+			//CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
+			m_isMatching = true;
 
 		}
 		else if (m_iType == MODE_SURVIVAL)
 		{
-			CRenderMgr::GetInst()->SetSceneChanged(true);
-			CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
+			//CRenderMgr::GetInst()->SetSceneChanged(true);
+			//CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
+			m_isMatching = true;
 		}
 		else if (m_iType == MATCHING)
 		{
+			// 시간 지나면 false 되도록
 
 		}
 		m_isClicked = false;
 
 	}
-	if (m_isSelected)
+
+
+	if (m_isMatching)
 	{
+		CRenderMgr::GetInst()->GetCamera(1)->SetMatching(true);
 		if (m_iType == MODE_SURVIVAL || m_iType == MODE_RACING || m_iType == WINDOW)
 		{
 			CGameObject* activeobj = GetObj();
-			activeobj->SetActive(true);
+			activeobj->SetActive(false);
 		}
 	}
 }

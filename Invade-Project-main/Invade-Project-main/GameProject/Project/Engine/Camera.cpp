@@ -290,6 +290,22 @@ void CCamera::Render_UI()
 			{
 				m_vecUIObject[i]->SetActive(true);
 			}
+
+		}
+
+		if (b_isMatching == true)
+		{
+			if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
+				m_vecUIObject[i]->SetActive(true);
+
+			if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_SURVIVAL ||
+				m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_RACING ||
+				m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::WINDOW)
+			{
+				m_vecUIObject[i]->SetActive(false);
+			}
+			b_isClicked = false;
+
 		}
 		if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 		{
