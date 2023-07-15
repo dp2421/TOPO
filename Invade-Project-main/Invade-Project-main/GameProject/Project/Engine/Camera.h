@@ -44,6 +44,7 @@ private:
     bool b_isClicked = false;
     bool b_isMatching = false;
 
+
 public:
 
     virtual void FinalUpdate();
@@ -93,9 +94,8 @@ public:
     virtual ~CCamera();
     virtual void SaveToScene(FILE* _pFile);
     virtual void LoadFromScene(FILE* _pFile);
-    void SetClicked(bool clicked) { b_isClicked = true; }
-    void SetMatching(bool matching) { b_isMatching = true; }
 
+    vector<CGameObject*> GetUIObj() { return m_vecUIObject; }
     CLONE(CCamera);
 
 };

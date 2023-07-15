@@ -37,11 +37,13 @@ private:
     UI_TYPE m_iType;
 
     Vec3 mousepos;
+    float f_MatchingTime = 0.f;
 
 public:
     CUIScript();
     virtual ~CUIScript();
     virtual void Update();
+    void UIRender();
 
     void NumScript(int num, float offsetx, float offsety);
     void SetType(UI_TYPE _iState) { m_iType = _iState; }
