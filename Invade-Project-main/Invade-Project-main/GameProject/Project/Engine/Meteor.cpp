@@ -9,22 +9,22 @@ void MeteorScript::Update()
 
 	if (m_iType == MAP_TYPE::GROUND)
 	{
-		//if (collide)
-		//{
-			if (m_Time < 2.0f)
-			{
+		////if (collide)
+		////{
+		//	if (m_Time < 2.0f)
+		//	{
 
-			}
-			else if (m_Time > 2.0f && m_Time < 4.0f)
-			{
-				float saking = sin(100.0f * m_Time);
-				Transform()->SetLocalPos(Vec3(GroundPos.x + saking, GroundPos.y, GroundPos.z + saking));
-			}
-			else
-			{
-				SetActive(false);
-			}
-		//}
+		//	}
+		//	else if (m_Time > 2.0f && m_Time < 4.0f)
+		//	{
+		//		float saking = sin(100.0f * m_Time);
+		//		Transform()->SetLocalPos(Vec3(GroundPos.x + saking, GroundPos.y, GroundPos.z + saking));
+		//	}
+		//	else
+		//	{
+		//		SetActive(false);
+		//	}
+		////}
 
 	}
 	else

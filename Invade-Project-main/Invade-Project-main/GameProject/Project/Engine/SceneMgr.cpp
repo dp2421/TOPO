@@ -146,8 +146,8 @@ void CSceneMgr::InitMainScene()
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
-	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
-	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
+	//Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	//Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
@@ -755,7 +755,7 @@ void CSceneMgr::InitStartScene()
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
-
+	Ptr<CSound> pSound = CResMgr::GetInst()->Load<CSound>(L"StartBgm", L"Sound\\BGM_01.wav");
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
 	Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
@@ -850,7 +850,7 @@ void CSceneMgr::InitStartScene()
 	//	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	//}
-
+	pSound->Play(0);
 
 #if LOCALPLAY
 	m_pCurScene = m_pStartScene;
@@ -873,6 +873,8 @@ void CSceneMgr::InitStartScene()
 
 		m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
 	}
+
+
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	//m_pStartScene->Awake();
@@ -977,13 +979,13 @@ void CSceneMgr::InitMetorScene()
 		m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 
-		const wstring FileName[] = { L"LMetor.bin" };
+		const wstring FileName[] = { L"LMetorCenter.bin",L"LMetorWood.bin",L"LMetorWater.bin",L"LMetorStone.bin",L"LMetorGrass.bin" };
 		tiles.clear();
-		for (int i = 0; i < 1; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			LoadMetorMapInfoFromFile(FileName[i], tiles);
 		}
-		tiles.pop_back(); // ㅋㅋ 수동지우기
+		//tiles.pop_back(); // ㅋㅋ 수동지우기
 		for (auto& tile : tiles)
 		{
 			Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetMetorPathName(), tile.GetMetorPathName());
@@ -1006,7 +1008,7 @@ void CSceneMgr::InitMetorScene()
 
 
 #if LOCALPLAY
-		m_pCurScene = m_pMetorScene;
+		//m_pCurScene = m_pMetorScene;
 		AddNetworkGameObject(true, Vec3::Zero, m_pMetorScene);
 #else
 #endif
@@ -1188,7 +1190,7 @@ void CSceneMgr::InitJumpingScene()
 
 
 #if LOCALPLAY
-	m_pCurScene = m_pJumpingScene;
+	//m_pCurScene = m_pJumpingScene;
 	AddNetworkGameObject(true, Vec3::Zero, m_pJumpingScene);
 #else
 #endif
@@ -1426,7 +1428,7 @@ void CSceneMgr::InitUI()
 	pUICam->Camera()->SetLayerAllCheck();
 	pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
 	pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pUICam);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pUICam);
 
 	CGameObject* pObject = new CGameObject;
 
@@ -1449,7 +1451,7 @@ void CSceneMgr::InitUI()
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
 	pObject = new CGameObject;
@@ -1470,7 +1472,7 @@ void CSceneMgr::InitUI()
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
 	pObject = new CGameObject;
@@ -1494,7 +1496,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
 	pObject = new CGameObject;
@@ -1517,7 +1519,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 
 	pObject = new CGameObject;
@@ -1540,7 +1542,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching");
@@ -1562,7 +1564,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
 	Ptr<CTexture> pNums[10];
 	for (int i = 0; i < 10; ++i)
@@ -1597,11 +1599,11 @@ void CSceneMgr::InitUI()
 		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 		pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 		pObject->SetActive(false);
-		m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject);
+		m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 	}
 
 
-	m_pCurScene = m_pStartScene;
+	//m_pCurScene = m_pStartScene;
 }
 
 
@@ -1654,8 +1656,16 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 		curscene = GetCurScene();
 	}
 
-	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Dead.fbx");
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Run.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
+	// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Idle.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Falldown.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Victory.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+
+
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;
@@ -1708,7 +1718,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pObject = idleData->Instantiate();
 	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
-	pObject->Transform()->SetLocalScale(Vec3(6, 6, 6));
+	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
 	pObject->SetActive(true);
 	pObject->MeshRender()->SetDynamicShadow(true);
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
@@ -1724,7 +1734,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->SetActive(true);
-	pObject->Transform()->SetLocalScale(Vec3(6, 6, 6));
+	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 	pObject->MeshRender()->SetDynamicShadow(true);

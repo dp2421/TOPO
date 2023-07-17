@@ -29,7 +29,7 @@ public:
 	void RemoveChannel(FMOD::Channel* _pTargetChannel);
 
 public:
-	virtual void Load(const wstring& _strFilePath);
+	virtual void Load(const wstring& _strFilePath, bool _bFBX = false, bool _bVecMesh = false);
 
 public:
 	CSound();

@@ -12,8 +12,8 @@
 #include "UIScript.h"
 #include "ResMgr.h"
 #include "MRT.h"
-CRenderMgr::CRenderMgr() 
-	:m_arrMRT{},m_iRTVHeapSize(0)
+CRenderMgr::CRenderMgr()
+	:m_arrMRT{}, m_iRTVHeapSize(0)
 {}
 CRenderMgr::~CRenderMgr() {
 	Safe_Delete_Array(m_arrMRT);
@@ -60,12 +60,9 @@ void CRenderMgr::Render()
 
 	m_vecCam[0]->Render_Forward(); // skybox, grid
 
-	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::LOBBY)
-	{
 
-		m_vecCam[1]->SortUIObject();
-		m_vecCam[1]->Render_UI();
-	}
+	m_vecCam[1]->SortUIObject();
+	m_vecCam[1]->Render_UI();
 
 	// Ãâ·Â
 	CDevice::GetInst()->Render_Present();
@@ -81,7 +78,7 @@ void CRenderMgr::Render()
 
 void CRenderMgr::Render_Tool()
 {
-	float arrColor[4] = {0.f,0.f,0.f,1.f};
+	float arrColor[4] = { 0.f,0.f,0.f,1.f };
 	UpdateLight2D();
 	UpdateLight3D();
 }
