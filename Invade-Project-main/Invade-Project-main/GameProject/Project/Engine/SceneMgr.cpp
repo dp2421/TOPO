@@ -250,14 +250,8 @@ void CSceneMgr::InitMainScene()
 
 //	pMeshData->Save(pMeshData->GetPath());
 	// MeshData 로드
+	 
 
-#pragma endregion
-
-#if LOCALPLAY
-	m_pCurScene = m_pRacingScene;
-	AddNetworkGameObject(true, Vec3::Zero, m_pRacingScene);
-#else
-#endif
 
 #pragma region TempObj
 
@@ -705,7 +699,13 @@ void CSceneMgr::InitMainScene()
 //
 
 #pragma endregion
+#pragma endregion
 
+#if LOCALPLAY
+	//m_pCurScene = m_pRacingScene;
+	AddNetworkGameObject(true, Vec3::Zero, m_pRacingScene);
+#else
+#endif
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Particle");
@@ -1412,7 +1412,9 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pWindow = CResMgr::GetInst()->Load<CTexture>(L"Window", L"Texture\\SWindow.png");;
 	Ptr<CTexture> pSurvival = CResMgr::GetInst()->Load<CTexture>(L"Survival", L"Texture\\SSurvival.png");
 	Ptr<CTexture> pRacing = CResMgr::GetInst()->Load<CTexture>(L"Racing", L"Texture\\SRacing.png");
-	Ptr< CTexture> pMatching = CResMgr::GetInst()->Load<CTexture>(L"Matching", L"Texture\\Matching.png");
+	Ptr<CTexture> pMatching = CResMgr::GetInst()->Load<CTexture>(L"Matching", L"Texture\\Matching.png");
+	Ptr<CTexture> pLoading = CResMgr::GetInst()->Load<CTexture>(L"Loading", L"Texture\\Loading.png");
+
 
 
 	CGameObject* pUICam = nullptr;
@@ -1566,6 +1568,29 @@ void CSceneMgr::InitUI()
 	pObject->SetActive(false);
 	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
 
+	pObject = new CGameObject;
+	pObject->SetName(L"Loading");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::LOADING);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 10.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(600.f, 300.f, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pLoading.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->SetActive(false);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+
+
 	Ptr<CTexture> pNums[10];
 	for (int i = 0; i < 10; ++i)
 	{
@@ -1655,16 +1680,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 		std::cout << "CurScene is NULL" << std::endl;
 		curscene = GetCurScene();
 	}
-
-	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Run.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-	// pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Idle.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Falldown.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Victory.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-
+	//ChangeScene(curscene);
 
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);

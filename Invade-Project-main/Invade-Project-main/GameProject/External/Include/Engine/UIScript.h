@@ -9,6 +9,7 @@ enum UI_TYPE
     MODE_RACING,
     MODE_SURVIVAL,
     MATCHING,
+    LOADING,
     NUMBER,
 };
 
@@ -38,6 +39,7 @@ private:
 
     Vec3 mousepos;
     float f_MatchingTime = 0.f;
+ 
 
 public:
     CUIScript();

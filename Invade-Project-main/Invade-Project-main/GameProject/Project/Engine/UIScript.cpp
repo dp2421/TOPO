@@ -76,7 +76,18 @@ void CUIScript::UIRender()
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
 			{
 				if (f_MatchingTime < 10.f)
+				{
 					obj->SetActive(true);
+					for (CGameObject* Loadobj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+					{
+						if (Loadobj->GetScript<CUIScript>()->GetType() == UI_TYPE::LOADING)
+						{
+							Loadobj->SetActive(true);
+							//Loadobj->Transform()->SetLocalRot(Vec3(XM_PI, 0, -XM_PI/ f_MatchingTime));
+						}
+					}
+
+				}
 				else
 				{
 					obj->SetActive(false);

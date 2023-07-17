@@ -55,8 +55,8 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 
 	CResMgr::GetInst()->Init();
 
-	CSceneMgr::GetInst()->InitMainScene();
 	CSceneMgr::GetInst()->InitStartScene();
+	CSceneMgr::GetInst()->InitMainScene();
 	CSceneMgr::GetInst()->InitMetorScene();
 	CSceneMgr::GetInst()->InitAwardScene();
 	CSceneMgr::GetInst()->InitJumpingScene();
