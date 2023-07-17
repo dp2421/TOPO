@@ -4,7 +4,7 @@
 
 using namespace std;
 
-#define FLOORHEIGET 1000  //맵 2층 1층 간격
+#define FLOORHEIGHT 1000  //맵 2층 1층 간격
 
 //임시 커스텀 벡터클래스
 class Vec3
@@ -141,24 +141,24 @@ void writeObstacleDate()
 	// obstacles 객체에 장애물 정보 추가
 	// 360도 장애물
 	ObstacleObject tempObstacle;
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 2; ++i) //3줄->2줄로 변경
 	{
 		for (int j = 0; j < 2; ++j)
 		{
 			for (int k = -1; k <= 1; k += 2)
 			{
 				tempObstacle.state = OBSTACLE_STATE::MOVEA;
-				tempObstacle.vPos = Vec3((1280.f + 280.f * i + 640.f * j), 10.f, 1200.f + 400.f * i);
+				tempObstacle.vPos = Vec3(k * (1280.f + 560.f * i + 640.f * j), 10.f, 1200.f + 800.f * i);
 				obstacles.push_back(tempObstacle);
 			}
 		}
 	}
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 2; ++i) //4개 -> 2개로 변경
 	{
 		for (int j = 0; j < 3; ++j)
 		{
 			tempObstacle.state = OBSTACLE_STATE::MOVEA;
-			tempObstacle.vPos = Vec3(-1600.f + 600.f * i + 640.f, 10.f, 8960.f + 1280.f * j);
+			tempObstacle.vPos = Vec3(-1040.f + 900.f * i + 640.f, 10.f, 8960.f + 1280.f * j);
 			obstacles.push_back(tempObstacle);
 		}
 	}
@@ -169,19 +169,19 @@ void writeObstacleDate()
 		obstacles.push_back(tempObstacle);
 	}
 	//1층
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 3; ++i) //5개 -> 3개로 변경
 	{
 		for (int j = 0; j < 3; ++j)
 		{
 			tempObstacle.state = OBSTACLE_STATE::MOVEA;
-			tempObstacle.vPos = Vec3(-1120.f + 560.f * i, 10.f - FLOORHEIGET, 8400.f + 1600.f * j);
+			tempObstacle.vPos = Vec3(-1120.f + 1120. * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j);
 			obstacles.push_back(tempObstacle);
 		}
 	}
 	for (int i = 0; i < 2; ++i)
 	{
 		tempObstacle.state = OBSTACLE_STATE::MOVEA;
-		tempObstacle.vPos = Vec3(-2560.f + 480.f * i, 10.f - FLOORHEIGET, 14720.f);
+		tempObstacle.vPos = Vec3(-2560.f + 480.f * i, 10.f - FLOORHEIGHT, 14720.f);
 		obstacles.push_back(tempObstacle);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ void writeObstacleDate()
 	for (int i = 0; i < 3; ++i)
 	{
 		tempObstacle.state = OBSTACLE_STATE::MOVEB;
-		tempObstacle.vPos = Vec3(-640.f - 640.f * i, 330.f - FLOORHEIGET, 12800.f + 600.f * i);
+		tempObstacle.vPos = Vec3(-640.f - 640.f * i, 330.f - FLOORHEIGHT, 12800.f + 600.f * i);
 		obstacles.push_back(tempObstacle);
 	}
 	for (int i = 0; i < 2; ++i)
@@ -213,7 +213,7 @@ void writeObstacleDate()
 		for (int j = 0; j < 3; ++j)
 		{
 			tempObstacle.state = OBSTACLE_STATE::MOVEB;
-			tempObstacle.vPos = Vec3(-480.f + 960.f * i, 330.f - FLOORHEIGET, 16800.f + 800.f * j);
+			tempObstacle.vPos = Vec3(-480.f + 960.f * i, 330.f - FLOORHEIGHT, 16800.f + 800.f * j);
 			obstacles.push_back(tempObstacle);
 		}
 	}
@@ -240,7 +240,7 @@ void writeObstacleDate()
 		for (int j = 0; j < 2; ++j)
 		{
 			tempObstacle.state = OBSTACLE_STATE::STOP;
-			tempObstacle.vPos = Vec3(-1280.f + 160.f * i, 80.f - FLOORHEIGET, 9160.f + 1680.f * j);
+			tempObstacle.vPos = Vec3(-1280.f + 160.f * i, 80.f - FLOORHEIGHT, 9160.f + 1680.f * j);
 			obstacles.push_back(tempObstacle);
 		}
 	}
