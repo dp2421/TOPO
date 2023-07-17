@@ -287,64 +287,7 @@ void CSceneMgr::InitMainScene()
 	//360도
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
 	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
-	//pMeshData->Save(pMeshData->GetPath());
-	//CGameObject* pMoveObs = nullptr;
-	//pMoveObs = new CGameObject;
-	//
-	//pMoveObs = pMeshData->Instantiate();
-	//pMoveObs->AddComponent(new CTransform);
-	//pMoveObs->AddComponent(new CCollider3D);
-	//pMoveObs->AddComponent(new CObstacleScript);
-	//pMoveObs->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
-	//
-	//auto TempObj = new CGameObject;
-	//TempObj->AddComponent(new CTransform);
-	//TempObj->AddComponent(new CCollider3D);
-	//TempObj->Transform()->SetLocalRot(Vec3(0.0f, 0.0f, 0.0f));
-	//TempObj->Transform()->SetLocalPos(Vec3(0.0, 0.0f, 0.0f));
-	//TempObj->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//TempObj->Collider3D()->SetOffsetScale(Vec3(90.f, 90.f, 230.f));
-	//TempObj->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 115.f));
-	//m_pCurScene->FindLayer(L"TestObstacle")->AddGameObject(TempObj);
-	//
-	//pMoveObs->AddChild(TempObj);
-	//
-	////pMoveObs->AddComponent(new CMeshRender);
-	//pMoveObs->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pMoveObs->Collider3D()->SetOffsetScale(Vec3(450.f, 80.f, 65.f));
-	//pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
-	//pMoveObs->FrustumCheck(false);
-	//pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-	//pMoveObs->Transform()->SetLocalPos(Vec3(600.f, 10.f, 50.f));
-	//
-	//pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//pMoveObs->MeshRender()->SetDynamicShadow(false);
-	////pObject->Animator3D()->SetClipIndex(0);
-	//
-	//m_pCurScene->FindLayer(L"TestObstacle")->AddGameObject(pMoveObs);
-	//
-	////시계추회전
-	////pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10.mdat", L"MeshData\\Obstacle10.mdat");
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle5_2.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
-	//pMoveObs = pMeshData->Instantiate();
-	//pMoveObs->AddComponent(new CTransform);
-	//pMoveObs->AddComponent(new CCollider3D);
-	//pMoveObs->AddComponent(new CObstacleScript);
-	//pMoveObs->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEB);
-	//
-	////pMoveObs->AddComponent(new CMeshRender);
-	//pMoveObs->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pMoveObs->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
-	//pMoveObs->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
-	//pMoveObs->FrustumCheck(false);
-	//pMoveObs->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-	//pMoveObs->Transform()->SetLocalPos(Vec3(1300.f, 330.f, 50.f));
-	//
-	//pMoveObs->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//pMoveObs->MeshRender()->SetDynamicShadow(false);
-	////pObject->Animator3D()->SetClipIndex(0);
-	//m_pCurScene->FindLayer(L"TestObstacle")->AddGameObject(pMoveObs);
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -356,7 +299,7 @@ void CSceneMgr::InitMainScene()
 		CGameObject* pObstaclesA;
 		pObstaclesA = nullptr;
 
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 2; ++i) //3줄->2줄로 변경
 		{
 			for (int j = 0; j < 2; ++j)
 			{
@@ -372,14 +315,14 @@ void CSceneMgr::InitMainScene()
 					pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 					pObstaclesA->FrustumCheck(false);
 					pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-					pObstaclesA->Transform()->SetLocalPos(Vec3(k * (1280.f + 280.f * i + 640.f * j), 10.f, 1200.f + 400.f * i));
+					pObstaclesA->Transform()->SetLocalPos(Vec3(k * (1280.f + 560.f * i + 640.f * j), 10.f, 1200.f + 800.f * i));
 					pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 					pObstaclesA->MeshRender()->SetDynamicShadow(true);
 					m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 				}
 			}
 		}
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 2; ++i) //4개 -> 2개로 변경
 		{
 			for (int j = 0; j < 3; ++j)
 			{
@@ -393,7 +336,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 				pObstaclesA->FrustumCheck(false);
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-				pObstaclesA->Transform()->SetLocalPos(Vec3(-1600.f + 600.f * i + 640.f, 10.f, 8960.f + 1280.f * j));
+				pObstaclesA->Transform()->SetLocalPos(Vec3(-1040.f + 900.f * i + 640.f, 10.f, 8960.f + 1280.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesA->MeshRender()->SetDynamicShadow(true);
 				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
@@ -418,7 +361,7 @@ void CSceneMgr::InitMainScene()
 		}
 
 		//1층
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 3; ++i) //5개 -> 3개로 변경
 		{
 			for (int j = 0; j < 3; ++j)
 			{
@@ -432,7 +375,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 				pObstaclesA->FrustumCheck(false);
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 560.f * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j));
+				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 1120. * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesA->MeshRender()->SetDynamicShadow(true);
 				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
@@ -456,6 +399,7 @@ void CSceneMgr::InitMainScene()
 			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
 		}
 	}
+
 
 
 	//시계추회전장애물 : 2층(14) + 1층(9)
@@ -1689,7 +1633,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 1000.f - FLOORHEIGHT, 0.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
