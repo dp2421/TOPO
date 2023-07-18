@@ -655,7 +655,7 @@ void CSceneMgr::InitMainScene()
 	pObject->SetName(L"Particle");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CParticleSystem);
-	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"Snow")));
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"HardCircle")));
 	pObject->FrustumCheck(false);
 	pObject->Transform()->SetLocalPos(Vec3(500.f, 0.f, 0.f));
 
@@ -699,7 +699,8 @@ void CSceneMgr::InitStartScene()
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
-	Ptr<CSound> pSound = CResMgr::GetInst()->Load<CSound>(L"StartBgm", L"Sound\\BGM_01.wav");
+	Ptr<CSound> pLobbySound = CResMgr::GetInst()->Load<CSound>(L"StartBgm", L"Sound\\LobbyBgm.wav");
+
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
 	Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
@@ -794,7 +795,7 @@ void CSceneMgr::InitStartScene()
 	//	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
 	//}
-	pSound->Play(0);
+	//pSound->Play(0);
 
 #if LOCALPLAY
 	m_pCurScene = m_pStartScene;
@@ -1575,6 +1576,30 @@ void CSceneMgr::InitUI()
 	//m_pCurScene = m_pStartScene;
 }
 
+
+void CSceneMgr::InitScene()
+{ 
+	m_pSceneType = SCENE_TYPE::LOBBY;
+
+	Ptr<CSound> m_sounds = CResMgr::GetInst()->Load<CSound>(L"StartBgm", L"Sound\\LobbyBgm.wav");
+	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::LOBBY);
+
+	m_sounds = CResMgr::GetInst()->Load<CSound>(L"RacingBgm", L"Sound\\RacingBgm.wav");
+	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::RACING);
+
+	m_sounds = CResMgr::GetInst()->Load<CSound>(L"SurvivalBgm", L"Sound\\SurvivalBgm.wav");
+	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::SURVIVAL);
+
+	m_sounds = CResMgr::GetInst()->Load<CSound>(L"SelectBgm", L"Sound\\Select.wav");
+	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::CLICK);
+
+	m_sounds= CResMgr::GetInst()->Load<CSound>(L"JumpBgm", L"Sound\\Jump.wav");
+	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::JUMP);
+
+	m_sounds = CResMgr::GetInst()->Load<CSound>(L"SuperBgm", L"Sound\\SuperJump.wav");
+	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::SUPERJUMP);
+
+}
 
 void CSceneMgr::Update()
 {

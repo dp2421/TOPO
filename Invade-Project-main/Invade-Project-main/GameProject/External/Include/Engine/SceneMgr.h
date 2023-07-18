@@ -27,7 +27,7 @@ public:
 	void InitAwardScene();
 	void InitUI();
 
-	void InitScene() { m_pSceneType = SCENE_TYPE::LOBBY; }
+	void InitScene();
 	void Update();
 	void Update_Tool();
 

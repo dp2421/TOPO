@@ -148,6 +148,46 @@ void CRenderMgr::Merge_Light()
 	pRectMesh->Render();
 }
 
+void CRenderMgr::PlaySound()
+{
+	SCENE_TYPE curscene = CSceneMgr::GetInst()->GetSceneType();
+	switch (curscene)
+	{
+	case SCENE_TYPE::LOBBY:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::LOBBY)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		break;
+	case SCENE_TYPE::RACING:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::RACING)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::RACING]->Play(0);
+		break;
+	case SCENE_TYPE::JUMP:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::SURVIVAL)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		break;
+	case SCENE_TYPE::METOR:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::SURVIVAL)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		break;
+	case SCENE_TYPE::AWARD:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::LOBBY)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		break;
+	default:
+		break;
+	}
+}
+
 
 void CRenderMgr::UpdateLight2D()
 {

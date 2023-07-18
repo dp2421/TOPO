@@ -131,6 +131,18 @@ enum class SCENE_TYPE
 	AWARD,
 	END,
 };
+
+enum class SOUND_TYPE
+{
+	LOBBY,
+	SURVIVAL,
+	RACING,
+	CLICK,
+	JUMP,
+	SUPERJUMP,
+	END,
+};
+
 namespace RES_TYPE_STR
 {
 	extern const wchar_t* MATERIAL;

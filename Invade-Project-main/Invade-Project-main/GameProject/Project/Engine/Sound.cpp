@@ -58,7 +58,7 @@ void CSound::Play(int _iRoopCount, bool _bOverlap)
 
 	FMOD::Channel* pChannel = nullptr;
 	g_pFMOD->playSound(m_pSound, nullptr, false, &pChannel);
-
+	pChannel->setVolume(0.1f);
 	pChannel->setCallback(CHANNEL_CALLBACK);
 	pChannel->setUserData(this);
 

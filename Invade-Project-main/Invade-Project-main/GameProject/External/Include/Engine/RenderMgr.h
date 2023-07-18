@@ -7,6 +7,7 @@ class CLight3D;
 class CRenderTarget24;
 class CMRT;
 
+#include "Sound.h"
 #include "Ptr.h"
 #include "Texture.h"
 
@@ -35,6 +36,8 @@ private:
 	bool b_SceneChanged = false;
 	SCENE_TYPE m_sceneType;
 
+	CSound* m_sounds[(int)SOUND_TYPE::END];
+
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
@@ -43,6 +46,7 @@ public:
 	void Render_UI();
 	void Render_Lights();
 	void Merge_Light();
+	void PlaySound();
 
 	//void Render_OutLine();
 private:
@@ -87,5 +91,6 @@ public:
 	void SetSceneChanged(bool sc) { b_SceneChanged = true; }
 	void SetSceneType(SCENE_TYPE type) { m_sceneType = type; }
 
+	void SetSound(CSound* sound, SOUND_TYPE type) { m_sounds[(int)type] = sound; }
 };
 
