@@ -679,8 +679,8 @@ void CSceneMgr::InitMainScene()
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 
-	//m_pRacingScene->Awake();
-	//m_pRacingScene->Start();
+	m_pRacingScene->Awake();
+	m_pRacingScene->Start();
 }
 
 
@@ -1674,7 +1674,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f-FLOORHEIGHT, 0.f));
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)

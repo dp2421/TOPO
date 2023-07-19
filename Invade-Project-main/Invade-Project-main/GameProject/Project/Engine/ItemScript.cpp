@@ -22,7 +22,7 @@ void CItemScript::Awake()
 	if (m_iState == ITEM_STATE::SUPERJUMP)
 	{
 		m_pParticle->FrustumCheck(false);
-		m_pParticle->Transform()->SetLocalPos(Vec3(0.5f, 1.0f, 0.f));
+		m_pParticle->Transform()->SetLocalPos(Vec3(0.5f, 100.0f, 0.f));
 		pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle);
 
 		GetObj()->AddChild(m_pParticle);
