@@ -123,12 +123,12 @@ void CSceneMgr::LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& 
 		return;
 	}
 
-	while (!inFile.eof()) {
+	//while (!inFile.eof()) {
 		MetorTile tile;
 		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
 		tiles.push_back(tile);
-	}
-	tiles.pop_back(); //ㅋㅋ수동지우기
+	//}
+	//tiles.pop_back(); //ㅋㅋ수동지우기
 	inFile.close();
 }
 
@@ -923,6 +923,14 @@ void CSceneMgr::InitMetorScene()
 		pObject->MeshRender()->SetDynamicShadow(true);
 		m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
 
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorCenter.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorStone.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorWater.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorGrass.fbx");
+		//pMeshData->Save(pMeshData->GetPath());
 
 		const wstring FileName[] = { L"LMetorCenter.bin",L"LMetorWood.bin",L"LMetorWater.bin",L"LMetorStone.bin",L"LMetorGrass.bin" };
 		tiles.clear();
@@ -1679,7 +1687,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
 		{
-			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 140.f * 7));
 			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 			pPlayer->AddChild(obj);
 			//obj->Transform()->SetLocalPos(Vec3(-60,45,-10));
@@ -1703,7 +1711,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pObject = idleData->Instantiate();
 	pObject->SetName(L"IdlePlayer");
 	pObject->AddComponent(new CTransform);
-	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
+	pObject->Transform()->SetLocalScale(Vec3(1.5, 1.5, 1.5));
 	pObject->SetActive(true);
 	pObject->MeshRender()->SetDynamicShadow(true);
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
@@ -1719,7 +1727,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pObject->SetName(L"RunPlayer");
 	pObject->AddComponent(new CTransform);
 	pObject->SetActive(true);
-	pObject->Transform()->SetLocalScale(Vec3(3, 3, 3));
+	pObject->Transform()->SetLocalScale(Vec3(1.5, 1.5, 1.5));
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 	pObject->MeshRender()->SetDynamicShadow(true);

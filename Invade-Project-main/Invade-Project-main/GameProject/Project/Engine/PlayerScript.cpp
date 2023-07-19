@@ -141,13 +141,18 @@ void CPlayerScript::Update()
 
 	if (dir != Vec3::Zero)
 	{
+		runPlayer->MeshRender()->SetDynamicShadow(true);
 		runPlayer->SetActive(true);
+		IdlePlayer->MeshRender()->SetDynamicShadow(false);
 		IdlePlayer->SetActive(false);
 	}
 	else
 	{
+		runPlayer->MeshRender()->SetDynamicShadow(false);
 		runPlayer->SetActive(false);
+		IdlePlayer->MeshRender()->SetDynamicShadow(true);
 		IdlePlayer->SetActive(true);
+
 	}
 
 	vPos += dir.Normalize() * SPEED * DT;

@@ -177,6 +177,8 @@ void CCamera::Render_Deferred()
 	{
 		if (m_vecDeferred[i]->IsActive() == true)
 			m_vecDeferred[i]->MeshRender()->Render();
+		else
+			m_vecDeferred[i]->MeshRender()->SetDynamicShadow(false);
 	}
 }
 
