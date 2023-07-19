@@ -81,6 +81,7 @@ public:
     Vec3 GetTilePos() { return Vec3(data.xPos, data.yPos, data.zPos); };
     Vec3 GetMetorTilePos() { return Vec3(Mdata.xPos, Mdata.yPos, Mdata.zPos); }
     Vec3 GetTileScale() { return Vec3(data.xScale, data.yScale, data.zScale); };
+    Vec3 GetTileScaleV2() { return Vec3(data.xScale, data.zScale, data.yScale); };
 
     wstring GetPathName(); //for load mdat file, convert enum->wstring
     wstring GetMetorPathName();
