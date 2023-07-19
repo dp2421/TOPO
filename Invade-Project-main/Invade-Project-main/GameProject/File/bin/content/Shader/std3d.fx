@@ -12,6 +12,13 @@
 // g_tex_1 : Normalmap Texture
 // BlendState : false
 // ==========================
+
+cbuffer Parameters : register(b0)
+{
+    float4 sampleOffsets[16];
+    float4 sampleWeights[16];
+};
+
 struct VS_STD3D_INPUT
 {
     float3 vPos : POSITION;
@@ -163,7 +170,7 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     //{
     //    output.vTarget0 = float4(0, 0, 0, 1);
     //}
-
+    // ----------------------------------
 
     float3 vViewNormal = _in.vViewNormal;
     // 노말맵이 있는경우

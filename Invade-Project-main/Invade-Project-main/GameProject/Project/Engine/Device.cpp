@@ -132,14 +132,121 @@ void CDevice::Render_Start(float(&_arrFloat)[4])
 	ClearDummyDescriptorHeap(0);
 }
 
-void CDevice::ChangeScene()
+
+void CDevice::Render_PostEffect()
 {
+	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	CMRT* pPostMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::POSTEFFECT);
+	//ComPtr<ID3D12Resource> resource1; //렌더타겟을 여기다복사할거임
+	D3D12_RESOURCE_BARRIER barrier = {};
+
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST; //여기에복사할거
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(); //가져와
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; //렌더타겟에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE; //이걸 복사할거
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	//
+	m_pCmdListGraphic->CopyResource(pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(), barrier.Transition.pResource); //복사해
+
+
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(); //가져와
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST; //복사용에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ; //이걸로바꿔주고
+
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	////
+	//m_pCmdListGraphic->Close();
+
+	//// 커맨드 리스트 수행	
+	//ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
+	//m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+
+	//디스크립터힙생성 & 설정
+	ID3D12DescriptorHeap* pDescriptor = m_pDummyDescriptorCompute.Get();
+	m_pCmdListCompute->SetDescriptorHeaps(1, &pDescriptor);
+	
+
+	//후처리효과아아아
+	//계산셰이더 써야하나??쓴다면==================================================================
+	D3D12_GPU_DESCRIPTOR_HANDLE  gpuHandle = pDescriptor->GetGPUDescriptorHandleForHeapStart();
+	m_pCmdListCompute->SetComputeRootDescriptorTable(0, gpuHandle);
+	//=========================================================================================
+
+	//setPipeLineState해주는과정들을...이제...저기서 해줘야함.
+	//어떻게잘됐다고 가정해보고...
+
+
+	//resource1을 이제렌더타겟에 다시 복사해줌
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE; //복사용으로
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST; //복사용으로
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+	m_pCmdListGraphic->CopyResource(barrier.Transition.pResource, pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()); //복사
+
+	
+	//복사용렌더타겟 원래대로 돌려놓기
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE; //복사용에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; //알잘딱
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	//렌더타겟으로 설정 원래대로 해놓기
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST; //복사도착지에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; //렌더타겟용으로
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+	//
+	m_pCmdListGraphic->Close();
+	// 커맨드 리스트 수행	
+	ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
+	m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
 }
+
 
 void CDevice::Render_Present()
 {
-
-
 	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	// Indicate that the back buffer will now be used to present.
 	D3D12_RESOURCE_BARRIER barrier = {};
@@ -151,6 +258,7 @@ void CDevice::Render_Present()
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+	
 	m_pCmdListGraphic->Close();
 
 	// 커맨드 리스트 수행	
@@ -172,6 +280,10 @@ void CDevice::Render_Present()
 
 }
 
+
+void CDevice::ChangeScene()
+{
+}
 
 void CDevice::WaitForFenceEvent()
 {

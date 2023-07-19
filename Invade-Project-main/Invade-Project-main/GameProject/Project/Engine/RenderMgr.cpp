@@ -36,12 +36,16 @@ void CRenderMgr::Render()
 	UINT iIdx = CDevice::GetInst()->GetSwapChainIndex();
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Clear(iIdx);
 
-
 	// DeferredMRT 초기화
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Clear();
 
 	// LightMRT 초기화
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Clear();
+
+	// PostEffectMRT 초기화
+	m_arrMRT[(UINT)MRT_TYPE::POSTEFFECT]->Clear();
+
+	//
 
 	m_vecCam[0]->SortGameObject();
 
@@ -57,12 +61,16 @@ void CRenderMgr::Render()
 
 	Merge_Light();
 
-
 	m_vecCam[0]->Render_Forward(); // skybox, grid
 
 
 	m_vecCam[1]->SortUIObject();
 	m_vecCam[1]->Render_UI();
+
+	////PostProcess Effect
+	//Render_PostEffect();
+
+
 
 	// 출력
 	CDevice::GetInst()->Render_Present();
@@ -75,6 +83,18 @@ void CRenderMgr::Render()
 
 
 }
+
+void CRenderMgr::Render_PostEffect()
+{
+	//여기서 이제... setPipeLineState해주는
+	static Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	static Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+
+	pMtrl->UpdateData();
+	pRectMesh->Render();
+
+}
+
 
 void CRenderMgr::Render_Tool()
 {
@@ -310,6 +330,24 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP] = new CMRT;
 		m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP]->Create(1, arrRT, pDSTex); // 별도의 깊이버퍼 를 가짐
 	}
+
+	// ==============
+	// POSTEFFECT MRT
+	// ==============
+	{
+		tRT arrRT[8] = {};
+
+		arrRT[0].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
+		arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"PostEffectTex"
+			, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
+			, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
+			, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
+
+		m_arrMRT[(UINT)MRT_TYPE::POSTEFFECT] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::POSTEFFECT]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
+	}
+
+
 
 	//{
 	//	tRT arrRT[8] = {};
