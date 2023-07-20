@@ -193,6 +193,12 @@ void CCamera::Render_Forward()
 
 	for (size_t i = 0; i < m_vecForward.size(); ++i)
 	{
+		if (m_vecForward[i]->GetName() == L"SkyBox")
+		{
+			if (false)
+				m_vecForward[i]->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, CSceneMgr::GetInst()->GetNightSky().GetPointer());
+
+		}
 		m_vecForward[i]->MeshRender()->Render();
 
 		if (m_vecForward[i]->Collider2D())

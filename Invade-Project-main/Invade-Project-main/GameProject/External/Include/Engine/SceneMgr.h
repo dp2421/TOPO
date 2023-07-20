@@ -1,8 +1,12 @@
 #pragma once
+
 class CScene;
 class CCamera;
 class CGameObject;
 class Tile;
+#include "Texture.h"
+#include "Ptr.h"
+
 class CSceneMgr
 {
 	SINGLE(CSceneMgr)
@@ -16,6 +20,10 @@ private:
 	vector<Tile> tiles;
 	vector<Tile> awardTiles;
 	SCENE_TYPE m_pSceneType;
+	Ptr<CTexture> m_pDaySkyBox;
+	Ptr<CTexture> m_pNightSkyBox;
+
+
 public:
 	void LoadMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
 	void LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& tiles);
@@ -40,5 +48,9 @@ public:
 	void FindGameObjectByTag(const wstring& _strTag, vector<CGameObject*>& _vecFindObj);
 	CGameObject* AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* curscene = nullptr);
 	void RemoveNetworkGameObject(CGameObject* obj);
+
+	Ptr<CTexture> GetNightSky() { return m_pNightSkyBox; }
+	Ptr<CTexture> GetDaySky() { return m_pDaySkyBox; }
+
 };
 

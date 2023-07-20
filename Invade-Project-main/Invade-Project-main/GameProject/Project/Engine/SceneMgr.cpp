@@ -9,7 +9,6 @@
 #include "ResMgr.h"
 #include "Shader.h"
 #include "Mesh.h"
-#include "Texture.h"
 #include "Transform.h"
 #include "MeshRender.h"
 #include "Animator2D.h"
@@ -124,9 +123,9 @@ void CSceneMgr::LoadMetorMapInfoFromFile(const wstring& FileName, vector<Tile>& 
 	}
 
 	//while (!inFile.eof()) {
-		MetorTile tile;
-		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
-		tiles.push_back(tile);
+	MetorTile tile;
+	inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+	tiles.push_back(tile);
 	//}
 	//tiles.pop_back(); //ㅋㅋ수동지우기
 	inFile.close();
@@ -140,14 +139,12 @@ void CSceneMgr::InitMainScene()
 	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
 	Ptr<CTexture> pBlackTex = CResMgr::GetInst()->Load<CTexture>(L"Black", L"Texture\\asd.png");
-	Ptr<CTexture> pSky01 = CResMgr::GetInst()->Load<CTexture>(L"Sky01", L"Texture\\Skybox\\Sky01.png");
-	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
+	m_pDaySkyBox = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
+	m_pNightSkyBox = CResMgr::GetInst()->Load<CTexture>(L"FS003_Night", L"Texture\\Skybox\\FS003_Night.png");
 	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
-	//Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
-	//Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
@@ -161,10 +158,10 @@ void CSceneMgr::InitMainScene()
 
 
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_3, m_pDaySkyBox.GetPointer());
 	//
 	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_2, m_pDaySkyBox.GetPointer());
 	//
 
 	m_pRacingScene = new CScene;
@@ -210,7 +207,7 @@ void CSceneMgr::InitMainScene()
 	pObject->AddComponent(new CLight3D);
 	pObject->Light3D()->SetLightPos(Vec3(0.f, 500.f, 0.f));
 	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
-	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetDiffuseColor(Vec3(1.f,1.f,1.f));
 	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
 	pObject->Light3D()->SetAmbient(Vec3(0.4f, 0.4f, 0.4f));
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
@@ -250,7 +247,7 @@ void CSceneMgr::InitMainScene()
 
 //	pMeshData->Save(pMeshData->GetPath());
 	// MeshData 로드
-	 
+
 
 
 #pragma region TempObj
@@ -671,16 +668,17 @@ void CSceneMgr::InitMainScene()
 
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
+
 
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 
-	//m_pRacingScene->Awake();
-	//m_pRacingScene->Start();
+	m_pRacingScene->Awake();
+	m_pRacingScene->Start();
 }
 
 
@@ -692,7 +690,6 @@ void CSceneMgr::InitStartScene()
 	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
 	Ptr<CTexture> pBlackTex = CResMgr::GetInst()->Load<CTexture>(L"Black", L"Texture\\asd.png");
-	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
 	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
@@ -711,10 +708,10 @@ void CSceneMgr::InitStartScene()
 	if (m_pSceneType == SCENE_TYPE::LOBBY)
 	{
 		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-		pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+		pPM->SetData(SHADER_PARAM::TEX_3, m_pDaySkyBox.GetPointer());
 		//
 		pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-		pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+		pPM->SetData(SHADER_PARAM::TEX_2, m_pDaySkyBox.GetPointer());
 
 	}
 	//
@@ -803,22 +800,19 @@ void CSceneMgr::InitStartScene()
 #else
 #endif
 
-	if (m_pSceneType == SCENE_TYPE::RACING)
-	{
 
-		pObject = new CGameObject;
-		pObject->SetName(L"SkyBox");
-		pObject->FrustumCheck(false);
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CMeshRender);
+	pObject = new CGameObject;
+	pObject->SetName(L"SkyBox");
+	pObject->FrustumCheck(false);
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
 
-		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
-		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
-		pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
+	pObject->SetActive(false);
 
-		m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
-	}
-
+	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
 
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
@@ -832,7 +826,6 @@ void CSceneMgr::InitMetorScene()
 	{
 		// 필요한 리소스 로딩
 		// Texture 로드
-		Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
 		CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 		Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 		Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
@@ -846,10 +839,10 @@ void CSceneMgr::InitMetorScene()
 		//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-		pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+		pPM->SetData(SHADER_PARAM::TEX_3, m_pDaySkyBox.GetPointer());
 		//
 		pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-		pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+		pPM->SetData(SHADER_PARAM::TEX_2, m_pDaySkyBox.GetPointer());
 
 
 		//
@@ -909,7 +902,7 @@ void CSceneMgr::InitMetorScene()
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Meteor.mdat", L"MeshData\\Meteor.mdat");
 		pMeshData->Save(pMeshData->GetPath());
 		pObject = pMeshData->Instantiate();
-		pObject->AddComponent(new CTransform); 
+		pObject->AddComponent(new CTransform);
 		pObject->AddComponent(new CCollider3D);
 		pObject->AddComponent(new MeteorScript);
 		pObject->GetScript<MeteorScript>()->SetType(MAP_TYPE::METEOR);
@@ -1032,7 +1025,7 @@ void CSceneMgr::InitMetorScene()
 
 		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
-		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
 		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject);
 		//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
@@ -1046,7 +1039,6 @@ void CSceneMgr::InitJumpingScene()
 {
 	// 필요한 리소스 로딩
 // Texture 로드
-	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
@@ -1060,10 +1052,10 @@ void CSceneMgr::InitJumpingScene()
 	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_3, m_pDaySkyBox.GetPointer());
 	//
 	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_2, m_pDaySkyBox.GetPointer());
 
 
 	//
@@ -1202,7 +1194,7 @@ void CSceneMgr::InitJumpingScene()
 			pObstaclesB->FrustumCheck(false);
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-100, 0, 0));
-			pObstaclesB->Transform()->SetLocalScale(Vec3(5.f, 5.f,2.5f));
+			pObstaclesB->Transform()->SetLocalScale(Vec3(5.f, 5.f, 2.5f));
 			pObstaclesB->MeshRender()->SetDynamicShadow(true);
 			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
 		}
@@ -1215,7 +1207,7 @@ void CSceneMgr::InitJumpingScene()
 
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
-	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
 	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pObject);
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
@@ -1230,7 +1222,6 @@ void CSceneMgr::InitAwardScene()
 {
 	// 필요한 리소스 로딩
 	// Texture 로드
-	Ptr<CTexture> pSky02 = CResMgr::GetInst()->Load<CTexture>(L"FS003_Day", L"Texture\\Skybox\\FS003_Day.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
@@ -1242,10 +1233,10 @@ void CSceneMgr::InitAwardScene()
 	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_3, pSky02.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_3, m_pDaySkyBox.GetPointer());
 	//
 	pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"PointLightMtrl");
-	pPM->SetData(SHADER_PARAM::TEX_2, pSky02.GetPointer());
+	pPM->SetData(SHADER_PARAM::TEX_2, m_pDaySkyBox.GetPointer());
 	//
 	m_pAwardScene = new CScene;
 	m_pAwardScene->SetName(L"AwardScene");
@@ -1346,7 +1337,7 @@ void CSceneMgr::InitAwardScene()
 
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"SphereMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
-	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSky02.GetPointer());
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
 	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject);
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
@@ -1532,7 +1523,7 @@ void CSceneMgr::InitUI()
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 10.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(600.f, 300.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(300.f, 300.f, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1549,7 +1540,7 @@ void CSceneMgr::InitUI()
 	{
 		wstring num = std::to_wstring(i);
 		wstring tex = L"Texture\\NUM_";
- 		wstring png = L".png";
+		wstring png = L".png";
 		wstring finalval = tex + num + png;
 
 		wstring name = L"NUMS";
@@ -1566,7 +1557,7 @@ void CSceneMgr::InitUI()
 		pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
 		pObject->GetScript<CUIScript>()->SetNum((NUM_TYPE)i);
 		// Transform ����
-		pObject->Transform()->SetLocalPos(Vec3(300.f-50.f*i, 600.f, 20.f));
+		pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 20.f));
 		pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
 		pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 		// MeshRender ����
@@ -1586,7 +1577,7 @@ void CSceneMgr::InitUI()
 
 
 void CSceneMgr::InitScene()
-{ 
+{
 	m_pSceneType = SCENE_TYPE::LOBBY;
 
 	Ptr<CSound> m_sounds = CResMgr::GetInst()->Load<CSound>(L"StartBgm", L"Sound\\LobbyBgm.wav");
@@ -1601,7 +1592,7 @@ void CSceneMgr::InitScene()
 	m_sounds = CResMgr::GetInst()->Load<CSound>(L"SelectBgm", L"Sound\\Select.wav");
 	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::CLICK);
 
-	m_sounds= CResMgr::GetInst()->Load<CSound>(L"JumpBgm", L"Sound\\Jump.wav");
+	m_sounds = CResMgr::GetInst()->Load<CSound>(L"JumpBgm", L"Sound\\Jump.wav");
 	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::JUMP);
 
 	m_sounds = CResMgr::GetInst()->Load<CSound>(L"SuperBgm", L"Sound\\SuperJump.wav");

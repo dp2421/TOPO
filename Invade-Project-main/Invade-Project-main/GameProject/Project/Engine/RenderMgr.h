@@ -38,6 +38,8 @@ private:
 
 	CSound* m_sounds[(int)SOUND_TYPE::END];
 
+	bool b_isFever = false;
+
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();

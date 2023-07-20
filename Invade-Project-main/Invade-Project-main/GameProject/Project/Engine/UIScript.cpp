@@ -83,7 +83,10 @@ void CUIScript::UIRender()
 						if (Loadobj->GetScript<CUIScript>()->GetType() == UI_TYPE::LOADING)
 						{
 							Loadobj->SetActive(true);
-							//Loadobj->Transform()->SetLocalRot(Vec3(XM_PI, 0, -XM_PI/ f_MatchingTime));
+							Vec3 vRot = Transform()->GetLocalRot();
+							vRot.z = XMConvertToRadians(f_MatchingTime)*10;
+							//Loadobj->Transform()->SetLocalRot(vRot);
+
 						}
 					}
 
