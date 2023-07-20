@@ -4,11 +4,11 @@ class CGameFramework
 	SINGLE(CGameFramework)
 public:
 	HWND m_hMainhWnd;
+	Vec2 m_WinSize;
 	POINT m_ptOldCursorPos;
 
 	bool m_isClick = false;
 private:
-
 	Vec2 m_vMouseMove;
 
 public:

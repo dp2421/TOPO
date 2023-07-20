@@ -198,7 +198,7 @@ void CSceneMgr::InitMainScene()
 	pMainCam->Camera()->SetFar(100000.f);
 	pMainCam->Camera()->SetLayerAllCheck();
 
-	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pMainCam, m_pRacingScene);
 
 	CGameObject* pObject = nullptr;
 
@@ -213,7 +213,7 @@ void CSceneMgr::InitMainScene()
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
 #pragma region TempObj
@@ -309,7 +309,7 @@ void CSceneMgr::InitMainScene()
 					pObstaclesA->Transform()->SetLocalPos(Vec3(k * (1280.f + 560.f * i + 640.f * j), 10.f, 1200.f + 800.f * i));
 					pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 					pObstaclesA->MeshRender()->SetDynamicShadow(true);
-					m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
+					m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA, m_pRacingScene);
 				}
 			}
 		}
@@ -330,7 +330,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesA->Transform()->SetLocalPos(Vec3(-1040.f + 900.f * i + 640.f, 10.f, 8960.f + 1280.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesA->MeshRender()->SetDynamicShadow(true);
-				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
+				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA, m_pRacingScene);
 			}
 		}
 		for (int i = 0; i < 2; ++i)
@@ -348,7 +348,7 @@ void CSceneMgr::InitMainScene()
 			pObstaclesA->Transform()->SetLocalPos(Vec3(500.f - i * (1000.f), 10.f, 21000.f));
 			pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesA->MeshRender()->SetDynamicShadow(true);
-			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
+			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA, m_pRacingScene);
 		}
 
 		//1층
@@ -369,7 +369,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 1120. * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesA->MeshRender()->SetDynamicShadow(true);
-				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
+				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA, m_pRacingScene);
 			}
 		}
 		for (int i = 0; i < 2; ++i)
@@ -387,7 +387,7 @@ void CSceneMgr::InitMainScene()
 			pObstaclesA->Transform()->SetLocalPos(Vec3(-2560.f + 480.f * i, 10.f - FLOORHEIGHT, 14720.f));
 			pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesA->MeshRender()->SetDynamicShadow(true);
-			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA);
+			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA, m_pRacingScene);
 		}
 	}
 
@@ -419,7 +419,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesB->Transform()->SetLocalPos(Vec3(-840.f + 840.f * i, 330.f, 8400.f + 1200.f * j));
 				pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesB->MeshRender()->SetDynamicShadow(true);
-				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pRacingScene);
 			}
 		}
 		for (int i = 0; i < 2; ++i)
@@ -437,7 +437,7 @@ void CSceneMgr::InitMainScene()
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-1680.f + 3360.f * i, 330.f, 14800.f));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesB->MeshRender()->SetDynamicShadow(true);
-			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pRacingScene);
 		}
 
 		//1층
@@ -456,7 +456,7 @@ void CSceneMgr::InitMainScene()
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-640.f - 640.f * i, 330.f - FLOORHEIGHT, 12800.f + 600.f * i));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesB->MeshRender()->SetDynamicShadow(true);
-			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pRacingScene);
 		}
 		for (int i = 0; i < 2; ++i)
 		{
@@ -475,7 +475,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesB->Transform()->SetLocalPos(Vec3(-480.f + 960.f * i, 330.f - FLOORHEIGHT, 16800.f + 800.f * j));
 				pObstaclesB->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesB->MeshRender()->SetDynamicShadow(true);
-				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pRacingScene);
 			}
 		}
 	}
@@ -504,7 +504,7 @@ void CSceneMgr::InitMainScene()
 			pObstaclesH->Transform()->SetLocalPos(Vec3(-160.f + 160.f * i, 80.f, 21000.f));
 			pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObstaclesH->MeshRender()->SetDynamicShadow(true);
-			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
+			m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH, m_pRacingScene);
 
 		}
 		for (int i = 0; i < 2; ++i)
@@ -524,7 +524,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesH->Transform()->SetLocalPos(Vec3(j * (800.f + 160.f * i), 80.f, 21000.f));
 				pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesH->MeshRender()->SetDynamicShadow(true);
-				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
+				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH, m_pRacingScene);
 			}
 		}
 
@@ -546,7 +546,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesH->Transform()->SetLocalPos(Vec3(-1280.f + 160.f * i, 80.f - FLOORHEIGHT, 9160.f + 1680.f * j));
 				pObstaclesH->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesH->MeshRender()->SetDynamicShadow(true);
-				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH);
+				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesH, m_pRacingScene);
 			}
 		}
 	}
@@ -575,7 +575,7 @@ void CSceneMgr::InitMainScene()
 			pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObject->MeshRender()->SetDynamicShadow(true);
 			//pObject->Animator3D()->SetClipIndex(1);
-			m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject);
+			m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 
 			if (i == 2)
 			{
@@ -615,7 +615,7 @@ void CSceneMgr::InitMainScene()
 		pObject->Transform()->SetLocalScale(Vec3(4.f, 4.f, 1.f));
 		pObject->MeshRender()->SetDynamicShadow(true);
 		//pObject->Animator3D()->SetClipIndex(1);
-		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject);
+		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 	}
 
 
@@ -656,7 +656,7 @@ void CSceneMgr::InitMainScene()
 	pObject->FrustumCheck(false);
 	pObject->Transform()->SetLocalPos(Vec3(500.f, 0.f, 0.f));
 
-	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
 
@@ -671,7 +671,7 @@ void CSceneMgr::InitMainScene()
 	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
 
-	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
@@ -751,7 +751,7 @@ void CSceneMgr::InitStartScene()
 	pMainCam->Camera()->SetFar(100000.f);
 	pMainCam->Camera()->SetLayerAllCheck();
 
-	m_pStartScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+	m_pStartScene->FindLayer(L"Default")->AddGameObject(pMainCam, m_pStartScene);
 
 	CGameObject* pObject = nullptr;
 
@@ -766,7 +766,7 @@ void CSceneMgr::InitStartScene()
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject, m_pStartScene);
 
 
 
@@ -812,7 +812,7 @@ void CSceneMgr::InitStartScene()
 	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 	pObject->SetActive(false);
 
-	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject, m_pStartScene);
 
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
@@ -878,7 +878,7 @@ void CSceneMgr::InitMetorScene()
 		pMainCam->Camera()->SetFar(100000.f);
 		pMainCam->Camera()->SetLayerAllCheck();
 
-		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pMainCam, m_pMetorScene);
 
 		CGameObject* pObject = nullptr;
 
@@ -893,7 +893,7 @@ void CSceneMgr::InitMetorScene()
 		pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
 		pObject->Light3D()->SetLightRange(1000.f);
 		pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject);
+		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject, m_pMetorScene);
 
 
 
@@ -914,7 +914,7 @@ void CSceneMgr::InitMetorScene()
 		pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
 		pObject->Transform()->SetLocalScale(Vec3(60.f, 60.f, 60.f));
 		pObject->MeshRender()->SetDynamicShadow(true);
-		m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
+		m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pMetorScene);
 
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\LMetorCenter.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
@@ -940,6 +940,8 @@ void CSceneMgr::InitMetorScene()
 			pObject->AddComponent(new CCollider3D);
 			pObject->AddComponent(new MeteorScript);
 			pObject->GetScript<MeteorScript>()->SetType(MAP_TYPE::GROUND);
+			pObject->GetScript<MeteorScript>()->SetMapType((GROUND_TYPE)(tile.GetMState()-6));
+
 			pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 			pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 			pObject->FrustumCheck(false);
@@ -948,7 +950,7 @@ void CSceneMgr::InitMetorScene()
 			pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObject->MeshRender()->SetDynamicShadow(true);
 			//pObject->Animator3D()->SetClipIndex(1);
-			m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject);
+			m_pMetorScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pMetorScene);
 
 		}
 
@@ -1027,7 +1029,7 @@ void CSceneMgr::InitMetorScene()
 		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
 		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
-		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject);
+		m_pMetorScene->FindLayer(L"Default")->AddGameObject(pObject, m_pMetorScene);
 		//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 		//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 		//m_pStartScene->Awake();
@@ -1091,7 +1093,7 @@ void CSceneMgr::InitJumpingScene()
 	pMainCam->Camera()->SetFar(100000.f);
 	pMainCam->Camera()->SetLayerAllCheck();
 
-	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pMainCam, m_pJumpingScene);
 
 	CGameObject* pObject = nullptr;
 
@@ -1106,7 +1108,7 @@ void CSceneMgr::InitJumpingScene()
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pJumpingScene);
 
 
 
@@ -1130,7 +1132,7 @@ void CSceneMgr::InitJumpingScene()
 		pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 		pObject->MeshRender()->SetDynamicShadow(true);
 		//pObject->Animator3D()->SetClipIndex(1);
-		m_pJumpingScene->FindLayer(L"Racing")->AddGameObject(pObject);
+		m_pJumpingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pJumpingScene);
 	}
 
 
@@ -1166,7 +1168,7 @@ void CSceneMgr::InitJumpingScene()
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-0, 0, -0));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(1, 1, 1));
 			pObstaclesB->MeshRender()->SetDynamicShadow(true);
-			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pJumpingScene);
 		}
 	}
 
@@ -1196,7 +1198,7 @@ void CSceneMgr::InitJumpingScene()
 			pObstaclesB->Transform()->SetLocalPos(Vec3(-100, 0, 0));
 			pObstaclesB->Transform()->SetLocalScale(Vec3(5.f, 5.f, 2.5f));
 			pObstaclesB->MeshRender()->SetDynamicShadow(true);
-			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB);
+			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pJumpingScene);
 		}
 	}
 	pObject = new CGameObject;
@@ -1209,7 +1211,7 @@ void CSceneMgr::InitJumpingScene()
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
-	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pJumpingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pJumpingScene);
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	m_pJumpingScene->Awake();
@@ -1270,7 +1272,7 @@ void CSceneMgr::InitAwardScene()
 	pMainCam->Camera()->SetLayerAllCheck();
 	//pMainCam->Transform()->SetLocalPos(Vec3());
 
-	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pMainCam);
+	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pMainCam, m_pAwardScene);
 
 	CGameObject* pObject = nullptr;
 
@@ -1285,7 +1287,7 @@ void CSceneMgr::InitAwardScene()
 	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
 	pObject->Light3D()->SetLightRange(1000.f);
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject, m_pAwardScene);
 
 
 	//.bin으로 읽어오기
@@ -1321,7 +1323,7 @@ void CSceneMgr::InitAwardScene()
 			pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
 		}
 		//pObject->Animator3D()->SetClipIndex(1);
-		m_pAwardScene->FindLayer(L"Award")->AddGameObject(pObject);
+		m_pAwardScene->FindLayer(L"Award")->AddGameObject(pObject, m_pAwardScene);
 	}
 
 
@@ -1341,7 +1343,7 @@ void CSceneMgr::InitAwardScene()
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
-	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject);
+	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject, m_pAwardScene);
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 	m_pAwardScene->Awake();
@@ -1359,8 +1361,11 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pSurvival = CResMgr::GetInst()->Load<CTexture>(L"Survival", L"Texture\\SSurvival.png");
 	Ptr<CTexture> pRacing = CResMgr::GetInst()->Load<CTexture>(L"Racing", L"Texture\\SRacing.png");
 	Ptr<CTexture> pMatching = CResMgr::GetInst()->Load<CTexture>(L"Matching", L"Texture\\Matching.png");
-	Ptr<CTexture> pLoading = CResMgr::GetInst()->Load<CTexture>(L"Loading", L"Texture\\Loading.png");
-
+	Ptr<CTexture> pMatching0 = CResMgr::GetInst()->Load<CTexture>(L"Matching0", L"Texture\\Matching0.png");
+	Ptr<CTexture> pMatching1 = CResMgr::GetInst()->Load<CTexture>(L"Matching1", L"Texture\\Matching1.png");
+	Ptr<CTexture> pMatching2 = CResMgr::GetInst()->Load<CTexture>(L"Matching2", L"Texture\\Matching2.png");
+	Ptr<CTexture> pMatching3 = CResMgr::GetInst()->Load<CTexture>(L"Matching3", L"Texture\\Matching3.png");
+	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 
 
 	CGameObject* pUICam = nullptr;
@@ -1376,7 +1381,12 @@ void CSceneMgr::InitUI()
 	pUICam->Camera()->SetLayerAllCheck();
 	pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
 	pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pUICam);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pStartScene);
+	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pRacingScene);
+	m_pMetorScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pMetorScene);
+	m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pJumpingScene);
+	m_pAwardScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pAwardScene);
+
 
 	CGameObject* pObject = new CGameObject;
 
@@ -1390,7 +1400,7 @@ void CSceneMgr::InitUI()
 
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 20.f));
-	pObject->Transform()->SetLocalScale(Vec3(20.f, 20.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(30.f, 30.f, 1.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
@@ -1399,7 +1409,11 @@ void CSceneMgr::InitUI()
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
+	m_pMetorScene->FindLayer(L"UI")->AddGameObject(pObject, m_pMetorScene);
+	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
+	m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pJumpingScene);
+	m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pAwardScene);
 
 
 	pObject = new CGameObject;
@@ -1410,17 +1424,17 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CUIScript);
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::SELECT_BUTTON);
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(-winsize.x/2, winsize.y/8, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(200.f, 100.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x/4, winsize.y/12, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pStartButton.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 
 
 	pObject = new CGameObject;
@@ -1433,9 +1447,9 @@ void CSceneMgr::InitUI()
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::WINDOW);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0, 600, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0, winsize.y/3, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(900.f, 450.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x*1.5, winsize.y/2, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1444,7 +1458,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 
 
 	pObject = new CGameObject;
@@ -1456,9 +1470,9 @@ void CSceneMgr::InitUI()
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MODE_RACING);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(-200.f, 580.f, 5.f));
+	pObject->Transform()->SetLocalPos(Vec3(-winsize.x/3, 580.f, 5.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(360.f, 120.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x/2, winsize.y/10, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1467,7 +1481,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 
 
 	pObject = new CGameObject;
@@ -1479,9 +1493,9 @@ void CSceneMgr::InitUI()
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MODE_SURVIVAL);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(200, 580.f, 2.f));
+	pObject->Transform()->SetLocalPos(Vec3(winsize.x/3, 580.f, 2.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(360.f, 120.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x / 2, winsize.y / 10, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1490,7 +1504,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching");
@@ -1503,7 +1517,7 @@ void CSceneMgr::InitUI()
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 2.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(600.f, 300.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x/2, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1512,29 +1526,95 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 
 	pObject = new CGameObject;
-	pObject->SetName(L"Loading");
+	pObject->SetName(L"Matching0");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
 	pObject->AddComponent(new CUIScript);
-	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::LOADING);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING0);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 10.f));
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(300.f, 300.f, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x / 2, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
-	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pLoading.GetPointer());
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pMatching0.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+
+	pObject = new CGameObject;
+	pObject->SetName(L"Matching1");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING1);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x / 2, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pMatching1.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->SetActive(false);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+
+	pObject = new CGameObject;
+	pObject->SetName(L"Matching2");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING2);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x / 2, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pMatching2.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->SetActive(false);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+
+	pObject = new CGameObject;
+	pObject->SetName(L"Matching3");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING3);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x / 2, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pMatching3.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->SetActive(false);
+	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 
 
 	Ptr<CTexture> pNums[10];
@@ -1570,7 +1650,7 @@ void CSceneMgr::InitUI()
 		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 		pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 		pObject->SetActive(false);
-		m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject);
+		m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
 	}
 
 
@@ -1708,7 +1788,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pObject->SetActive(true);
 	pObject->MeshRender()->SetDynamicShadow(true);
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	curscene->FindLayer(L"Player")->AddGameObject(pObject, false);
+	curscene->FindLayer(L"Player")->AddGameObject(pObject, curscene,false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 
@@ -1724,13 +1804,13 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 	pObject->MeshRender()->SetDynamicShadow(true);
-	curscene->FindLayer(L"Player")->AddGameObject(pObject, false);
+	curscene->FindLayer(L"Player")->AddGameObject(pObject, curscene, false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 	//pPlayer->AddChild(pObject);
 	pPlayer->GetScript<CPlayerScript>()->SetRunPlayer(pObject);
 
-	curscene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
+	curscene->FindLayer(L"Player")->AddGameObject(pPlayer, curscene, false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
 
 	return pPlayer;

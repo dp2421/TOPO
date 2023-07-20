@@ -53,7 +53,7 @@ void CPlayerScript::Awake()
 
 	m_pParticle->FrustumCheck(false);
 	m_pParticle->Transform()->SetLocalPos(Vec3(1.5f, 150.f, 0.f));
-	pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle);
+	pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle, pCurScene);
 
 	GetObj()->AddChild(m_pParticle);
 }

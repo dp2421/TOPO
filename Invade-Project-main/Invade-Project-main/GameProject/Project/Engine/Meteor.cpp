@@ -4,27 +4,31 @@
 
 void MeteorScript::Update()
 {
-
+	if (m_iType == GROUND)
+	{
+		Vec3 pObj = Transform()->GetLocalPos();
+		GroundPos = pObj;
+	}
 	m_Time += CTimeMgr::GetInst()->GetDeltaTime()*0.3;
-
+	m_iMapType;
 	if (m_iType == MAP_TYPE::GROUND)
 	{
-		////if (collide)
-		////{
-		//	if (m_Time < 2.0f)
-		//	{
+		if (m_iMapType==CENTER)
+		{
+			if (m_Time < 2.0f)
+			{
 
-		//	}
-		//	else if (m_Time > 2.0f && m_Time < 4.0f)
-		//	{
-		//		float saking = sin(100.0f * m_Time);
-		//		Transform()->SetLocalPos(Vec3(GroundPos.x + saking, GroundPos.y, GroundPos.z + saking));
-		//	}
-		//	else
-		//	{
-		//		SetActive(false);
-		//	}
-		////}
+			}
+			else if (m_Time > 2.0f && m_Time < 6.0f)
+			{
+				float saking = sin(100.0f * m_Time);
+				Transform()->SetLocalPos(Vec3(GroundPos.x + saking, GroundPos.y, GroundPos.z + saking));
+			}
+			else
+			{
+				GetObj()->SetActive(false);
+			}
+		}
 
 	}
 	else
@@ -41,16 +45,16 @@ void MeteorScript::Update()
 		if (m_fFrmSpeed > 1.0f)
 			m_fFrmSpeed = 0.f;
 
-		if (m_curTarget == TargetMap::WATER)
-			pTarget = m_TargetPos[TargetMap::WATER];
-		else if (m_curTarget == TargetMap::GRASS)
-			pTarget = m_TargetPos[TargetMap::GRASS];
-		else if (m_curTarget == TargetMap::STONE)
-			pTarget = m_TargetPos[TargetMap::STONE];
-		else if (m_curTarget == TargetMap::WOOD)
-			pTarget = m_TargetPos[TargetMap::WOOD];
-		else if (m_curTarget == TargetMap::CENTER)
-			pTarget = m_TargetPos[TargetMap::CENTER];
+		if (m_curTarget == GROUND_TYPE::WATER)
+			pTarget = m_TargetPos[GROUND_TYPE::WATER];
+		else if (m_curTarget == GROUND_TYPE::GRASS)
+			pTarget = m_TargetPos[GROUND_TYPE::GRASS];
+		else if (m_curTarget == GROUND_TYPE::STONE)
+			pTarget = m_TargetPos[GROUND_TYPE::STONE];
+		else if (m_curTarget == GROUND_TYPE::WOOD)
+			pTarget = m_TargetPos[GROUND_TYPE::WOOD];
+		else if (m_curTarget == GROUND_TYPE::CENTER)
+			pTarget = m_TargetPos[GROUND_TYPE::CENTER];
 
 
 		Vec3 vPos = Vec3::Lerp(OriginPos, pTarget, m_fFrmSpeed);
@@ -63,17 +67,13 @@ MeteorScript::MeteorScript() :CScript((UINT)SCRIPT_TYPE::METEORSCRIPT), m_iDir(1
 {
 
 #ifdef  LOCALPLAY
-	m_TargetPos[TargetMap::WATER] = Vec3(-792, 10, 496);
-	m_TargetPos[TargetMap::GRASS] = Vec3(796, 10, -342);
-	m_TargetPos[TargetMap::STONE] = Vec3(407, 10, 706);
-	m_TargetPos[TargetMap::WOOD] = Vec3(-402, 10, -699);
-	m_TargetPos[TargetMap::CENTER] = Vec3(0, 0, 0);
+	m_TargetPos[GROUND_TYPE::WATER] = Vec3(-792, 10, 496);
+	m_TargetPos[GROUND_TYPE::GRASS] = Vec3(796, 10, -342);
+	m_TargetPos[GROUND_TYPE::STONE] = Vec3(407, 10, 706);
+	m_TargetPos[GROUND_TYPE::WOOD] = Vec3(-402, 10, -699);
+	m_TargetPos[GROUND_TYPE::CENTER] = Vec3(0, 0, 0);
 #endif //  LOCALPLAY
-	if (m_iType == METEOR)
-	{
-		Vec3 pObj = Transform()->GetLocalPos();
-		GroundPos = pObj;
-	}
+
 }
 
 MeteorScript::~MeteorScript()

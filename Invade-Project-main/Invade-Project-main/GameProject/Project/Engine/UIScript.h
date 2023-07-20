@@ -1,5 +1,6 @@
 #pragma once
 #include "Script.h"
+#include "GameFramework.h"
 
 enum UI_TYPE
 {
@@ -9,7 +10,10 @@ enum UI_TYPE
     MODE_RACING,
     MODE_SURVIVAL,
     MATCHING,
-    LOADING,
+    MATCHING0,
+    MATCHING1,
+    MATCHING2,
+    MATCHING3,
     NUMBER,
 };
 

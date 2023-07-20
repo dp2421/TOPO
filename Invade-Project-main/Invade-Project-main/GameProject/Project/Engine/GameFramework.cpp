@@ -27,7 +27,7 @@ CGameFramework::~CGameFramework() {
 
 int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWindow)
 {
-
+	m_WinSize = Vec2(_resolution.fHeight, _resolution.fWidth);
 	m_hMainhWnd = _hWnd;
 	ChangeWindowSize(m_hMainhWnd, _resolution);
 	ShowWindow(_hWnd, true);
@@ -62,11 +62,8 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitJumpingScene();
 	CSceneMgr::GetInst()->InitUI();
 	CSceneMgr::GetInst()->InitScene();
-
-	CSceneMgr::GetInst()->InitScene();
 	//CSceneMgr::GetInst()->ChangeScene();
-	//CSceneMgr::GetInst()->InitAwardScene();
-	CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::RACING);
+	//CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::METOR);
 
 	NetworkMgr::GetInst()->Init();
 	

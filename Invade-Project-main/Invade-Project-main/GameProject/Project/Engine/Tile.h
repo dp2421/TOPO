@@ -85,5 +85,6 @@ public:
 
     wstring GetPathName(); //for load mdat file, convert enum->wstring
     wstring GetMetorPathName();
-    LayerState GetState() { return data.state; };
+    LayerState GetState() { return data.state; }
+    MetorLayerState GetMState() { return Mdata.state;}
 };

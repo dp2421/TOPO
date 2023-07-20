@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Scene.h"
 class CGameObject;
 class CLayer:public CEntity
 {
@@ -9,7 +10,7 @@ private:
 	int m_iLayerIdx;
 
 public:
-	void AddGameObject(CGameObject* _pObject, bool _bMoveAll = false);
+	void AddGameObject(CGameObject* _pObject, CScene* curscene, bool _bMoveAll = false);
 	int GetLayerIdx() { return m_iLayerIdx; }
 	const vector<CGameObject*>& GetParentObj()const { return m_vecParentObj; }
 	const vector<CGameObject*>& GetObjects()const { 

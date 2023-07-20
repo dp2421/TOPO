@@ -6,7 +6,8 @@
 
 void CUIScript::Update()
 {
-	mousepos = Vec3(540 - CKeyMgr::GetInst()->GetMousePos().x, 540 + 310 - CKeyMgr::GetInst()->GetMousePos().y, 0);
+	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
+	mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
 	if (Transform()->IsCasting(mousepos) && CKeyMgr::GetInst()->GetClicked() == true)
 		m_isClicked = true;
 
@@ -20,14 +21,10 @@ void CUIScript::Update()
 		}
 		else if (m_iType == MODE_RACING)
 		{
-			//CRenderMgr::GetInst()->SetSceneChanged(true);
-			//CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
 			m_isMatching = true;
 		}
 		else if (m_iType == MODE_SURVIVAL)
 		{
-			//CRenderMgr::GetInst()->SetSceneChanged(true);
-			//CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
 			m_isMatching = true;
 		}
 		m_isClicked = false;
@@ -49,7 +46,8 @@ void CUIScript::UIRender()
 	CGameObject* curObj = GetObj();
 	if (curObj->GetName() == (L"Cursor Object"))
 	{
-		Vec3 mousepos = Vec3(540 - CKeyMgr::GetInst()->GetMousePos().x, 540 + 310 - CKeyMgr::GetInst()->GetMousePos().y, 0);
+		Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
+		Vec3 mousepos = Vec3(winsize.x/1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y/1.8  - CKeyMgr::GetInst()->GetMousePos().y, 0);
 		curObj->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
 	}
 
@@ -75,16 +73,16 @@ void CUIScript::UIRender()
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
 			{
-				if (f_MatchingTime < 10.f)
+				if (f_MatchingTime < 4.f)
 				{
 					obj->SetActive(true);
 					for (CGameObject* Loadobj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 					{
-						if (Loadobj->GetScript<CUIScript>()->GetType() == UI_TYPE::LOADING)
+						if (Loadobj->GetScript<CUIScript>()->GetType() == (UI_TYPE)((int)f_MatchingTime+6))
 						{
 							Loadobj->SetActive(true);
 							Vec3 vRot = Transform()->GetLocalRot();
-							vRot.z = XMConvertToRadians(f_MatchingTime)*10;
+							vRot.z = XMConvertToRadians(f_MatchingTime)*50;
 							//Loadobj->Transform()->SetLocalRot(vRot);
 
 						}

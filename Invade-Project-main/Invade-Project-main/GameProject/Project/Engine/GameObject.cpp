@@ -131,7 +131,7 @@ void CGameObject::ClearParent(CGameObject* _pNextParent)
 			{
 				CLayer* pCurLayer = CSceneMgr::GetInst()->GetCurScene()->GetLayer(m_iLayerIdx);
 				m_iLayerIdx = -1;
-				pCurLayer->AddGameObject(this);
+				pCurLayer->AddGameObject(this, CSceneMgr::GetInst()->GetCurScene());
 			}
 		}
 	}
