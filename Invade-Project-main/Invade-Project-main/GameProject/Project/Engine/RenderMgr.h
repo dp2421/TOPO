@@ -49,7 +49,7 @@ public:
 	void Render_Lights();
 	void Merge_Light();
 	void PlaySound();
-
+	void Render_PostEffect();
 	//void Render_OutLine();
 private:
 

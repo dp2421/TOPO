@@ -1290,7 +1290,7 @@ void CSceneMgr::InitAwardScene()
 
 	//.bin으로 읽어오기
 	tiles.clear();
-	const wstring FileName = { L"AwardMap.bin" };
+	const wstring FileName = { L"NewAwardPos.bin" };
 	LoadMapInfoFromFile(FileName, tiles);
 	for (auto& tile : tiles)
 	{
@@ -1302,13 +1302,15 @@ void CSceneMgr::InitAwardScene()
 		pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
 		pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
 		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalScale(tile.GetTileScale());
+
+		pObject->Transform()->SetLocalScale(tile.GetTileScaleV2());
 		pObject->Transform()->SetLocalPos(tile.GetTilePos());
 		pObject->MeshRender()->SetDynamicShadow(true);
 		//pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
 		if (tile.GetState() == LayerState::LAwardGrs)
 		{
 			pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+			pObject->Transform()->SetLocalScale(Vec3(1.f,1.f,1.f));
 		}
 		else if (tile.GetState() == LayerState::LAwardTr)
 		{
@@ -1316,7 +1318,7 @@ void CSceneMgr::InitAwardScene()
 		}
 		else
 		{
-			pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
+			pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 0.f));
 		}
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pAwardScene->FindLayer(L"Award")->AddGameObject(pObject);
@@ -1325,7 +1327,7 @@ void CSceneMgr::InitAwardScene()
 
 #if LOCALPLAY
 	//m_pCurScene = m_pAwardScene;
-	//AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
+	AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
 #else
 #endif
 
@@ -1673,7 +1675,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f)); //10.f-FLOORHEIGHT
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)

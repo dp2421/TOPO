@@ -45,7 +45,7 @@ VS_OUTPUT VSQuad(uint vI : SV_VertexId)
     float2 texcoord = float2((vI << 1) & 2, vI & 2);
     output.vUV = texcoord;
 
-    output.Position = float4(texcoord.x * 2 - 1, -texcoord.y * 2 + 1, 0, 1);
+    output.Position = float4(texcoord.x * 2 - 1, -texcoord.y * 2 + 1, 0, 1); //-1~1 사이로 정규화
     return output;
 }
 

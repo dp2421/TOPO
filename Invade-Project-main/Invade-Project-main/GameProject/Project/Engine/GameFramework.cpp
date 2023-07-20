@@ -42,12 +42,12 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CDevice::GetInst()->CreateConstantBuffer(L"LIGHT2D", sizeof(tLight2DInfo), 1, CONST_REGISTER::b3,true);
 	CDevice::GetInst()->CreateConstantBuffer(L"LIGHT3D", sizeof(tLight3DInfo), 1, CONST_REGISTER::b4, true);
 	CDevice::GetInst()->CreateConstantBuffer(L"GLOBAL VALUE", sizeof(tGlobalValue), 1, CONST_REGISTER::b5);
+	CDevice::GetInst()->CreateConstantBuffer(L"POSTEFFECT", sizeof(tGlobalValue), 1, CONST_REGISTER::b6);
 
 	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b3), 0);
 	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b4), 0);
-
-
-	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b5), 0);
+	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b5), 0); 
+	CDevice::GetInst()->SetGlobalConstBufferToRegister(CDevice::GetInst()->GetCB(CONST_REGISTER::b6), 0);
 
 	CPathMgr::Init();
 	CKeyMgr::GetInst()->Init();
@@ -66,7 +66,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitScene();
 	//CSceneMgr::GetInst()->ChangeScene();
 	//CSceneMgr::GetInst()->InitAwardScene();
-	//CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::RACING);
+	CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::RACING);
 
 	NetworkMgr::GetInst()->Init();
 	

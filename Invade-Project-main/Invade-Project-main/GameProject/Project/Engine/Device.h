@@ -64,6 +64,7 @@ public:
 	void Render_Start(float(&_arrFloat)[4]);
 	void ChangeScene();
 	void Render_Present();
+	void Render_PostEffect();
 	void WaitForFenceEvent();
 
 	

@@ -20,10 +20,10 @@ void CPlayerScript::Awake()
 		m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
 		m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
 		m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
-		m_pParticle->ParticleSystem()->SetMaxLifeTime(2.0f);
+		m_pParticle->ParticleSystem()->SetMaxLifeTime(3.0f);
 		m_pParticle->ParticleSystem()->SetMinLifeTime(0.5f);
 		m_pParticle->ParticleSystem()->SetStartScale(6.f);
-		m_pParticle->ParticleSystem()->SetEndScale(5.f);
+		m_pParticle->ParticleSystem()->SetEndScale(9.f);
 
 		break;
 	case ELEMENT_TYPE::FIRE:
@@ -52,7 +52,7 @@ void CPlayerScript::Awake()
 	}
 
 	m_pParticle->FrustumCheck(false);
-	m_pParticle->Transform()->SetLocalPos(Vec3(0.5f, 0.f, 0.f));
+	m_pParticle->Transform()->SetLocalPos(Vec3(1.5f, 150.f, 0.f));
 	pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle);
 
 	GetObj()->AddChild(m_pParticle);
@@ -60,19 +60,6 @@ void CPlayerScript::Awake()
 
 void CPlayerScript::Update()
 {
-
-	//if (KEY_TAB(KEY_TYPE::KEY_LBTN)) {
-	//	CGameObject* pObj = GetObj()->GetChild()[0];
-	//	Vec3 vPos = pObj->Transform()->GetLocalPos();
-	//	Vec3 vRight = pObj->Transform()->GetLocalDir(DIR_TYPE::RIGHT);
-	//	Vec3 vFront = pObj->Transform()->GetLocalDir(DIR_TYPE::FRONT);
-	//	m_vRestorePos = vPos;
-	//	vPos += vRight * 10.f;
-	//	vPos += vFront * 10.f;
-	//	pObj->Transform()->SetLocalPos(vPos);
-	//	m_fArrowSpeed = 200.f;
-
-	//}
 
 #if LOCALPLAY
 #else

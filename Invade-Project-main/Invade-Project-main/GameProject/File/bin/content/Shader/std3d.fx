@@ -12,6 +12,13 @@
 // g_tex_1 : Normalmap Texture
 // BlendState : false
 // ==========================
+
+cbuffer Parameters : register(b0)
+{
+    float4 sampleOffsets[16];
+    float4 sampleWeights[16];
+};
+
 struct VS_STD3D_INPUT
 {
     float3 vPos : POSITION;
@@ -111,12 +118,12 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
         dot(float3(c10.r, c11.r, c12.r), sobelY[1]) +
         dot(float3(c20.r, c21.r, c22.r), sobelY[2]);
 
-    float3 sobel = sqrt(gx * gx + gy * gy);
+    float3 sobel = (gx * gx + gy * gy); //sqrt할수록 전체적으로 밝아짐
     output.vTarget0 = float4(sobel, 1.f);
 
+    //
 
     float4 vCartoon;
-
 
     // 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
 
@@ -152,18 +159,18 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
         vCartoon = float4(stepColor, 1.f);
     }
 
-    output.vTarget0 = vCartoon;
+    //output.vTarget0 = vCartoon;
 
-    //아래주석 풀면 텍스쳐내부 외곽라인 검은색으로 출력됨
-    //if (output.vTarget0.x <= 0.65f && output.vTarget0.y <= 0.65f && output.vTarget0.z <= 0.65f)
-    //{
-    //    output.vTarget0 = vCartoon;
-    //}
-    //else
-    //{
-    //    output.vTarget0 = float4(0, 0, 0, 1);
-    //}
-
+    //////아래주석 풀면 텍스쳐내부 외곽라인 검은색으로 출력됨
+    if (output.vTarget0.x <= 0.95f && output.vTarget0.y <= 0.95f && output.vTarget0.z <= 0.95f)
+    {
+        output.vTarget0 = vCartoon;
+    }
+    else
+    {
+        output.vTarget0 = float4(0, 0, 0, 1);
+    }
+    // ----------------------------------
 
     float3 vViewNormal = _in.vViewNormal;
     // 노말맵이 있는경우
