@@ -50,7 +50,7 @@ public:
     virtual ~CUIScript();
     virtual void Update();
     void UIRender();
-
+    void MatchingComplete();
     void NumScript(int num, float offsetx, float offsety);
     void SetType(UI_TYPE _iState) { m_iType = _iState; }
     UI_TYPE GetType() { 

@@ -137,14 +137,7 @@ void CUIScript::UIRender()
 					obj->SetActive(false);
 					f_MatchingTime = 0.f;
 					m_isMatching = false;
-					CRenderMgr::GetInst()->SetSceneChanged(true);
-					if (m_iType == MODE_RACING)
-						CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
-					else if (m_iType == MODE_SURVIVAL)
-					{
-						int random = rand() % 2 + 2;
-						CRenderMgr::GetInst()->SetSceneType((SCENE_TYPE)random);
-					}
+					MatchingComplete();
 
 				}
 			}
@@ -170,6 +163,18 @@ void CUIScript::UIRender()
 			curObj->GetScript<CUIScript>()->NumScript(34, -100.f, 700);
 		}
 
+	}
+}
+
+void CUIScript::MatchingComplete()
+{
+	CRenderMgr::GetInst()->SetSceneChanged(true);
+	if (m_iType == MODE_RACING)
+		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
+	else if (m_iType == MODE_SURVIVAL)
+	{
+		int random = rand() % 2 + 1;
+		CRenderMgr::GetInst()->SetSceneType((SCENE_TYPE)random);
 	}
 }
 
