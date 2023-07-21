@@ -73,19 +73,62 @@ void CUIScript::UIRender()
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
 			{
-				if (f_MatchingTime < 4.f)
+				if (f_MatchingTime < 10.f)
 				{
 					obj->SetActive(true);
 					for (CGameObject* Loadobj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 					{
-						if (Loadobj->GetScript<CUIScript>()->GetType() == (UI_TYPE)((int)f_MatchingTime+6))
+						
+						int temp = (int)f_MatchingTime + 6;
+						if (temp > 9)
+							temp -= 3;
+						switch (temp)
 						{
-							Loadobj->SetActive(true);
-							Vec3 vRot = Transform()->GetLocalRot();
-							vRot.z = XMConvertToRadians(f_MatchingTime)*50;
-							//Loadobj->Transform()->SetLocalRot(vRot);
+						case 6:
+							if (Loadobj->GetScript<CUIScript>()->GetType() == 6)
+							{
+								Loadobj->SetActive(true);
+							}
+							else if (Loadobj->GetScript<CUIScript>()->GetType() == 7 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 8 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 9)
+								Loadobj->SetActive(false);
+							break;
+						case 7:
+							if (Loadobj->GetScript<CUIScript>()->GetType() == 7)
+							{
+								Loadobj->SetActive(true);
+							}
+							else if (Loadobj->GetScript<CUIScript>()->GetType() == 6 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 8 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 9)
+								Loadobj->SetActive(false);
 
+							break;
+						case 8:
+							if (Loadobj->GetScript<CUIScript>()->GetType() == 8)
+							{
+								Loadobj->SetActive(true);
+							}
+							else if (Loadobj->GetScript<CUIScript>()->GetType() == 7 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 6 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 9)
+								Loadobj->SetActive(false);
+							break;
+						case 9:
+							if (Loadobj->GetScript<CUIScript>()->GetType() == 9)
+							{
+								Loadobj->SetActive(true);
+							}
+							else if (Loadobj->GetScript<CUIScript>()->GetType() == 7 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 8 ||
+								Loadobj->GetScript<CUIScript>()->GetType() == 6)
+								Loadobj->SetActive(false);
+							break;
+						default:
+							break;
 						}
+
 					}
 
 				}

@@ -15,7 +15,7 @@ enum UI_TYPE
     MATCHING2,
     MATCHING3,
     NUMBER,
-};
+}; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
 enum NUM_TYPE
 {

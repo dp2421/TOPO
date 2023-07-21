@@ -1534,7 +1534,7 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
 	pObject->AddComponent(new CUIScript);
-	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING0);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING3);
 
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
@@ -1556,7 +1556,7 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
 	pObject->AddComponent(new CUIScript);
-	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING1);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING2);
 
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
@@ -1578,7 +1578,7 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
 	pObject->AddComponent(new CUIScript);
-	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING2);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING1);
 
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
@@ -1600,7 +1600,7 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CMeshRender);
 	pObject->AddComponent(new CCollider2D);
 	pObject->AddComponent(new CUIScript);
-	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING3);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::MATCHING0);
 
 	// Transform ����
 	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 3.f));
