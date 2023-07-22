@@ -141,6 +141,24 @@ void ServerBase::EventThread()
 				event.objID = -1;
 				break;
 			}
+			case OverlappedType::MatchingRacingComplete:
+			{
+				OverlappedEx* overlappedEx = new OverlappedEx;
+				overlappedEx->type = event.eventType;
+
+				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
+				event.objID = -1;
+				break;
+			}
+			case OverlappedType::MatchingObstacleComplete:
+			{
+				OverlappedEx* overlappedEx = new OverlappedEx;
+				overlappedEx->type = event.eventType;
+
+				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
+				event.objID = -1;
+				break;
+			}
 			default:
 			{
 				cout << (int)event.eventType << " EVENT TYPE ERROR!" << endl;
@@ -255,7 +273,7 @@ void ServerBase::InitMapInfo()
 
 void ServerBase::InitAI()
 {
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 		int newID = clientID++;
 
@@ -318,7 +336,7 @@ void ServerBase::Recv(const int id, DWORD recvByte, OverlappedEx* overlappedEx)
 		{
 			break;
 		}
-	}
+	}	
 	clients[id]->prevRemainData = remainData;
 	if (remainData > 0) 
 	{
@@ -332,10 +350,26 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
 	switch (overlappedEx->type)
 	{
-	case OverlappedType::MatchingStart:
+	case OverlappedType::MatchingRacingStart:
+	{
+
 		break;
-	case OverlappedType::MatchingComplete:
+	}
+	case OverlappedType::MatchingObstacleStart:
+	{
+
 		break;
+	}
+	case OverlappedType::MatchingRacingComplete:
+	{
+		matchingManager->CompleteMatching(id, MapType::Racing);
+		break;
+	}
+	case OverlappedType::MatchingObstacleComplete:
+	{
+		matchingManager->CompleteMatching(id, MapType::Obstacle);
+		break;
+	}
 	case OverlappedType::RotateObs:
 	{
 		for (auto& obs : obstacles)
@@ -384,7 +418,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		{
 			{
 				lock_guard<mutex> lock{ client->lock };
-				client->velocity.y -= GRAVITY;
+				client->velocity.y -= GRAVITY * 3;
 			}
 			if (client->isMove)
 			{
@@ -394,171 +428,188 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				client->velocity.z = delta.z;
 			}
 
-			if (client->velocity.y < 0)
+			if (client->mapType == MapType::Racing)
 			{
-				for (auto& tile : tiles)
+				// 바닥 충돌체크
+				if (client->velocity.y != 0)
 				{
-					if (client->position.y > 0)
+					for (auto& tile : tiles)
 					{
-						if (tile.data.state == LayerState::L1Water ||
-							tile.data.state == LayerState::L1Part1 ||
-							tile.data.state == LayerState::L1Part2 ||
-							tile.data.state == LayerState::L1Part3 ||
-							tile.data.state == LayerState::L1Part4)
-							continue;
-					}
-					if (client->collider.isCollisionAABB(tile.collider))
-					{
-						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
-
-						lock_guard<mutex> lock{ client->lock };
-						client->position.y = tile.collider.position->y;
-						client->velocity.y = 0;
-						if (client->isJump)
+						if (client->position.y > 0)
 						{
-							client->isJump = false;
+							if (tile.data.state == LayerState::L1Water ||
+								tile.data.state == LayerState::L1Part1 ||
+								tile.data.state == LayerState::L1Part2 ||
+								tile.data.state == LayerState::L1Part3 ||
+								tile.data.state == LayerState::L1Part4)
+								continue;
 						}
-						break;
-					}
-				}
-			}
-
-			if (client->velocity.x != 0 || client->velocity.z != 0)
-			{
-				for (auto& obs : obstacles)
-				{
-					if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
-					{
-						if (client->collider.isCollisionAABB(obs.collider[0]))
+						if (client->collider.isCollisionAABB(tile.collider))
 						{
-							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
-							//auto boxcenter = obs.collider[0].getBoundingbox().Center;
-							auto clientCenter = client->collider.getBoundingbox().Center;
-							XMVECTOR center = XMLoadFloat3(&clientCenter);
-							XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
+							if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
 
-							if (XMVectorGetX(faceNormal) < 0.0f)
+							lock_guard<mutex> lock{ client->lock };
+							client->position.y = tile.collider.position->y;
+							client->velocity.y = 0;
+							if (client->isJump)
 							{
-								lock_guard<mutex> lock{ client->lock };
-								if(client->position.x > obs.position.x)
-									client->position.x = obs.position.x + obs.collider[0].size.x + (PlayerCollider.x);
-								else
-									client->position.x = obs.position.x - obs.collider[0].size.x - (PlayerCollider.x);
-								client->direction.x = 0;
-								client->velocity.x = 0;
-							}
-
-							else if (XMVectorGetY(faceNormal) < 0.0f)
-							{
-								lock_guard<mutex> lock{ client->lock };
-								if (client->position.y > 0)
-								{
-									client->direction.y = 0;
-									client->isJump = false;
-								}
-							}
-
-							else if (XMVectorGetZ(faceNormal) < 0.0f)
-							{
-								lock_guard<mutex> lock{ client->lock };
-								if(client->position.z > obs.position.z)
-									client->position.z = obs.position.z + obs.collider[0].size.z + (PlayerCollider.z + 0.1);
-								else
-									client->position.z = obs.position.z - obs.collider[0].size.z - (PlayerCollider.z + 0.1);
-
-								client->direction.z = 0;
-								client->velocity.z = 0;
+								client->isJump = false;
 							}
 							break;
 						}
 					}
 				}
-			}
-			for (auto& obs : obstacles)
-			{
-				if (obs.data.state == OBSTACLE_STATE::SPIN)
+
+				// 장애물 충돌체크
+				if (client->velocity.x != 0 || client->velocity.z != 0)
 				{
-					obs.collider[1].orientation =
-						DirectX::XMQuaternionRotationRollPitchYaw
-						(
-							0,
-							XMConvertToRadians(obs.rotate),
-							0
-						);
-
-					if (client->collider.isCollisionOBB(obs.collider[1]))
+					for (auto& obs : obstacles)
 					{
-						std::cout << " COLL SPIN " << endl;
-						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
-
-						Vector3 vec = *obs.collider[1].position;
-
-						auto transMat = DirectX::XMMatrixTranslation(-vec.x, -vec.y, -vec.z);
-						auto inverseTransMat = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, XMConvertToRadians(-obs.rotate), 0);
-						auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, XMConvertToRadians(obs.rotate), 0);
-
-						auto calculMat = transMat * rotateMat * originMat;
-						auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
-						cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
-
-						if (calculPos.x > 0 && calculPos.z < 0)
+						if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
 						{
-							calculMat.r[3].m128_f32[2] = -(obs.collider[1].size.z + PlayerCollider.z);
+							if (client->collider.isCollisionAABB(obs.collider[0]))
+							{
+								// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
+								//auto boxcenter = obs.collider[0].getBoundingbox().Center;
+								auto clientCenter = client->collider.getBoundingbox().Center;
+								XMVECTOR center = XMLoadFloat3(&clientCenter);
+								XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
+
+								if (XMVectorGetX(faceNormal) < 0.0f)
+								{
+									lock_guard<mutex> lock{ client->lock };
+									if (client->position.x > obs.position.x)
+										client->position.x = obs.position.x + obs.collider[0].size.x + (PlayerCollider.x);
+									else
+										client->position.x = obs.position.x - obs.collider[0].size.x - (PlayerCollider.x);
+									client->direction.x = 0;
+									client->velocity.x = 0;
+								}
+
+								else if (XMVectorGetY(faceNormal) < 0.0f)
+								{
+									lock_guard<mutex> lock{ client->lock };
+									if (client->position.y > 0)
+									{
+										client->direction.y = 0;
+										client->isJump = false;
+									}
+								}
+
+								else if (XMVectorGetZ(faceNormal) < 0.0f)
+								{
+									lock_guard<mutex> lock{ client->lock };
+									if (client->position.z > obs.position.z)
+										client->position.z = obs.position.z + obs.collider[0].size.z + (PlayerCollider.z + 0.1);
+									else
+										client->position.z = obs.position.z - obs.collider[0].size.z - (PlayerCollider.z + 0.1);
+
+									client->direction.z = 0;
+									client->velocity.z = 0;
+								}
+								break;
+							}
 						}
-						else if(calculPos.x < 0 && calculPos.z > 0)
+					}
+				}
+				for (auto& obs : obstacles)
+				{
+					if (obs.data.state == OBSTACLE_STATE::SPIN)
+					{
+						obs.collider[1].orientation =
+							DirectX::XMQuaternionRotationRollPitchYaw
+							(
+								0,
+								XMConvertToRadians(obs.rotate),
+								0
+							);
+
+						if (client->collider.isCollisionOBB(obs.collider[1]))
 						{
-							calculMat.r[3].m128_f32[2] = (obs.collider[1].size.z + PlayerCollider.z);
+							std::cout << " COLL SPIN " << endl;
+							auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
+
+							Vector3 vec = *obs.collider[1].position;
+
+							auto transMat = DirectX::XMMatrixTranslation(-vec.x, -vec.y, -vec.z);
+							auto inverseTransMat = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+							auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(-obs.rotate));
+							auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
+
+							auto calculMat = transMat * rotateMat * originMat;
+							auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
+							cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
+
+							if (calculPos.x > 0 && calculPos.z < 0)
+							{
+								calculMat.r[3].m128_f32[2] = -(obs.collider[1].size.z + PlayerCollider.z);
+							}
+							else if (calculPos.x < 0 && calculPos.z > 0)
+							{
+								calculMat.r[3].m128_f32[2] = (obs.collider[1].size.z + PlayerCollider.z);
+							}
+
+							auto resultMat = calculMat * inverseRotateMat * inverseTransMat;
+							auto resultPos = Vector3(resultMat.r[3].m128_f32[0], resultMat.r[3].m128_f32[1], resultMat.r[3].m128_f32[2]);
+
+							{
+								lock_guard<mutex> lock{ client->lock };
+								client->position = resultPos;
+							}
 						}
+					}
 
-						auto resultMat = calculMat * inverseRotateMat * inverseTransMat;
-						auto resultPos = Vector3(resultMat.r[3].m128_f32[0], resultMat.r[3].m128_f32[1], resultMat.r[3].m128_f32[2]);
+					if (obs.data.state == OBSTACLE_STATE::PENDULUM)
+					{
+						//auto transMat = XMMatrixTranslation(0, -150, 0);
+						//auto rotMat = XMMatrixRotationRollPitchYaw(0, 0, sinf(XMConvertToRadians(obs.rotate)));
+						//auto invTransMat = XMMatrixTranslation(0, 150, 0);
+						//
+						//auto resultMat = rotMat * transMat;
+						//
+						//obs.collider[0].orientation = XMQuaternionRotationMatrix(resultMat);
 
+						obs.collider[0].orientation =
+							DirectX::XMQuaternionRotationRollPitchYaw
+							(
+								0,
+								0,
+								sinf(XMConvertToRadians(obs.rotate))
+							);
+
+						if (client->collider.isCollisionOBB(obs.collider[0]))
 						{
-							lock_guard<mutex> lock{ client->lock };
-							client->position = resultPos;
+							XMVECTOR vec;
+							float angle;
+							XMFLOAT4 vec4;
+							XMQuaternionToAxisAngle(&vec, &angle, obs.collider[0].orientation);
+							XMStoreFloat4(&vec4, vec);
+							cout << "Coll PENDULUM " << vec4.x << " " << vec4.y << " " << vec4.z << " " << vec4.w << endl;
 						}
 					}
 				}
 
-				if (obs.data.state == OBSTACLE_STATE::PENDULUM)
 				{
-					//auto transMat = XMMatrixTranslation(0, -150, 0);
-					//auto rotMat = XMMatrixRotationRollPitchYaw(0, 0, sinf(XMConvertToRadians(obs.rotate)));
-					//auto invTransMat = XMMatrixTranslation(0, 150, 0);
-					//
-					//auto resultMat = rotMat * transMat;
-					//
-					//obs.collider[0].orientation = XMQuaternionRotationMatrix(resultMat);
-
-					obs.collider[0].orientation =
-						DirectX::XMQuaternionRotationRollPitchYaw
-						(
-							0,
-							0,
-							sinf(XMConvertToRadians(obs.rotate))
-						);
-
-					if (client->collider.isCollisionOBB(obs.collider[0]))
+					lock_guard<mutex> lock{ client->lock };
+					client->position += client->velocity * DeltaTimefloat.count();
+					if (client->position.y < -3000)
 					{
-						XMVECTOR vec;
-						float angle;
-						XMFLOAT4 vec4;
-						XMQuaternionToAxisAngle(&vec, &angle, obs.collider[0].orientation);
-						XMStoreFloat4(&vec4, vec);
-						cout << "Coll PENDULUM " << vec4.x << " " << vec4.y << " " << vec4.z << " " << vec4.w << endl;
+						client->velocity = Vector3::Zero();
+						client->position = Vector3(50, 100, 100);
 					}
 				}
 			}
-
+			else if (client->mapType == MapType::Obstacle)
 			{
-				lock_guard<mutex> lock{ client->lock };
-				client->position += client->velocity * DeltaTimefloat.count();
-				if (client->position.y < -3000)
-				{
-					client->velocity = Vector3::Zero();
-					client->position = Vector3(50, 100, 100);
-				}
+
+			}
+			else if (client->mapType == MapType::Meteo)
+			{
+
+			}
+			else if (client->mapType == MapType::Bomb)
+			{
+
 			}
 		}
 
@@ -604,8 +655,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			clients[id]->degree = XMConvertToDegrees(atan2(x, z)) - 180;
 			if (clients[id]->degree < -360)
 				clients[id]->degree += 360;
-
-			cout << "Degree : " << clients[id]->degree << endl;
 		}
 
 		std::uniform_int_distribution<int> update(1, 10);
@@ -653,31 +702,67 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 	case ClientLogin:
 	{
 		clients[id]->SendServerLoginPacket(id);
+		break;
+	}
+	case ClientMatching:
+	{
+		auto p = reinterpret_cast<ClientMatchingPacket*>(packet);
+		{
+			lock_guard<mutex> lock{ clients[id]->lock };
+			clients[id]->mapType = static_cast<MapType>(p->gameMode);
+		}
+		break;
+	}
+	case ClientReady:
+	{
+		switch (clients[id]->mapType)
+		{
+		case MapType::Lobby:
+		{
+
+		}
+		case MapType::Racing:
+		{
+			unsigned short RPS[66] = { 0, };
+			unsigned short degree[66] = { 0, };
+			int i = 0;
+			for (auto& obs : obstacles)
+			{
+				if (obs.data.state != OBSTACLE_STATE::STOP)
+				{
+					RPS[i] = obs.angularVelocity * 100;
+					degree[i] = obs.rotate * 100;
+					++i;
+				}
+			}
+			clients[id]->SendObstacleRPSPacket(RPS, 66 * sizeof(short));
+			clients[id]->SendObstacleInfoPacket(degree, 66 * sizeof(short));
+
+			Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+			eventQueue.push(event);
+		}
+		case MapType::Result:
+		{
+
+		}
+		// Obstacle
+		default:
+		{
+
+			break;
+		}
+		}
+
 		for (auto& client : clients)
 		{
 			ClientException(client, id);
+			if (client.second->mapType != clients[id]->mapType) continue;
 
-			if(!client.second->isAI)
+			if (!client.second->isAI)
 				client.second->SendAddPlayerPacket(id, clients[id]->position);
 
 			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}
-		unsigned short RPS[66] = { 0, };
-		unsigned short degree[66] = { 0, };
-		int i = 0;
-		for (auto& obs : obstacles)
-		{
-			if (obs.data.state != OBSTACLE_STATE::STOP)
-			{
-				RPS[i] = obs.angularVelocity * 100;
-				degree[i] = obs.rotate * 100;
-				++i;
-			}
-		}
-		clients[id]->SendObstacleRPSPacket(RPS, 66 * sizeof(short));
-		clients[id]->SendObstacleInfoPacket(degree, 66 * sizeof(short));
-		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
-		eventQueue.push(event);
 		break;
 	}
 	case ClientKeyInput:
@@ -694,17 +779,16 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		clients[id]->degree = p->degree;
 		break;
 	}
-	case ClientMatching:
-		
-		break;
 	}
 }
 
 void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 {
+	auto client = clients[id];
+	if (client->mapType == MapType::Lobby) return;
+
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
-	auto client = clients[id];
 	client->degree = packet->degree;
 	switch (key)
 	{

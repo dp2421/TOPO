@@ -44,19 +44,22 @@ enum class MapType : int
 //-------------------------------------------------------------------------------------
 
 constexpr unsigned char ServerLogin = 201;
-constexpr char ServerMatchingOK = 202;
-constexpr char ServerGameStart = 203;
+constexpr unsigned char ServerMatchingOK = 202;
+constexpr unsigned char ServerGameStart = 203;
 
 constexpr unsigned char ServerAddPlayer = 204;
 constexpr unsigned char ServerRemovePlayer = 205;
 constexpr unsigned char ServerPlayerInfo = 206;
 constexpr unsigned char ServerObstacleInfo = 207;
+
 constexpr unsigned char ServerGameTimer = 208;
 constexpr unsigned char ServerGameEnd = 209;
 constexpr unsigned char ServerGameResult = 210;
+
 constexpr unsigned char ServerObstacleRPS = 211;
 constexpr unsigned char ServerSingleObstacleInfo = 212;
 constexpr unsigned char ServerMeteoInfo = 213;
+constexpr unsigned char ServerEnterCoin = 214;
 
 #pragma pack (push, 1)
 
@@ -112,13 +115,16 @@ struct ServerMatchingOKPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	unsigned char gameMode;
+	unsigned char	gameMode;
 };
 
 struct ServerGameStartPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
+
+	// 3, 2, 1, 0
+	unsigned char	count;
 };
 
 struct ServerAddPlayerPacket
@@ -142,6 +148,8 @@ struct ServerPlayerInfoPacket
 	unsigned char	type;
 	int		id;
 	bool	isMove;
+	bool	isColl;
+	bool	isGoal;
 	float	xPos, yPos, zPos;
 	float	degree;
 	// 방향도 넣어야 할까? 벡터 느낌으로
@@ -168,15 +176,17 @@ struct ServerGameEndPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	char	gameMode;
+	// 마지막은 Result
+	bool	isFever;
 };
 
 struct ServerGameResultPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	int		id;
+	int		id[3];
 	// 경과시간, 랭킹
+	// 랭킹만
 };
 
 struct ServerObstacleRPSPacket
@@ -202,5 +212,11 @@ struct ServerMeteoInfoPacket
 	unsigned short	time;
 };
 
+struct ServerEnterCoinPacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	unsigned char	id;
+};
 
 #pragma pack (pop)

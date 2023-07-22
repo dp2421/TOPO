@@ -408,7 +408,7 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 	}
 }
 
-void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove)
+void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isColl, bool isGoal)
 {
 	if (!isPlayable)
 	{

@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "PlayerScript.h"
 #include "ObstacleScript.h"
+#include "UIScript.h"
 
 
 NetworkMgr::NetworkMgr()
@@ -215,6 +216,34 @@ void NetworkMgr::ProcessPacket(char* packet)
         std::cout << p->id << " Player ID\n";
         break;
     }
+    case ServerMatchingOK:
+    {
+        ServerMatchingOKPacket* p = reinterpret_cast<ServerMatchingOKPacket*>(packet);
+        // Scene 전환 코드 추가 지점
+        break;
+    }
+    case ServerGameStart:
+    {
+        ServerGameStartPacket* p = reinterpret_cast<ServerGameStartPacket*>(packet);
+
+        // p->count << 시작까지 남은 초
+        break;
+    }
+    case ServerGameEnd:
+    {
+        ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);
+
+        // p->isFever << 피버모드냐 아니냐 아니라면 Result도 같이 갈듯
+        
+        break;
+    }
+    case ServerGameResult:
+    {
+        ServerGameResultPacket* p = reinterpret_cast<ServerGameResultPacket*>(packet);
+        
+        // p->id 등수 배열 0부터 1등 
+        break;
+    }
     case ServerAddPlayer:
     {
         std::cout << "RECV ADDPLAYER \n";
@@ -245,7 +274,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerPlayerInfoPacket* p = reinterpret_cast<ServerPlayerInfoPacket*>(packet);
         if (networkObjects.find(p->id) != networkObjects.end())
         {
-            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove);
+            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isColl, p->isGoal);
         }
         else
         {
@@ -277,6 +306,14 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerSingleObstacleInfoPacket* p = reinterpret_cast<ServerSingleObstacleInfoPacket*>(packet);
         CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[p->id]->GetScript<CObstacleScript>()->Rotate(((float)p->degree) / 100);
+        break;
+    }
+    case ServerEnterCoin:
+    {
+        ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
+        
+        // p->id 먹은 플레이어 ID;
+
         break;
     }
     } 

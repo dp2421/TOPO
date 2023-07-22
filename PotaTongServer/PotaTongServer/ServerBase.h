@@ -37,6 +37,7 @@ private:
 	concurrency::concurrent_unordered_map<unsigned short,
 		std::function<void(unsigned char*)>> handlerMap;
 	concurrency::concurrent_unordered_map<unsigned short, GameMode*> gameRoomMap;
+	concurrency::concurrent_unordered_map<unsigned short, chrono::system_clock::time_point> roomTimeMap;
 
 	concurrency::concurrent_priority_queue<Event> eventQueue;
 

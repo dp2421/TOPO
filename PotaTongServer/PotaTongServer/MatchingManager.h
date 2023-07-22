@@ -16,14 +16,15 @@ public:
 	void DoMatching(Client* client, concurrency::concurrent_priority_queue<Event>& eventQueue);
 	void ExitMatching(Client* client);
 
-	void CompleteMatching();
+	void CompleteMatching(const int roomID, MapType mapType);
 
 private:
-	
 	HANDLE handle;
 
-	std::mutex mutex;
+	std::mutex lock;
 	std::atomic<int> roomID;
-	std::atomic<bool> isDoMatching;
-	ThreadSafeQueue<Client*> queue;
+	std::atomic<bool> isDoMatchingRacing;
+	std::atomic<bool> isDoMatchingObstacle;
+	ThreadSafeQueue<Client*> racingQueue;
+	ThreadSafeQueue<Client*> obstacleQueue;
 };
