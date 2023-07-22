@@ -41,6 +41,8 @@ private:
 
     int moveState = 0;
     bool isPlayable = false;
+    bool isColl = false;
+    bool isGoal = false;
 
     CGameObject* m_pParticle;
 public:
@@ -56,7 +58,13 @@ public:
     bool GetPlayable() { return isPlayable; } const
 
     void SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3& dir);
-    void SetPlayerPos(Vec3 pos, float degree = 0, bool isMove = false);
+    void SetPlayerPos(
+        Vec3 pos,
+        float degree = 0,
+        bool isMove = false,
+        bool isColl = false,
+        bool isGoal = false
+    );
 
     CPlayerScript();
     virtual ~CPlayerScript();

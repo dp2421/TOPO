@@ -31,6 +31,11 @@ enum NUM_TYPE
     NUM_9,
 };
 
+struct Numbers {
+    NUM_TYPE type;
+    int index;
+};
+
 class CUIScript : public CScript
 {
 private:
@@ -43,7 +48,7 @@ private:
 
     Vec3 mousepos;
     float f_MatchingTime = 0.f;
- 
+    Numbers m_Numinfo;
 
 public:
     CUIScript();
@@ -56,6 +61,9 @@ public:
     UI_TYPE GetType() { 
         return m_iType;
     }
+
+    void SetNums(NUM_TYPE iNum, int index) { m_Numinfo.type = iNum; m_Numinfo.index = index; }
+    Numbers GetNums() { return m_Numinfo; }
 
     void SetNum(NUM_TYPE iNum) { m_iNum = iNum; }
     NUM_TYPE GetNum() { return m_iNum; }

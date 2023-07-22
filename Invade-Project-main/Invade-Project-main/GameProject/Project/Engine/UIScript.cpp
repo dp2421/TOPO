@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "NetworkMgr.h"
 #include "Transform.h"
 #include "RenderMgr.h"
 #include "Camera.h"
@@ -47,7 +48,7 @@ void CUIScript::UIRender()
 	if (curObj->GetName() == (L"Cursor Object"))
 	{
 		Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
-		Vec3 mousepos = Vec3(winsize.x/1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y/1.8  - CKeyMgr::GetInst()->GetMousePos().y, 0);
+		Vec3 mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
 		curObj->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
 	}
 
@@ -67,18 +68,18 @@ void CUIScript::UIRender()
 	if (m_isMatching == true)
 	{
 		m_isClicked = false;
-		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime()/0.75f;
+		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
 		std::cout << f_MatchingTime << std::endl;
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
 			{
-				if (f_MatchingTime < 10.f)
+				if (CRenderMgr::GetInst()->GetMatchComplete()==false) // 매칭여부bool값으로 변경
 				{
 					obj->SetActive(true);
 					for (CGameObject* Loadobj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 					{
-						
+
 						int temp = (int)f_MatchingTime + 6;
 						if (temp > 9)
 							temp -= 3;
@@ -136,7 +137,7 @@ void CUIScript::UIRender()
 				{
 					obj->SetActive(false);
 					f_MatchingTime = 0.f;
-					m_isMatching = false;
+					CRenderMgr::GetInst()->SetMatchComplete(true);
 					MatchingComplete();
 
 				}
@@ -152,15 +153,16 @@ void CUIScript::UIRender()
 	}
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
-		int hundred = 34 / 100;
-		int tens = 34 % 100 / 10;
-		int one = 34 % 10;
+		Vec2 pos = CGameFramework::GetInst()->m_WinSize;
+		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime();
+		int hundred = (int)f_MatchingTime / 100;
+		int tens = (int)f_MatchingTime % 100 / 10;
+		int one = (int)f_MatchingTime % 10;
 		if (curObj->GetScript<CUIScript>()->GetNum() == hundred ||
 			curObj->GetScript<CUIScript>()->GetNum() == tens ||
 			curObj->GetScript<CUIScript>()->GetNum() == one)
 		{
-			curObj->SetActive(true);
-			curObj->GetScript<CUIScript>()->NumScript(34, -100.f, 700);
+			curObj->GetScript<CUIScript>()->NumScript((int)f_MatchingTime, 0, pos.y / 1.75);
 		}
 
 	}
@@ -169,6 +171,7 @@ void CUIScript::UIRender()
 void CUIScript::MatchingComplete()
 {
 	CRenderMgr::GetInst()->SetSceneChanged(true);
+#if LOCALPLAY
 	if (m_iType == MODE_RACING)
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
 	else if (m_iType == MODE_SURVIVAL)
@@ -176,25 +179,53 @@ void CUIScript::MatchingComplete()
 		int random = rand() % 2 + 1;
 		CRenderMgr::GetInst()->SetSceneType((SCENE_TYPE)random);
 	}
+#else // !LOCALPLAY
+	switch ((MapType)CRenderMgr::GetInst()->GetMatchMapType())
+	{
+	case MapType::Racing:
+		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
+		break;
+	case MapType::Meteo:
+		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
+		break;
+	case MapType::Obstacle:
+		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::JUMP);
+		break;
+	default:
+		break;
+	}
+#endif
 }
 
 void CUIScript::NumScript(int num, float offsetx, float offsety)
 {
 	int hundred = num / 100;
-	int tens = num % 100/10;
+	int tens = num % 100 / 10;
 	int one = num % 10;
 	CGameObject* numObj = GetObj();
-	if (m_iNum == hundred)
+	for (int i = 0; i < 5; ++i)
 	{
-		numObj->Transform()->SetLocalPos(Vec3(offsetx+50.f, offsety, 0));
-	} 
-	if (m_iNum == tens)
-	{
-		numObj->Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
-	}
-	if (m_iNum == one)
-	{
-		numObj->Transform()->SetLocalPos(Vec3(offsetx-50.f, offsety, 0));
+		if (numObj->IsActive() == false)
+		{
+			if (m_iNum == hundred)
+			{
+				numObj->Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
+				numObj->SetActive(true);
+
+			}
+			if (m_iNum == tens)
+			{
+				numObj->Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
+				numObj->SetActive(true);
+
+			}
+			if (m_iNum == one)
+			{
+				numObj->Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
+				numObj->SetActive(true);
+
+			}
+		}
 	}
 
 }

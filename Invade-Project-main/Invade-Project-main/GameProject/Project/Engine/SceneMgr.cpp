@@ -1618,43 +1618,45 @@ void CSceneMgr::InitUI()
 
 
 	Ptr<CTexture> pNums[10];
-	for (int i = 0; i < 10; ++i)
+	for (int j = 0; j < 5; ++j)
 	{
-		wstring num = std::to_wstring(i);
-		wstring tex = L"Texture\\NUM_";
-		wstring png = L".png";
-		wstring finalval = tex + num + png;
+		for (int i = 0; i < 10; ++i)
+		{
+			wstring num = std::to_wstring(i);
+			wstring tex = L"Texture\\NUM_";
+			wstring png = L".png";
+			wstring finalval = tex + num + png;
 
-		wstring name = L"NUMS";
-		wstring finalname = name + num;
-		pNums[i] = CResMgr::GetInst()->Load<CTexture>(finalname, finalval);
+			wstring name = L"NUMS";
+			wstring finalname = name + num;
+			pNums[i] = CResMgr::GetInst()->Load<CTexture>(finalname, finalval);
 
-		CGameObject* pObject = new CGameObject;
-		pObject->SetName(finalname);
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CMeshRender);
-		pObject->AddComponent(new CCollider2D);
-		pObject->AddComponent(new CUIScript);
+			CGameObject* pObject = new CGameObject;
+			pObject->SetName(finalname);
+			pObject->AddComponent(new CTransform);
+			pObject->AddComponent(new CMeshRender);
+			pObject->AddComponent(new CCollider2D);
+			pObject->AddComponent(new CUIScript);
 
-		pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
-		pObject->GetScript<CUIScript>()->SetNum((NUM_TYPE)i);
-		// Transform ����
-		pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 20.f));
-		pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
-		pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-		// MeshRender ����
-		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
-		pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pNums[i].GetPointer());
-		// Collider2D
-		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-		pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-		pObject->SetActive(false);
-		m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+			pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
+			pObject->GetScript<CUIScript>()->SetNum((NUM_TYPE)i);
+			pObject->GetScript<CUIScript>()->SetNums((NUM_TYPE)i, j);
+
+			// Transform ����
+			pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 20.f));
+			pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
+			pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+			// MeshRender ����
+			pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+			pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+			pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pNums[i].GetPointer());
+			// Collider2D
+			pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+			pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+			pObject->SetActive(false);
+			m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+		}
 	}
-
-
-	//m_pCurScene = m_pStartScene;
 }
 
 

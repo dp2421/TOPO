@@ -39,6 +39,7 @@ private:
 	CSound* m_sounds[(int)SOUND_TYPE::END];
 
 	bool b_isFever = false;
+	bool b_isMatchComplete = false;
 
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
@@ -94,5 +95,8 @@ public:
 	void SetSceneType(SCENE_TYPE type) { m_sceneType = type; }
 
 	void SetSound(CSound* sound, SOUND_TYPE type) { m_sounds[(int)type] = sound; }
+
+	void SetMatchComplete(bool complete) { b_isMatchComplete = complete; }
+	bool GetMatchComplete() { return b_isMatchComplete; }
 };
 
