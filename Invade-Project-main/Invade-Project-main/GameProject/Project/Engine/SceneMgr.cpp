@@ -676,11 +676,11 @@ void CSceneMgr::InitMainScene()
 
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
-
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 
-	//m_pRacingScene->Awake();
+	m_pCurScene = m_pRacingScene;
+	m_pRacingScene->Awake();
 	//m_pRacingScene->Start();
 }
 
@@ -1263,7 +1263,7 @@ void CSceneMgr::InitAwardScene()
 
 	// Camera Object
 	pMainCam = new CGameObject;
-	pMainCam->SetName(L"MainCam");
+	pMainCam->SetName(L"AwardMainCam");
 	pMainCam->AddComponent(new CTransform);
 	pMainCam->AddComponent(new CCamera);
 	pMainCam->AddComponent(new CCameraScript);
@@ -1349,8 +1349,8 @@ void CSceneMgr::InitAwardScene()
 	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject, m_pAwardScene);
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
-	m_pAwardScene->Awake();
-	m_pAwardScene->Start();
+	//m_pAwardScene->Awake();
+	//m_pAwardScene->Start();
 }
 
 
@@ -1798,7 +1798,36 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 			//obj->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 
 			break;
-}
+
+		}
+		else if (obj->GetName().compare(L"AwardMainCam") == 0)
+		{
+			//1등석
+			pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -200.f));
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 200.f));
+			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			pPlayer->AddChild(obj);
+
+			////2등석
+			//pPlayer->Transform()->SetLocalPos(Vec3(475.f, 10.f + 175.f, -125.f));
+			//obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			//pPlayer->AddChild(obj);
+
+			////3등석
+			//pPlayer->Transform()->SetLocalPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+			//obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			//pPlayer->AddChild(obj);
+
+			////기타등등..벽뒤에사람있어요.
+			//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -780.f));
+			//obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
+			//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			//pPlayer->AddChild(obj);
+			break;
+
+		}
 	}
 
 	pPlayer->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
