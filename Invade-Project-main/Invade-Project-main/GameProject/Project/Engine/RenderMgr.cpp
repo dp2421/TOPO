@@ -63,6 +63,8 @@ void CRenderMgr::Render()
 
 	m_vecCam[0]->Render_Forward(); // skybox, grid
 
+
+#if LOCALPLAY
 	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::LOBBY)
 	{
 		m_vecCam[1]->SortUIObject();
@@ -74,6 +76,11 @@ void CRenderMgr::Render()
 		m_vecCam[2]->Render_UI();
 
 	}
+#endif
+
+	m_vecCam[1]->SortUIObject();
+	m_vecCam[1]->Render_UI();
+
 
 	////PostProcess Effect
 	//Render_PostEffect();
