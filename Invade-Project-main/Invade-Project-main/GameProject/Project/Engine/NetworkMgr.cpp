@@ -166,6 +166,16 @@ void NetworkMgr::SendClientMovePacket(Vec3 dir, float degree)
     DoSend(&packet);
 }
 
+void NetworkMgr::SendClientReadyPacket()
+{
+    std::cout << "Send Ready \n";
+    ClientReadyPacket packet;
+    packet.size = sizeof(ClientReadyPacket);
+    packet.type = ClientReady;
+
+    DoSend(&packet);
+}
+
 void NetworkMgr::DoRecv()
 {
 #if LOCALPLAY
@@ -212,8 +222,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         std::cout << "RECV LOGIN \n";
         ServerLoginPacket* p = reinterpret_cast<ServerLoginPacket*>(packet);
-        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(true, Vec3(p->x, p->y, p->z));
-        networkObjects[p->id] = obj;
+        CurID = p->id;
         std::cout << p->id << " Player ID\n";
         break;
     }
@@ -260,6 +269,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         else
         {
             auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(p->x, p->y, p->z));
+            if (CurID == p->id) obj->GetScript<CPlayerScript>()->SetPlayable(true);
             networkObjects[p->id] = obj;
         }
         break;

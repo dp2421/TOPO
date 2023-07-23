@@ -340,7 +340,34 @@ void CPlayerScript::SetPlayable(bool value)
 			//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 				break;
 			}
-			
+
+			//else if (obj->GetName().compare(L"AwardMainCam") == 0)
+			//{
+			//	//1등석
+			//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f));
+			//	obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 200.f));
+			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+			//	////2등석
+			//	//SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
+			//	//obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			//	//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+			//	////3등석
+			//	//SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+			//	//obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			//	//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+			//	////기타등등들
+			//	//SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+			//	//obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
+			//	//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+			//	//
+			//	GetObj()->AddChild(obj);
+			//	break;
+			//}
+
 		}
 	}
 }

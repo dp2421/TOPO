@@ -34,7 +34,6 @@ void CNumScript::NumberUpdate()
 
 void CNumScript::NumScript(int num, float offsetx, float offsety)
 {
-	std::cout << num << std::endl;
 	int hundred = num / 100;
 	int tens = num % 100 / 10;
 	int one = num % 10;

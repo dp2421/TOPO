@@ -148,9 +148,9 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
         }
     if (tex_0)
     {
-        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 1.f;
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
         //output.vTarget0 = texColor * float4(stepColor, 1.f);
-        vCartoon = texColor /** float4(stepColor, 1.f)*/;
+        vCartoon = texColor * float4(stepColor, 1.f);
     }
     else
     {
@@ -170,7 +170,20 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     {
         output.vTarget0 = float4(0, 0, 0, 1);
     }
-    // ----------------------------------
+    //// ----------------------------------
+
+    // ------------------------------------
+    //   ** Color Saturation Shader Code **
+    // ------------------------------------
+    float avg = (output.vTarget0.r + output.vTarget0.g + output.vTarget0.b) / 3.0f;
+    float fValue = 2.0f; //0에 가까울수록 채도가 낮아짐
+    float4 newColor;
+    newColor.r = avg * (1.0 - fValue) + output.vTarget0.r * fValue;
+    newColor.g = avg * (1.0 - fValue) + output.vTarget0.g * fValue;
+    newColor.b = avg * (1.0 - fValue) + output.vTarget0.b * fValue;
+    newColor.a = output.vTarget0.a;
+    output.vTarget0 = newColor;
+
 
     float3 vViewNormal = _in.vViewNormal;
     // 노말맵이 있는경우

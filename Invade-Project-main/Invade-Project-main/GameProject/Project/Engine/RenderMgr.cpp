@@ -72,8 +72,8 @@ void CRenderMgr::Render()
 	}
 	else
 	{
-		m_vecCam[2]->SortUIObject();
-		m_vecCam[2]->Render_UI();
+		m_vecCam[1]->SortUIObject();
+		m_vecCam[1]->Render_UI();
 
 	}
 #endif

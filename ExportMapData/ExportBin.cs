@@ -6,7 +6,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.InteropServices;
 
 public enum LayerState
-{    
+{
+    //레이싱맵
     L2Part0 = 6,
     L2Part1,
     L2Part2,
@@ -22,9 +23,34 @@ public enum LayerState
     L1Part3,
     L1Part4,
     L1Sujum,
-    LCoin
+    LCoin,
+
+    //줄넘기맵
+    LGrass,
+    LWood,
+    LAsphalt,
+
+    //시상식 (25~)
+    LAward1,
+    LAward2,
+    LAward3,
+    LAwardGrs,
+    LAwardBk,
+    LAwardTr,
+
+    // 타일 레이어 추가시 아래에 추가
 
 }
+
+public enum MetorLayerState
+{
+    LMetorCenter = 6,
+    LMetorStone,
+    LMetorWater,
+    LMetorGrass,
+    LMetorWood,
+};
+
 
 [System.Serializable] public struct SerializedVector3
 {

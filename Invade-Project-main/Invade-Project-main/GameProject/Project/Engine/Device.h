@@ -65,6 +65,8 @@ public:
 	void ChangeScene();
 	void Render_Present();
 	void Render_PostEffect();
+	void Set_PostEffectBefore();
+	void Set_PostEffectAfter();
 	void WaitForFenceEvent();
 
 	
