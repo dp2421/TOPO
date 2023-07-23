@@ -71,6 +71,13 @@ void CUIScript::UIRender()
 	{
 		m_isClicked = false;
 		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
+		std::cout << f_MatchingTime << std::endl;
+
+#ifdef LOCALPLAY
+		if (f_MatchingTime > 10.f)
+			CRenderMgr::GetInst()->SetMatchComplete(true, 5);
+#endif // LOCALPLAY
+
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
@@ -138,7 +145,6 @@ void CUIScript::UIRender()
 				{
 					obj->SetActive(false);
 					f_MatchingTime = 0.f;
-					//CRenderMgr::GetInst()->SetMatchComplete(true);
 					MatchingComplete();
 
 				}
@@ -154,17 +160,6 @@ void CUIScript::UIRender()
 	}
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
-		Vec2 pos = CGameFramework::GetInst()->m_WinSize;
-		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime();
-		int hundred = (int)f_MatchingTime / 100;
-		int tens = (int)f_MatchingTime % 100 / 10;
-		int one = (int)f_MatchingTime % 10;
-		if (curObj->GetScript<CUIScript>()->GetNum() == hundred ||
-			curObj->GetScript<CUIScript>()->GetNum() == tens ||
-			curObj->GetScript<CUIScript>()->GetNum() == one)
-		{
-			curObj->GetScript<CUIScript>()->NumScript((int)f_MatchingTime, 0, pos.y / 1.75);
-		}
 
 	}
 }
@@ -196,39 +191,6 @@ void CUIScript::MatchingComplete()
 		break;
 	}
 #endif
-}
-
-void CUIScript::NumScript(int num, float offsetx, float offsety)
-{
-	int hundred = num / 100;
-	int tens = num % 100 / 10;
-	int one = num % 10;
-	CGameObject* numObj = GetObj();
-	for (int i = 0; i < 5; ++i)
-	{
-		if (numObj->IsActive() == false)
-		{
-			if (m_iNum == hundred)
-			{
-				numObj->Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
-				numObj->SetActive(true);
-
-			}
-			if (m_iNum == tens)
-			{
-				numObj->Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
-				numObj->SetActive(true);
-
-			}
-			if (m_iNum == one)
-			{
-				numObj->Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
-				numObj->SetActive(true);
-
-			}
-		}
-	}
-
 }
 
 CUIScript::CUIScript() :CScript((UINT)SCRIPT_TYPE::UISCRIPT)
