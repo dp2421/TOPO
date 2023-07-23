@@ -130,6 +130,7 @@ void NetworkMgr::SendClientLoginPacket()
 
 void NetworkMgr::SendClientMatchingPacket(MapType type)
 {
+    std::cout << "Send Matching\n";
     ClientMatchingPacket packet;
     packet.size = sizeof(ClientMatchingPacket);
     packet.type = ClientMatching;
@@ -211,9 +212,8 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         std::cout << "RECV LOGIN \n";
         ServerLoginPacket* p = reinterpret_cast<ServerLoginPacket*>(packet);
-        tempPlayerObj->GetScript<CPlayerScript>()->SetPlayable(true);
-        tempPlayerObj->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->x, p->y, p->z));
-        networkObjects[p->id] = tempPlayerObj;
+        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(true, Vec3(p->x, p->y, p->z));
+        networkObjects[p->id] = obj;
         std::cout << p->id << " Player ID\n";
         break;
     }
@@ -255,7 +255,6 @@ void NetworkMgr::ProcessPacket(char* packet)
         if (networkObjects.find(p->id) != networkObjects.end())
         {
             break;
-            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->x, p->y, p->z));
         }
         else
         {
@@ -283,8 +282,6 @@ void NetworkMgr::ProcessPacket(char* packet)
         else
         {
             break;
-            auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(p->xPos, p->yPos, p->zPos));
-            networkObjects[p->id] = obj;
         }
         break;
     }

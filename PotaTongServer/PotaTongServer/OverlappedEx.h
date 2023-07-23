@@ -1,6 +1,6 @@
 #pragma once
 
-enum class OverlappedType
+enum class OverlappedType : int
 {
 	Accept,
 	Recv,

@@ -42,8 +42,13 @@ private:
 	concurrency::concurrent_priority_queue<Event> eventQueue;
 
 	std::vector<Obstacle> obstacles;
+	std::vector<Obstacle> coins;
 	std::vector<Tile> tiles;
+
 	std::vector<thread> workerThreads;
+
+	std::vector<Tile> meteoTiles;
+	std::vector<Tile> jumpingTiles;
 
 	atomic<int> clientID = 0;
 };

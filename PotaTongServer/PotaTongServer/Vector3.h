@@ -70,5 +70,10 @@ public:
     {
         return Vector3(1.0f, 1.0f, 1.0f);
     }
+
+    static float Distance(const Vector3 lhs, const Vector3 rhs)
+    {
+        return sqrtf(powf((rhs.x - lhs.x), 2) + pow((rhs.y - lhs.y), 2) + pow((rhs.z - lhs.z), 2));
+    }
 };
 

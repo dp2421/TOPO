@@ -73,7 +73,7 @@ void CUIScript::UIRender()
 		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
 		std::cout << f_MatchingTime << std::endl;
 
-#ifdef LOCALPLAY
+#if LOCALPLAY
 		if (f_MatchingTime > 10.f)
 			CRenderMgr::GetInst()->SetMatchComplete(true, 5);
 #endif // LOCALPLAY
