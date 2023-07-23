@@ -71,7 +71,6 @@ void CUIScript::UIRender()
 	{
 		m_isClicked = false;
 		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
-		std::cout << f_MatchingTime << std::endl;
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
