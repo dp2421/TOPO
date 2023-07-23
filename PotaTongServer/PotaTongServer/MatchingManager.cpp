@@ -78,6 +78,7 @@ void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 				if (client->RoomID != -1) return;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->SendMatchingOKPacket(mapType);
 			}
 			else break;
 		}
@@ -93,6 +94,7 @@ void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 				if (client->RoomID != -1) return;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->SendMatchingOKPacket(mapType);
 			}
 			else break;
 		}

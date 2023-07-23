@@ -221,6 +221,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerMatchingOKPacket* p = reinterpret_cast<ServerMatchingOKPacket*>(packet);
         CRenderMgr::GetInst()->SetMatchComplete(true, p->gameMode);
+        std::cout << "Matching Complete \n";
         // 어떤 모드가 매칭됐는지, 매칭자체가 됐는지 
 
         // Scene 전환 코드 추가 지점

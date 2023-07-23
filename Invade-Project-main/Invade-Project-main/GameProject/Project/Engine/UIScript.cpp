@@ -71,7 +71,7 @@ void CUIScript::UIRender()
 	{
 		m_isClicked = false;
 		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
-		std::cout << f_MatchingTime << std::endl;
+		//std::cout << f_MatchingTime << std::endl;
 
 #if LOCALPLAY
 		if (f_MatchingTime > 10.f)
@@ -166,7 +166,6 @@ void CUIScript::UIRender()
 
 void CUIScript::MatchingComplete()
 {
-	CRenderMgr::GetInst()->SetSceneChanged(true);
 #if LOCALPLAY
 	if (m_iType == MODE_RACING)
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
@@ -190,6 +189,7 @@ void CUIScript::MatchingComplete()
 	default:
 		break;
 	}
+	CRenderMgr::GetInst()->SetSceneChanged(true);
 #endif
 }
 
