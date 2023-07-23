@@ -22,7 +22,7 @@ struct Numbers {
     int index;
 };
 
-class CNumScript : public CUIScript
+class CNumScript : public CScript
 {
 private:
     bool m_isClicked;
@@ -39,9 +39,11 @@ public:
     CNumScript();
     virtual ~CNumScript();
     virtual void Update();
+    void NumberUpdate();
     void NumScript(int num, float offsetx, float offsety);
     void SetNums(NUM_TYPE iNum, int index) { m_Numinfo.type = iNum; m_Numinfo.index = index; }
     Numbers GetNumInfo() { return m_Numinfo; }
+    void SetNumInfo(NUM_TYPE type, int index) { m_Numinfo.type = type; m_Numinfo.index = index; }
 
     void SetNum(NUM_TYPE iNum) { m_iNum = iNum; }
     NUM_TYPE GetNum() { return m_iNum; }

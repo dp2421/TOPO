@@ -39,6 +39,7 @@
 #include "ParticleSystem.h"
 #include "ArrowScript.h"
 #include "UIScript.h"
+#include "NumScript.h"
 #include "GameFramework.h"
 
 CScene* CSceneMgr::GetCurScene()
@@ -1369,51 +1370,71 @@ void CSceneMgr::InitUI()
 
 
 	CGameObject* pUICam = nullptr;
-
-	// Camera Object
-	pUICam = new CGameObject;
-	pUICam->SetName(L"UICam");
-	pUICam->AddComponent(new CTransform);
-	pUICam->AddComponent(new CCamera);
-	//pUICam->AddComponent(new CCameraScript);
-	pUICam->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
-	pUICam->Camera()->SetFar(100000.f);
-	pUICam->Camera()->SetLayerAllCheck();
-	pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
-	pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pStartScene);
-	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pRacingScene);
-	m_pMetorScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pMetorScene);
-	m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pJumpingScene);
-	m_pAwardScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pAwardScene);
-
-
 	CGameObject* pObject = new CGameObject;
 
-	pObject = new CGameObject;
-	pObject->SetName(L"Cursor Object");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CMeshRender);
-	pObject->AddComponent(new CCollider2D);
-	pObject->AddComponent(new CUIScript);
-	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::CURSOR);
+	for (int i = 0; i < 5; ++i)
+	{
 
-	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 20.f));
-	pObject->Transform()->SetLocalScale(Vec3(30.f, 30.f, 1.f));
-	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	// MeshRender ����
-	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
-	// Collider2D
-	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
-	m_pMetorScene->FindLayer(L"UI")->AddGameObject(pObject, m_pMetorScene);
-	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
-	m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pJumpingScene);
-	m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pAwardScene);
+		// Camera Object
+		pUICam = new CGameObject;
+		pUICam->SetName(L"UICam");
+		pUICam->AddComponent(new CTransform);
+		pUICam->AddComponent(new CCamera);
+		//pUICam->AddComponent(new CCameraScript);
+		pUICam->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
+		pUICam->Camera()->SetFar(100000.f);
+		pUICam->Camera()->SetLayerAllCheck();
+		pUICam->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 160.f * 7));
+		pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+
+
+		pObject = new CGameObject;
+		pObject->SetName(L"Cursor Object");
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CMeshRender);
+		pObject->AddComponent(new CCollider2D);
+		pObject->AddComponent(new CUIScript);
+		pObject->GetScript<CUIScript>()->SetType(UI_TYPE::CURSOR);
+
+		// Transform ����
+		pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 20.f));
+		pObject->Transform()->SetLocalScale(Vec3(30.f, 30.f, 1.f));
+		pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+		// MeshRender ����
+		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+		pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
+		// Collider2D
+		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+		pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+		switch (i)
+		{
+		case 0:
+			m_pStartScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pStartScene);
+			m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
+			break;
+		case 1:
+			m_pRacingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pRacingScene);
+			m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
+			break;
+		case 2:
+			m_pMetorScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pMetorScene);
+			m_pMetorScene->FindLayer(L"UI")->AddGameObject(pObject, m_pMetorScene);
+			break;
+		case 3:
+			m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pJumpingScene);
+			m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pJumpingScene);
+			break;
+		case 4:
+			m_pAwardScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pAwardScene);
+			m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pAwardScene);
+			break;
+		default:
+			break;
+		}
+	}
+
 
 
 	pObject = new CGameObject;
@@ -1637,8 +1658,10 @@ void CSceneMgr::InitUI()
 			pObject->AddComponent(new CMeshRender);
 			pObject->AddComponent(new CCollider2D);
 			pObject->AddComponent(new CUIScript);
+			pObject->AddComponent(new CNumScript);
 
 			pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
+			pObject->GetScript<CNumScript>()->SetNumInfo((NUM_TYPE)i, j);
 
 			// Transform ����
 			pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 20.f));

@@ -71,7 +71,6 @@ void CUIScript::UIRender()
 	{
 		m_isClicked = false;
 		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
-		std::cout << f_MatchingTime << std::endl;
 
 #ifdef LOCALPLAY
 		if (f_MatchingTime > 10.f)
@@ -160,7 +159,7 @@ void CUIScript::UIRender()
 	}
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
-
+		curObj->GetScript<CNumScript>()->NumberUpdate();
 	}
 }
 

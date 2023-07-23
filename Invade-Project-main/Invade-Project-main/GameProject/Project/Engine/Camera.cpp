@@ -175,8 +175,8 @@ void CCamera::Render_Deferred()
 
 	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
 	{
-		if (m_vecDeferred[i]->GetName() == L"Player")
-			std::cout << m_vecDeferred[i]->Transform()->GetLocalPos().x << ", " << m_vecDeferred[i]->Transform()->GetLocalPos().y << ", " << m_vecDeferred[i]->Transform()->GetLocalPos().z << std::endl;
+		//if (m_vecDeferred[i]->GetName() == L"Player")
+		//	std::cout << m_vecDeferred[i]->Transform()->GetLocalPos().x << ", " << m_vecDeferred[i]->Transform()->GetLocalPos().y << ", " << m_vecDeferred[i]->Transform()->GetLocalPos().z << std::endl;
 		if (m_vecDeferred[i]->IsActive() == true)
 			m_vecDeferred[i]->MeshRender()->Render();
 		else
@@ -286,6 +286,7 @@ void CCamera::Render_UI()
 	for (size_t i = 0; i < m_vecUIObject.size(); ++i)
 	{
 		m_vecUIObject[i]->GetScript<CUIScript>()->UIRender();
+
 		if (m_vecUIObject[i]->IsActive() == true)
 			m_vecUIObject[i]->MeshRender()->Render();
 		

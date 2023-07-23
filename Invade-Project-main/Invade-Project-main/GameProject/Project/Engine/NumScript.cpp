@@ -19,13 +19,28 @@ void CNumScript::Update()
 	{
 		curObj->GetScript<CNumScript>()->NumScript((int)f_MatchingTime, 0, pos.y / 1.75);
 	}
+}
 
-
+void CNumScript::NumberUpdate()
+{
+	CGameObject* curObj = GetObj();
+	Vec2 pos = CGameFramework::GetInst()->m_WinSize;
+	f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime();
+	int hundred = (int)f_MatchingTime / 100;
+	int tens = (int)f_MatchingTime % 100 / 10;
+	int one = (int)f_MatchingTime % 10;
+	if (curObj->GetScript<CNumScript>()->GetNumInfo().type == hundred ||
+		curObj->GetScript<CNumScript>()->GetNumInfo().type == tens ||
+		curObj->GetScript<CNumScript>()->GetNumInfo().type == one)
+	{
+		curObj->GetScript<CNumScript>()->NumScript((int)f_MatchingTime, 0, pos.y / 1.75);
+	}
 }
 
 
 void CNumScript::NumScript(int num, float offsetx, float offsety)
 {
+	std::cout << num << std::endl;
 	int hundred = num / 100;
 	int tens = num % 100 / 10;
 	int one = num % 10;
@@ -54,13 +69,13 @@ void CNumScript::NumScript(int num, float offsetx, float offsety)
 					numObj->SetActive(true);
 
 				}
-		}
+			}
 		}
 	}
 
 }
 
-CNumScript::CNumScript(): CUIScript()
+CNumScript::CNumScript() : CScript((UINT)SCRIPT_TYPE::NUMSCRIPT)
 {
 	m_isClicked = false;
 	m_isSelected = false;

@@ -1,5 +1,6 @@
 #pragma once
 #include "Script.h"
+#include "NumScript.h"
 #include "GameFramework.h"
 
 enum UI_TYPE
