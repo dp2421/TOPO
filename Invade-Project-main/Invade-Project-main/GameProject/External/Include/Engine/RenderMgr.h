@@ -40,6 +40,7 @@ private:
 
 	bool b_isFever = false;
 	bool b_isMatchComplete = false;
+	int m_maptype;
 
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
@@ -96,7 +97,8 @@ public:
 
 	void SetSound(CSound* sound, SOUND_TYPE type) { m_sounds[(int)type] = sound; }
 
-	void SetMatchComplete(bool complete) { b_isMatchComplete = complete; }
+	void SetMatchComplete(bool complete, int p) { b_isMatchComplete = complete; m_maptype = p; }
 	bool GetMatchComplete() { return b_isMatchComplete; }
+	int GetMatchMapType() { return m_maptype; }
 };
 

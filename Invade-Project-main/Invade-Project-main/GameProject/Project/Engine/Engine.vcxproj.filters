@@ -270,6 +270,9 @@
     <ClInclude Include="UIScript.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="NumScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -444,6 +447,9 @@
       <Filter>Script\Obstacle</Filter>
     </ClCompile>
     <ClCompile Include="UIScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="NumScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>
