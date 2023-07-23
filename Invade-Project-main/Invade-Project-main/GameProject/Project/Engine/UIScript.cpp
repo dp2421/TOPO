@@ -23,10 +23,12 @@ void CUIScript::Update()
 		else if (m_iType == MODE_RACING)
 		{
 			m_isMatching = true;
+			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Racing);
 		}
 		else if (m_iType == MODE_SURVIVAL)
 		{
 			m_isMatching = true;
+			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Obstacle);
 		}
 		m_isClicked = false;
 
@@ -137,7 +139,7 @@ void CUIScript::UIRender()
 				{
 					obj->SetActive(false);
 					f_MatchingTime = 0.f;
-					CRenderMgr::GetInst()->SetMatchComplete(true);
+					//CRenderMgr::GetInst()->SetMatchComplete(true);
 					MatchingComplete();
 
 				}
