@@ -25,6 +25,7 @@ public:
 	void SendClientMatchingPacket(MapType type);
 	void SendClientKeyInputPacket(KeyType key, Vec3 dir, float degree);
 	void SendClientMovePacket(Vec3 dir, float degree);
+	void SendClientReadyPacket();
 
 	void DoRecv();
 	void AssemblyPacket(int recvData, OverlappedEx* over);

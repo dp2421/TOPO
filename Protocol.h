@@ -108,7 +108,6 @@ struct ServerLoginPacket
 	PACKETSIZE size;
 	unsigned char	type;
 	int		id;
-	float	x, y, z;
 };
 
 struct ServerMatchingOKPacket

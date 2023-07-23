@@ -359,6 +359,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingRacingComplete:
 	{
+		InitAI();
 		matchingManager->CompleteMatching(id, MapType::Racing);
 		break;
 	}
@@ -721,6 +722,7 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		}
 		case MapType::Racing:
 		{
+			cout << "Send Info  \n";
 			unsigned short RPS[66] = { 0, };
 			unsigned short degree[66] = { 0, };
 			int i = 0;
@@ -751,13 +753,15 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		}
 		}
 
+		clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
+
 		for (auto& client : clients)
 		{
 			ClientException(client, id);
 			if (client.second->mapType != clients[id]->mapType) continue;
 
-			if (!client.second->isAI)
-				client.second->SendAddPlayerPacket(id, clients[id]->position);
+			//if (!client.second->isAI)
+			//	client.second->SendAddPlayerPacket(id, clients[id]->position);
 
 			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
 		}

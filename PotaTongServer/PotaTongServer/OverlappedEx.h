@@ -5,6 +5,7 @@ enum class OverlappedType : int
 	Accept,
 	Recv,
 	Send,
+	GameStartCount,
 	MatchingRacingStart,
 	MatchingObstacleStart,
 	MatchingRacingComplete,

@@ -41,6 +41,7 @@
 #include "UIScript.h"
 #include "NumScript.h"
 #include "GameFramework.h"
+#include "NetworkMgr.h"
 
 CScene* CSceneMgr::GetCurScene()
 {
@@ -49,14 +50,14 @@ CScene* CSceneMgr::GetCurScene()
 
 void CSceneMgr::ChangeScene(CScene* _pNextScene)
 {
-	SAFE_DELETE(m_pCurScene);
+	//SAFE_DELETE(m_pCurScene);
 	m_pCurScene = _pNextScene;
 
 }
 
 void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 {
-	SAFE_DELETE(m_pCurScene);
+	//SAFE_DELETE(m_pCurScene);
 
 	m_pSceneType = _type;
 
@@ -67,6 +68,7 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 	else if (_type == SCENE_TYPE::RACING)
 	{
 		m_pCurScene = m_pRacingScene;
+		NetworkMgr::GetInst()->SendClientReadyPacket();
 	}
 	else if (_type == SCENE_TYPE::JUMP)
 	{
@@ -1755,6 +1757,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 		curscene = GetCurScene();
 	}
 	//ChangeScene(curscene);
+	std::cout << isPlayer << " is Player \n";
 
 	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);

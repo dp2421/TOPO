@@ -37,9 +37,6 @@ void Client::SendServerLoginPacket(const int id)
 	packet.size = sizeof(ServerLoginPacket);
 	packet.type = ServerLogin;
 	packet.id = id;
-	packet.x = position.x;
-	packet.y = position.y;
-	packet.z = position.z;
 
 	SendPacket(&packet);
 }
