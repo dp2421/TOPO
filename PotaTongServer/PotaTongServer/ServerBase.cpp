@@ -412,21 +412,25 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	case OverlappedType::Update:
 	{
 		auto client = clients[id];
-		if (client->ID < 0) return;
-		{
-			{
-				lock_guard<mutex> lock{ client->lock };
-				client->velocity.y -= GRAVITY * 3;
-			}
-			if (client->isMove)
-			{
-				lock_guard<mutex> lock{ client->lock };
-				auto delta = client->direction * SPEED;
-				client->velocity.x = delta.x;
-				client->velocity.z = delta.z;
-			}
 
-			if (client->mapType == MapType::Racing)
+		if (client->ID < 0)
+		{
+			break;
+		}
+
+		{
+			lock_guard<mutex> lock{ client->lock };
+			client->velocity.y -= GRAVITY * 3;
+		}
+		if (client->isMove)
+		{
+			lock_guard<mutex> lock{ client->lock };
+			auto delta = client->direction * SPEED;
+			client->velocity.x = delta.x;
+			client->velocity.z = delta.z;
+		}
+
+		if (client->mapType == MapType::Racing)
 			{
 				// 바닥 충돌체크
 				if (client->velocity.y != 0)
@@ -597,19 +601,18 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					}
 				}
 			}
-			else if (client->mapType == MapType::Obstacle)
+		else if (client->mapType == MapType::Obstacle)
 			{
 
 			}
-			else if (client->mapType == MapType::Meteo)
+		else if (client->mapType == MapType::Meteo)
 			{
 
 			}
-			else if (client->mapType == MapType::Bomb)
+		else if (client->mapType == MapType::Bomb)
 			{
 
 			}
-		}
 
 		if(!client->isAI)
 			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);

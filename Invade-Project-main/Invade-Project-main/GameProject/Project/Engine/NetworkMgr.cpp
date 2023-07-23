@@ -268,7 +268,8 @@ void NetworkMgr::ProcessPacket(char* packet)
         }
         else
         {
-            auto obj = CSceneMgr::GetInst()->AddNetworkGameObject((CurID == p->id), Vec3(p->x, p->y, p->z));
+            auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(p->x, p->y, p->z));
+            if (CurID == p->id) obj->GetScript<CPlayerScript>()->SetPlayable(true);
             networkObjects[p->id] = obj;
         }
         break;
