@@ -1,6 +1,6 @@
 #pragma once
 
-constexpr int MatchingTime = 60;
+constexpr int MatchingTime = 5;
 
 // HANDLE 받아서 초기화
 // 인원 충족 or 시간 경과 시 PQCS 이용 매칭 완료 전달

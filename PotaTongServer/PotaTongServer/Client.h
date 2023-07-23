@@ -14,6 +14,9 @@ public:
 
 	bool isMove = false;
 	bool isJump = false;
+	bool isColl = false;
+	bool isGoal = false;
+	bool isPushed = true;
 
 	bool isAI = false;
 	float remainChangeAIVelocity = 0;

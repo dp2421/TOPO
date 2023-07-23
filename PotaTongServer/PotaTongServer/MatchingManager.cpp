@@ -14,6 +14,7 @@ MatchingManager::~MatchingManager()
 
 void MatchingManager::DoMatching(Client* client, concurrency::concurrent_priority_queue<Event>& eventQueue)
 {
+	cout << "Matching Start " << endl;
 	lock_guard<mutex> lock{ this->lock };
 	// 클라이언트 매칭 입력시
 	// 매칭중일시 -> 큐에 추가만
@@ -23,12 +24,8 @@ void MatchingManager::DoMatching(Client* client, concurrency::concurrent_priorit
 		if (!this->isDoMatchingRacing)
 		{
 			this->isDoMatchingRacing = true;
-			OverlappedEx* over = new OverlappedEx;
-			over->type = OverlappedType::MatchingRacingComplete;
 
-			Event matchingEvent;
-			matchingEvent.objID = roomID;
-			matchingEvent.excuteTime = chrono::system_clock::now() + static_cast<chrono::seconds>(MatchingTime);
+			Event matchingEvent{ roomID, OverlappedType::MatchingRacingComplete, chrono::system_clock::now() + static_cast<chrono::seconds>(MatchingTime) };
 			eventQueue.push(matchingEvent);
 			this->racingQueue.Push(client);
 
@@ -44,12 +41,8 @@ void MatchingManager::DoMatching(Client* client, concurrency::concurrent_priorit
 		if (!this->isDoMatchingObstacle)
 		{
 			this->isDoMatchingObstacle = true;
-			OverlappedEx* over = new OverlappedEx;
-			over->type = OverlappedType::MatchingObstacleComplete;
 
-			Event matchingEvent;
-			matchingEvent.objID = roomID;
-			matchingEvent.excuteTime = chrono::system_clock::now() + static_cast<chrono::seconds>(MatchingTime);
+			Event matchingEvent{ roomID, OverlappedType::MatchingObstacleComplete, chrono::system_clock::now() + static_cast<chrono::seconds>(MatchingTime) };
 			eventQueue.push(matchingEvent);
 			this->obstacleQueue.Push(client);
 
@@ -82,8 +75,10 @@ void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 		{
 			if (true == this->racingQueue.TryPop(client))
 			{
+				if (client->RoomID != -1) return;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->SendMatchingOKPacket(mapType);
 			}
 			else break;
 		}
@@ -96,8 +91,10 @@ void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 		{
 			if (true == this->obstacleQueue.TryPop(client))
 			{
+				if (client->RoomID != -1) return;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->SendMatchingOKPacket(mapType);
 			}
 			else break;
 		}

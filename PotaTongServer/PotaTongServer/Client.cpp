@@ -46,6 +46,7 @@ void Client::SendServerLoginPacket(const int id)
 
 void Client::SendMatchingOKPacket(const MapType gamemode)
 {
+	cout << "Send Matching OK\n";
 	ServerMatchingOKPacket packet;
 	packet.size = sizeof(ServerMatchingOKPacket);
 	packet.type = ServerMatchingOK;

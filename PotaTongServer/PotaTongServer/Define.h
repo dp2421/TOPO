@@ -15,6 +15,7 @@ constexpr auto DeltaTimefloat = chrono::duration<float>(1.f / Frame);
 constexpr float SPEED = 300.f;
 constexpr float JUMPVEL = 300.0f;
 constexpr float GRAVITY = 9.8f;
+constexpr float PUSHDISTANCE = 150.f;
 
 const Vector3 PlayerStartPos{ 50, 100, 100 };
 

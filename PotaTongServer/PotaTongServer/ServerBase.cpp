@@ -9,7 +9,7 @@ ServerBase::ServerBase()
 	InitHandler();
 	InitObsatacleInfo();
 	InitMapInfo();
-	InitAI();
+	//InitAI();
 }
 
 ServerBase::~ServerBase()
@@ -236,39 +236,36 @@ void ServerBase::InitObsatacleInfo()
 	}
 	inFile.close();
 
-	Event rotateEvent{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
-	Event Sendevent{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
-	eventQueue.push(rotateEvent);
-	eventQueue.push(Sendevent);
+	//Event rotateEvent{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+	//Event Sendevent{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
+	//eventQueue.push(rotateEvent);
+	//eventQueue.push(Sendevent);
 }
 
 void ServerBase::InitMapInfo()
 {
-	const char* FileNames[] = { "MapPosition1FF.bin", "MapPosition1F.bin", "MapPosition2F.bin" };
+	const char* FileNames[] = { "RacingMapPosSV.bin" };
 
-	for (int i = 0; i < 3; ++i)
-	{
-		ifstream inFile(FileNames[i], std::ios::in | std::ios::binary);
+	ifstream inFile(FileNames[0], std::ios::in | std::ios::binary);
 
-		if (!inFile) {
-			std::cerr << "Failed to open " <<  FileNames[i] << std::endl;
-			return;
-		}
-
-		while (!inFile.eof()) {
-			TileInfo tile;
-			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
-			if (i == 0)
-			{
-				tile.xScale *= 4;
-				tile.yScale *= 4;
-				tile.zScale *= 4;
-			}
-			tiles.push_back(tile);
-		}
-
-		inFile.close();
+	if (!inFile) {
+		std::cerr << "Failed to open " <<  FileNames[0] << std::endl;
+		return;
 	}
+
+	while (!inFile.eof()) {
+		TileInfo tile;
+		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+		if (tile.state == LayerState::L2Part0)
+		{
+			tile.xScale *= 4;
+			tile.yScale *= 4;
+			tile.zScale *= 4;
+		}
+		tiles.push_back(tile);
+	}
+
+	inFile.close();
 }
 
 void ServerBase::InitAI()
@@ -614,14 +611,14 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		}
 
 		if(!client->isAI)
-			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
+			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
 
 		for (auto cl : clients)
 		{
 			ClientException(cl, id);
 			if (cl.second->isAI) continue;
 
-			cl.second->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove);
+			cl.second->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
 		}
 
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
@@ -710,6 +707,7 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		{
 			lock_guard<mutex> lock{ clients[id]->lock };
 			clients[id]->mapType = static_cast<MapType>(p->gameMode);
+			matchingManager->DoMatching(clients[id], eventQueue);
 		}
 		break;
 	}
@@ -822,7 +820,17 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 		break;
 	}
 	case KeyType::Push: // ¹ÐÄ¡±â
+		for (auto& cl : clients)
+		{
+			ClientException(cl, id);
+			if (cl.second->mapType != client->mapType) continue;
+			if (cl.second->RoomID == -1) continue;
 
+			if (Vector3::Distance(client->position, cl.second->position) > PUSHDISTANCE) continue;
+			{
+
+			}
+		}
 		break;
 	case KeyType::Boom: // ÆøÅºµ¹¸®±â
 
