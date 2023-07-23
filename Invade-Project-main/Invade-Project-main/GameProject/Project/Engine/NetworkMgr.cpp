@@ -24,7 +24,7 @@ void NetworkMgr::Init()
 #if LOCALPLAY 
     return;
 #else
-    tempPlayerObj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3::Zero);
+    //tempPlayerObj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3::Zero);
     WSADATA wsaData;
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {

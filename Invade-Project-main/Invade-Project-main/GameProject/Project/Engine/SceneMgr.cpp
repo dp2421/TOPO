@@ -674,11 +674,11 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
+	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 
-	m_pRacingScene->Awake();
-	m_pRacingScene->Start();
+	//m_pRacingScene->Awake();
+	//m_pRacingScene->Start();
 }
 
 
@@ -1434,7 +1434,7 @@ void CSceneMgr::InitUI()
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 
 	pObject = new CGameObject;
@@ -1458,7 +1458,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 
 	pObject = new CGameObject;
@@ -1481,7 +1481,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 
 	pObject = new CGameObject;
@@ -1504,7 +1504,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching");
@@ -1526,7 +1526,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching0");
@@ -1548,7 +1548,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching1");
@@ -1570,7 +1570,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching2");
@@ -1592,7 +1592,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Matching3");
@@ -1614,7 +1614,7 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 	pObject->SetActive(false);
-	m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 
 	Ptr<CTexture> pNums[10];
@@ -1652,7 +1652,7 @@ void CSceneMgr::InitUI()
 			pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 			pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
 			pObject->SetActive(false);
-			m_pCurScene->FindLayer(L"UI")->AddGameObject(pObject, m_pCurScene);
+			m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 		}
 	}
 }
@@ -1661,6 +1661,7 @@ void CSceneMgr::InitUI()
 void CSceneMgr::InitScene()
 {
 	m_pSceneType = SCENE_TYPE::LOBBY;
+	m_pCurScene = m_pStartScene;
 
 	Ptr<CSound> m_sounds = CResMgr::GetInst()->Load<CSound>(L"StartBgm", L"Sound\\LobbyBgm.wav");
 	CRenderMgr::GetInst()->SetSound(m_sounds.GetPointer(), SOUND_TYPE::LOBBY);
