@@ -150,7 +150,7 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     {
         float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 1.f;
         //output.vTarget0 = texColor * float4(stepColor, 1.f);
-        vCartoon = texColor /** float4(stepColor, 1.f)*/;
+        vCartoon = texColor * float4(stepColor, 1.f);
     }
     else
     {
