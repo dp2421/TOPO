@@ -1783,6 +1783,10 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 
 #if LOCALPLAY
 	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f)); //10.f-FLOORHEIGHT
+#else
+	pPlayer->Transform()->SetLocalPos(pos);
+#endif
+
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
@@ -1794,11 +1798,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 			//obj->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 
 			break;
-		}
+}
 	}
-#else
-	pPlayer->Transform()->SetLocalPos(pos);
-#endif
 
 	pPlayer->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 
