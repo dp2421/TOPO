@@ -9,15 +9,15 @@ void CNumScript::Update()
 {
 	CGameObject* curObj = GetObj();
 	Vec2 pos = CGameFramework::GetInst()->m_WinSize;
-	f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime();
-	int hundred = (int)f_MatchingTime / 100;
-	int tens = (int)f_MatchingTime % 100 / 10;
-	int one = (int)f_MatchingTime % 10;
+	f_Count += CTimeMgr::GetInst()->GetDeltaTime();
+	int hundred = (int)f_Count / 100;
+	int tens = (int)f_Count % 100 / 10;
+	int one = (int)f_Count % 10;
 	if (curObj->GetScript<CNumScript>()->GetNumInfo().type == hundred ||
 		curObj->GetScript<CNumScript>()->GetNumInfo().type == tens ||
 		curObj->GetScript<CNumScript>()->GetNumInfo().type == one)
 	{
-		curObj->GetScript<CNumScript>()->NumScript((int)f_MatchingTime, 0, pos.y / 1.75);
+		curObj->GetScript<CNumScript>()->NumScript((int)f_Count, 0, pos.y / 1.75);
 	}
 }
 
@@ -25,16 +25,10 @@ void CNumScript::NumberUpdate()
 {
 	CGameObject* curObj = GetObj();
 	Vec2 pos = CGameFramework::GetInst()->m_WinSize;
-	f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime();
-	int hundred = (int)f_MatchingTime / 100;
-	int tens = (int)f_MatchingTime % 100 / 10;
-	int one = (int)f_MatchingTime % 10;
-	if (curObj->GetScript<CNumScript>()->GetNumInfo().type == hundred ||
-		curObj->GetScript<CNumScript>()->GetNumInfo().type == tens ||
-		curObj->GetScript<CNumScript>()->GetNumInfo().type == one)
-	{
-		curObj->GetScript<CNumScript>()->NumScript((int)f_MatchingTime, 0, pos.y / 1.75);
-	}
+
+	if (f_Count > 1000)
+		f_Count = 0;
+	curObj->GetScript<CNumScript>()->NumScript((int)f_Count, 0, pos.y / 1.75);
 }
 
 
@@ -44,33 +38,62 @@ void CNumScript::NumScript(int num, float offsetx, float offsety)
 	int tens = num % 100 / 10;
 	int one = num % 10;
 	CGameObject* numObj = GetObj();
-	for (int i = 0; i < 5; ++i)
+
+	if (m_Numinfo.type == hundred)
 	{
-		if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
+		for (int i = 0; i < 5; ++i)
 		{
-			if (numObj->IsActive() == false)
+			if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
 			{
-				if (m_iNum == hundred)
+				if (numObj->IsActive() == false)
 				{
 					numObj->Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
 					numObj->SetActive(true);
 
 				}
-				if (m_iNum == tens)
+			}
+		}
+
+	}
+	else
+		numObj->SetActive(false);
+
+	if (m_Numinfo.type == tens)
+	{
+
+		for (int i = 0; i < 5; ++i)
+		{
+			if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
+			{
+				if (numObj->IsActive() == false)
 				{
 					numObj->Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
 					numObj->SetActive(true);
-
-				}
-				if (m_iNum == one)
-				{
-					numObj->Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
-					numObj->SetActive(true);
-
 				}
 			}
 		}
 	}
+	else
+		numObj->SetActive(false);
+
+	if (m_Numinfo.type == one)
+	{
+		for (int i = 0; i < 5; ++i)
+		{
+			if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
+			{
+				if (numObj->IsActive() == false)
+				{
+					numObj->Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
+					numObj->SetActive(true);
+				}
+			}
+		}
+
+	}
+	else
+		numObj->SetActive(false);
+
 
 }
 

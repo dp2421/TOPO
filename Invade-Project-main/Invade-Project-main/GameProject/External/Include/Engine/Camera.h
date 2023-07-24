@@ -44,7 +44,7 @@ private:
     bool b_isClicked = false;
     bool b_isMatching = false;
 
-
+    float temp = 0.f;
 public:
 
     virtual void FinalUpdate();

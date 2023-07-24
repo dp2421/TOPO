@@ -13,7 +13,7 @@ public:
 	void InitHandler();
 	void InitObsatacleInfo();
 	void InitMapInfo();
-	void InitAI();
+	void InitAI(int roomID, MapType mapType);
 
 	void Run();
 	void Accept();

@@ -32,7 +32,7 @@ private:
     NUM_TYPE m_iNum;
 
     Vec3 mousepos;
-    float f_MatchingTime = 0.f;
+    float f_Count = 0.f;
     Numbers m_Numinfo;
 
 public:
@@ -47,6 +47,10 @@ public:
 
     void SetNum(NUM_TYPE iNum) { m_iNum = iNum; }
     NUM_TYPE GetNum() { return m_iNum; }
+
+
+    void SetCount(float count) { f_Count = count; }
+    float GetCount() { return f_Count; }
     CLONE(CNumScript);
 };
 
