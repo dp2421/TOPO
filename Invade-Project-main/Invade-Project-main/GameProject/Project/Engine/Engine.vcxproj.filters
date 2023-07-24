@@ -504,5 +504,8 @@
     <FxCompile Include="postEffect.fx">
       <Filter>ShaderCode</Filter>
     </FxCompile>
+    <FxCompile Include="rainbow.fx">
+      <Filter>ShaderCode</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

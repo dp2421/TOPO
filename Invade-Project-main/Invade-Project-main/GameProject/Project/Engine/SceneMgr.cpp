@@ -139,6 +139,7 @@ void CSceneMgr::InitMainScene()
 	// 필요한 리소스 로딩
 	// Texture 로드
 
+	Ptr<CTexture> pArrowTex = CResMgr::GetInst()->Load<CTexture>(L"Arrow", L"FBXTexture\\ArrowTex.png");
 	Ptr<CTexture> pTex = CResMgr::GetInst()->Load<CTexture>(L"TestTex", L"Texture\\Health.png");
 	Ptr<CTexture> pExplosionTex = CResMgr::GetInst()->Load<CTexture>(L"Explosion", L"Texture\\Explosion\\Explosion80.png");
 	Ptr<CTexture> pBlackTex = CResMgr::GetInst()->Load<CTexture>(L"Black", L"Texture\\asd.png");
@@ -620,6 +621,51 @@ void CSceneMgr::InitMainScene()
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 	}
+
+	////Arrow Sign - for Bloom Effect test
+	////pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Arrow.fbx");
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Arrow.mdat", L"MeshData\\Arrow.mdat");
+	////pMeshData->Save(pMeshData->GetPath());
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 400.f, 0.f));
+	//pObject->Transform()->SetLocalScale(Vec3(0.53f, 1.f, 0.65f));
+	//pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 3.14f / 4)); //앞으로가란표시
+	////pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 3.14f / 4)); //위로올라가란표시
+	////pObject->MeshRender()->SetDynamicShadow(true);
+	////pObject->Animator3D()->SetClipIndex(1);
+	//pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\Arrow_0.mesh"));
+	//pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
+	//pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
+
+	//effect warf (갖다붙이기 ㄹㅈㄷ)
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\effectwarf.fbx");
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\effectwarf.mdat", L"MeshData\\effectwarf.mdat");
+	pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+	pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(-200.f, (10.f - FLOORHEIGHT)/2, 17600.f)); //테스트용
+	pObject->Transform()->SetLocalPos(Vec3(0.f, (210.f - FLOORHEIGHT) / 2, 17600.f)); //실제수치
+	pObject->Transform()->SetLocalScale(Vec3(3.f, 8.f, 3.f));
+	pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
+
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\effectwarf_0.mesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
+
+
+
+	m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1222,7 +1268,6 @@ void CSceneMgr::InitJumpingScene()
 }
 
 
-
 void CSceneMgr::InitAwardScene()
 {
 	// 필요한 리소스 로딩
@@ -1352,8 +1397,6 @@ void CSceneMgr::InitAwardScene()
 	//m_pAwardScene->Awake();
 	//m_pAwardScene->Start();
 }
-
-
 
 void CSceneMgr::InitUI()
 {
@@ -1782,7 +1825,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 0.f)); //10.f-FLOORHEIGHT
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 17000.f)); //10.f - FLOORHEIGHT
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{

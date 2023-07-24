@@ -672,6 +672,17 @@ void CResMgr::CreateDefaultShader()
 	AddRes(L"UIShader", pShader);
 
 
+	// ============
+	// Bloom Shader
+	// ============
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Bloom", "ps_5_0");
+	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	pShader->Create(SHADER_POV::DEFERRED);
+	AddRes(L"BloomShader", pShader);
+
+
 	// =============
 	// Skybox Shader
 	// =============
@@ -915,6 +926,10 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl->SetShader(FindRes<CShader>(L"UIShader"));
 	AddRes(L"UIMtrl", pMtrl);
 
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"BloomShader"));
+	AddRes(L"BloomMtrl", pMtrl);
 
 	pMtrl = new CMaterial;
 	pMtrl->DisableFileSave();
