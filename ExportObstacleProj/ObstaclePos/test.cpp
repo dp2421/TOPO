@@ -127,13 +127,24 @@ enum class OBSTACLE_STATE {
 	MOVEB,
 };
 
-// 오브젝트 정보를 담는 구조체
+
+// 레이싱 오브젝트 정보를 담는 구조체
 struct ObstacleObject
 {
 	OBSTACLE_STATE state;
 	Vec3 vPos;
 };
 
+// 점프맵 오브젝트 정보를 담는 구조체
+struct JumpObstacleObject
+{
+	OBSTACLE_STATE state;
+	Vec3 vPos;
+	Vec3 vScale;
+};
+
+
+//레이싱 장애물
 void writeObstacleDate()
 {
 	vector<ObstacleObject> obstacles;
@@ -262,6 +273,7 @@ void writeObstacleDate()
 }
 
 
+//레이싱 장애물파일 읽기
 void readObstaclesDate()
 {
 
@@ -292,10 +304,79 @@ void readObstaclesDate()
 		cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << endl;
 }
 
+//점프맵 장애물
+void writeJumpObstacleDate()
+{
+	vector<JumpObstacleObject> Jumpobstacles;
+	JumpObstacleObject tempObstacle;
+	// obstacles 객체에 장애물 정보 추가
+	// 360도 장애물 - 2층
+	// 스케일 : Vec3(5.f, 5.f, 1.f)
+
+
+	tempObstacle.state = OBSTACLE_STATE::MOVEA;
+	tempObstacle.vPos = Vec3(0, 10.f, 0.f);
+	tempObstacle.vScale = Vec3(5.f, 5.f, 1.f);
+	Jumpobstacles.push_back(tempObstacle);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// 바이너리 파일로 저장
+	ofstream outFile("Jumpobstacles.bin", ios::out | ios::binary);
+	if (!outFile) {
+		std::cerr << "Failed to open obstacles.bin" << std::endl;
+		return;
+	}
+
+	for (int i = 0; i < Jumpobstacles.size(); i++) {
+		JumpObstacleObject obstacle = Jumpobstacles[i];
+		outFile.write(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
+	}
+	outFile.close();
+
+	cout << Jumpobstacles.size() << endl;
+}
+
+//점프 장애물파일 읽기
+void readJumpObstaclesDate()
+{
+
+	vector<JumpObstacleObject> obstacles;
+
+	// 바이너리 파일 읽기
+	ifstream inFile("Jumpobstacles.bin", std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		std::cerr << "Failed to open obstacles.bin" << std::endl;
+		return;
+	}
+
+	//vector<ObstacleObject> obstacles(istream_iterator<ObstacleObject>{inFile}, {});
+
+	while (!inFile.eof()) {
+		JumpObstacleObject obstacle;
+		inFile.read(reinterpret_cast<char*>(&obstacle), sizeof(obstacle));
+		obstacles.push_back(obstacle);
+	}
+	inFile.close();
+
+	obstacles.pop_back(); //수동지우기;
+	cout << obstacles.size() << endl;
+
+	//테스트
+	for (JumpObstacleObject i : obstacles)
+	{
+		cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << endl;
+		cout << i.vScale.x << " " << i.vScale.y << " " << i.vScale.z << endl;
+	}
+		
+}
+
 int main()
 {
-	writeObstacleDate();
+	//writeObstacleDate();
 	//readObstaclesDate();
+	//writeJumpObstacleDate();
+	readJumpObstaclesDate();
 
 	return 0;
 }

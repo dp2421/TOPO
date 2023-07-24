@@ -643,30 +643,7 @@ void CSceneMgr::InitMainScene()
 	//pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
 	//pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
 
-	//effect warf (갖다붙이기 ㄹㅈㄷ)
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\effectwarf.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\effectwarf.mdat", L"MeshData\\effectwarf.mdat");
-	pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
-	pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(-200.f, (10.f - FLOORHEIGHT)/2, 17600.f)); //테스트용
-	pObject->Transform()->SetLocalPos(Vec3(0.f, (210.f - FLOORHEIGHT) / 2, 17600.f)); //실제수치
-	pObject->Transform()->SetLocalScale(Vec3(3.f, 8.f, 3.f));
-	pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
-
-	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\effectwarf_0.mesh"));
-	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
-
-
-
-	m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
-
+	
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -708,7 +685,6 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
-
 	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
 	pObject->FrustumCheck(false);
@@ -719,8 +695,34 @@ void CSceneMgr::InitMainScene()
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"SkyboxMtrl"));
 	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
-
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+
+
+	//effect warf (갖다붙이기 ㄹㅈㄷ)
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\effectwarf.fbx");
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\effectwarf.mdat", L"MeshData\\effectwarf.mdat");
+	pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+	pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(-200.f, (10.f - FLOORHEIGHT)/2, 17600.f)); //테스트용
+	pObject->Transform()->SetLocalPos(Vec3(0.f, (210.f - FLOORHEIGHT) / 2, 17600.f)); //실제수치
+	pObject->Transform()->SetLocalScale(Vec3(3.f, 8.f, 3.f));
+	pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
+
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\effectwarf_0.mesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
+	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
+
+
+
+	m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
+
 
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
@@ -1191,12 +1193,10 @@ void CSceneMgr::InitJumpingScene()
 #else
 #endif
 
-
-	//시계추회전장애물 : 2층(14) + 1층(9)
 	{
 		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\JumpObstacle.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
-		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
+		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\JumpObstacle.mdat", L"MeshData\\JumpObstacle.mdat", false, true);
 		CGameObject* pObstaclesB;
 		pObstaclesB = nullptr;
 
@@ -1214,38 +1214,8 @@ void CSceneMgr::InitJumpingScene()
 			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
 			pObstaclesB->FrustumCheck(false);
 			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-			pObstaclesB->Transform()->SetLocalPos(Vec3(-0, 0, -0));
-			pObstaclesB->Transform()->SetLocalScale(Vec3(1, 1, 1));
-			pObstaclesB->MeshRender()->SetDynamicShadow(true);
-			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pJumpingScene);
-		}
-	}
-
-	//시계추회전장애물 : 2층(14) + 1층(9)
-	{
-
-		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\JumpObstacle (1).fbx");
-		//pMeshData->Save(pMeshData->GetPath());
-		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\JumpObstacle.mdat", L"MeshData\\JumpObstacle.mdat", false, true);
-		CGameObject* pObstaclesB;
-		pObstaclesB = nullptr;
-
-		//2층
-		for (int i = 0; i < 1; ++i)
-		{
-
-			pObstaclesB = pMeshData->Instantiate();
-			pObstaclesB->AddComponent(new CTransform);
-			pObstaclesB->AddComponent(new CCollider3D);
-			pObstaclesB->AddComponent(new CObstacleScript);
-			pObstaclesB->GetScript<CObstacleScript>()->SetState(OBSTACLE_STATE::MOVEA);
-			pObstaclesB->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-			pObstaclesB->Collider3D()->SetOffsetScale(Vec3(100.f, 100.f, 300.f));
-			pObstaclesB->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, -160.f));
-			pObstaclesB->FrustumCheck(false);
-			pObstaclesB->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-			pObstaclesB->Transform()->SetLocalPos(Vec3(-100, 0, 0));
-			pObstaclesB->Transform()->SetLocalScale(Vec3(5.f, 5.f, 2.5f));
+			pObstaclesB->Transform()->SetLocalPos(Vec3(0, 0, 0));
+			pObstaclesB->Transform()->SetLocalScale(Vec3(2.5f, 2.5f, 1.f)); //레이싱기준 (Vec3(5.f, 5.f, 1.f)); scale크기
 			pObstaclesB->MeshRender()->SetDynamicShadow(true);
 			m_pJumpingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesB, m_pJumpingScene);
 		}
@@ -1825,7 +1795,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 17000.f)); //10.f - FLOORHEIGHT
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
+	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f)); //10.f - FLOORHEIGHT
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
