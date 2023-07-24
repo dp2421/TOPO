@@ -28,72 +28,77 @@ void CNumScript::NumberUpdate()
 
 	if (f_Count > 1000)
 		f_Count = 0;
-	curObj->GetScript<CNumScript>()->NumScript((int)f_Count, 0, pos.y / 1.75);
+	NumScript((int)f_Count, 0, pos.y / 1.75);
 }
 
 
 void CNumScript::NumScript(int num, float offsetx, float offsety)
 {
+	std::cout << num << std::endl;
 	int hundred = num / 100;
 	int tens = num % 100 / 10;
 	int one = num % 10;
 	CGameObject* numObj = GetObj();
+	if (m_Numinfo.type != one && m_Numinfo.type != tens && m_Numinfo.type != hundred)
+		SetActive(false);
 
 	if (m_Numinfo.type == hundred)
 	{
 		for (int i = 0; i < 5; ++i)
 		{
-			if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
+			if (m_Numinfo.index == i)
 			{
 				if (numObj->IsActive() == false)
 				{
-					numObj->Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
+					Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
 					numObj->SetActive(true);
+					break;
 
 				}
 			}
 		}
 
 	}
-	else
-		numObj->SetActive(false);
+	//else
+	//	numObj->SetActive(false);
 
 	if (m_Numinfo.type == tens)
 	{
 
 		for (int i = 0; i < 5; ++i)
 		{
-			if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
+			if (m_Numinfo.index == i)
 			{
 				if (numObj->IsActive() == false)
 				{
-					numObj->Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
+					Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
 					numObj->SetActive(true);
+					break;
 				}
 			}
 		}
 	}
-	else
-		numObj->SetActive(false);
+	//else
+	//	numObj->SetActive(false);
 
 	if (m_Numinfo.type == one)
 	{
 		for (int i = 0; i < 5; ++i)
 		{
-			if (numObj->GetScript<CNumScript>()->GetNumInfo().index == i)
+			if (m_Numinfo.index == i)
 			{
 				if (numObj->IsActive() == false)
 				{
-					numObj->Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
+					Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
 					numObj->SetActive(true);
+					break;
 				}
 			}
 		}
 
 	}
-	else
-		numObj->SetActive(false);
-
+	//else
+	//	numObj->SetActive(false);
 
 }
 

@@ -317,10 +317,35 @@ void CPlayerScript::Update()
 
 	}
 	*/
+	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
+	{
+		if (true)
+			SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
+		//else if (true)	// 2등
+		//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
+		//else if (true) //3등 
+		//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+		//else	// 패배자들
+		//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
 
-	IdlePlayer->Transform()->SetLocalRot(vRot);
-	runPlayer->Transform()->SetLocalRot(vRot);
-	Transform()->SetLocalRot(vRot);
+		for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+		{
+			if (obj->GetName().compare(L"AwardMainCam") == 0)
+			{
+				obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
+				obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
+				Vec3 temp = obj->Transform()->GetLocalRot();
+				//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
+			}
+		}
+	}
+	else
+	{
+		IdlePlayer->Transform()->SetLocalRot(vRot);
+		runPlayer->Transform()->SetLocalRot(vRot);
+		Transform()->SetLocalRot(vRot);
+
+	}
 }
 
 void CPlayerScript::SetPlayable(bool value)
@@ -348,20 +373,20 @@ void CPlayerScript::SetPlayable(bool value)
 			//	obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 200.f));
 			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
-			//	////2등석
-			//	//SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
-			//	//obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
-			//	//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			//	//2등석
+			//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
+			//	obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
-			//	////3등석
-			//	//SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
-			//	//obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
-			//	//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			//	//3등석
+			//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+			//	obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
-			//	////기타등등들
-			//	//SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
-			//	//obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
-			//	//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			//	//기타등등들
+			//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+			//	obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
+			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 			//	//
 			//	GetObj()->AddChild(obj);

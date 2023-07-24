@@ -26,7 +26,7 @@ void MeteorScript::Update()
 			}
 			else
 			{
-				GetObj()->SetActive(false);
+				//GetObj()->SetActive(false);
 			}
 		}
 
