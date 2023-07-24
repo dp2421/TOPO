@@ -128,14 +128,14 @@ enum class OBSTACLE_STATE {
 };
 
 
-// 레이싱 오브젝트 정보를 담는 구조체
+// 레이싱 장애물 오브젝트 정보를 담는 구조체
 struct ObstacleObject
 {
 	OBSTACLE_STATE state;
 	Vec3 vPos;
 };
 
-// 점프맵 오브젝트 정보를 담는 구조체
+// 점프맵 장애물 오브젝트 정보를 담는 구조체
 struct JumpObstacleObject
 {
 	OBSTACLE_STATE state;
