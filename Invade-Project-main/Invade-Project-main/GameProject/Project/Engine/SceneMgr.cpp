@@ -601,9 +601,8 @@ void CSceneMgr::InitMainScene()
 		}
 
 	}
-
-	//열외.. MapPos1FF는 파일에서 안 불러오고 따로 읽습니다.
-	//이상하게..1FF.mdat 파일만 위의 방식으로 불러오면 텍스쳐가 누덕누덕거림..
+	//열외.. MapPos1FF는 파일에서 안 불러오고 따로 읽음
+	//이상하게..1FF.mdat 파일만 위의 방식으로 불러오면 텍스쳐가 누덕거림..
 	{
 		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\L1Water.mdat", L"MeshData\\L1Water.mdat");
 		//pMeshData->Save(pMeshData->GetPath());
@@ -620,30 +619,82 @@ void CSceneMgr::InitMainScene()
 		pObject->MeshRender()->SetDynamicShadow(true);
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
+
+	}
+	//Arrow Sign (충돌체크 안할듯)
+	for (int i = 0; i < 2; ++i)
+	{
+		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Arrow.fbx");
+		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Arrow.mdat", L"MeshData\\Arrow.mdat");
+		//pMeshData->Save(pMeshData->GetPath());
+		pObject = pMeshData->Instantiate();
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CCollider3D);
+		pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+		pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+		pObject->FrustumCheck(false);
+		pObject->Transform()->SetLocalPos(Vec3(-1500.f + 3200.f * i, 10.f - FLOORHEIGHT, 18800.f));
+		pObject->Transform()->SetLocalScale(Vec3(0.53f, 1.f, 0.65f));
+		pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 3.14f / 4)); //위로올라가란표시
+		//pObject->MeshRender()->SetDynamicShadow(true);
+		//pObject->Animator3D()->SetClipIndex(1);
+		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
+	}
+	
+
+
+	//rain warf (이거 오류인가요? 아니요 기획의도인데요?)
+	{
+		//첫번째 슈점위치
+		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\effectwarf.mdat", L"MeshData\\effectwarf.mdat");
+		pObject = pMeshData->Instantiate();
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CCollider3D);
+		pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+		pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+		pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+		pObject->FrustumCheck(false);
+		//pObject->Transform()->SetLocalPos(Vec3(-200.f, (10.f - FLOORHEIGHT)/2, 17600.f)); //테스트용
+		pObject->Transform()->SetLocalPos(Vec3(0.f, (190.f - FLOORHEIGHT) / 2, 17600.f)); //실제수치
+		pObject->Transform()->SetLocalScale(Vec3(3.f, 8.f, 3.f));
+		pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
+
+		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\effectwarf_0.mesh"));
+		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
+		pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
+
+		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
+
+
+		//끝에 슈점 두개 위치
+		for (int i = 0; i < 2; ++i)
+		{
+			pObject = pMeshData->Instantiate();
+			pObject->AddComponent(new CTransform);
+			pObject->AddComponent(new CCollider3D);
+			pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+			pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+			pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+			pObject->FrustumCheck(false);
+			pObject->Transform()->SetLocalPos(Vec3(-700.f + 1400.f*i, (190.f - FLOORHEIGHT) / 2, 20400.f)); //실제수치
+			pObject->Transform()->SetLocalScale(Vec3(3.f, 8.f, 3.f));
+			pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
+
+			pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\effectwarf_0.mesh"));
+			pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
+			pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
+
+			m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
+
+		}
+		
 	}
 
-	////Arrow Sign - for Bloom Effect test
-	////pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Arrow.fbx");
-	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Arrow.mdat", L"MeshData\\Arrow.mdat");
-	////pMeshData->Save(pMeshData->GetPath());
-	//pObject = pMeshData->Instantiate();
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CCollider3D);
-	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
-	//pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 400.f, 0.f));
-	//pObject->Transform()->SetLocalScale(Vec3(0.53f, 1.f, 0.65f));
-	//pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 3.14f / 4)); //앞으로가란표시
-	////pObject->Transform()->SetLocalRot(Vec3(0.f, 3.14f, 3.14f / 4)); //위로올라가란표시
-	////pObject->MeshRender()->SetDynamicShadow(true);
-	////pObject->Animator3D()->SetClipIndex(1);
-	//pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\Arrow_0.mesh"));
-	//pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
-	//pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
 
-	
+
+
+
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -699,36 +750,11 @@ void CSceneMgr::InitMainScene()
 
 
 
-	//effect warf (갖다붙이기 ㄹㅈㄷ)
-	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\effectwarf.fbx");
-	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\effectwarf.mdat", L"MeshData\\effectwarf.mdat");
-	pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
-	pObject->FrustumCheck(false);
-	//pObject->Transform()->SetLocalPos(Vec3(-200.f, (10.f - FLOORHEIGHT)/2, 17600.f)); //테스트용
-	pObject->Transform()->SetLocalPos(Vec3(0.f, (210.f - FLOORHEIGHT) / 2, 17600.f)); //실제수치
-	pObject->Transform()->SetLocalScale(Vec3(3.f, 8.f, 3.f));
-	pObject->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
-
-	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"Mesh\\effectwarf_0.mesh"));
-	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"BloomMtrl"));
-	pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pArrowTex.GetPointer());
-
-
-
-	m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
-
-
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
 
-	m_pCurScene = m_pRacingScene;
-	m_pRacingScene->Awake();
+	//m_pCurScene = m_pRacingScene;
+	//m_pRacingScene->Awake();
 	//m_pRacingScene->Start();
 }
 
@@ -1795,8 +1821,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
-	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f)); //10.f - FLOORHEIGHT
+	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
