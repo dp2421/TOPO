@@ -1797,8 +1797,11 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	}
 	//ChangeScene(curscene);
 	std::cout << isPlayer << " is Player \n";
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Victory.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 
-	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;
 	// MeshRender 설정
@@ -1845,23 +1848,23 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 			pPlayer->AddChild(obj);
 
-			////2등석
-			//pPlayer->Transform()->SetLocalPos(Vec3(475.f, 10.f + 175.f, -125.f));
-			//obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
-			//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-			//pPlayer->AddChild(obj);
+			//2등석
+			pPlayer->Transform()->SetLocalPos(Vec3(475.f, 10.f + 175.f, -125.f));
+			obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			pPlayer->AddChild(obj);
 
-			////3등석
-			//pPlayer->Transform()->SetLocalPos(Vec3(-475.f, 10.f + 175.f, -125.f));
-			//obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
-			//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-			//pPlayer->AddChild(obj);
+			//3등석
+			pPlayer->Transform()->SetLocalPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+			obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
+			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			pPlayer->AddChild(obj);
 
-			////기타등등..벽뒤에사람있어요.
-			//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -780.f));
-			//obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
-			//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-			//pPlayer->AddChild(obj);
+			//기타등등..벽뒤에사람있어요.
+			pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -780.f));
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
+			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+			pPlayer->AddChild(obj);
 			break;
 
 		}
@@ -1871,7 +1874,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->Transform()->SetLocalPos(pos);
 #endif
 
-	pPlayer->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pPlayer->Transform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
 	pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
 	pPlayer->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
