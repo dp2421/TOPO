@@ -361,7 +361,7 @@ void CPlayerScript::SetPlayable(bool value)
 		{
 			if (obj->GetName().compare(L"MainCam") == 0)
 			{
-				obj->Transform()->SetLocalPos(Vec3(0, 60.f * 7, 220.f * 7));
+				obj->Transform()->SetLocalPos(Vec3(0, 60.f * 5, 220.f * 3));
 				obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 				GetObj()->AddChild(obj);
 
