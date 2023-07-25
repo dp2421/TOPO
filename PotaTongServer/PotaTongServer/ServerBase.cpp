@@ -304,7 +304,10 @@ void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
 		clients[newID]->RoomID = roomID;
 		clients[newID]->mapType = mapType;
 		clients[newID]->position = PlayerStartPos;
-		clients[newID]->position.x += PlayerStartDistance * AINum;
+		clients[newID]->position.x += (PlayerStartDistance * i);
+
+		Event update{ clients[newID]->ID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(update);
 	}
 }
 
@@ -360,6 +363,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 	case OverlappedType::GameStartCount:
 	{
+		cout << "Start Count RoomID : " << id << endl;
 		for (auto cl : clients)
 		{
 			if (cl.second->isAI) continue;
@@ -388,8 +392,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 						cl.second->direction = { normalDir.x, 0, normalDir.z };
 
-						Event update{ cl.second->ID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
-						eventQueue.push(update);
 						std::uniform_int_distribution<int> time(1, 10);
 						Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
 						eventQueue.push(event);
@@ -399,7 +401,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		}
 		else
 		{
-			Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 			eventQueue.push(event);
 		}
 
@@ -670,7 +672,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				if (client->position.y < -3000)
 				{
 					client->velocity.y = 0;
-					client->position = PlayerStartPos;
+					client->position = Vector3{ 0,10,50 };
+				}
+				else if (client->position.z > 21500 && client->position.y > 0)
+				{
+					client->isGoal = true;
+					client->velocity = Vector3::Zero();
+					client->score = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() -  startTimePointByRoomID[client->RoomID]).count();
 				}
 			}
 		}
@@ -911,6 +919,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	auto client = clients[id];
 	if (client->mapType == MapType::Lobby || client->RoomID == -1) return;
 	if (startCountByRoomID[client->RoomID] != 0) return;
+	if (client->isGoal) return;
 
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);

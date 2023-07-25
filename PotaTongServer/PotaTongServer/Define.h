@@ -17,7 +17,7 @@ constexpr auto DeltaTimefloat = chrono::duration<float>(1.f / Frame);
 constexpr int RacingMAX = 24;
 constexpr int SurviveMAX = 8;
 
-constexpr float SPEED = 3000.f;
+constexpr float SPEED = 1000.f;
 constexpr float JUMPVEL = 300.0f;
 constexpr float GRAVITY = 9.8f;
 constexpr float PUSHDISTANCE = 150.f;
