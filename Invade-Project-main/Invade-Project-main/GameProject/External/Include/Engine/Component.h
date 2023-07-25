@@ -24,7 +24,9 @@ public:
     bool IsActive() { return m_bActive; }
 
     COMPONENT_TYPE GetComponentType() { return m_eComType; }
-    CGameObject* GetObj() { return m_pObject; }
+    CGameObject* GetObj() {
+        return m_pObject; 
+    }
     CTransform* Transform() { return m_pObject->Transform(); }
     CMeshRender* MeshRender() { return m_pObject->MeshRender(); }
     CAnimator2D* Animator2D() { return m_pObject->Animator2D(); }

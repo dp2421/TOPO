@@ -159,6 +159,8 @@ void CUIScript::UIRender()
 			}
 		}
 	}
+
+
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
