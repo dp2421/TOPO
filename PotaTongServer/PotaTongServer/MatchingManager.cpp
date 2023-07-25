@@ -82,7 +82,7 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 				client->RoomID = roomID;
 				client->SendMatchingOKPacket(mapType);
 				client->position = PlayerStartPos;
-				client->position.z += PUSHDISTANCE * i;
+				client->position.z += PlayerStartDistance * i;
 			}
 			else break;
 		}

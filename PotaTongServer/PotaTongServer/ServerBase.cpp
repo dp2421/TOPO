@@ -304,7 +304,7 @@ void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
 		clients[newID]->RoomID = roomID;
 		clients[newID]->mapType = mapType;
 		clients[newID]->position = PlayerStartPos;
-		clients[newID]->position.z += PUSHDISTANCE * AINum;
+		clients[newID]->position.x += PlayerStartDistance * AINum;
 	}
 }
 
