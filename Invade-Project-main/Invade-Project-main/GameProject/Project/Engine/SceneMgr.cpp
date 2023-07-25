@@ -1833,7 +1833,7 @@ void CSceneMgr::Update()
 
 
 	// 충돌 처리
-	CCollisionMgr::GetInst()->Update();
+	//CCollisionMgr::GetInst()->Update();
 }
 
 void CSceneMgr::Update_Tool()

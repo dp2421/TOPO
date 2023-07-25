@@ -6,6 +6,7 @@
 #include"CameraScript.h"
 #include "NetworkMgr.h"
 #include "ParticleSystem.h"
+#include "RenderMgr.h"
 
 void CPlayerScript::Awake()
 {
