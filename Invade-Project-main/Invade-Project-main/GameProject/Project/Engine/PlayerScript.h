@@ -9,6 +9,11 @@ enum class ELEMENT_TYPE {
     WIND=4
 };
 
+enum class PARTICLE_TYPE {
+    COLLPARICLE=0,
+    RUNPARTICLE
+};
+
 enum class Direction : int
 {
     None = 0,
@@ -43,8 +48,9 @@ private:
     bool isPlayable = false;
     bool isColl = false;
     bool isGoal = false;
-    
-    bool m_isColl = false;
+
+    bool m_isColl = false; //부딪혔을때 나오는 파티클
+    bool m_isRun = true;  //뛸 때 나오는 파티클
     int testCount = 0;
 
     CGameObject* m_pParticle;
@@ -68,10 +74,8 @@ public:
         bool isColl = false,
         bool isGoal = false
     );
-    void StartParticle(Vec3 pos);
+    void StartParticle(Vec3 pos, PARTICLE_TYPE type);
     void EndParticle();
-    void SetisColl(bool iscoll) { m_isColl = iscoll; }
-    bool GetisColl() { return m_isColl; }
 
     CPlayerScript();
     virtual ~CPlayerScript();

@@ -147,6 +147,7 @@ void CSceneMgr::InitMainScene()
 	m_pNightSkyBox = CResMgr::GetInst()->Load<CTexture>(L"FS003_Night", L"Texture\\Skybox\\FS003_Night.png");
 	CResMgr::GetInst()->Load<CTexture>(L"Snow", L"Texture\\Particle\\Snow50px.png");
 	CResMgr::GetInst()->Load<CTexture>(L"smokeparticle", L"Texture\\Particle\\smokeparticle.png");
+	CResMgr::GetInst()->Load<CTexture>(L"CartoonSmoke", L"Texture\\Particle\\CartoonSmoke3.png");
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 
@@ -313,7 +314,7 @@ void CSceneMgr::InitMainScene()
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//360도회전장애물 : 2층(26) + 1층(17)
+	//360도회전장애물 : 2층(26) + 1층(17) => 변경 : 2층(16) + 1층(11)
 	{	//2층
 		//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Obstacle10_2.fbx");
 		pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Obstacle10_2.mdat", L"MeshData\\Obstacle10_2.mdat", false, true);
@@ -397,7 +398,7 @@ void CSceneMgr::InitMainScene()
 				pObstaclesA->Collider3D()->SetOffsetPos(Vec3(0.f, 0.f, 152.f));
 				pObstaclesA->FrustumCheck(false);
 				pObstaclesA->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 0.f));
-				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 1120. * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j));
+				pObstaclesA->Transform()->SetLocalPos(Vec3(-1120.f + 1120.f * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j));
 				pObstaclesA->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 				pObstaclesA->MeshRender()->SetDynamicShadow(true);
 				m_pRacingScene->FindLayer(L"Obstacle")->AddGameObject(pObstaclesA, m_pRacingScene);
@@ -778,6 +779,25 @@ void CSceneMgr::InitMainScene()
 	pObject->ParticleSystem()->SetEndScale(6.f);
 	pObject->FrustumCheck(false);
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f - FLOORHEIGHT, 17800.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+
+
+	pObject = new CGameObject;
+	pObject->SetName(L"CartoonParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmoke")));
+	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.2f));
+	pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
+	pObject->ParticleSystem()->SetMinLifeTime(0.5f);
+	pObject->ParticleSystem()->SetStartScale(35.f);
+	pObject->ParticleSystem()->SetEndScale(22.f);
+	pObject->ParticleSystem()->SetFrequency(0.5f);
+	//pObject->ParticleSystem()->SetAccTime(1.5f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -1000.f, 0.f));
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
@@ -1905,7 +1925,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	{
 		if (obj->GetName().compare(L"MainCam") == 0)
 		{
-			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 10, 140.f * 7));
+			obj->Transform()->SetLocalPos(Vec3(0, 60.f * 5, 220.f * 3));
 			obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 			pPlayer->AddChild(obj);
 			//obj->Transform()->SetLocalPos(Vec3(-60,45,-10));
