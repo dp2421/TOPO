@@ -36,7 +36,6 @@ private:
 	bool b_SceneChanged = false;
 	SCENE_TYPE m_sceneType;
 
-	CSound* m_sounds[(int)SOUND_TYPE::END];
 
 	bool b_isFever = true;
 	bool b_isMatchComplete = false;
@@ -45,6 +44,9 @@ private:
 	float f_lightpow;
 
 public:
+	CSound* m_sounds[(int)SOUND_TYPE::END];
+
+
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
 	void Render_Tool();

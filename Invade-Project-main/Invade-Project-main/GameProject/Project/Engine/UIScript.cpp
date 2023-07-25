@@ -10,7 +10,9 @@ void CUIScript::Update()
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 	mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
 	if (Transform()->IsCasting(mousepos) && CKeyMgr::GetInst()->GetClicked() == true)
+	{
 		m_isClicked = true;
+	}
 
 	if (m_isClicked == true)
 	{
@@ -19,16 +21,19 @@ void CUIScript::Update()
 			m_isSelected = true;
 			CGameObject* curobj = GetObj();
 			curobj->SetActive(false);
+			CRenderMgr::GetInst()->m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
 		}
 		else if (m_iType == MODE_RACING)
 		{
 			m_isMatching = true;
 			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Racing);
+			CRenderMgr::GetInst()->m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
 		}
 		else if (m_iType == MODE_SURVIVAL)
 		{
 			m_isMatching = true;
 			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Obstacle);
+			CRenderMgr::GetInst()->m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
 		}
 		m_isClicked = false;
 
