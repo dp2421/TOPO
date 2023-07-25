@@ -70,7 +70,7 @@ void CUIScript::UIRender()
 	if (m_isMatching == true)
 	{
 		m_isClicked = false;
-		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
+		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75f;
 
 		//std::cout << f_MatchingTime << std::endl;
 
@@ -177,6 +177,8 @@ void CUIScript::MatchingComplete()
 		int random = rand() % 2 + 1;
 		CRenderMgr::GetInst()->SetSceneType((SCENE_TYPE)random);
 	}
+	CRenderMgr::GetInst()->SetSceneChanged(true);
+
 #else // !LOCALPLAY
 	switch ((MapType)CRenderMgr::GetInst()->GetMatchMapType())
 	{

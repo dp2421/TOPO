@@ -38,9 +38,11 @@ private:
 
 	CSound* m_sounds[(int)SOUND_TYPE::END];
 
-	bool b_isFever = false;
+	bool b_isFever = true;
 	bool b_isMatchComplete = false;
 	int m_maptype;
+
+	float f_lightpow;
 
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);

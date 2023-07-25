@@ -162,8 +162,20 @@ void CRenderMgr::Render_Lights()
 	// 광원을 그린다.
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
-		if (b_isFever)
-			m_vecLight3D[i]->Light3D()->SetDiffuseColor(Vec3(0.06f, 0.149f, 0.4f));
+		if (m_vecLight3D[i]->Light3D()->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::DIR)
+		{
+			if (b_isFever)
+				m_vecLight3D[i]->Light3D()->SetDiffuseColor(Vec3(0.06f, 0.149f, 0.4f));
+		}
+
+		if (m_vecLight3D[i]->Light3D()->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::POINT)
+		{
+			f_lightpow += 0.01;
+			if (f_lightpow > 1)
+				f_lightpow = 0.f;
+			m_vecLight3D[i]->Light3D()->SetAmbient(Vec3(f_lightpow, f_lightpow, f_lightpow));
+		}
+
 		m_vecLight3D[i]->Light3D()->Render();
 	}
 
