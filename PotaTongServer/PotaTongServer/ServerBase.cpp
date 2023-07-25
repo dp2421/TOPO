@@ -51,6 +51,7 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			}
 			else
 			{
+				std::cerr << "WSAStartup failed: " << WSAGetLastError() << std::endl;
 				cout << "GQCS Error on client [" << id << "]\n";
 				Disconnect(id);
 				if (overlappedEx->type == OverlappedType::Send) delete overlappedEx;
@@ -234,43 +235,57 @@ void ServerBase::InitObsatacleInfo()
 		obstacles.emplace_back(obstacle, i);
 		if (obstacle.state != OBSTACLE_STATE::STOP) ++i;
 	}
+	obstacles.pop_back();
 	inFile.close();
-
-	//Event rotateEvent{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
-	//Event Sendevent{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
-	//eventQueue.push(rotateEvent);
-	//eventQueue.push(Sendevent);
 }
 
 void ServerBase::InitMapInfo()
 {
-	const char* FileNames[] = { "RacingMapPosSV.bin" };
+	const char* FileNames = { "FinalRacingPos.bin" };
 
-	ifstream inFile(FileNames[0], std::ios::in | std::ios::binary);
+	ifstream inFile(FileNames, std::ios::in | std::ios::binary);
 
 	if (!inFile) {
-		std::cerr << "Failed to open " << FileNames[0] << std::endl;
+		std::cerr << "Failed to open " << FileNames << std::endl;
 		return;
 	}
 
 	while (!inFile.eof()) {
 		TileInfo tile;
 		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
-		if (tile.state == LayerState::L1Water)
-		{
-			tile.xScale *= 4;
-			tile.yScale *= 4;
-			tile.zScale *= 4;
-		}
 		tiles.push_back(tile);
 	}
+	tiles.pop_back();
 
 	inFile.close();
 }
 
-void ServerBase::InitAI(int roomID, MapType mapType)
+void ServerBase::InitMeteoInfo()
 {
-	for (int i = 0; i < 30; ++i)
+	const char* FileNames[] = { "LMetorCenterSV.bin", "LMetorGrassSV.bin", "LMetorStoneSV.bin", "LMetorWaterSV.bin", "LMetorWoodSV.bin" };
+
+	for (int i = 0; i < 5; ++i)
+	{
+		ifstream inFile(FileNames[i], std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames[i] << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			MetorTile tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			meteoTiles.push_back(tile);
+		}
+
+		inFile.close();
+	}
+}
+
+void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
+{
+	for (int i = 0; i < AINum; ++i)
 	{
 		int newID = clientID++;
 
@@ -306,7 +321,7 @@ void ServerBase::Accept()
 	clients[newID] = new Client;
 	clients[newID]->ID = newID;
 	clients[newID]->socket = ClientSocket;
-	clients[newID]->position = PlayerStartPos;
+	clients[newID]->position = Vector3::Zero();
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(ClientSocket), IOCPHandle, newID, 0);
 	clients[newID]->RecvPacket();
 
@@ -349,6 +364,11 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 {
 	switch (overlappedEx->type)
 	{
+	case OverlappedType::GameStartCount:
+	{
+
+		break;
+	}
 	case OverlappedType::MatchingRacingStart:
 	{
 
@@ -361,12 +381,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingRacingComplete:
 	{
-		matchingManager->CompleteMatching(id, MapType::Racing);
-		InitAI(id, MapType::Racing);
+		int connectClient = matchingManager->CompleteMatching(id, MapType::Racing);
+		InitAI(id, MapType::Racing, RacingMAX - connectClient);
 		break;
 	}
 	case OverlappedType::MatchingObstacleComplete:
 	{
+
 		matchingManager->CompleteMatching(id, MapType::Obstacle);
 		break;
 	}
@@ -402,6 +423,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 		for (auto client : clients)
 		{
+			if (client.second->RoomID == -1) continue;
+			if (client.second->mapType != MapType::Racing) continue;
+
 			if (client.second->ID != -1 && !client.second->isAI)
 				client.second->SendObstacleInfoPacket(degree, 66 * sizeof(short));
 		}
@@ -452,6 +476,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					{
 						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
 
+						if(tile.data.state == LayerState::L1Water)
+							cout << "Tile : " << tile.data.state << endl;
+
 						lock_guard<mutex> lock{ client->lock };
 						client->position.y = tile.collider.position->y;
 						client->velocity.y = 0;
@@ -465,14 +492,17 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 
 			// 장애물 충돌체크
-			if (client->velocity.x != 0 || client->velocity.z != 0)
+			for (auto& obs : obstacles)
 			{
-				for (auto& obs : obstacles)
+				//break; /////////////////////////////////////////////////////////////////////////////////////////// 장애물 충돌 임시 중단
+				if (client->velocity.x != 0 || client->velocity.z != 0)
 				{
 					if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
 					{
 						if (client->collider.isCollisionAABB(obs.collider[0]))
 						{
+							client->isColl = true;
+							break;
 							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
 							//auto boxcenter = obs.collider[0].getBoundingbox().Center;
 							auto clientCenter = client->collider.getBoundingbox().Center;
@@ -515,9 +545,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						}
 					}
 				}
-			}
-			for (auto& obs : obstacles)
-			{
 				if (obs.data.state == OBSTACLE_STATE::SPIN)
 				{
 					obs.collider[1].orientation =
@@ -530,6 +557,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
+						client->isColl = true;
+						break;
 						//std::cout << " COLL SPIN " << endl;
 						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
 
@@ -583,6 +612,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 					if (client->collider.isCollisionOBB(obs.collider[0]))
 					{
+						client->isColl = true;
+						break;
 						XMVECTOR vec;
 						float angle;
 						XMFLOAT4 vec4;
@@ -591,6 +622,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						//cout << "Coll PENDULUM " << vec4.x << " " << vec4.y << " " << vec4.z << " " << vec4.w << endl;
 					}
 				}
+				client->isColl = false;
 			}
 
 			{
@@ -599,7 +631,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				if (client->position.y < -3000)
 				{
 					client->velocity.y = 0;
-					client->position = Vector3(50, 100, 100);
+					client->position = PlayerStartPos;
 				}
 			}
 		}
@@ -623,6 +655,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		{
 			ClientException(cl, id);
 			if (cl.second->isAI) continue;
+			if (cl.second->RoomID != client->RoomID) continue;
+			if (cl.second->mapType != client->mapType) continue;
 
 			cl.second->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
 		}
@@ -678,6 +712,7 @@ void ServerBase::Disconnect(int ID)
 	// 게임중이면 같은 그룹에게 전달
 	// 로비면 그냥 끊기
 	auto client = clients[ID];
+	if (client->ID == -1) return;
 
 	lock_guard<mutex> lock{ clients[ID]->lock };
 
@@ -690,11 +725,13 @@ void ServerBase::Disconnect(int ID)
 	for (auto cl : clients)
 	{
 		ClientException(cl, ID);
+		if (cl.second->RoomID != client->RoomID) continue;
+		if (cl.second->mapType != client->mapType) continue;
 
 		cl.second->SendRemovePlayerPacket(ID);
 	}
 
-	clients[ID]->ID = -1;
+	client->ID = -1;
 	closesocket(clients[ID]->socket);
 }
 
@@ -758,17 +795,21 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		}
 		}
 
-		clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
-
-		for (auto& client : clients)
+		if (!clients[id]->isAI)
 		{
-			ClientException(client, id);
-			if (client.second->mapType != clients[id]->mapType) continue;
+			clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
 
-			//if (!client.second->isAI)
-			//	client.second->SendAddPlayerPacket(id, clients[id]->position);
+			for (auto& client : clients)
+			{
+				ClientException(client, id);
+				if (client.second->mapType != clients[id]->mapType) continue;
+				if (client.second->RoomID != clients[id]->RoomID) continue;
 
-			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
+				//if (!client.second->isAI)
+				//	client.second->SendAddPlayerPacket(id, clients[id]->position);
+
+				clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
+			}
 		}
 		break;
 	}
@@ -823,7 +864,6 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	{
 		if (!client->isJump)
 		{
-			cout << "JUMP \n";
 			client->isJump = true;
 			client->velocity.y = JUMPVEL;
 		}

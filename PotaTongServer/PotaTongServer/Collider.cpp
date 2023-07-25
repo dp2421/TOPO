@@ -39,21 +39,18 @@ XMVECTOR Collider::GetClosestFaceNormal(const BoundingBox& box, FXMVECTOR point)
 	else
 		faceIndex = 2; // Z face
 
-	cout << distances.m128_f32[0] << " "
-		<< distances.m128_f32[1] << " "
-		<< distances.m128_f32[2] << " "
-		<< faceIndex << endl;
+	//cout << distances.m128_f32[0] << " "
+	//	<< distances.m128_f32[1] << " "
+	//	<< distances.m128_f32[2] << " "
+	//	<< faceIndex << endl;
 
 	switch (faceIndex)
 	{
-	case 0: // x
-		cout << "LEFT" << endl;
+	case 0:
 		return DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
-	case 1: // y
-		cout << "BOTTOM" << endl;
+	case 1:
 		return DirectX::XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
-	case 2: // z
-		cout << "BACK" << endl;
+	case 2:
 		return DirectX::XMVectorSet(-1.0f, 0.0f, 0.0f, 0.0f);
 	default:
 		return DirectX::XMVectorZero();

@@ -7,19 +7,26 @@
 
 #define DistanceVec3(a, b) sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
 
+constexpr int MatchingTime = 5;
+constexpr int GameTime = 120;
 constexpr int Frame = 30;
 constexpr auto DeltaTimeMilli = chrono::duration_cast<chrono::milliseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimeNano = chrono::duration_cast<chrono::nanoseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimefloat = chrono::duration<float>(1.f / Frame);
 
-constexpr float SPEED = 300.f;
+constexpr int RacingMAX = 24;
+constexpr int SurviveMAX = 8;
+
+constexpr float SPEED = 3000.f;
 constexpr float JUMPVEL = 300.0f;
 constexpr float GRAVITY = 9.8f;
 constexpr float PUSHDISTANCE = 150.f;
 
-const Vector3 PlayerStartPos{ 50, 100, 100 };
+const Vector3 PlayerStartPos{ -1800, 10, 35 };
+const float PlayerStartDistance = 200.0f;
+const Vector3 MeteorStartPos{};
 
-const Vector3 PlayerCollider{ 100.0f / 2, 160.0f / 2, 100.0f / 2 };
+const Vector3 PlayerCollider{ 100.0f / 2, 160.0f / 2, 75.0f / 2 };
 const Vector3 PlayerOffset{ 0.0f, 90.0f, 0.0f };
 
 const Vector3 TileCollider{ 100.0f / 2, 100.0f / 2, 100.0f / 2 };

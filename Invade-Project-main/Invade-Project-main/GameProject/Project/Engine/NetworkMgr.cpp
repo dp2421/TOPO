@@ -59,6 +59,8 @@ void NetworkMgr::Init()
     }
     CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket), IOCPHandle, NULL, NULL);
 
+    std::cout << "Init Network \n";
+
     SendClientLoginPacket();
     DoRecv();
 
