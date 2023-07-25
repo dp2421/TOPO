@@ -1748,7 +1748,7 @@ void CSceneMgr::InitUI()
 			pObject->AddComponent(new CNumScript);
 
 			pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
-			pObject->GetScript<CNumScript>()->SetNumInfo((NUM_TYPE)i, j);
+			pObject->GetScript<CNumScript>()->SetNumInfo((NUM_TYPE)i, j, NUMPOS::NONE);
 
 			// Transform ����
 			pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 20.f));

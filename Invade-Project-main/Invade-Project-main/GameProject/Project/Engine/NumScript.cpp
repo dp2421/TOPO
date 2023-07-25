@@ -28,78 +28,82 @@ void CNumScript::NumberUpdate()
 
 	if (f_Count > 1000)
 		f_Count = 0;
+
 	NumScript((int)f_Count, 0, pos.y / 1.75);
 }
 
+bool CNumScript::IsNumberActive(int type, int index)
+{
+	for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+	{
+		if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER &&
+			obj->GetScript<CNumScript>()->m_Numinfo.type == type &&
+			obj->GetScript<CNumScript>()->m_Numinfo.index == index &&
+			obj->GetScript<CNumScript>()->m_Numinfo.numpos != NONE)
+		{
+			return true;
+		}
+	}
 
+	return false;
+}
+
+bool CNumScript::IsPrevNumActive(int type, int index, NUMPOS pos)
+{
+	if (index < 0)
+	{
+		return true;
+	}
+	for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+	{
+		if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER &&
+			obj->GetScript<CNumScript>()->m_Numinfo.type == type &&
+			obj->GetScript<CNumScript>()->m_Numinfo.index == index &&
+			obj->GetScript<CNumScript>()->m_Numinfo.numpos == pos)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 void CNumScript::NumScript(int num, float offsetx, float offsety)
 {
+	//for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+	//{
+	//	if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
+	//	{
+	//		obj->SetActive(false);
+	//	}
+	//}
 	std::cout << num << std::endl;
 	int hundred = num / 100;
 	int tens = num % 100 / 10;
 	int one = num % 10;
 	CGameObject* numObj = GetObj();
-	if (m_Numinfo.type != one && m_Numinfo.type != tens && m_Numinfo.type != hundred)
-		SetActive(false);
 
-	if (m_Numinfo.type == hundred)
+	if (m_Numinfo.type == hundred && !IsNumberActive(hundred, m_Numinfo.index) && !IsPrevNumActive(hundred, m_Numinfo.index - 1, HUNDRED))
 	{
-		for (int i = 0; i < 5; ++i)
-		{
-			if (m_Numinfo.index == i)
-			{
-				if (numObj->IsActive() == false)
-				{
-					Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
-					numObj->SetActive(true);
-					break;
+		GetObj()->SetActive(true);
+		Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
+		m_Numinfo.numpos = HUNDRED;
 
-				}
-			}
-		}
-
+		return;
 	}
-	//else
-	//	numObj->SetActive(false);
-
-	if (m_Numinfo.type == tens)
+	if (m_Numinfo.type == tens && !IsNumberActive(tens, m_Numinfo.index) && !IsPrevNumActive(tens, m_Numinfo.index - 1, TEN))
 	{
-
-		for (int i = 0; i < 5; ++i)
-		{
-			if (m_Numinfo.index == i)
-			{
-				if (numObj->IsActive() == false)
-				{
-					Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
-					numObj->SetActive(true);
-					break;
-				}
-			}
-		}
+		GetObj()->SetActive(true);
+		Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
+		m_Numinfo.numpos = TEN;
+		return;
 	}
-	//else
-	//	numObj->SetActive(false);
-
-	if (m_Numinfo.type == one)
+	if (m_Numinfo.type == one && !IsNumberActive(one, m_Numinfo.index) && !IsPrevNumActive(one, m_Numinfo.index - 1, ONE))
 	{
-		for (int i = 0; i < 5; ++i)
-		{
-			if (m_Numinfo.index == i)
-			{
-				if (numObj->IsActive() == false)
-				{
-					Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
-					numObj->SetActive(true);
-					break;
-				}
-			}
-		}
-
+		GetObj()->SetActive(true);
+		Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
+		m_Numinfo.numpos = ONE;
+		return;
 	}
-	//else
-	//	numObj->SetActive(false);
-
 }
 
 CNumScript::CNumScript() : CScript((UINT)SCRIPT_TYPE::NUMSCRIPT)

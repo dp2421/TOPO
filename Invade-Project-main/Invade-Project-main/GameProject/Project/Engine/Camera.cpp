@@ -283,15 +283,18 @@ void CCamera::Render_UI()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	CGameObject* tempObj = new CGameObject;
 
-	temp += CTimeMgr::GetInst()->GetDeltaTime();
+	temp += CTimeMgr::GetInst()->GetDeltaTime()*0.5;
+
+
+
 	for (size_t i = 0; i < m_vecUIObject.size(); ++i)
 	{
-		m_vecUIObject[i]->GetScript<CUIScript>()->UIRender();
-
 		if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 		{
 			m_vecUIObject[i]->GetScript<CNumScript>()->SetCount(temp);
 		}
+		m_vecUIObject[i]->GetScript<CUIScript>()->UIRender();
+
 
 		if (m_vecUIObject[i]->IsActive() == true)
 			m_vecUIObject[i]->MeshRender()->Render();
