@@ -102,6 +102,15 @@ void ServerBase::EventThread()
 
 			switch (event.eventType)
 			{
+			case OverlappedType::GameStartCount:
+			{
+				OverlappedEx* overlappedEx = new OverlappedEx;
+				overlappedEx->type = event.eventType;
+
+				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
+				event.objID = -1;
+				break;
+			}
 			case OverlappedType::RotateObs:
 			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
@@ -285,7 +294,7 @@ void ServerBase::InitMeteoInfo()
 
 void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
 {
-	for (int i = 0; i < AINum; ++i)
+	for (int i = AINum; i < RacingMAX; ++i)
 	{
 		int newID = clientID++;
 
@@ -295,22 +304,7 @@ void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
 		clients[newID]->RoomID = roomID;
 		clients[newID]->mapType = mapType;
 		clients[newID]->position = PlayerStartPos;
-
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
-		XMVECTOR dir{ urd(gen), 0, urd(gen) };
-
-		XMFLOAT3 normalDir;
-		XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
-
-		clients[newID]->direction = { normalDir.x, 0, normalDir.z };
-
-		Event update{ newID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
-		eventQueue.push(update);
-		std::uniform_int_distribution<int> time(1, 10);
-		Event event{ newID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
-		eventQueue.push(event);
+		clients[newID]->position.z += PUSHDISTANCE * AINum;
 	}
 }
 
@@ -366,6 +360,50 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 	case OverlappedType::GameStartCount:
 	{
+		for (auto cl : clients)
+		{
+			if (cl.second->isAI) continue;
+			if (cl.second->RoomID == id)
+			{
+				cl.second->SendGameStartPacket(startCountByRoomID[id] - 1);
+			}
+		}
+
+		startCountByRoomID[id] -= 1;
+		if (startCountByRoomID[id] == 0)
+		{
+			for (auto cl : clients)
+			{
+				if (cl.second->RoomID == clients[id]->RoomID)
+				{
+					if (cl.second->isAI)
+					{
+						std::random_device rd;
+						std::mt19937 gen(rd());
+						std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
+						XMVECTOR dir{ urd(gen), 0, urd(gen) };
+
+						XMFLOAT3 normalDir;
+						XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
+
+						cl.second->direction = { normalDir.x, 0, normalDir.z };
+
+						Event update{ cl.second->ID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+						eventQueue.push(update);
+						std::uniform_int_distribution<int> time(1, 10);
+						Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
+						eventQueue.push(event);
+					}
+				}
+			}
+		}
+		else
+		{
+			Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+			eventQueue.push(event);
+		}
+
+		cout << startCountByRoomID[id] << " STARTCOUNT \n";
 
 		break;
 	}
@@ -382,7 +420,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	case OverlappedType::MatchingRacingComplete:
 	{
 		int connectClient = matchingManager->CompleteMatching(id, MapType::Racing);
-		InitAI(id, MapType::Racing, RacingMAX - connectClient);
+		remainingUnReadyClientNumByRoomID[id] = connectClient;
+		InitAI(id, MapType::Racing, connectClient);
 		break;
 	}
 	case OverlappedType::MatchingObstacleComplete:
@@ -476,8 +515,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					{
 						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
 
-						if(tile.data.state == LayerState::L1Water)
-							cout << "Tile : " << tile.data.state << endl;
+						//if(tile.data.state == LayerState::L1Water)
+						//	cout << "Tile : " << tile.data.state << endl;
 
 						lock_guard<mutex> lock{ client->lock };
 						client->position.y = tile.collider.position->y;
@@ -672,6 +711,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::UpdateAI:
 	{
+		if (id == -1) break;
+
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_real_distribution<float> x(-1.0f, 1.0f);
@@ -722,13 +763,32 @@ void ServerBase::Disconnect(int ID)
 	//
 	//}
 
+	bool isInPlayer = false;
+
 	for (auto cl : clients)
 	{
 		ClientException(cl, ID);
 		if (cl.second->RoomID != client->RoomID) continue;
 		if (cl.second->mapType != client->mapType) continue;
+		if (!cl.second->isAI)
+		{
+			cl.second->SendRemovePlayerPacket(ID);
+			isInPlayer = true;
+		}
+	}
 
-		cl.second->SendRemovePlayerPacket(ID);
+	if (false == isInPlayer)
+	{
+		for (auto cl : clients)
+		{
+			ClientException(cl, ID);
+			if (cl.second->RoomID == client->RoomID)
+			{
+				lock_guard<mutex> lock{ cl.second->lock };
+				client->ID = -1;
+				closesocket(cl.second->socket);
+			}
+		}
 	}
 
 	client->ID = -1;
@@ -782,10 +842,26 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 
 			Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 			eventQueue.push(event);
+
+
+			int readyCount = -1;
+			{
+				lock_guard<mutex> lock{ this->lock };
+				remainingUnReadyClientNumByRoomID[clients[id]->RoomID] -= 1;
+				readyCount = remainingUnReadyClientNumByRoomID[clients[id]->RoomID];
+			}
+			if (readyCount == 0)
+			{
+				startCountByRoomID[clients[id]->RoomID] = 3;
+				Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+				eventQueue.push(event);
+			}
+
+			break;
 		}
 		case MapType::Result:
 		{
-
+			break;
 		}
 		// Obstacle
 		default:
@@ -833,7 +909,8 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 {
 	auto client = clients[id];
-	if (client->mapType == MapType::Lobby) return;
+	if (client->mapType == MapType::Lobby || client->RoomID == -1) return;
+	if (startCountByRoomID[client->RoomID] != 0) return;
 
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);

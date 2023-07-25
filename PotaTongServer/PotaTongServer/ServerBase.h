@@ -43,6 +43,7 @@ private:
 	concurrency::concurrent_priority_queue<Event> eventQueue;
 
 	concurrency::concurrent_unordered_map<int, int> remainingUnReadyClientNumByRoomID;
+	concurrency::concurrent_unordered_map<int, int> startCountByRoomID;
 
 	std::vector<Obstacle> obstacles;
 	std::vector<Obstacle> coins;
@@ -56,4 +57,6 @@ private:
 	std::vector<Tile> jumpingTiles;
 
 	atomic<int> clientID = 0;
+
+	mutex lock;
 };

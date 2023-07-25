@@ -73,7 +73,7 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 		count = racingQueue.Size();
 		this->isDoMatchingRacing = false;
 		Client* client;
-		while (true)
+		for(int i = 0; i < count; ++i)
 		{
 			if (true == this->racingQueue.TryPop(client))
 			{
@@ -81,6 +81,8 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
 				client->SendMatchingOKPacket(mapType);
+				client->position = PlayerStartPos;
+				client->position.z += PUSHDISTANCE * i;
 			}
 			else break;
 		}
