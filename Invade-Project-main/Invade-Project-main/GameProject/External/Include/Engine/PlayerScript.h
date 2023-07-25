@@ -43,6 +43,9 @@ private:
     bool isPlayable = false;
     bool isColl = false;
     bool isGoal = false;
+    
+    bool m_isColl = false;
+    int testCount = 0;
 
     CGameObject* m_pParticle;
 public:
@@ -65,6 +68,10 @@ public:
         bool isColl = false,
         bool isGoal = false
     );
+    void StartParticle(Vec3 pos);
+    void EndParticle();
+    void SetisColl(bool iscoll) { m_isColl = iscoll; }
+    bool GetisColl() { return m_isColl; }
 
     CPlayerScript();
     virtual ~CPlayerScript();

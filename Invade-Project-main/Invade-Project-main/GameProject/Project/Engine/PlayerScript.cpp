@@ -9,53 +9,53 @@
 
 void CPlayerScript::Awake()
 {
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	m_pParticle = new CGameObject;
-	m_pParticle->SetName(L"Particle");
-	m_pParticle->AddComponent(new CTransform);
-	switch (m_iType)
-	{
-	case ELEMENT_TYPE::FROZEN:
-		m_pParticle->AddComponent(new CParticleSystem);
-		m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
-		m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
-		m_pParticle->ParticleSystem()->SetMaxLifeTime(3.0f);
-		m_pParticle->ParticleSystem()->SetMinLifeTime(0.5f);
-		m_pParticle->ParticleSystem()->SetStartScale(6.f);
-		m_pParticle->ParticleSystem()->SetEndScale(9.f);
+	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	//m_pParticle = new CGameObject;
+	//m_pParticle->SetName(L"Particle");
+	//m_pParticle->AddComponent(new CTransform);
+	//switch (m_iType)
+	//{
+	//case ELEMENT_TYPE::FROZEN:
+	//	m_pParticle->AddComponent(new CParticleSystem);
+	//	m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	//	m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	//	m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
+	//	m_pParticle->ParticleSystem()->SetMaxLifeTime(3.0f);
+	//	m_pParticle->ParticleSystem()->SetMinLifeTime(0.5f);
+	//	m_pParticle->ParticleSystem()->SetStartScale(6.f);
+	//	m_pParticle->ParticleSystem()->SetEndScale(9.f);
 
-		break;
-	case ELEMENT_TYPE::FIRE:
-		m_pParticle->AddComponent(new CParticleSystem);
-		m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"particle_00"));
-		m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 0.f, 0.5f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 0.f, 0.f, 1.0f));
-		m_pParticle->ParticleSystem()->SetStartScale(2.f);
-		m_pParticle->ParticleSystem()->SetEndScale(5.f);
-		break;
-	case ELEMENT_TYPE::DARK:
-		m_pParticle->AddComponent(new CParticleSystem);
-		m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"smokeparticle"));
-		m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 0.f, 0.5f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		m_pParticle->ParticleSystem()->SetEndColor(Vec4(0.f, 0.f, 0.f, 1.0f));
-		m_pParticle->ParticleSystem()->SetStartScale(2.f);
-		m_pParticle->ParticleSystem()->SetEndScale(5.f);
-		break;
-	case ELEMENT_TYPE::THUNDER:
+	//	break;
+	//case ELEMENT_TYPE::FIRE:
+	//	m_pParticle->AddComponent(new CParticleSystem);
+	//	m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"particle_00"));
+	//	m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 0.f, 0.5f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	//	m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 0.f, 0.f, 1.0f));
+	//	m_pParticle->ParticleSystem()->SetStartScale(2.f);
+	//	m_pParticle->ParticleSystem()->SetEndScale(5.f);
+	//	break;
+	//case ELEMENT_TYPE::DARK:
+	//	m_pParticle->AddComponent(new CParticleSystem);
+	//	m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"smokeparticle"));
+	//	m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 0.f, 0.5f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	//	m_pParticle->ParticleSystem()->SetEndColor(Vec4(0.f, 0.f, 0.f, 1.0f));
+	//	m_pParticle->ParticleSystem()->SetStartScale(2.f);
+	//	m_pParticle->ParticleSystem()->SetEndScale(5.f);
+	//	break;
+	//case ELEMENT_TYPE::THUNDER:
 
-		break;
-	case ELEMENT_TYPE::WIND:
+	//	break;
+	//case ELEMENT_TYPE::WIND:
 
-		break;
+	//	break;
 
-	}
+	//}
 
-	m_pParticle->FrustumCheck(false);
-	m_pParticle->Transform()->SetLocalPos(Vec3(1.5f, 150.f, 0.f));
-	pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle, pCurScene);
+	//m_pParticle->FrustumCheck(false);
+	//m_pParticle->Transform()->SetLocalPos(Vec3(1.5f, 150.f, 0.f));
+	//pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle, pCurScene);
 
-	GetObj()->AddChild(m_pParticle);
+	//GetObj()->AddChild(m_pParticle);
 }
 
 void CPlayerScript::Update()
@@ -346,6 +346,10 @@ void CPlayerScript::Update()
 		Transform()->SetLocalRot(vRot);
 
 	}
+
+	//파티클
+	if(m_isColl)
+		StartParticle(vPos);
 }
 
 void CPlayerScript::SetPlayable(bool value)
@@ -475,7 +479,45 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 	Transform()->SetLocalPos(pos);
 	runPlayer->Transform()->SetLocalPos(pos);
 	IdlePlayer->Transform()->SetLocalPos(pos);
+
+	//충돌파티클
+	
+	if (testCount <= 1) //테스트용
+	{
+		//m_isColl = isColl;
+		m_isColl = true; //테스트용
+	}
+	if (testCount > 1)
+	{
+
+	}
 }
+
+
+void CPlayerScript::StartParticle(Vec3 pos)
+{
+
+	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
+	{
+		if (obj->GetName().compare(L"Particle") == 0)
+		{
+			obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
+			break;
+		}
+	}
+
+	testCount += 1; //테스트용
+}
+
+void CPlayerScript::EndParticle()
+{
+
+
+}
+
+
+
+
 
 CPlayerScript::CPlayerScript() :CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT), m_bCheckStartMousePoint(false), m_fArcherLocation(20.f)
 {

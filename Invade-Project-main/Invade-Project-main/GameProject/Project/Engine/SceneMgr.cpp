@@ -184,7 +184,6 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->GetLayer(9)->SetName(L"UI");
 
 
-
 	m_pRacingScene->GetLayer(31)->SetName(L"Tool");
 
 
@@ -692,8 +691,66 @@ void CSceneMgr::InitMainScene()
 	}
 
 
+	pObject = new CGameObject;
+	pObject->SetName(L"Particle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"Snow")));
+	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(3.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(0.5f);
+	pObject->ParticleSystem()->SetStartScale(6.f);
+	pObject->ParticleSystem()->SetEndScale(9.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(0.f, -1000.f, 0.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
+	pObject = new CGameObject;
+	//pObject->SetName(L"SuJumParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(1.0f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(6.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(-700.f, 10.f + 100.f - FLOORHEIGHT, 20600.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+	pObject = new CGameObject;
+	//pObject->SetName(L"SuJumParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(1.0f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(6.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(700.f, 10.f + 100.f - FLOORHEIGHT , 20600.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+	pObject = new CGameObject;
+	//pObject->SetName(L"SuJumParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(1.0f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(6.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f - FLOORHEIGHT, 17800.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -726,17 +783,6 @@ void CSceneMgr::InitMainScene()
 #endif
 
 	pObject = new CGameObject;
-	pObject->SetName(L"Particle");
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CParticleSystem);
-	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"HardCircle")));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(500.f, 0.f, 0.f));
-
-	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
-
-
-	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
 	pObject->FrustumCheck(false);
 	pObject->AddComponent(new CTransform);
@@ -749,9 +795,9 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
-
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+
 
 	//m_pCurScene = m_pRacingScene;
 	//m_pRacingScene->Awake();
@@ -1824,8 +1870,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
+	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
 	{
