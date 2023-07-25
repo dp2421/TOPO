@@ -42,6 +42,19 @@ void CUIScript::Update()
 			activeobj->SetActive(false);
 		}
 	}
+
+	if (m_isRoundOver)
+	{
+		
+		//fWaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75f;
+
+		if (m_iType = UI_TYPE::ROUNDOVER)
+		{
+			GetObj()->SetActive(true);
+		}
+
+	}
+
 }
 
 void CUIScript::UIRender()
