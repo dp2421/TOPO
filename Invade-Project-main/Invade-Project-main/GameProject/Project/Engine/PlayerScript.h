@@ -18,6 +18,10 @@ enum class Direction : int
     Right = 1 << 3,
     END
 };
+enum class PARTICLE_TYPE {
+    COLLPARICLE = 0,
+    RUNPARTICLE
+};
 
 class CTexture;
 class CPlayerScript :
@@ -45,6 +49,7 @@ private:
     bool isGoal = false;
     
     bool m_isColl = false;
+    bool m_isRun = true;
     int testCount = 0;
 
     CGameObject* m_pParticle;
@@ -68,10 +73,8 @@ public:
         bool isColl = false,
         bool isGoal = false
     );
-    void StartParticle(Vec3 pos);
+    void StartParticle(Vec3 pos, PARTICLE_TYPE type);
     void EndParticle();
-    void SetisColl(bool iscoll) { m_isColl = iscoll; }
-    bool GetisColl() { return m_isColl; }
 
     CPlayerScript();
     virtual ~CPlayerScript();

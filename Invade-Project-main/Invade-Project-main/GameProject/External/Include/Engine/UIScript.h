@@ -16,6 +16,7 @@ enum UI_TYPE
     MATCHING2,
     MATCHING3,
     NUMBER,
+    ROUNDOVER,
 }; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
 
@@ -25,6 +26,7 @@ private:
     bool m_isClicked;
     bool m_isSelected;
     bool m_isMatching;
+    bool m_isRoundOver = false;
 
     UI_TYPE m_iType;
 

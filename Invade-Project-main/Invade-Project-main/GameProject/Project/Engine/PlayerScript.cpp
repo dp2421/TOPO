@@ -347,9 +347,11 @@ void CPlayerScript::Update()
 
 	}
 
-	//ÆÄÆ¼Å¬
 	if(m_isColl)
-		StartParticle(vPos);
+		StartParticle(vPos, PARTICLE_TYPE::COLLPARICLE);
+	if(m_isRun)
+		StartParticle(vPos, PARTICLE_TYPE::RUNPARTICLE);
+
 }
 
 void CPlayerScript::SetPlayable(bool value)
@@ -494,15 +496,22 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 }
 
 
-void CPlayerScript::StartParticle(Vec3 pos)
+void CPlayerScript::StartParticle(Vec3 pos, PARTICLE_TYPE type)
 {
 
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
 	{
 		if (obj->GetName().compare(L"Particle") == 0)
+			if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
+			{
+				obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
+				break;
+			}
+		if ((obj->GetName().compare(L"CartoonParticle") == 0) && type == PARTICLE_TYPE::RUNPARTICLE)
 		{
-			obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
+			obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y + 10.f, pos.z - 10.f));
 			break;
+
 		}
 	}
 
