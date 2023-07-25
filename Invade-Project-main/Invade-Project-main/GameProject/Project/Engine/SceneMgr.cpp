@@ -208,6 +208,7 @@ void CSceneMgr::InitMainScene()
 	pObject = new CGameObject;
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetName(L"DirLight");
 	pObject->Light3D()->SetLightPos(Vec3(0.f, 500.f, 0.f));
 	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIR);
 	pObject->Light3D()->SetDiffuseColor(Vec3(1.f,1.f,1.f));
@@ -218,6 +219,33 @@ void CSceneMgr::InitMainScene()
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
+	pObject = new CGameObject;
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetName(L"PointLight");
+	pObject->Light3D()->SetLightPos(Vec3(1542, -990, 18764));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetDiffuseColor(Vec3(0.f, 0.f, 1.f));
+	pObject->Light3D()->SetSpecular(Vec3(0.3, 0.3, 0.3));
+	pObject->Light3D()->SetAmbient(Vec3(0.7, 0.7, 0.7));
+	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+	pObject->Light3D()->SetLightRange(480.f);
+	pObject->Transform()->SetLocalPos(Vec3(1542, -990, 18764));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+	pObject = new CGameObject;
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetName(L"PointLight");
+	pObject->Light3D()->SetLightPos(Vec3(-1640, -990, 18818));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetDiffuseColor(Vec3(0.f, 0.f, 1.f));
+	pObject->Light3D()->SetSpecular(Vec3(0.3, 0.3, 0.3));
+	pObject->Light3D()->SetAmbient(Vec3(0.7, 0.7, 0.7));
+	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+	pObject->Light3D()->SetLightRange(480.f);
+	pObject->Transform()->SetLocalPos(Vec3(-1640, -990, 18818));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 #pragma region TempObj
 
@@ -1847,7 +1875,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	//pMeshData->Save(pMeshData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 
-	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
+	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;
 	// MeshRender 설정
@@ -1870,7 +1898,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, -990.f , 0.f)); //10.f - FLOORHEIGHT
 	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
