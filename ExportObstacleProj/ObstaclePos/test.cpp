@@ -6,6 +6,7 @@ using namespace std;
 
 #define FLOORHEIGHT 1000  //맵 2층 1층 간격
 
+
 //임시 커스텀 벡터클래스
 class Vec3
 {
@@ -185,7 +186,7 @@ void writeObstacleDate()
 		for (int j = 0; j < 3; ++j)
 		{
 			tempObstacle.state = OBSTACLE_STATE::MOVEA;
-			tempObstacle.vPos = Vec3(-1120.f + 1120. * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j);
+			tempObstacle.vPos = Vec3(-1120.f + 1120.f * i, 10.f - FLOORHEIGHT, 8400.f + 1600.f * j);
 			obstacles.push_back(tempObstacle);
 		}
 	}
@@ -296,12 +297,12 @@ void readObstaclesDate()
 	}
 	inFile.close();
 
-	obstacles.pop_back(); //수동지우기;
+	obstacles.pop_back();
 	cout << obstacles.size() << endl;
 
-	//테스트
-	for (ObstacleObject i : obstacles)
-		cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << endl;
+	////테스트
+	//for (ObstacleObject i : obstacles)
+	//	cout << i.vPos.x << " " << i.vPos.y << " " << i.vPos.z << endl;
 }
 
 //점프맵 장애물
@@ -335,7 +336,6 @@ void writeJumpObstacleDate()
 
 	cout << Jumpobstacles.size() << endl;
 }
-
 //점프 장애물파일 읽기
 void readJumpObstaclesDate()
 {
@@ -374,9 +374,10 @@ void readJumpObstaclesDate()
 int main()
 {
 	//writeObstacleDate();
-	//readObstaclesDate();
+	readObstaclesDate();
+
 	//writeJumpObstacleDate();
-	readJumpObstaclesDate();
+	//readJumpObstaclesDate();
 
 	return 0;
 }

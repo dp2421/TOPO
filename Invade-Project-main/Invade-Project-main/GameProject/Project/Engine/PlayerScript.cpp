@@ -174,9 +174,14 @@ void CPlayerScript::Update()
 	if (moveState != (int)Direction::None)
 	{
 		if (!runPlayer->IsActive())
+		{
 			runPlayer->SetActive(true);
+		}
+			
 		if (IdlePlayer->IsActive())
+		{
 			IdlePlayer->SetActive(false);
+		}
 
 		if ((moveState & (int)Direction::Front) == (int)Direction::Front)
 		{
@@ -350,9 +355,12 @@ void CPlayerScript::Update()
 
 	}
 
-	//파티클
-	if(m_isColl)
-		StartParticle(vPos);
+	////파티클
+	//if(m_isColl)
+	//	StartParticle(vPos, PARTICLE_TYPE::COLLPARICLE);
+	//if(m_isRun)
+	//	StartParticle(vPos, PARTICLE_TYPE::RUNPARTICLE);
+
 }
 
 void CPlayerScript::SetPlayable(bool value)
@@ -477,6 +485,8 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 		IdlePlayer->Transform()->SetLocalRot(vRot);
 		runPlayer->Transform()->SetLocalRot(vRot);
 		Transform()->SetLocalRot(vRot);
+
+		m_isRun = isMove;
 	}
 	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
@@ -484,7 +494,6 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 	IdlePlayer->Transform()->SetLocalPos(pos);
 
 	//충돌파티클
-	
 	if (testCount <= 1) //테스트용
 	{
 		//m_isColl = isColl;
@@ -497,15 +506,21 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 }
 
 
-void CPlayerScript::StartParticle(Vec3 pos)
+void CPlayerScript::StartParticle(Vec3 pos, PARTICLE_TYPE type)
 {
 
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
 	{
-		if (obj->GetName().compare(L"Particle") == 0)
+		if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
 		{
 			obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
 			break;
+		}
+		if ((obj->GetName().compare(L"CartoonParticle") == 0) && type == PARTICLE_TYPE::RUNPARTICLE)
+		{
+			obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y + 10.f, pos.z - 10.f));
+			break;
+				
 		}
 	}
 
