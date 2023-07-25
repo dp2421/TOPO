@@ -63,19 +63,21 @@ void MatchingManager::ExitMatching(Client* client)
 	//this->queue.Erase(client);
 }
 
-void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
+int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 {
 	lock_guard<mutex> lock{ this->lock };
+	int count = 0;
 	// ÇÑ²¨¹ø¿¡ ´Ù »©±â °í·Á
 	if (mapType == MapType::Racing)
 	{
+		count = racingQueue.Size();
 		this->isDoMatchingRacing = false;
 		Client* client;
 		while (true)
 		{
 			if (true == this->racingQueue.TryPop(client))
 			{
-				if (client->RoomID != -1) return;
+				if (client->RoomID != -1) break;;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
 				client->SendMatchingOKPacket(mapType);
@@ -83,15 +85,16 @@ void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 			else break;
 		}
 	}
-	else if (mapType == MapType::Obstacle)
+	else
 	{
+		count = obstacleQueue.Size();
 		this->isDoMatchingObstacle = false;
 		Client* client;
 		while (true)
 		{
 			if (true == this->obstacleQueue.TryPop(client))
 			{
-				if (client->RoomID != -1) return;
+				if (client->RoomID != -1) break;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
 				client->SendMatchingOKPacket(mapType);
@@ -99,4 +102,6 @@ void MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 			else break;
 		}
 	}
+
+	return count;
 }

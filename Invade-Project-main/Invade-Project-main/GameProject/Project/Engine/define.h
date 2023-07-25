@@ -41,8 +41,6 @@ static type* GetInst()\
 // 1 네트워크 사용 안함, 0 네트워크 사용 함
 #define LOCALPLAY 1
 
-
-
 typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;

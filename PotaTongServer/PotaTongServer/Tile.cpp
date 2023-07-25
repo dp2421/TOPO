@@ -16,6 +16,10 @@ Tile::Tile(TileInfo info)
 	collider.size = TileCollider * Vector3(data.xScale, data.yScale, data.zScale);
 }
 
+Tile::Tile(MetorTile info)
+{
+}
+
 Tile::~Tile()
 {
 
