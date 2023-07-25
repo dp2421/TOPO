@@ -13,7 +13,8 @@ public:
 	void InitHandler();
 	void InitObsatacleInfo();
 	void InitMapInfo();
-	void InitAI(int roomID, MapType mapType);
+	void InitMeteoInfo();
+	void InitAI(int roomID, MapType mapType, int AINum);
 
 	void Run();
 	void Accept();
@@ -41,9 +42,14 @@ private:
 
 	concurrency::concurrent_priority_queue<Event> eventQueue;
 
+	concurrency::concurrent_unordered_map<int, int> remainingUnReadyClientNumByRoomID;
+	concurrency::concurrent_unordered_map<int, int> startCountByRoomID;
+
 	std::vector<Obstacle> obstacles;
 	std::vector<Obstacle> coins;
 	std::vector<Tile> tiles;
+	std::vector<Tile> racing2FTiles;
+	std::vector<Tile> racing1FTiles;
 
 	std::vector<thread> workerThreads;
 
@@ -51,4 +57,6 @@ private:
 	std::vector<Tile> jumpingTiles;
 
 	atomic<int> clientID = 0;
+
+	mutex lock;
 };
