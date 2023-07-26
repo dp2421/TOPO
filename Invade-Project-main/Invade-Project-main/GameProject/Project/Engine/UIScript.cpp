@@ -43,17 +43,9 @@ void CUIScript::Update()
 		}
 	}
 
-	if (m_isRoundOver) //이부분 수정해야하는데 무엇이 문제인고...
+	if (m_isRoundOver)
 	{
-		if (m_iType = UI_TYPE::ROUNDOVER)
-		{
-			GetObj()->SetActive(true);
-		}
-
 	}
-	//fWaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75f;
-
-
 }
 
 void CUIScript::UIRender()
@@ -173,6 +165,20 @@ void CUIScript::UIRender()
 	}
 
 
+	if (f_WaitFeverModeTime > 3)
+	{
+		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+		{
+			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::ROUNDOVER)
+			{
+				obj->SetActive(false);
+			}
+		}
+	}
+	else f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
+
+
+
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
@@ -212,6 +218,7 @@ CUIScript::CUIScript() :CScript((UINT)SCRIPT_TYPE::UISCRIPT)
 {
 	m_isClicked = false;
 	m_isSelected = false;
+	m_isRoundOver = false;
 }
 
 CUIScript::~CUIScript()
