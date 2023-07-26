@@ -49,6 +49,7 @@ public:
     virtual void Update();
     void NumberUpdate();
     void NumScript(int num, float offsetx, float offsety);
+    void CountDown(int number);
     void SetNums(NUM_TYPE iNum, int index) { m_Numinfo.type = iNum; m_Numinfo.index = index; }
     Numbers GetNumInfo() { return m_Numinfo; }
     void SetNumInfo(NUM_TYPE type, int index, NUMPOS pos) { m_Numinfo.type = type; m_Numinfo.index = index; m_Numinfo.numpos = pos; }

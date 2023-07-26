@@ -854,7 +854,7 @@ void CSceneMgr::InitMainScene()
 	pObject->AddComponent(new CUIScript);
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::ROUNDOVER);
 	// Transform
-	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 2.f));
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 20.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x / 2, 1.f));
 	// MeshRender
@@ -1846,39 +1846,64 @@ void CSceneMgr::InitUI()
 	{
 		for (int i = 0; i < 10; ++i)
 		{
-			wstring num = std::to_wstring(i);
-			wstring tex = L"Texture\\NUM_";
-			wstring png = L".png";
-			wstring finalval = tex + num + png;
+			for (int k = 0; k < 5; ++k)
+			{
 
-			wstring name = L"NUMS";
-			wstring finalname = name + num;
-			pNums[i] = CResMgr::GetInst()->Load<CTexture>(finalname, finalval);
 
-			CGameObject* pObject = new CGameObject;
-			pObject->SetName(finalname);
-			pObject->AddComponent(new CTransform);
-			pObject->AddComponent(new CMeshRender);
-			pObject->AddComponent(new CCollider2D);
-			pObject->AddComponent(new CUIScript);
-			pObject->AddComponent(new CNumScript);
+				wstring num = std::to_wstring(i);
+				wstring tex = L"Texture\\NUM_";
+				wstring png = L".png";
+				wstring finalval = tex + num + png;
 
-			pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
-			pObject->GetScript<CNumScript>()->SetNumInfo((NUM_TYPE)i, j, NUMPOS::NONE);
+				wstring name = L"NUMS";
+				wstring finalname = name + num;
+				pNums[i] = CResMgr::GetInst()->Load<CTexture>(finalname, finalval);
 
-			// Transform ����
-			pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 20.f));
-			pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
-			pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-			// MeshRender ����
-			pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-			pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
-			pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pNums[i].GetPointer());
-			// Collider2D
-			pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-			pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-			pObject->SetActive(false);
-			m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
+				CGameObject* pObject = new CGameObject;
+				pObject->SetName(finalname);
+				pObject->AddComponent(new CTransform);
+				pObject->AddComponent(new CMeshRender);
+				pObject->AddComponent(new CCollider2D);
+				pObject->AddComponent(new CUIScript);
+				pObject->AddComponent(new CNumScript);
+
+				pObject->GetScript<CUIScript>()->SetType(UI_TYPE::NUMBER);
+				pObject->GetScript<CNumScript>()->SetNumInfo((NUM_TYPE)i, j, NUMPOS::NONE);
+
+				// Transform ����
+				pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 10.f));
+				pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
+				pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+				// MeshRender ����
+				pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+				pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+				pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pNums[i].GetPointer());
+				// Collider2D
+				pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+				pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+				pObject->SetActive(false);
+
+				switch (k)
+				{
+				case 0:
+					m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
+					break;
+				case 1:
+					m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
+					break;
+				case 2:
+					m_pMetorScene->FindLayer(L"UI")->AddGameObject(pObject, m_pMetorScene);
+					break;
+				case 3:
+					m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pJumpingScene);
+					break;
+				case 4:
+					m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pAwardScene);
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 }

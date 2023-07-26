@@ -46,9 +46,6 @@ void CUIScript::Update()
 		}
 	}
 
-	if (m_isRoundOver)
-	{
-	}
 }
 
 void CUIScript::UIRender()
@@ -201,6 +198,8 @@ void CUIScript::UIRender()
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
+		curObj->GetScript<CNumScript>()->CountDown(2);
+
 	}
 }
 
