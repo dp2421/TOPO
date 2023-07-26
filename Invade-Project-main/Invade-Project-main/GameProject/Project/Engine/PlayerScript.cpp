@@ -347,8 +347,12 @@ void CPlayerScript::Update()
 
 	}
 
-	if(m_isColl)
+	if (m_isColl)
+	{
+		//std::cout << m_isColl << std::endl;
 		StartParticle(vPos, PARTICLE_TYPE::COLLPARICLE);
+	}
+		
 	if(m_isRun)
 		StartParticle(vPos, PARTICLE_TYPE::RUNPARTICLE);
 
@@ -481,18 +485,6 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 	Transform()->SetLocalPos(pos);
 	runPlayer->Transform()->SetLocalPos(pos);
 	IdlePlayer->Transform()->SetLocalPos(pos);
-
-	//충돌파티클
-	
-	if (testCount <= 1) //테스트용
-	{
-		//m_isColl = isColl;
-		m_isColl = true; //테스트용
-	}
-	if (testCount > 1)
-	{
-
-	}
 }
 
 

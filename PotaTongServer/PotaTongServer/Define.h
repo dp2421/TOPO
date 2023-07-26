@@ -18,8 +18,8 @@ constexpr int RacingMAX = 24;
 constexpr int SurviveMAX = 8;
 
 constexpr float SPEED = 1000.f;
-constexpr float JUMPVEL = 300.0f;
-constexpr float GRAVITY = 9.8f;
+constexpr float JUMPVEL = 450.0f;
+constexpr float GRAVITY = 9.8f*2.f;
 constexpr float PUSHDISTANCE = 150.f;
 
 const Vector3 PlayerStartPos{ -1800, 10, 35 };

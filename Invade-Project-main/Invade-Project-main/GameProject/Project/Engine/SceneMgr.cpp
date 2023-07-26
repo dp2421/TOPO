@@ -155,8 +155,8 @@ void CSceneMgr::InitMainScene()
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
 	Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
 	Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
-	Ptr<CTexture> pRoundOver = CResMgr::GetInst()->Load<CTexture>(L"RoundOver", L"Texture\\roundGameover.png");
-
+	Ptr<CTexture> pRoundOver = CResMgr::GetInst()->Load<CTexture>(L"RoundOver", L"Texture\\roundGameover2.png");
+	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 
 	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
@@ -705,7 +705,7 @@ void CSceneMgr::InitMainScene()
 	pObject->ParticleSystem()->SetStartScale(6.f);
 	pObject->ParticleSystem()->SetEndScale(9.f);
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0.f, -1000.f, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(-10000.f, -10000.f, 0.f));
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
@@ -800,8 +800,6 @@ void CSceneMgr::InitMainScene()
 	AddNetworkGameObject(true, Vec3::Zero, m_pRacingScene);
 #else
 #endif
-
-
 	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
 	pObject->FrustumCheck(false);
@@ -815,8 +813,6 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
-	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
-
 	//1라운드게임오버시 출력할 이미지 레이싱씬에 추가
 	pObject = new CGameObject;
 	pObject->SetName(L"RoundOver");
@@ -827,17 +823,17 @@ void CSceneMgr::InitMainScene()
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::ROUNDOVER);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0.f, winsize.y / 3, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0, 600.f, 2.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(winsize.x / 2, winsize.y / 10, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x / 2, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pRoundOver.GetPointer());
 	// Collider2D
-	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
-	pObject->SetActive(false);
+	//pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	//pObject->Collider2D()->SetOffsetPos(Vec3(0.f, 0.f, 0.f));
+	pObject->SetActive(true);
 	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 
 
@@ -1499,6 +1495,8 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pMatching1 = CResMgr::GetInst()->Load<CTexture>(L"Matching1", L"Texture\\Matching1.png");
 	Ptr<CTexture> pMatching2 = CResMgr::GetInst()->Load<CTexture>(L"Matching2", L"Texture\\Matching2.png");
 	Ptr<CTexture> pMatching3 = CResMgr::GetInst()->Load<CTexture>(L"Matching3", L"Texture\\Matching3.png");
+	Ptr<CTexture> pRoundOver = CResMgr::GetInst()->Load<CTexture>(L"RoundOver", L"Texture\\roundGameover2.png");
+
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 
 

@@ -26,13 +26,13 @@ private:
     bool m_isClicked;
     bool m_isSelected;
     bool m_isMatching;
-    bool m_isRoundOver = false;
+    bool m_isRoundOver = true;
 
     UI_TYPE m_iType;
 
     Vec3 mousepos;
     float f_MatchingTime = 0.f;
-
+    float f_WaitFeverModeTime = 0.f; //약 3초 예정
 public:
     CUIScript();
     virtual ~CUIScript();
