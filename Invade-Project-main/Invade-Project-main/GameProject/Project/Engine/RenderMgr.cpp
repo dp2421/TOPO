@@ -201,30 +201,52 @@ void CRenderMgr::PlaySound()
 			if (i != (int)SOUND_TYPE::LOBBY)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		m_curSound = SOUND_TYPE::LOBBY;
 		break;
 	case SCENE_TYPE::RACING:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::RACING)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::RACING]->Play(0);
+		m_curSound = SOUND_TYPE::RACING;
 		break;
 	case SCENE_TYPE::JUMP:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::SURVIVAL)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		m_curSound = SOUND_TYPE::SURVIVAL;
 		break;
 	case SCENE_TYPE::METOR:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::SURVIVAL)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		m_curSound = SOUND_TYPE::SURVIVAL;
 		break;
 	case SCENE_TYPE::AWARD:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::LOBBY)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		m_curSound = SOUND_TYPE::LOBBY;
+		break;
+	default:
+		break;
+	}
+}
+
+void CRenderMgr::PlayEffect(SOUND_TYPE type)
+{
+	switch (type)
+	{
+	case SOUND_TYPE::CLICK:
+		m_sounds[(int)m_curSound]->Stop();
+		m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
+		break;
+	case SOUND_TYPE::JUMP:
+		m_sounds[(int)m_curSound]->Stop();
+		m_sounds[(int)SOUND_TYPE::JUMP]->Play(1, true);
 		break;
 	default:
 		break;

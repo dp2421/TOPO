@@ -64,9 +64,7 @@ void CSound::Play(int _iRoopCount, bool _bOverlap)
 
 	pChannel->setMode(FMOD_LOOP_NORMAL);
 	pChannel->setLoopCount(_iRoopCount);
-
 	m_listChannel.push_back(pChannel);
-
 	//Stop();
 }
 
@@ -78,6 +76,17 @@ void CSound::Stop()
 	{
 		iter = m_listChannel.begin();
 		(*iter)->stop();
+	}
+}
+
+void CSound::IsPaused(bool isplay)
+{
+	list<FMOD::Channel*>::iterator iter;
+
+	while (!m_listChannel.empty())
+	{
+		iter = m_listChannel.begin();
+		(*iter)->setPaused(isplay);
 	}
 }
 

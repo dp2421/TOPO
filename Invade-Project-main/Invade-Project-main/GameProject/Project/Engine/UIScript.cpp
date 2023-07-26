@@ -16,17 +16,20 @@ void CUIScript::Update()
 	{
 		if (m_iType == SELECT_BUTTON)
 		{
+			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isSelected = true;
 			CGameObject* curobj = GetObj();
 			curobj->SetActive(false);
 		}
 		else if (m_iType == MODE_RACING)
 		{
+			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isMatching = true;
 			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Racing);
 		}
 		else if (m_iType == MODE_SURVIVAL)
 		{
+			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isMatching = true;
 			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Obstacle);
 		}
