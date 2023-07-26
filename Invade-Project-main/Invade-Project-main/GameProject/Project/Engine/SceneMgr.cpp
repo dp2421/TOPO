@@ -220,6 +220,32 @@ void CSceneMgr::InitMainScene()
 	pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
+	pObject = new CGameObject;
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetLightPos(Vec3(1530, -990, 18830));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
+	pObject->Light3D()->SetAmbient(Vec3(0.4f, 0.4f, 0.4f));
+	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+	pObject->Light3D()->SetLightRange(450.f);
+	pObject->Transform()->SetLocalPos(Vec3(1530, -990, 18830));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+	pObject = new CGameObject;
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CLight3D);
+	pObject->Light3D()->SetLightPos(Vec3(-1660, -990, 18830));
+	pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
+	pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetSpecular(Vec3(0.3f, 0.3f, 0.3f));
+	pObject->Light3D()->SetAmbient(Vec3(1.f, 1.f, 1.f));
+	pObject->Light3D()->SetLightDir(Vec3(1.f, -1.f, 1.f));
+	pObject->Light3D()->SetLightRange(450.f);
+	pObject->Transform()->SetLocalPos(Vec3(-1660, -990, 18830));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
 
 #pragma region TempObj
 
@@ -1936,7 +1962,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 0.f)); //10.f - FLOORHEIGHT
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, -990 , 0.f)); //10.f - FLOORHEIGHT
 	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
