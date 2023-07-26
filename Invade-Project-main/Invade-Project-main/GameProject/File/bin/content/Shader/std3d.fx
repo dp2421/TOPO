@@ -354,6 +354,93 @@ PS_STD3D_OUTPUT PS_Bloom(VS_STD3D_OUTPUT _in)
 // ================================================================================
 // ================================================================================
 
+// UI Shader
+
+PS_STD3D_OUTPUT PS_UI(VS_STD3D_OUTPUT _in)
+{
+    PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT)0.f;
+
+    //float4 vCartoon;
+
+    //// 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
+
+    //// ----------------------------------
+    ////   ** Cartoon Shader Code **
+    //// ----------------------------------
+
+    //float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
+    //float stepIntensity = saturate(brightness);
+    //float3 stepColor = float3(1, 1, 1);
+    //if (stepIntensity > 0.95) {
+    //    stepColor = float3(1, 1, 1);
+    //}
+    //else if (stepIntensity > 0.5) {
+    //    stepColor = float3(0.9, 0.9, 0.9);
+    //}
+    //else if (stepIntensity > 0.1) {
+    //    stepColor = float3(0.7, 0.7, 0.7);
+    //}
+    //else {
+    //    stepColor = float3(0.5, 0.5, 0.5);
+    //}
+    //if (tex_0)
+    //{
+    //    float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+    //    //output.vTarget0 = texColor * float4(stepColor, 1.f);
+    //    vCartoon = texColor * float4(stepColor, 1.f);
+    //}
+    //else
+    //{
+    //    //output.vTarget0 = float4(stepColor, 1.f);
+    //    ////output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+    //    vCartoon = float4(stepColor, 1.f);
+    //}
+
+    //output.vTarget0 = vCartoon;
+
+    ////////아래주석 풀면 텍스쳐내부 외곽라인 검은색으로 출력됨
+    //if (output.vTarget0.x <= 0.95f && output.vTarget0.y <= 0.95f && output.vTarget0.z <= 0.95f)
+    //{
+    //    output.vTarget0 = vCartoon;
+    //}
+    //else
+    //{
+    //    output.vTarget0 = float4(0, 0, 0, 1);
+    //}
+    //// ----------------------------------
+
+    // ------------------------------------
+    //   ** Color Saturation Shader Code **
+    // ------------------------------------
+    float avg = (output.vTarget0.r + output.vTarget0.g + output.vTarget0.b) / 3.0f;
+    float fValue = 2.0f; //0에 가까울수록 채도가 낮아짐
+    float4 newColor;
+    newColor.r = avg * (1.0 - fValue) + output.vTarget0.r * fValue;
+    newColor.g = avg * (1.0 - fValue) + output.vTarget0.g * fValue;
+    newColor.b = avg * (1.0 - fValue) + output.vTarget0.b * fValue;
+    newColor.a = output.vTarget0.a;
+    output.vTarget0 = newColor;
+
+
+    float3 vViewNormal = _in.vViewNormal;
+    // 노말맵이 있는경우
+    if (tex_1)
+    {
+        float3 vTSNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;
+        vTSNormal.xyz = (vTSNormal.xyz - 0.5f) * 2.f;
+        float3x3 matTBN = { _in.vViewTangent, _in.vViewBinormal, _in.vViewNormal };
+        vViewNormal = normalize(mul(vTSNormal, matTBN));
+    }
+
+    output.vTarget1.xyz = vViewNormal;
+    output.vTarget2.xyz = _in.vViewPos;
+
+    return output;
+}
+
+
+
+
 // ==========================
 // Std3D Shader
 // Deferred = true
