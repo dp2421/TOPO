@@ -12,7 +12,7 @@ public:
 	SOCKET socket;
 	int prevRemainData;
 
-	int score = -1;
+	int score = 0;
 
 	bool isMove = false;
 	bool isJump = false;

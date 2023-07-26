@@ -60,6 +60,7 @@ constexpr unsigned char ServerObstacleRPS = 211;
 constexpr unsigned char ServerSingleObstacleInfo = 212;
 constexpr unsigned char ServerMeteoInfo = 213;
 constexpr unsigned char ServerEnterCoin = 214;
+constexpr unsigned char ServerStartTime = 215;
 
 #pragma pack (push, 1)
 
@@ -124,6 +125,14 @@ struct ServerGameStartPacket
 
 	// 3, 2, 1, 0
 	unsigned char	count;
+};
+
+struct ServerStartTimePacket
+{
+	PACKETSIZE size;
+	unsigned char	type;
+
+	chrono::seconds seconds;
 };
 
 struct ServerAddPlayerPacket
