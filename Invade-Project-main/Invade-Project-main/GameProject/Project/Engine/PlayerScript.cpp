@@ -152,6 +152,7 @@ void CPlayerScript::Update()
 
 	if (KEY_TAB(KEY_TYPE::KEY_SPACE))
 	{
+		CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::JUMP);
 		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::Jump, dir, fDegree);
 	}
 

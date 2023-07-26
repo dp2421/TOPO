@@ -38,6 +38,8 @@ private:
 
 	CSound* m_sounds[(int)SOUND_TYPE::END];
 
+	SOUND_TYPE m_curSound;
+
 	bool b_isFever = false;
 	bool b_isMatchComplete = false;
 	int m_maptype;
@@ -51,6 +53,7 @@ public:
 	void Render_Lights();
 	void Merge_Light();
 	void PlaySound();
+	void PlayEffect(SOUND_TYPE type);
 	void Render_PostEffect();
 	//void Render_OutLine();
 private:
