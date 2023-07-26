@@ -26,7 +26,7 @@ private:
     bool m_isClicked;
     bool m_isSelected;
     bool m_isMatching;
-    bool m_isRoundOver = true;
+    bool m_isRoundOver = false;
 
     UI_TYPE m_iType;
 

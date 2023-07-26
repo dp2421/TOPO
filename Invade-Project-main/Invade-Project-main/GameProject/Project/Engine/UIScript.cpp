@@ -43,7 +43,7 @@ void CUIScript::Update()
 		}
 	}
 
-	if (m_isRoundOver)
+	if (m_isRoundOver) //이부분 수정해야하는데 무엇이 문제인고...
 	{
 		if (m_iType = UI_TYPE::ROUNDOVER)
 		{

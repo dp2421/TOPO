@@ -32,7 +32,7 @@ private:
 
     Vec3 mousepos;
     float f_MatchingTime = 0.f;
-
+    float f_WaitFeverModeTime = 0.f; //약 3초 예정
 public:
     CUIScript();
     virtual ~CUIScript();
