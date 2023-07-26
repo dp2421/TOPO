@@ -41,7 +41,7 @@ private:
 	bool b_isFever = false;
 	bool b_isMatchComplete = false;
 	int m_maptype;
-
+	float f_lightpow;
 public:
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();

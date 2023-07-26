@@ -159,10 +159,16 @@ void CRenderMgr::Render_Lights()
 	g_transform.matProj = pMainCam->GetProjMat();
 	g_transform.matViewInv = pMainCam->GetViewInvMat();
 
+
+	f_lightpow += 0.01;
+	if (f_lightpow > 1)
+		f_lightpow = 0;
 	// 광원을 그린다.
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
-		if (b_isFever)
+		if (m_vecLight3D[i]->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::POINT)
+			m_vecLight3D[i]->SetAmbient(Vec3(f_lightpow));
+		if (b_isFever&& m_vecLight3D[i]->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::DIR)
 			m_vecLight3D[i]->Light3D()->SetDiffuseColor(Vec3(0.06f, 0.149f, 0.4f));
 		m_vecLight3D[i]->Light3D()->Render();
 	}
