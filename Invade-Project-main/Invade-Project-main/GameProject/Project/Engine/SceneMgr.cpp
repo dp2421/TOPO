@@ -797,7 +797,7 @@ void CSceneMgr::InitMainScene()
 		pObject->ParticleSystem()->SetFrequency(0.5f);
 		//pObject->ParticleSystem()->SetAccTime(1.5f);
 		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(0.f, -1000.f, 0.f));
+		pObject->Transform()->SetLocalPos(Vec3(-10000.f, -10000.f, 0.f));
 		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 	}
 
@@ -884,7 +884,7 @@ void CSceneMgr::InitMainScene()
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSpeedLine.GetPointer());
-	pObject->SetActive(true);
+	pObject->SetActive(false);
 	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 
 	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
