@@ -381,7 +381,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			int count = 0;
 			for (auto cl : clients)
 			{
-				if (cl.second->RoomID == clients[id]->RoomID)
+				if (cl.second->RoomID == id)
 				{
 					cl.second->position = PlayerStartPos;
 					cl.second->position.x += PlayerStartDistance * count;
@@ -453,38 +453,79 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 		int count = 0;
 		unsigned char rank[] { -1,-1,-1 };
+		int score[]{ -1,-1,-1 };
 		std::unordered_map<unsigned char, int> scoreByID;
 		if (isFever)
 		{
 			for (auto cl : clients)
 			{
-				if (cl.second->RoomID == clients[id]->RoomID)
+				if (cl.second->RoomID == id)
 				{
-					scoreByID[cl.second->ID] = cl.second->score;
+					if (score[0] < cl.second->score)
+					{
+						if (score[0] == -1)
+						{
+							score[0] = cl.second->score;
+							rank[0] = cl.second->ID;
+							continue;
+						}
+						else
+						{
+							score[2] = score[1];
+							score[1] = score[0];
+							score[0] = cl.second->score;
 
-					rank[count] = cl.second->ID;
-					count++;
+							rank[2] = rank[1];
+							rank[1] = rank[0];
+							rank[0] = cl.second->ID;
+						}
+					}
+					else if (score[1] < cl.second->score)
+					{
+						if (score[1] == -1)
+						{
+							score[1] = cl.second->score;
+							rank[1] = cl.second->ID;
+							continue;
+						}
+						else
+						{
+							score[2] = score[1];
+							score[1] = cl.second->score;
 
-					if (count == 3) break;
+							rank[2] = rank[1];
+							rank[1] = cl.second->ID;
+						}
+					}
+					else if (score[2] < cl.second->score)
+					{
+						score[2] = cl.second->score;
+						rank[2] = cl.second->ID;
+					}
 				}
 			}
 		}
 
 		for (auto cl : clients)
 		{
-			if (cl.second->RoomID == clients[id]->RoomID)
+			if (cl.second->RoomID == id)
 			{
 				if (!isFever)
 					cl.second->SendGameEndPacket(true);
 				else
 				{
-					cl.second->SendGameResultPacket(rank, 3);
 					cl.second->RoomID = -1;
+					cl.second->score = 0;
+
 					if (cl.second->isAI)
 					{
 						lock_guard<mutex> lock{ cl.second->lock };
 						cl.second->ID = -1;
 						closesocket(cl.second->socket);
+					}
+					else
+					{
+						cl.second->SendGameResultPacket(rank, 3);
 					}
 				}
 

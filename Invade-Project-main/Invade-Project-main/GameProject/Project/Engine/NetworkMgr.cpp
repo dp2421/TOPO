@@ -250,6 +250,13 @@ void NetworkMgr::ProcessPacket(char* packet)
         // p->count << 시작까지 남은 초
         break;
     }
+    case ServerStartTime:
+    {
+        ServerStartTimePacket* p = reinterpret_cast<ServerStartTimePacket*>(packet);
+        startTime = p->startTime;
+
+        break;
+    }
     case ServerGameEnd:
     {
         ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);

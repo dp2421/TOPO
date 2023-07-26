@@ -132,7 +132,7 @@ struct ServerStartTimePacket
 	PACKETSIZE size;
 	unsigned char	type;
 
-	chrono::seconds seconds;
+	chrono::system_clock::time_point startTime;
 };
 
 struct ServerAddPlayerPacket
