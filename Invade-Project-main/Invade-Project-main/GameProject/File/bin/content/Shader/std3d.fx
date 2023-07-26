@@ -360,43 +360,43 @@ PS_STD3D_OUTPUT PS_UI(VS_STD3D_OUTPUT _in)
 {
     PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT)0.f;
 
-    //float4 vCartoon;
+    float4 vCartoon;
 
-    //// 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
+    // 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
 
-    //// ----------------------------------
-    ////   ** Cartoon Shader Code **
-    //// ----------------------------------
+    // ----------------------------------
+    //   ** Cartoon Shader Code **
+    // ----------------------------------
 
-    //float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
-    //float stepIntensity = saturate(brightness);
-    //float3 stepColor = float3(1, 1, 1);
-    //if (stepIntensity > 0.95) {
-    //    stepColor = float3(1, 1, 1);
-    //}
-    //else if (stepIntensity > 0.5) {
-    //    stepColor = float3(0.9, 0.9, 0.9);
-    //}
-    //else if (stepIntensity > 0.1) {
-    //    stepColor = float3(0.7, 0.7, 0.7);
-    //}
-    //else {
-    //    stepColor = float3(0.5, 0.5, 0.5);
-    //}
-    //if (tex_0)
-    //{
-    //    float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
-    //    //output.vTarget0 = texColor * float4(stepColor, 1.f);
-    //    vCartoon = texColor * float4(stepColor, 1.f);
-    //}
-    //else
-    //{
-    //    //output.vTarget0 = float4(stepColor, 1.f);
-    //    ////output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
-    //    vCartoon = float4(stepColor, 1.f);
-    //}
+    float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
+    float stepIntensity = saturate(brightness);
+    float3 stepColor = float3(1, 1, 1);
+    if (stepIntensity > 0.95) {
+        stepColor = float3(1, 1, 1);
+    }
+    else if (stepIntensity > 0.5) {
+        stepColor = float3(0.9, 0.9, 0.9);
+    }
+    else if (stepIntensity > 0.1) {
+        stepColor = float3(0.7, 0.7, 0.7);
+    }
+    else {
+        stepColor = float3(0.5, 0.5, 0.5);
+    }
+    if (tex_0)
+    {
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+        //output.vTarget0 = texColor * float4(stepColor, 1.f);
+        vCartoon = texColor * float4(stepColor, 1.f);
+    }
+    else
+    {
+        //output.vTarget0 = float4(stepColor, 1.f);
+        ////output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        vCartoon = float4(stepColor, 1.f);
+    }
 
-    //output.vTarget0 = vCartoon;
+    output.vTarget0 = vCartoon;
 
     ////////아래주석 풀면 텍스쳐내부 외곽라인 검은색으로 출력됨
     //if (output.vTarget0.x <= 0.95f && output.vTarget0.y <= 0.95f && output.vTarget0.z <= 0.95f)
