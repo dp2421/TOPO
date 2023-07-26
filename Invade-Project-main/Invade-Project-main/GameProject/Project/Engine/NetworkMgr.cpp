@@ -7,6 +7,7 @@
 #include "PlayerScript.h"
 #include "ObstacleScript.h"
 #include "UIScript.h"
+#include "Camera.h"
 
 
 NetworkMgr::NetworkMgr()
@@ -239,7 +240,13 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerGameStart:
     {
         ServerGameStartPacket* p = reinterpret_cast<ServerGameStartPacket*>(packet);
-
+        //for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+        //{
+        //    if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
+        //    {
+        //        obj->GetScript<CUIScript>()->SetCountDown(p->count);
+        //    }
+        //}
         // p->count << 시작까지 남은 초
         break;
     }

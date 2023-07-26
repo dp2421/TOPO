@@ -106,6 +106,17 @@ void CNumScript::NumScript(int num, float offsetx, float offsety)
 	}
 }
 
+void CNumScript::CountDown(int number)
+{
+	if (number == m_Numinfo.type)
+	{
+		GetObj()->Transform()->SetLocalPos(Vec3(0, 580, 10));
+		GetObj()->SetActive(true);
+	}
+	else
+		GetObj()->SetActive(false);
+}
+
 CNumScript::CNumScript() : CScript((UINT)SCRIPT_TYPE::NUMSCRIPT)
 {
 	m_isClicked = false;
