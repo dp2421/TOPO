@@ -17,6 +17,7 @@ enum UI_TYPE
     MATCHING3,
     NUMBER,
     ROUNDOVER,
+    FEVER,
 }; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
 

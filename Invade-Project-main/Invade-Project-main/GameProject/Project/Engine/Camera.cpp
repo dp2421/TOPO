@@ -197,7 +197,7 @@ void CCamera::Render_Forward()
 	{
 		if (m_vecForward[i]->GetName() == L"SkyBox")
 		{
-			if (false)
+			if (CRenderMgr::GetInst()->IsFever())
 				m_vecForward[i]->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, CSceneMgr::GetInst()->GetNightSky().GetPointer());
 
 		}

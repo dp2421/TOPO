@@ -11,6 +11,7 @@
 #include "EventMgr.h"
 #include "NetworkMgr.h"
 #include "InstancingMgr.h"
+#include <filesystem>
 
 CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
 	CRenderMgr::GetInst();
@@ -27,6 +28,13 @@ CGameFramework::~CGameFramework() {
 
 int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWindow)
 {
+
+	std::filesystem::path absolutePath = "Z:\TOPO\Invade-Project-main\Invade-Project-main\GameProject\File\bin\content\Cursor";
+	std::filesystem::path basePath = "Z:\TOPO\Invade - Project - main\Invade - Project - main\GameProject\Project\Engine"; 
+
+	std::filesystem::path relativePath = std::filesystem::relative(absolutePath, basePath);
+	std::cout << relativePath << std::endl;
+
 	m_WinSize = Vec2(_resolution.fHeight, _resolution.fWidth);
 	m_hMainhWnd = _hWnd;
 	ChangeWindowSize(m_hMainhWnd, _resolution);

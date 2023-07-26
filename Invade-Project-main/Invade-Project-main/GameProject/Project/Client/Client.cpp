@@ -103,6 +103,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+    //wcex.hCursor = ::LoadCursorFromFile(L"cursor.cur");
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CLIENT);
     wcex.lpszClassName  = szWindowClass;
@@ -113,7 +114,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 //
 //   함수: InitInstance(HINSTANCE, int)
-//
+//7
 //   용도: 인스턴스 핸들을 저장하고 주 창을 만듭니다.
 //
 //   주석:

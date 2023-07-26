@@ -100,5 +100,8 @@ public:
 	void SetMatchComplete(bool complete, int p) { b_isMatchComplete = complete; m_maptype = p; }
 	bool GetMatchComplete() { return b_isMatchComplete; }
 	int GetMatchMapType() { return m_maptype; }
+
+	void SetFever(bool fever) { b_isFever = fever; }
+	bool IsFever() { return b_isFever; }
 };
 

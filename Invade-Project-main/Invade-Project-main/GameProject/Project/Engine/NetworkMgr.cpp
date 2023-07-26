@@ -289,6 +289,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         if (networkObjects.find(p->id) != networkObjects.end())
         {
             networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isColl, p->isGoal);
+            CRenderMgr::GetInst()->SetFever(p->isGoal);
         }
         else
         {

@@ -87,7 +87,7 @@ void CUIScript::UIRender()
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
 			{
-				if (CRenderMgr::GetInst()->GetMatchComplete()==false) // 매칭여부bool값으로 변경
+				if (CRenderMgr::GetInst()->GetMatchComplete() == false) // 매칭여부bool값으로 변경
 				{
 					obj->SetActive(true);
 					for (CGameObject* Loadobj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
@@ -164,18 +164,34 @@ void CUIScript::UIRender()
 		}
 	}
 
-
-	if (f_WaitFeverModeTime > 3)
+	if (CRenderMgr::GetInst()->IsFever())
 	{
+
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
-			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::ROUNDOVER)
+			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::FEVER && f_WaitFeverModeTime < 3)
+			{
+				obj->SetActive(true);
+			}
+			else if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::FEVER && f_WaitFeverModeTime > 3)
 			{
 				obj->SetActive(false);
+				// 만약 서버에서 fever false 신호 안 주면 여기서 false 설정
 			}
 		}
+		f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
 	}
-	else f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
+	//if (f_WaitFeverModeTime > 3)
+	//{
+	//	for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+	//	{
+	//		if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::FEVER)
+	//		{
+	//			obj->SetActive(false);
+	//		}
+	//	}
+	//}
+	//else f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
 
 
 
