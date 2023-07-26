@@ -5,7 +5,9 @@
 #include "Camera.h"
 #include"CameraScript.h"
 #include "NetworkMgr.h"
-#include "ParticleSystem.h"
+#include "RenderMgr.h"
+#include "UIScript.h"
+//#include "ParticleSystem.h"
 
 void CPlayerScript::Awake()
 {
@@ -347,14 +349,9 @@ void CPlayerScript::Update()
 
 	}
 
-	if (m_isColl)
-	{
-		//std::cout << m_isColl << std::endl;
-		StartParticle(vPos, PARTICLE_TYPE::COLLPARICLE);
-	}
-		
-	if(m_isRun)
-		StartParticle(vPos, PARTICLE_TYPE::RUNPARTICLE);
+	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
+	SetSpeedLine(isMove);
+	//LetParticle(vPos, PARTICLE_TYPE::COLLPARICLE, true);
 
 }
 
@@ -488,7 +485,7 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 }
 
 
-void CPlayerScript::StartParticle(Vec3 pos, PARTICLE_TYPE type)
+void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool ismove)
 {
 
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
@@ -501,23 +498,29 @@ void CPlayerScript::StartParticle(Vec3 pos, PARTICLE_TYPE type)
 			}
 		if ((obj->GetName().compare(L"CartoonParticle") == 0) && type == PARTICLE_TYPE::RUNPARTICLE)
 		{
-			obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y + 10.f, pos.z - 10.f));
-			break;
-
+			if (ismove)
+			{
+				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y + 10.f, pos.z - 10.f));
+				break;
+			}
+			obj->Transform()->SetLocalPos(Vec3((-10000.f, -10000.f, 0.f)));
 		}
 	}
 
-	testCount += 1; //테스트용
 }
 
-void CPlayerScript::EndParticle()
+void CPlayerScript::SetSpeedLine(bool ismove)
 {
-
+	if (CRenderMgr::GetInst()->IsFever())
+	{
+		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+		{
+			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::SPEEDLINE)
+				obj->SetActive(ismove);
+		}
+	}
 
 }
-
-
-
 
 
 CPlayerScript::CPlayerScript() :CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT), m_bCheckStartMousePoint(false), m_fArcherLocation(20.f)

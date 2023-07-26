@@ -48,11 +48,9 @@ private:
     bool isColl = false;
     bool isGoal = false;
     
-    bool m_isColl = false;
-    bool m_isRun = true;
-    int testCount = 0;
 
     CGameObject* m_pParticle;
+    CGameObject* m_speedLine;
 public:
     CGameObject* runPlayer;
     CGameObject* IdlePlayer;
@@ -73,8 +71,8 @@ public:
         bool isColl = false,
         bool isGoal = false
     );
-    void StartParticle(Vec3 pos, PARTICLE_TYPE type);
-    void EndParticle();
+    void LetParticle(Vec3 pos, PARTICLE_TYPE type, bool ismove);
+    void SetSpeedLine(bool ismove);
 
     CPlayerScript();
     virtual ~CPlayerScript();
