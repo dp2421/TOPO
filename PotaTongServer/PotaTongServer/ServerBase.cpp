@@ -406,7 +406,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
 			isFever = isFeverByRoomID[id];
 
-		if (isFever)
+		if (isFever && startCountByRoomID[id] == 3)
 		{
 			int count = 0;
 			for (auto cl : clients)
@@ -430,7 +430,15 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
-		startCountByRoomID[id] -= 1;
+
+		cout << startCountByRoomID[id] << " STARTCOUNT \n";
+		if(startCountByRoomID[id] > 0)
+		{
+			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+			eventQueue.push(event);
+			startCountByRoomID[id] -= 1;
+		}
+
 		if (startCountByRoomID[id] == 0 && !isFever)
 		{
 			for (auto cl : clients)
@@ -481,13 +489,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
 			eventQueue.push(event);
 		}
-		else
-		{
-			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
-			eventQueue.push(event);
-		}
-
-		cout << startCountByRoomID[id] << " STARTCOUNT \n";
 
 		break;
 	}
@@ -875,6 +876,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				if (client->isCoin) continue;
 				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
+
 				if (client->collider.isCollisionAABB(coin.collider))
 				{
 					client->isCoin = true;

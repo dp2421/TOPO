@@ -592,7 +592,7 @@ void CSceneMgr::InitMainScene()
 	for (int i = 0; i < 3; ++i)
 	{
 		LoadMapInfoFromFile(FileNames[i], tiles);
-
+		int coincount = 0;
 		for (auto& tile : tiles)
 		{
 			pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
@@ -622,8 +622,12 @@ void CSceneMgr::InitMainScene()
 				}
 				else if (temp == LayerState::LCoin)
 				{
+					coincount++;
+					pObject->SetName(L"Coin");
 					pObject->AddComponent(new CItemScript);
 					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::COIN);
+					pObject->GetScript<CItemScript>()->CoinIdx(coincount);
+
 				}
 			}
 
@@ -742,6 +746,7 @@ void CSceneMgr::InitMainScene()
 		pObject->SetName(L"Particle");
 		pObject->AddComponent(new CTransform);
 		pObject->AddComponent(new CParticleSystem);
+		pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
 		pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"Snow")));
 		pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
 		pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
@@ -751,7 +756,6 @@ void CSceneMgr::InitMainScene()
 		pObject->ParticleSystem()->SetEndScale(9.f);
 		pObject->ParticleSystem()->SetFrequency(0.1f);
 		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(-10000.f, -10000.f, 0.f));
 		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 		pObject = new CGameObject;
@@ -812,8 +816,9 @@ void CSceneMgr::InitMainScene()
 		pObject->ParticleSystem()->SetEndScale(22.f);
 		pObject->ParticleSystem()->SetFrequency(0.8f);
 		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(-10000.f, -10000.f, 0.f));
+		pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
 		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
 
 		pObject = new CGameObject;
 		pObject->SetName(L"CartoonParticleF");

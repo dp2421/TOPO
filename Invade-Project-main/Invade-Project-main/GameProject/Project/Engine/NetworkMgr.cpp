@@ -7,6 +7,7 @@
 #include "PlayerScript.h"
 #include "ObstacleScript.h"
 #include "UIScript.h"
+#include "ItemScript.h"
 #include "Camera.h"
 
 
@@ -304,6 +305,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         if (networkObjects.find(p->id) != networkObjects.end())
         {
             networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isGoal);
+
             if (CurID == p->id) networkObjects[p->id]->GetScript<CPlayerScript>()->LetParticle(Vec3(p->xPos, p->yPos, p->zPos), PARTICLE_TYPE::COLLPARICLE, p->isColl);
             CRenderMgr::GetInst()->SetFever(p->isGoal);
         }
@@ -342,7 +344,9 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
         
         // p->id 먹은 플레이어 ID;
-
+        
+        std::cout << "코인충돌, 인덱스 : " << p->coinIndex << std::endl;
+        networkObjects[p->id]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
         break;
     }
     } 
