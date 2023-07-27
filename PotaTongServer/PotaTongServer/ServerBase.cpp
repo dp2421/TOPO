@@ -426,7 +426,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			if (cl.second->isAI) continue;
 			if (cl.second->RoomID == id)
 			{
-				cl.second->SendGameStartPacket(startCountByRoomID[id] - 1);
+				cl.second->SendGameStartPacket(startCountByRoomID[id]);
 			}
 		}
 
@@ -453,6 +453,10 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
 						eventQueue.push(event);
 					}
+					else
+					{
+						cl.second->SendGameStartPacket(startCountByRoomID[id]);
+					}
 				}
 			}
 			isCoinActiveByRoomID[id][0] = false;
@@ -462,6 +466,16 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		}	
 		else if (startCountByRoomID[id] == 0)
 		{
+			for (auto& cl : clients)
+			{
+				if (cl.second->RoomID == id)
+				{
+					if (!cl.second->isAI)
+					{
+						cl.second->SendGameStartPacket(startCountByRoomID[id]);
+					}
+				}
+			}
 			isCoinActiveByRoomID[id][0] = false;
 			isCoinActiveByRoomID[id][1] = false;
 			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
