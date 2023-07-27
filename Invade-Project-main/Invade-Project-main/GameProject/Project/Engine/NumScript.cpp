@@ -67,6 +67,8 @@ bool CNumScript::IsPrevNumActive(int type, int index, NUMPOS pos)
 
 	return false;
 }
+
+
 void CNumScript::NumScript(int num, float offsetx, float offsety)
 {
 	//for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())

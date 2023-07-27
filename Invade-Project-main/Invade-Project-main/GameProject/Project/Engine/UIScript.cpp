@@ -203,6 +203,38 @@ void CUIScript::UIRender()
 	}
 }
 
+void CUIScript::GameEndStart(bool start)
+{
+	if (start)
+	{
+		if (f_WaitFeverModeTime < 3)
+		{
+			if (m_iType == START)
+				GetObj()->SetActive(true);
+		}
+		else
+		{
+			if (m_iType == START)
+				GetObj()->SetActive(false);
+		}
+
+		f_WaitFeverModeTime += 0.75;
+	}
+	else
+	{
+		if (f_WaitFeverModeTime < 3)
+		{
+			if (m_iType == ROUNDOVER)
+				GetObj()->SetActive(true);
+		}
+		else
+		{
+			if (m_iType == ROUNDOVER)
+				GetObj()->SetActive(false);
+
+		}
+	}
+}
 void CUIScript::MatchingComplete()
 {
 #if LOCALPLAY
@@ -230,6 +262,10 @@ void CUIScript::MatchingComplete()
 	}
 	CRenderMgr::GetInst()->SetSceneChanged(true);
 #endif
+}
+
+void CUIScript::GameEndStart()
+{
 }
 
 CUIScript::CUIScript() :CScript((UINT)SCRIPT_TYPE::UISCRIPT)
