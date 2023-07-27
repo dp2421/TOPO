@@ -104,6 +104,7 @@ void CPlayerScript::Update()
 	}
 
 #if LOCALPLAY
+	bool isMove = true; //로컬테스트용
 
 	if (KEY_HOLD(KEY_TYPE::KEY_W))
 	{

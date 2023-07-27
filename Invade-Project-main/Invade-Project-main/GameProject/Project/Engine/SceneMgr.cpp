@@ -648,9 +648,25 @@ void CSceneMgr::InitMainScene()
 		pObject->MeshRender()->SetDynamicShadow(true);
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
-
 	}
 	
+	//골인 간판
+	//pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Goal2.fbx");
+	pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Goal2.mdat", L"MeshData\\Goal2.mdat");
+	pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f + 800.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(-400.f, 810.f, 22200.f));
+	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Transform()->SetLocalRot(Vec3(-3.14f / 2, 0.f, 3.14f / 2));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"GoalMtrl"));
+	m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
+
 	//Arrow Sign (충돌체크 안할듯)
 	for (int i = 0; i < 2; ++i)
 	{
@@ -671,7 +687,6 @@ void CSceneMgr::InitMainScene()
 		//pObject->Animator3D()->SetClipIndex(1);
 		m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 	}
-	
 
 	//rain warf (이거 오류인가요? 아니요 기획의도인데요?)
 	{
@@ -2050,7 +2065,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
 
 #if LOCALPLAY
-	pPlayer->Transform()->SetLocalPos(Vec3(0.f, -990 , 0.f)); //10.f - FLOORHEIGHT
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f , 21400.f)); //10.f - FLOORHEIGHT
 	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
 
 	for (auto obj : curscene->FindLayer(L"Default")->GetParentObj())
