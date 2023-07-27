@@ -74,8 +74,6 @@ public:
     Tile(MetorTile info);
     ~Tile();
 
-    void SetScale(Vector3 vec);
-
     TileInfo data;
     MetorTile Mdata;
 

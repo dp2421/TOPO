@@ -225,6 +225,7 @@ struct ServerEnterCoinPacket
 	PACKETSIZE	size;
 	unsigned char	type;
 	unsigned char	id;
+	unsigned char	coinIndex;
 };
 
 #pragma pack (pop)

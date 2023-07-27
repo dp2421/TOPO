@@ -18,6 +18,17 @@ Tile::Tile(TileInfo info)
 
 Tile::Tile(MetorTile info)
 {
+	Mdata.xPos = roundf(info.xPos * 10) / 10;
+	Mdata.yPos = info.yPos;
+	Mdata.zPos = roundf(info.zPos * 10) / 10;
+	Mdata.xScale = info.xScale;
+	Mdata.yScale = info.yScale;
+	Mdata.zScale = info.zScale;
+	Mdata.state = info.state;
+
+	collider.position = new Vector3(Mdata.xPos, Mdata.yPos, Mdata.zPos);
+	collider.offset = TileOffset;
+	collider.size = TileCollider * Vector3(Mdata.xScale, Mdata.yScale, Mdata.zScale);
 }
 
 Tile::~Tile()

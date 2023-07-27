@@ -9,6 +9,8 @@ ServerBase::ServerBase()
 	InitHandler();
 	InitObsatacleInfo();
 	InitMapInfo();
+	InitItemInfo();
+	InitMeteoInfo();
 	//InitAI();
 }
 
@@ -274,6 +276,34 @@ void ServerBase::InitMapInfo()
 		tiles.push_back(tile);
 	}
 	tiles.pop_back();
+
+	inFile.close();
+}
+
+void ServerBase::InitItemInfo()
+{
+	const char* FileNames = { "RacingMapItemSV.bin" };
+
+	ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		std::cerr << "Failed to open " << FileNames << std::endl;
+		return;
+	}
+
+	while (!inFile.eof()) {
+		TileInfo tile;
+		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+		if (tile.state == LayerState::LCoin)
+		{
+			coins.push_back(tile);
+		}
+		else if (tile.state == LayerState::L1Sujum)
+		{
+			superJump.push_back(tile);
+		}
+	}
+	coins.pop_back();
 
 	inFile.close();
 }
@@ -616,7 +646,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		auto client = clients[id];
 
-		if (client->ID < 0)
+		if (client->ID < 0 || client->RoomID < 0)
 		{
 			break;
 		}
@@ -1097,18 +1127,23 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 		break;
 	}
 	case KeyType::Push: // ¹ÐÄ¡±â
+	{
+		float nearestDistance = PUSHDISTANCE + 1;
 		for (auto& cl : clients)
 		{
 			ClientException(cl, id);
 			if (cl.second->mapType != client->mapType) continue;
-			if (cl.second->RoomID == -1) continue;
-
+			if (cl.second->RoomID != client->RoomID) continue;
 			if (Vector3::Distance(client->position, cl.second->position) > PUSHDISTANCE) continue;
-			{
 
-			}
+			auto distance = Vector3::Distance(client->position, cl.second->position);
+			if (distance < nearestDistance)
+				nearestDistance = distance;
 		}
+
+
 		break;
+	}
 	case KeyType::Boom: // ÆøÅºµ¹¸®±â
 
 		break;
