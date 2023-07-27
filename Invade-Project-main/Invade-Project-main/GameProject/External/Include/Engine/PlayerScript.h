@@ -20,7 +20,7 @@ enum class Direction : int
 };
 enum class PARTICLE_TYPE {
     COLLPARICLE = 0,
-    RUNPARTICLE
+    RUNPARTICLE,
 };
 
 class CTexture;
@@ -45,9 +45,10 @@ private:
 
     int moveState = 0;
     bool isPlayable = false;
-    bool isColl = false;
+    bool m_isColl = false;
     bool isGoal = false;
     
+    bool m_isFever = false;
 
     CGameObject* m_pParticle;
     CGameObject* m_speedLine;

@@ -150,6 +150,7 @@ void CSceneMgr::InitMainScene()
 	CResMgr::GetInst()->Load<CTexture>(L"HardCircle", L"Texture\\Particle\\HardCircle.png");
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	CResMgr::GetInst()->Load<CTexture>(L"CartoonSmoke", L"Texture\\Particle\\CartoonSmoke3.png");
+	CResMgr::GetInst()->Load<CTexture>(L"CartoonSmokeF", L"Texture\\Particle\\CartoonSmokeF2.png");
 
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
@@ -794,10 +795,26 @@ void CSceneMgr::InitMainScene()
 		pObject->ParticleSystem()->SetMinLifeTime(0.5f);
 		pObject->ParticleSystem()->SetStartScale(35.f);
 		pObject->ParticleSystem()->SetEndScale(22.f);
-		pObject->ParticleSystem()->SetFrequency(0.5f);
-		//pObject->ParticleSystem()->SetAccTime(1.5f);
+		pObject->ParticleSystem()->SetFrequency(0.8f);
 		pObject->FrustumCheck(false);
 		pObject->Transform()->SetLocalPos(Vec3(-10000.f, -10000.f, 0.f));
+		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+
+		pObject = new CGameObject;
+		pObject->SetName(L"CartoonParticleF");
+		pObject->AddComponent(new CTransform);
+		pObject->AddComponent(new CParticleSystem);
+		pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmokeF")));
+		pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+		pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.1f));
+		pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
+		pObject->ParticleSystem()->SetMinLifeTime(0.2f);
+		pObject->ParticleSystem()->SetStartScale(100.f);
+		pObject->ParticleSystem()->SetEndScale(60.f);
+		pObject->ParticleSystem()->SetFrequency(0.1f);
+		pObject->FrustumCheck(false);
+		pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, -10.f));
+		pObject->SetActive(true);
 		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 	}
 

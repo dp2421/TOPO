@@ -26,7 +26,6 @@ void CPlayerScript::Awake()
 	//	m_pParticle->ParticleSystem()->SetMinLifeTime(0.5f);
 	//	m_pParticle->ParticleSystem()->SetStartScale(6.f);
 	//	m_pParticle->ParticleSystem()->SetEndScale(9.f);
-
 	//	break;
 	//case ELEMENT_TYPE::FIRE:
 	//	m_pParticle->AddComponent(new CParticleSystem);
@@ -45,18 +44,13 @@ void CPlayerScript::Awake()
 	//	m_pParticle->ParticleSystem()->SetEndScale(5.f);
 	//	break;
 	//case ELEMENT_TYPE::THUNDER:
-
 	//	break;
 	//case ELEMENT_TYPE::WIND:
-
 	//	break;
-
 	//}
-
 	//m_pParticle->FrustumCheck(false);
 	//m_pParticle->Transform()->SetLocalPos(Vec3(1.5f, 150.f, 0.f));
 	//pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle, pCurScene);
-
 	//GetObj()->AddChild(m_pParticle);
 }
 
@@ -350,6 +344,7 @@ void CPlayerScript::Update()
 
 	}
 
+	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
 	SetSpeedLine(isMove);
 	//LetParticle(vPos, PARTICLE_TYPE::COLLPARICLE, true);
@@ -373,29 +368,24 @@ void CPlayerScript::SetPlayable(bool value)
 			//pMainCam->Transform()->SetLocalScale(Vec3(15000.f, 15000.f, 15000.f));
 				break;
 			}
-
 			//else if (obj->GetName().compare(L"AwardMainCam") == 0)
 			//{
 			//	//1등석
 			//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f));
 			//	obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 200.f));
 			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-
 			//	//2등석
 			//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
 			//	obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
 			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-
 			//	//3등석
 			//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
 			//	obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
 			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-
 			//	//기타등등들
 			//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
 			//	obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
 			//	obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-
 			//	//
 			//	GetObj()->AddChild(obj);
 			//	break;
@@ -478,6 +468,8 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 		IdlePlayer->Transform()->SetLocalRot(vRot);
 		runPlayer->Transform()->SetLocalRot(vRot);
 		Transform()->SetLocalRot(vRot);
+
+		m_isColl = isColl;
 	}
 	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
@@ -488,31 +480,31 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 
 void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool ismove)
 {
-
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
 	{
-		if (obj->GetName().compare(L"Particle") == 0)
-			if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
-			{
-				obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
-				break;
-			}
-		if ((obj->GetName().compare(L"CartoonParticle") == 0) && type == PARTICLE_TYPE::RUNPARTICLE)
+		if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
+			obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
+		
+		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticle") == 0))
 		{
 			if (ismove)
-			{
-				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y + 10.f, pos.z - 10.f));
-				break;
-			}
-			obj->Transform()->SetLocalPos(Vec3((-10000.f, -10000.f, 0.f)));
+				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z - 10.f));
+			else
+				obj->Transform()->SetLocalPos(Vec3((10.f, 20000.f, 0.f)));
 		}
+		//if ((m_isFever && type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
+		//{
+		//	if (ismove && m_isFever)
+		//		obj->Transform()->SetLocalPos(Vec3(pos.x - 100, pos.y + 150.f, pos.z - 10.f));
+		//	else
+		//		obj->Transform()->SetLocalPos(Vec3((10.f, 20000.f, 0.f)));
+		//}
 	}
-
 }
 
 void CPlayerScript::SetSpeedLine(bool ismove)
 {
-	if (CRenderMgr::GetInst()->IsFever())
+	if (m_isFever)
 	{
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
