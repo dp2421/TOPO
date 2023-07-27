@@ -264,9 +264,9 @@ void CUIScript::MatchingComplete()
 #endif
 }
 
-void CUIScript::GameEndStart()
-{
-}
+//void CUIScript::GameEndStart()
+//{
+//}
 
 CUIScript::CUIScript() :CScript((UINT)SCRIPT_TYPE::UISCRIPT)
 {
