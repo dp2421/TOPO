@@ -734,10 +734,10 @@ void CSceneMgr::InitMainScene()
 		pObject->ParticleSystem()->SetMinLifeTime(0.5f);
 		pObject->ParticleSystem()->SetStartScale(6.f);
 		pObject->ParticleSystem()->SetEndScale(9.f);
+		pObject->ParticleSystem()->SetFrequency(0.1f);
 		pObject->FrustumCheck(false);
 		pObject->Transform()->SetLocalPos(Vec3(-10000.f, -10000.f, 0.f));
 		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
-
 
 		pObject = new CGameObject;
 		//pObject->SetName(L"SuJumParticle");

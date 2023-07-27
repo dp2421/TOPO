@@ -347,8 +347,6 @@ void CPlayerScript::Update()
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
 	SetSpeedLine(isMove);
-	//LetParticle(vPos, PARTICLE_TYPE::COLLPARICLE, true);
-
 }
 
 void CPlayerScript::SetPlayable(bool value)
@@ -458,7 +456,7 @@ const void CPlayerScript::SetPlayerMoveState(KEY_TYPE key, KEY_STATE state, Vec3
 	}
 }
 
-void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isColl, bool isGoal)
+void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isGoal)
 {
 	if (!isPlayable)
 	{
@@ -468,8 +466,6 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 		IdlePlayer->Transform()->SetLocalRot(vRot);
 		runPlayer->Transform()->SetLocalRot(vRot);
 		Transform()->SetLocalRot(vRot);
-
-		m_isColl = isColl;
 	}
 	prePosition = Transform()->GetLocalPos();
 	Transform()->SetLocalPos(pos);
@@ -478,16 +474,20 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isCol
 }
 
 
-void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool ismove)
+void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart)
 {
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
 	{
 		if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
-			obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
-		
+		{
+			if (isstart)
+				obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
+			else
+				obj->Transform()->SetLocalPos(Vec3((10.f, 20000.f, 0.f)));
+		}
 		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticle") == 0))
 		{
-			if (ismove)
+			if (isstart)
 				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z - 10.f));
 			else
 				obj->Transform()->SetLocalPos(Vec3((10.f, 20000.f, 0.f)));
