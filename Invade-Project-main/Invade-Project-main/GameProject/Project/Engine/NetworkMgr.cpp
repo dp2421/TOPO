@@ -318,7 +318,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerObstacleInfo:
     {
         ServerObstacleInfoPacket* p = reinterpret_cast<ServerObstacleInfoPacket*>(packet);
-        for (int i = 0; i < 66; ++i)
+        for (int i = 0; i < OBSTACLENUM; ++i)
         {
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->Rotate(((float)p->degree[i])/100);
         }
@@ -327,7 +327,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerObstacleRPS:
     {
         ServerObstacleRPSPacket* p = reinterpret_cast<ServerObstacleRPSPacket*>(packet);
-        for (int i = 0; i < 66; ++i)
+        for (int i = 0; i < OBSTACLENUM; ++i)
         {
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->SetSpeed(((float)p->angularVelocity[i]) / 100);
         }
