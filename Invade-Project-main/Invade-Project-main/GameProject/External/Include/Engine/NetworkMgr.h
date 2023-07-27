@@ -11,6 +11,8 @@ public:
 	std::unordered_map<int, CGameObject*> networkObjects;
 	std::unordered_map<int, std::mutex> mutexList;
 
+	std::chrono::system_clock::time_point startTime;
+
 	int prevRemainData = 0;
 	vector <std::thread> workerThreads;
 
