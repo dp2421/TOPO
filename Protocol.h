@@ -62,6 +62,7 @@ constexpr unsigned char ServerSingleObstacleInfo = 212;
 constexpr unsigned char ServerMeteoInfo = 213;
 constexpr unsigned char ServerEnterCoin = 214;
 constexpr unsigned char ServerStartTime = 215;
+constexpr unsigned char ServerPushed = 216;
 
 #pragma pack (push, 1)
 
@@ -213,20 +214,38 @@ struct ServerSingleObstacleInfoPacket
 	unsigned short	degree;
 };
 
+/// <summary>
+/// metorLayerState : enum typecast
+/// targetTime : 무너지는 시간 
+/// </summary>
 struct ServerMeteoInfoPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	target;
-	unsigned short	time;
+	unsigned char	metorLayerState;
+	std::chrono::system_clock::time_point targetTime;
 };
 
+/// <summary>
+/// ID : 코인 먹은 사람
+/// coinIndex : 코인 번호
+/// </summary>
 struct ServerEnterCoinPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
 	unsigned char	id;
 	unsigned char	coinIndex;
+};
+
+/// <summary>
+/// id : 밀린 캐릭터 ID
+/// </summary>
+struct ServerPushedPacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	unsigned char	id;
 };
 
 #pragma pack (pop)

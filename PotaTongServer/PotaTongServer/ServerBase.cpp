@@ -430,6 +430,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
+
+		cout << startCountByRoomID[id] << " STARTCOUNT \n";
 		if(startCountByRoomID[id] > 0)
 		{
 			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
@@ -487,8 +489,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
 			eventQueue.push(event);
 		}
-
-		cout << startCountByRoomID[id] << " STARTCOUNT \n";
 
 		break;
 	}
