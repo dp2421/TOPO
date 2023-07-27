@@ -19,6 +19,7 @@ enum UI_TYPE
     ROUNDOVER,
     FEVER,
     SPEEDLINE,
+    START,
 }; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
 
@@ -42,7 +43,8 @@ public:
     virtual void Update();
     void UIRender();
     void MatchingComplete();
-    void NumScript(int num, float offsetx, float offsety);
+    void GameEndStart(bool start);
+    //void NumScript(int num, float offsetx, float offsety);
     void SetType(UI_TYPE _iState) { m_iType = _iState; }
     void SetCountDown(int cnt) { i_Countdown = cnt; }
     UI_TYPE GetType() { 

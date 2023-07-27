@@ -302,7 +302,8 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerPlayerInfoPacket* p = reinterpret_cast<ServerPlayerInfoPacket*>(packet);
         if (networkObjects.find(p->id) != networkObjects.end())
         {
-            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isColl, p->isGoal);
+            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isGoal);
+            if (CurID == p->id) networkObjects[p->id]->GetScript<CPlayerScript>()->LetParticle(Vec3(p->xPos, p->yPos, p->zPos), PARTICLE_TYPE::COLLPARICLE, p->isColl);
             CRenderMgr::GetInst()->SetFever(p->isGoal);
         }
         else
