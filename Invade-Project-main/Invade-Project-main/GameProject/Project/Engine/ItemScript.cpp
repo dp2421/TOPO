@@ -30,6 +30,7 @@ void CItemScript::Awake()
 void CItemScript::Update()
 {
 	CoinRotate();
+	removeCoin(1); //테스트용
 
 	//Vec3 pos = Transform()->GetLocalPos();
 	////슈점파티클
@@ -43,11 +44,10 @@ void CItemScript::Update()
 	//			break;
 	//		}
 	//	}
-
 	//}
 }
 
-CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1)
+CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1), m_coinIdx(-1)
 {
 }
 
@@ -69,4 +69,11 @@ void CItemScript::CoinRotate()
 		}
 		Transform()->SetLocalRot(vRot);
 	}
+}
+
+void CItemScript::removeCoin(int _idx)
+{
+
+	if(m_coinIdx == _idx)
+		GetObj()->SetActive(false);
 }
