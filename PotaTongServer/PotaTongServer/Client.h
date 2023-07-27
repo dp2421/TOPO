@@ -18,6 +18,7 @@ public:
 	bool isJump = false;
 	bool isColl = false;
 	bool isGoal = false;
+	bool isCoin = false;
 	bool isPushed = true;
 
 	bool isAI = false;
@@ -56,7 +57,7 @@ public:
 	void SendSingleObstacleInfoPacket(const unsigned char id, const unsigned short degree);
 	void SendObstacleRPSPacket(const unsigned short angularVelocity[], int size);
 	void SendMeteoPacket(const unsigned char target, unsigned short time);
-	void SendEnterCoinPacket(const int id);
+	void SendEnterCoinPacket(const int id, const int coinIndex);
 private:
 	OverlappedEx recv;
 };

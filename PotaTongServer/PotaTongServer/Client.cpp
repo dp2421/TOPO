@@ -169,11 +169,12 @@ void Client::SendMeteoPacket(const unsigned char target, unsigned short time)
 	SendPacket(&packet);
 }
 
-void Client::SendEnterCoinPacket(const int id)
+void Client::SendEnterCoinPacket(const int id, const int coinIndex)
 {
 	ServerEnterCoinPacket packet;
 	packet.size = sizeof(ServerEnterCoin);
 	packet.id = id;
+	packet.coinIndex = coinIndex;
 
 	SendPacket(&packet);
 }

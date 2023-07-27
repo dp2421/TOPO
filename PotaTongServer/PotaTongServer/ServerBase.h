@@ -47,7 +47,7 @@ private:
 	concurrency::concurrent_unordered_map<int, int> startCountByRoomID;
 	concurrency::concurrent_unordered_map<int, chrono::system_clock::time_point> startTimePointByRoomID;
 	concurrency::concurrent_unordered_map<int, bool> isFeverByRoomID;
-	concurrency::concurrent_unordered_map<int, bool*> isCoinActiveByRoomID;
+	concurrency::concurrent_unordered_map<int, bool[2]> isCoinActiveByRoomID;
 
 	std::vector<Obstacle> obstacles;
 	std::vector<Tile> coins;

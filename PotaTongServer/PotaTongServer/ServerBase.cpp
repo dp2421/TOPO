@@ -455,11 +455,15 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					}
 				}
 			}
+			isCoinActiveByRoomID[id][0] = false;
+			isCoinActiveByRoomID[id][1] = false;
 			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
 			eventQueue.push(event);
 		}	
 		else if (startCountByRoomID[id] == 0)
 		{
+			isCoinActiveByRoomID[id][0] = false;
+			isCoinActiveByRoomID[id][1] = false;
 			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
 			eventQueue.push(event);
 		}
@@ -850,6 +854,20 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					client->direction = Vector3::Zero();
 					client->score += 120000 - chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() -  startTimePointByRoomID[client->RoomID]).count();
 				}
+			}
+
+			int count = 0;
+			for (auto& coin : coins)
+			{
+				if (client->isCoin) continue;
+				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
+				if (client->collider.isCollisionAABB(coin.collider))
+				{
+					client->isCoin = true;
+					isCoinActiveByRoomID[client->RoomID][count] = true;
+					client->SendEnterCoinPacket(id, count);
+				}
+				count++;
 			}
 		}
 		else if (client->mapType == MapType::Obstacle)
