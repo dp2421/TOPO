@@ -248,6 +248,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         //    }
         //}
         // p->count << 시작까지 남은 초
+        CRenderMgr::GetInst()->GetCamera(1)->SetStartCnt((int)p->count);
         break;
     }
     case ServerStartTime:

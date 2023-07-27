@@ -36,7 +36,8 @@ private:
     Vec3 mousepos;
     float f_MatchingTime = 0.f;
     float f_WaitFeverModeTime = 0.f; //약 3초 예정
-    int i_Countdown = 0;
+    int f_startCountdown;
+
 public:
     CUIScript();
     virtual ~CUIScript();
@@ -46,10 +47,11 @@ public:
     void GameEndStart(bool start);
     //void NumScript(int num, float offsetx, float offsety);
     void SetType(UI_TYPE _iState) { m_iType = _iState; }
-    void SetCountDown(int cnt) { i_Countdown = cnt; }
     UI_TYPE GetType() { 
         return m_iType;
     }
+    void SetStartCount(int cnt) { f_startCountdown = cnt; }
+
     CLONE(CUIScript);
 };
 

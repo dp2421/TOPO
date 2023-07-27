@@ -45,6 +45,7 @@ private:
     bool b_isMatching = false;
 
     float temp = 0.f;
+    int startcnt;
 public:
 
     virtual void FinalUpdate();
@@ -81,6 +82,7 @@ public:
     void SetLayerAllCheck() { m_iLayerCheck = 0xfffffff; }
     void SetLayerAllRelease() { m_iLayerCheck = 0; }
 
+    void SetStartCnt(int cnt) { startcnt = cnt; }
     const Matrix& GetViewMat() { return m_matView; }
     const Matrix& GetViewInvMat() { return m_matViewInv; }
     const Matrix& GetProjMat() { return m_matProj; }

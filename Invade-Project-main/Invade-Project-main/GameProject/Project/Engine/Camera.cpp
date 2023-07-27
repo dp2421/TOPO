@@ -292,6 +292,8 @@ void CCamera::Render_UI()
 		if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 		{
 			m_vecUIObject[i]->GetScript<CNumScript>()->SetCount(temp);
+			m_vecUIObject[i]->GetScript<CUIScript>()->SetStartCount(startcnt);
+
 		}
 		m_vecUIObject[i]->GetScript<CUIScript>()->UIRender();
 
