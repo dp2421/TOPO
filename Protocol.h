@@ -6,6 +6,7 @@
 constexpr int PORTNUM = 20150;
 constexpr int BUFFERSIZE = 1024;
 constexpr int NAMESIZE = 20;
+constexpr int OBSTACLENUM = 50;
 
 //constexpr char SERVERIP[] = "210.117.115.67";
 constexpr char SERVERIP[] = "127.0.0.1";
@@ -169,7 +170,7 @@ struct ServerObstacleInfoPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	unsigned short		degree[66];
+	unsigned short		degree[OBSTACLENUM];
 	//타입에 따라서 내용이 달라질 것 같음
 	//장애물에 번호 부여?
 	//NPC같은 느낌으로 따로 클래스?
@@ -203,14 +204,14 @@ struct ServerObstacleRPSPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	unsigned short	angularVelocity[66];
+	unsigned short	angularVelocity[OBSTACLENUM];
 };
 
 struct ServerSingleObstacleInfoPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	id;
+	int				id;
 	unsigned short	degree;
 };
 
@@ -234,7 +235,7 @@ struct ServerEnterCoinPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	id;
+	int				id;
 	unsigned char	coinIndex;
 };
 
@@ -245,7 +246,7 @@ struct ServerPushedPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	id;
+	int				id;
 };
 
 #pragma pack (pop)

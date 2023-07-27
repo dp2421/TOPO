@@ -263,6 +263,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);
 
+        CRenderMgr::GetInst()->SetFever(p->isFever);
         // p->isFever << 피버모드냐 아니냐 아니라면 Result도 같이 갈듯
         
         break;
@@ -307,7 +308,6 @@ void NetworkMgr::ProcessPacket(char* packet)
             networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isGoal);
 
             if (CurID == p->id) networkObjects[p->id]->GetScript<CPlayerScript>()->LetParticle(Vec3(p->xPos, p->yPos, p->zPos), PARTICLE_TYPE::COLLPARICLE, p->isColl);
-            CRenderMgr::GetInst()->SetFever(p->isGoal);
         }
         else
         {

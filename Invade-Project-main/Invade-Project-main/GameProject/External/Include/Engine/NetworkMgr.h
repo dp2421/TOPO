@@ -7,7 +7,7 @@ public:
 	SOCKET socket;
 	OverlappedEx recv;
 
-	int CurID;
+	int CurID = -1;
 	std::unordered_map<int, CGameObject*> networkObjects;
 	std::unordered_map<int, std::mutex> mutexList;
 

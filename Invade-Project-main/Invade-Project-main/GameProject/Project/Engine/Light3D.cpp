@@ -75,14 +75,14 @@ void CLight3D::FinalUpdate()
 {
 	temp += 1;
 
-	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::RACING)
+	int myid = NetworkMgr::GetInst()->CurID;
+	auto netobjs = NetworkMgr::GetInst()->networkObjects;
+	if (myid != -1 && netobjs.find(myid) != netobjs.end())
 	{
-		int myid = NetworkMgr::GetInst()->CurID;
 		CGameObject* ttt = NetworkMgr::GetInst()->networkObjects[myid];
 		m_pCamObj->Transform()->SetLocalPos(ttt->Transform()->GetLocalPos());
-
+		Vec3 shadowPos = netobjs[myid]->Transform()->GetLocalPos();
 	}
-	//Vec3 shadowPos = NetworkMgr::GetInst()->networkObjects[myid]->Transform()->GetLocalPos();
 	m_tLightInfo.vLightPos = Transform()->GetWorldPos();
 	Transform()->SetLocalScale(Vec3(m_tLightInfo.fRange, m_tLightInfo.fRange, m_tLightInfo.fRange));
 	m_iArrIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
