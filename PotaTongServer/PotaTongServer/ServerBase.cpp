@@ -434,9 +434,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		{
 			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 			eventQueue.push(event);
+			startCountByRoomID[id] -= 1;
 		}
 
-		startCountByRoomID[id] -= 1;
 		if (startCountByRoomID[id] == 0 && !isFever)
 		{
 			for (auto cl : clients)
@@ -876,6 +876,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				if (client->isCoin) continue;
 				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
+
 				if (client->collider.isCollisionAABB(coin.collider))
 				{
 					client->isCoin = true;
