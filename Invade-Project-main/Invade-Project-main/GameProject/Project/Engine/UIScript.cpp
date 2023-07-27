@@ -198,16 +198,16 @@ void CUIScript::UIRender()
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
-		curObj->GetScript<CNumScript>()->CountDown(2);
-
+		curObj->GetScript<CNumScript>()->CountDown(f_startCountdown);
 	}
+	GameEndStart(true);
 }
 
 void CUIScript::GameEndStart(bool start)
 {
 	if (start)
 	{
-		if (f_WaitFeverModeTime < 3)
+		if (f_WaitFeverModeTime <3)
 		{
 			if (m_iType == START)
 				GetObj()->SetActive(true);

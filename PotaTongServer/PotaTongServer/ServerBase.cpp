@@ -913,6 +913,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 		for (auto cl : clients)
 		{
+			//if (cl.second == nullptr)
+			//	continue;
 			ClientException(cl, id);
 			if (cl.second->isAI) continue;
 			if (cl.second->RoomID != client->RoomID) continue;

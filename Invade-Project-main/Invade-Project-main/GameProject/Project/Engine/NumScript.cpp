@@ -108,15 +108,23 @@ void CNumScript::NumScript(int num, float offsetx, float offsety)
 	}
 }
 
-void CNumScript::CountDown(int number)
+void CNumScript::CountDown(int cnt)
 {
-	if (number == m_Numinfo.type)
+	if (cnt == 0)
 	{
-		GetObj()->Transform()->SetLocalPos(Vec3(0, 580, 10));
-		GetObj()->SetActive(true);
+		GetObj()->SetActive(false);
 	}
 	else
-		GetObj()->SetActive(false);
+	{
+		std::cout << cnt << std::endl;
+		if (cnt == m_Numinfo.type)
+		{
+			GetObj()->Transform()->SetLocalPos(Vec3(0, 580, 10));
+			GetObj()->SetActive(true);
+		}
+		else
+			GetObj()->SetActive(false);
+	}
 }
 
 CNumScript::CNumScript() : CScript((UINT)SCRIPT_TYPE::NUMSCRIPT)
