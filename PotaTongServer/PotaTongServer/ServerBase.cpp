@@ -1050,6 +1050,13 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 			if (readyCount == 0)
 			{
 				startCountByRoomID[clients[id]->RoomID] = 3;
+				if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
+				{
+					isCoinActiveByRoomID[clients[id]->RoomID] = new bool[2];
+					isCoinActiveByRoomID[clients[id]->RoomID][0] = false;
+					isCoinActiveByRoomID[clients[id]->RoomID][1] = false;
+				}
+
 				Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 				eventQueue.push(event);
 			}
