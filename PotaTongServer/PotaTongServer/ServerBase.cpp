@@ -636,7 +636,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::SendRotateInfo:
 	{
-		unsigned short degree[66] = { 0, };
+		unsigned short degree[OBSTACLENUM] = { 0, };
 		int i = 0;
 		for (auto& obs : obstacles)
 		{
@@ -653,7 +653,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			if (client.second->mapType != MapType::Racing) continue;
 
 			if (client.second->ID != -1 && !client.second->isAI)
-				client.second->SendObstacleInfoPacket(degree, 66 * sizeof(short));
+				client.second->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
 		}
 
 		Event event{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
@@ -879,9 +879,18 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 				if (client->collider.isCollisionAABB(coin.collider))
 				{
+					cout << "CLIENT ID : " << client->ID << endl;
 					client->isCoin = true;
 					isCoinActiveByRoomID[client->RoomID][count] = true;
-					client->SendEnterCoinPacket(id, count);
+					for (auto& cl : clients)
+					{
+						ClientException(cl, id);
+						if (cl.second->isAI) continue;
+						if (cl.second->RoomID != client->RoomID) continue;
+						if (cl.second->mapType != client->mapType) continue;
+
+						cl.second->SendEnterCoinPacket(id, count);
+					}
 				}
 				count++;
 			}
@@ -1038,8 +1047,8 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		case MapType::Racing:
 		{
 			cout << "Send Info  \n";
-			unsigned short RPS[66] = { 0, };
-			unsigned short degree[66] = { 0, };
+			unsigned short RPS[OBSTACLENUM] = { 0, };
+			unsigned short degree[OBSTACLENUM] = { 0, };
 			int i = 0;
 			for (auto& obs : obstacles)
 			{
@@ -1050,8 +1059,8 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 					++i;
 				}
 			}
-			clients[id]->SendObstacleRPSPacket(RPS, 66 * sizeof(short));
-			clients[id]->SendObstacleInfoPacket(degree, 66 * sizeof(short));
+			clients[id]->SendObstacleRPSPacket(RPS, OBSTACLENUM * sizeof(short));
+			clients[id]->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
 
 			Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 			eventQueue.push(event);
