@@ -263,7 +263,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);
 
-        //CRenderMgr::GetInst()->SetFever(p->isFever);
+        CRenderMgr::GetInst()->SetFever(p->isFever);
         // p->isFever << 피버모드냐 아니냐 아니라면 Result도 같이 갈듯
         
         break;
@@ -372,7 +372,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     }
     default:
     {
-        //std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";
+        std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";
     }
     } 
 }

@@ -161,9 +161,6 @@ void CSceneMgr::InitMainScene()
 
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 
-	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-
-
 
 
 	Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
@@ -249,63 +246,6 @@ void CSceneMgr::InitMainScene()
 	pObject->Transform()->SetLocalPos(Vec3(-1660, -990, 18830));
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
-
-#pragma region TempObj
-
-
-	//pObject = new CGameObject;
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CLight3D);
-	//pObject->Light3D()->SetLightPos(Vec3(250.f, 200.f, -30.f));
-	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	//pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 0.f, 1.f));
-	//pObject->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
-	//pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
-	//pObject->Light3D()->SetLightDir(Vec3(-1.f, -1.f, -1.f));
-	//pObject->Light3D()->SetLightRange(300.f);
-	////pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	//m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
-
-	//pObject = new CGameObject;
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CLight3D);
-	//pObject->Light3D()->SetLightPos(Vec3(350.f, 200.f, -30.f));
-	//pObject->Light3D()->SetLightType(LIGHT_TYPE::POINT);
-	//pObject->Light3D()->SetDiffuseColor(Vec3(1.f, 0.f, 1.f));
-	//pObject->Light3D()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
-	//pObject->Light3D()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
-	//pObject->Light3D()->SetLightDir(Vec3(-1.f, -1.f, -1.f));
-	//pObject->Light3D()->SetLightRange(300.f);
-	////pObject->Transform()->SetLocalPos(Vec3(-1000.f, 1000.f, -1000.f));
-	//m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
-
-//	pMeshData->Save(pMeshData->GetPath());
-	// MeshData 로드
-
-
-
-#pragma region TempObj
-
-	//// Temp Object
-	//pObject = new CGameObject;
-	//pObject->SetName(L"Player Object");
-	//pObject->AddComponent(new CTransform);
-	//pObject->AddComponent(new CMeshRender);
-
-	//// Transform 설정
-	//pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f, 0.f));
-	//pObject->Transform()->SetLocalScale(Vec3(1000.f, 1000.f, 100.f));
-	//pObject->Transform()->SetLocalRot(Vec3(XM_PI / 2.f, 0.f, 0.f));
-
-	//// MeshRender 설정
-	//pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	//pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
-	//pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pColor.GetPointer());
-	//pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_1, pNormal.GetPointer());
-	//pObject->MeshRender()->SetDynamicShadow(true);
-
-	//m_pCurScene->FindLayer(L"Player")->AddGameObject(pObject);
-#pragma endregion
 
 	///////////////////////////////////////////////////////////////
 	////장애물테스트
@@ -844,26 +784,6 @@ void CSceneMgr::InitMainScene()
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#pragma region TempObj
-
-//	pObject = new CGameObject;
-//	pObject->SetName(L"Terrain");
-//	pObject->AddComponent(new CTransform);
-//	pObject->AddComponent(new CMeshRender);
-//	pObject->AddComponent(new CTerrain);
-//
-//	pObject->FrustumCheck(false);
-//	pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f, 0.f));
-//	pObject->Transform()->SetLocalScale(Vec3(50.f, 400.f, 50.f));
-//	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"TerrainMtrl"));
-//	pObject->Terrain()->Init();
-//
-//
-//	m_pCurScene->FindLayer(L"Default")->AddGameObject(pObject);
-//
-
-#pragma endregion
-#pragma endregion
 
 #if LOCALPLAY
 	//m_pCurScene = m_pRacingScene;
@@ -925,13 +845,6 @@ void CSceneMgr::InitMainScene()
 	pObject->SetActive(false);
 	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
-
-
-	//m_pCurScene = m_pRacingScene;
-	//m_pRacingScene->Awake();
-	//m_pRacingScene->Start();
 }
 
 
@@ -957,7 +870,6 @@ void CSceneMgr::InitStartScene()
 	Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
 
 
-	//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 	if (m_pSceneType == SCENE_TYPE::LOBBY)
 	{
 		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
@@ -1022,37 +934,29 @@ void CSceneMgr::InitStartScene()
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject, m_pStartScene);
 
 
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Lobby.fbx");
+	//pMeshData->Save(pMeshData->GetPath());
 
-	//const wstring FileName = { L"MapPosition.bin" };
-
-	//LoadMapInfoFromFile(FileName, tiles);
-
-	//for (auto& tile : tiles)
-	//{
-	//	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
-	//	pObject = pMeshData->Instantiate();
-	//	pObject->AddComponent(new CTransform);
-	//	pObject->AddComponent(new CCollider3D);
-	//	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	//	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-	//	pObject->FrustumCheck(false);
-	//	pObject->Transform()->SetLocalPos(tile.GetTilePos());
-	//	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-	//	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	//	pObject->MeshRender()->SetDynamicShadow(false);
-	//	//pObject->Animator3D()->SetClipIndex(1);
-	//	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject);
-
-	//}
-	//pSound->Play(0);
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\LobbyMap.mdat", L"MeshData\\LobbyMap.mdat", false, true);
+	//pMeshData->Save(pMeshData->GetPath());
+	pObject = pMeshData->Instantiate();
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CCollider3D);
+	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(0, -10, 0));
+	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	pObject->Transform()->SetLocalScale(Vec3(10.f, 10.f, 10.f));
+	pObject->MeshRender()->SetDynamicShadow(true);
+	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pStartScene);
 
 #if LOCALPLAY
 	m_pCurScene = m_pStartScene;
 	AddNetworkGameObject(true, Vec3::Zero, m_pStartScene);
 #else
 #endif
-
 
 	pObject = new CGameObject;
 	pObject->SetName(L"SkyBox");
@@ -1066,11 +970,6 @@ void CSceneMgr::InitStartScene()
 	pObject->SetActive(false);
 
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject, m_pStartScene);
-
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
-	//m_pStartScene->Awake();
-	//m_pStartScene->Start();
 }
 
 void CSceneMgr::InitMetorScene()
@@ -1088,8 +987,6 @@ void CSceneMgr::InitMetorScene()
 		Ptr<CTexture> pNormalTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"NormalTargetTex");
 		Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
 
-
-		//Ptr<CTexture> pTestUAVTexture = CResMgr::GetInst()->CreateTexture(L"UAVTexture", 1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 		Ptr<CMaterial> pPM = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
 		pPM->SetData(SHADER_PARAM::TEX_3, m_pDaySkyBox.GetPointer());
@@ -1153,7 +1050,7 @@ void CSceneMgr::InitMetorScene()
 		//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Meteor.fbx");
 		//pMeshData->Save(pMeshData->GetPath());
 		Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Meteor.mdat", L"MeshData\\Meteor.mdat");
-		pMeshData->Save(pMeshData->GetPath());
+		//pMeshData->Save(pMeshData->GetPath());
 		pObject = pMeshData->Instantiate();
 		pObject->AddComponent(new CTransform);
 		pObject->AddComponent(new CCollider3D);
@@ -2043,12 +1940,13 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 		curscene = GetCurScene();
 	}
 	//ChangeScene(curscene);
-	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Victory.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
+	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Falldown.fbx");
+	pMeshData->Save(pMeshData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
-	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
+	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
+	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
+	Ptr<CMeshData> falldownMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 	std::cout << "add obj" << std::endl;
 	// MeshRender 설정
 	CGameObject* pPlayer = nullptr;
