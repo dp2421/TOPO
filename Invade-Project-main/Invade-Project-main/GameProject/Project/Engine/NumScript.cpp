@@ -10,15 +10,15 @@ void CNumScript::Update()
 	CGameObject* curObj = GetObj();
 	Vec2 pos = CGameFramework::GetInst()->m_WinSize;
 	f_Count += CTimeMgr::GetInst()->GetDeltaTime();
-	int hundred = (int)f_Count / 100;
-	int tens = (int)f_Count % 100 / 10;
-	int one = (int)f_Count % 10;
-	if (curObj->GetScript<CNumScript>()->GetNumInfo().type == hundred ||
-		curObj->GetScript<CNumScript>()->GetNumInfo().type == tens ||
-		curObj->GetScript<CNumScript>()->GetNumInfo().type == one)
-	{
-		curObj->GetScript<CNumScript>()->NumScript((int)f_Count, 0, pos.y / 1.75);
-	}
+	//int hundred = (int)f_Count / 100;
+	//int tens = (int)f_Count % 100 / 10;
+	//int one = (int)f_Count % 10;
+	//if (curObj->GetScript<CNumScript>()->GetNumInfo().type == hundred ||
+	//	curObj->GetScript<CNumScript>()->GetNumInfo().type == tens ||
+	//	curObj->GetScript<CNumScript>()->GetNumInfo().type == one)
+	//{
+	//	curObj->GetScript<CNumScript>()->NumScript((int)f_Count, 0, pos.y / 1.75);
+	//}
 }
 
 void CNumScript::NumberUpdate()
@@ -87,7 +87,7 @@ void CNumScript::NumScript(int num, float offsetx, float offsety)
 	if (m_Numinfo.type == hundred && !IsNumberActive(hundred, m_Numinfo.index) && !IsPrevNumActive(hundred, m_Numinfo.index - 1, HUNDRED))
 	{
 		GetObj()->SetActive(true);
-		Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 0));
+		Transform()->SetLocalPos(Vec3(offsetx + 50.f, offsety, 10));
 		m_Numinfo.numpos = HUNDRED;
 
 		return;
@@ -95,14 +95,14 @@ void CNumScript::NumScript(int num, float offsetx, float offsety)
 	if (m_Numinfo.type == tens && !IsNumberActive(tens, m_Numinfo.index) && !IsPrevNumActive(tens, m_Numinfo.index - 1, TEN))
 	{
 		GetObj()->SetActive(true);
-		Transform()->SetLocalPos(Vec3(offsetx, offsety, 0));
+		Transform()->SetLocalPos(Vec3(offsetx, offsety, 10));
 		m_Numinfo.numpos = TEN;
 		return;
 	}
 	if (m_Numinfo.type == one && !IsNumberActive(one, m_Numinfo.index) && !IsPrevNumActive(one, m_Numinfo.index - 1, ONE))
 	{
 		GetObj()->SetActive(true);
-		Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 0));
+		Transform()->SetLocalPos(Vec3(offsetx - 50.f, offsety, 10));
 		m_Numinfo.numpos = ONE;
 		return;
 	}

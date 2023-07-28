@@ -151,6 +151,7 @@ void CSceneMgr::InitMainScene()
 	CResMgr::GetInst()->Load<CTexture>(L"particle_00", L"Texture\\Particle\\particle_00.png");
 	CResMgr::GetInst()->Load<CTexture>(L"CartoonSmoke", L"Texture\\Particle\\CartoonSmoke3.png");
 	CResMgr::GetInst()->Load<CTexture>(L"CartoonSmokeF", L"Texture\\Particle\\CartoonSmokeF2.png");
+	CResMgr::GetInst()->Load<CTexture>(L"LingParticle", L"Texture\\Particle\\LingParticle.png");
 
 
 	Ptr<CTexture> pDiffuseTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"DiffuseTargetTex");
@@ -688,13 +689,13 @@ void CSceneMgr::InitMainScene()
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CParticleSystem);
 	pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
-	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"Snow")));
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"LingParticle")));
 	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
 	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
 	pObject->ParticleSystem()->SetMaxLifeTime(3.0f);
 	pObject->ParticleSystem()->SetMinLifeTime(0.5f);
-	pObject->ParticleSystem()->SetStartScale(6.f);
-	pObject->ParticleSystem()->SetEndScale(9.f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(13.f);
 	pObject->ParticleSystem()->SetFrequency(0.1f);
 	pObject->FrustumCheck(false);
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
@@ -718,7 +719,7 @@ void CSceneMgr::InitMainScene()
 	//pObject->SetName(L"SuJumParticle");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CParticleSystem);
-	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"LingParticle"));
 	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
 	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
 	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
