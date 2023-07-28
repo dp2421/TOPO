@@ -10,7 +10,6 @@ void MeteorScript::Update()
 		GroundPos = pObj;
 	}
 	m_Time += CTimeMgr::GetInst()->GetDeltaTime()*0.3;
-	m_iMapType;
 	if (m_iType == MAP_TYPE::GROUND)
 	{
 		if (m_iMapType==CENTER)
@@ -26,6 +25,9 @@ void MeteorScript::Update()
 			}
 			else
 			{
+				GroundPos.y -= 1;
+				Transform()->SetLocalPos(Vec3(GroundPos.x, GroundPos.y, GroundPos.z));
+
 				//GetObj()->SetActive(false);
 			}
 		}

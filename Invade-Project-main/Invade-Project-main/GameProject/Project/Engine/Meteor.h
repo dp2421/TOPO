@@ -45,7 +45,7 @@ public:
     void SetSpeed(float speed) { m_fSpeed = speed; }
     float GetSpeed() { return m_fSpeed; }
 
-
+    void SetTarget(GROUND_TYPE target) { m_curTarget = target; }
     void SetType(MAP_TYPE type) { m_iType = type; }
     void SetMapType(GROUND_TYPE type) { m_iMapType = type; }
     void Rotate(float value);
