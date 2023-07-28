@@ -29,8 +29,9 @@ void CItemScript::Awake()
 
 void CItemScript::Update()
 {
-	CoinRotate();
-	removeCoin(1); //테스트용
+	if(!m_isCoinColl)
+		CoinRotate();
+	removeCoin(m_isCoinColl);
 
 	//Vec3 pos = Transform()->GetLocalPos();
 	////슈점파티클
@@ -47,7 +48,7 @@ void CItemScript::Update()
 	//}
 }
 
-CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1), m_coinIdx(-1)
+CItemScript::CItemScript() :CScript((UINT)SCRIPT_TYPE::ITEMSCRIPT), m_iDir(1), m_coinIdx(-1), m_isCoinColl(false)
 {
 }
 
@@ -71,9 +72,21 @@ void CItemScript::CoinRotate()
 	}
 }
 
-void CItemScript::removeCoin(int _idx)
+void CItemScript::SetCollCoin(int idx)
 {
+	std::cout << "==========================================" << std::endl;
+	std::cout << "충돌코인 : " << idx << std::endl;
+	if (m_coinIdx == idx) 
+		m_isCoinColl = true; 
+}
 
-	if(m_coinIdx == _idx)
+void CItemScript::removeCoin(bool iscoincoll)
+{
+	
+	if(iscoincoll)
 		GetObj()->SetActive(false);
+	else
+	{
+		//..
+	}
 }

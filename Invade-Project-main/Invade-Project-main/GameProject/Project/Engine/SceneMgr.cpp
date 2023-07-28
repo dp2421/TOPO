@@ -592,7 +592,7 @@ void CSceneMgr::InitMainScene()
 	for (int i = 0; i < 3; ++i)
 	{
 		LoadMapInfoFromFile(FileNames[i], tiles);
-		int coincount = 0;
+		int coincount = -1;
 		for (auto& tile : tiles)
 		{
 			pMeshData = CResMgr::GetInst()->Load<CMeshData>(tile.GetPathName(), tile.GetPathName());
@@ -741,102 +741,102 @@ void CSceneMgr::InitMainScene()
 
 
 	//파티클
-	{
-		pObject = new CGameObject;
-		pObject->SetName(L"Particle");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CParticleSystem);
-		pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
-		pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"Snow")));
-		pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
-		pObject->ParticleSystem()->SetMaxLifeTime(3.0f);
-		pObject->ParticleSystem()->SetMinLifeTime(0.5f);
-		pObject->ParticleSystem()->SetStartScale(6.f);
-		pObject->ParticleSystem()->SetEndScale(9.f);
-		pObject->ParticleSystem()->SetFrequency(0.1f);
-		pObject->FrustumCheck(false);
-		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+	
+	pObject = new CGameObject;
+	pObject->SetName(L"Particle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"Snow")));
+	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(3.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(0.5f);
+	pObject->ParticleSystem()->SetStartScale(6.f);
+	pObject->ParticleSystem()->SetEndScale(9.f);
+	pObject->ParticleSystem()->SetFrequency(0.1f);
+	pObject->FrustumCheck(false);
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
-		pObject = new CGameObject;
-		//pObject->SetName(L"SuJumParticle");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CParticleSystem);
-		pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
-		pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
-		pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
-		pObject->ParticleSystem()->SetMinLifeTime(1.0f);
-		pObject->ParticleSystem()->SetStartScale(10.f);
-		pObject->ParticleSystem()->SetEndScale(6.f);
-		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(-700.f, 10.f + 100.f - FLOORHEIGHT, 20600.f));
-		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+	pObject = new CGameObject;
+	//pObject->SetName(L"SuJumParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(1.0f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(6.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(-700.f, 10.f + 100.f - FLOORHEIGHT, 20600.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
-		pObject = new CGameObject;
-		//pObject->SetName(L"SuJumParticle");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CParticleSystem);
-		pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
-		pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
-		pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
-		pObject->ParticleSystem()->SetMinLifeTime(1.0f);
-		pObject->ParticleSystem()->SetStartScale(10.f);
-		pObject->ParticleSystem()->SetEndScale(6.f);
-		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(700.f, 10.f + 100.f - FLOORHEIGHT, 20600.f));
-		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+	pObject = new CGameObject;
+	//pObject->SetName(L"SuJumParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(1.0f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(6.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(700.f, 10.f + 100.f - FLOORHEIGHT, 20600.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
-		pObject = new CGameObject;
-		//pObject->SetName(L"SuJumParticle");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CParticleSystem);
-		pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
-		pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
-		pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
-		pObject->ParticleSystem()->SetMinLifeTime(1.0f);
-		pObject->ParticleSystem()->SetStartScale(10.f);
-		pObject->ParticleSystem()->SetEndScale(6.f);
-		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f - FLOORHEIGHT, 17800.f));
-		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+	pObject = new CGameObject;
+	//pObject->SetName(L"SuJumParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
+	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
+	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
+	pObject->ParticleSystem()->SetMinLifeTime(1.0f);
+	pObject->ParticleSystem()->SetStartScale(10.f);
+	pObject->ParticleSystem()->SetEndScale(6.f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(0.f, 100.f - FLOORHEIGHT, 17800.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
-		pObject = new CGameObject;
-		pObject->SetName(L"CartoonParticle");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CParticleSystem);
-		pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmoke")));
-		pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.2f));
-		pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
-		pObject->ParticleSystem()->SetMinLifeTime(0.5f);
-		pObject->ParticleSystem()->SetStartScale(35.f);
-		pObject->ParticleSystem()->SetEndScale(22.f);
-		pObject->ParticleSystem()->SetFrequency(0.8f);
-		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
-		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+	pObject = new CGameObject;
+	pObject->SetName(L"CartoonParticle");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmoke")));
+	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.2f));
+	pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
+	pObject->ParticleSystem()->SetMinLifeTime(0.5f);
+	pObject->ParticleSystem()->SetStartScale(35.f);
+	pObject->ParticleSystem()->SetEndScale(22.f);
+	pObject->ParticleSystem()->SetFrequency(0.8f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, 0.f));
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
 
-		pObject = new CGameObject;
-		pObject->SetName(L"CartoonParticleF");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CParticleSystem);
-		pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmokeF")));
-		pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-		pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.1f));
-		pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
-		pObject->ParticleSystem()->SetMinLifeTime(0.2f);
-		pObject->ParticleSystem()->SetStartScale(100.f);
-		pObject->ParticleSystem()->SetEndScale(60.f);
-		pObject->ParticleSystem()->SetFrequency(0.1f);
-		pObject->FrustumCheck(false);
-		pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, -10.f));
-		pObject->SetActive(true);
-		m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
-	}
+	pObject = new CGameObject;
+	pObject->SetName(L"CartoonParticleF");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CParticleSystem);
+	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmokeF")));
+	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.1f));
+	pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
+	pObject->ParticleSystem()->SetMinLifeTime(0.2f);
+	pObject->ParticleSystem()->SetStartScale(100.f);
+	pObject->ParticleSystem()->SetEndScale(60.f);
+	pObject->ParticleSystem()->SetFrequency(0.1f);
+	pObject->FrustumCheck(false);
+	pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, -10.f));
+	pObject->SetActive(true);
+	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
+	
 
 	
 

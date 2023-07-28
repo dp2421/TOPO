@@ -344,9 +344,9 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
         
         // p->id 먹은 플레이어 ID;
-        
-        std::cout << "코인충돌, 인덱스 : " << p->coinIndex << std::endl;
-        networkObjects[p->id]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
+        if(!networkObjects[p->id]->GetScript<CItemScript>())
+            networkObjects[p->id]->AddComponent(new CItemScript);
+        networkObjects[p->id]->GetScript<CItemScript>()->SetCollCoin(p->coinIndex);
         break;
     }
     default:
