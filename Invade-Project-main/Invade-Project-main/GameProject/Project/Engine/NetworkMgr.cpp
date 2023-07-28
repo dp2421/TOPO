@@ -263,7 +263,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);
 
-        CRenderMgr::GetInst()->SetFever(p->isFever);
+        //CRenderMgr::GetInst()->SetFever(p->isFever);
         // p->isFever << 피버모드냐 아니냐 아니라면 Result도 같이 갈듯
         
         break;
@@ -344,9 +344,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
         
         // p->id 먹은 플레이어 ID;
-        
-        std::cout << "코인충돌, 인덱스 : " << p->coinIndex << std::endl;
-        networkObjects[p->id]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
+        CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Coin")->GetParentObj()[p->coinIndex]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
         break;
     }
     default:
