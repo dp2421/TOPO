@@ -64,6 +64,7 @@ constexpr unsigned char ServerMeteoInfo = 213;
 constexpr unsigned char ServerEnterCoin = 214;
 constexpr unsigned char ServerStartTime = 215;
 constexpr unsigned char ServerPushed = 216;
+constexpr unsigned char ServerPushCoolTime = 217;
 
 #pragma pack (push, 1)
 
@@ -247,6 +248,13 @@ struct ServerPushedPacket
 	PACKETSIZE	size;
 	unsigned char	type;
 	int				id;
+};
+
+struct ServerPushCoolTimePacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	std::chrono::system_clock::time_point effectTime;
 };
 
 #pragma pack (pop)

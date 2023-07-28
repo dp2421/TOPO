@@ -28,6 +28,14 @@ public:
 
 	void ProcessInput(const int id, ClientKeyInputPacket* key);
 
+	void ClientReady(const int id);
+
+	void GameStartCount(const int id);
+	void GameEnd(const int id);
+	void RacingUpdate(const int id);
+	void MeteoUpdate(const int id);
+	void RacingUpdate(const int id);
+
 private:
 	SOCKET ServerSocket, ClientSocket;
 	HANDLE IOCPHandle;
@@ -48,6 +56,7 @@ private:
 	concurrency::concurrent_unordered_map<int, chrono::system_clock::time_point> startTimePointByRoomID;
 	concurrency::concurrent_unordered_map<int, bool> isFeverByRoomID;
 	concurrency::concurrent_unordered_map<int, bool*> isCoinActiveByRoomID;
+	concurrency::concurrent_unordered_map<int, float> angularVelocityByRoomID;
 
 	std::vector<Obstacle> obstacles;
 	std::vector<Tile> coins;

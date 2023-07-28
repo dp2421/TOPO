@@ -11,6 +11,7 @@
 
 void CPlayerScript::Awake()
 {
+	pushTime = std::chrono::system_clock::now();
 	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	//m_pParticle = new CGameObject;
 	//m_pParticle->SetName(L"Particle");
@@ -157,6 +158,12 @@ void CPlayerScript::Update()
 		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::Jump, dir, fDegree);
 	}
 
+	if (KEY_TAB(KEY_TYPE::KEY_LCTRL) && std::chrono::system_clock::now() > pushTime)
+	{
+		CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::JUMP);
+		NetworkMgr::GetInst()->SendClientKeyInputPacket(KeyType::Push, dir, fDegree);
+	}
+
 	SetPlayerMoveState(KEY_TYPE::KEY_W, KEY_STATE::STATE_TAB, dir);
 	SetPlayerMoveState(KEY_TYPE::KEY_S, KEY_STATE::STATE_TAB, dir);
 	SetPlayerMoveState(KEY_TYPE::KEY_A, KEY_STATE::STATE_TAB, dir);
@@ -201,7 +208,6 @@ void CPlayerScript::Update()
 		}
 
 		NetworkMgr::GetInst()->SendClientMovePacket(dir, fDegree);
-		std::cout << "run: " << std::boolalpha << runPlayer->MeshRender()->IsDynamicShadow() << std::endl;
 
 	}
 	else

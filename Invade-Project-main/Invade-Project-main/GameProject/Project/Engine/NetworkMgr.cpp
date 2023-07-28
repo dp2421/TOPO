@@ -339,12 +339,35 @@ void NetworkMgr::ProcessPacket(char* packet)
         CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[p->id]->GetScript<CObstacleScript>()->Rotate(((float)p->degree) / 100);
         break;
     }
+    case ServerMeteoInfo:
+    {
+        break;
+    }
     case ServerEnterCoin:
     {
         ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
         
         // p->id 먹은 플레이어 ID;
         CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Coin")->GetParentObj()[p->coinIndex]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
+        break;
+    }
+    case ServerPushed:
+    {
+        ServerPushedPacket* p = reinterpret_cast<ServerPushedPacket*>(packet);
+        
+        // p->id 밀쳐진 플레이어 
+
+        break;
+    }
+    case ServerPushCoolTime:
+    {
+        ServerPushCoolTimePacket* p = reinterpret_cast<ServerPushCoolTimePacket*>(packet);
+
+        if (networkObjects.find(CurID) != networkObjects.end())
+        {
+            networkObjects[CurID]->GetScript<CPlayerScript>()->pushTime = p->effectTime;
+        }
+
         break;
     }
     default:

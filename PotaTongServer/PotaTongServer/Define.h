@@ -8,7 +8,7 @@
 #define DistanceVec3(a, b) sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
 
 constexpr int MatchingTime = 5;
-constexpr int GameTime = 120;
+constexpr int GameTime = 5;
 constexpr int Frame = 30;
 constexpr auto DeltaTimeMilli = chrono::duration_cast<chrono::milliseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimeNano = chrono::duration_cast<chrono::nanoseconds>(chrono::duration<float>(1.f / Frame));

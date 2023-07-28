@@ -15,7 +15,9 @@ enum class OverlappedType : int
 	SendRotateInfo,
 	AddAI,
 	UpdateAI,
-	Update
+	Update,
+	PushCoolTime,
+	PushEnd
 };
 
 class OverlappedEx

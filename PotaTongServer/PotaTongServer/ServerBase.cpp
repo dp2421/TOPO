@@ -104,85 +104,17 @@ void ServerBase::EventThread()
 
 			switch (event.eventType)
 			{
-			case OverlappedType::GameStartCount:
+			default:
 			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::GameEnd:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::RotateObs:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::SendRotateInfo:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::Update:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
 				// 시간 보간
 				//auto diff = chrono::duration<float>((currentTime - event.excuteTime) / DeltaTimeMilli);
 				//memcpy(overlappedEx->sendBuf, &diff, sizeof(diff));
 
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::UpdateAI:
-			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
 				overlappedEx->type = event.eventType;
 
 				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
 				event.objID = -1;
-				break;
-			}
-			case OverlappedType::MatchingRacingComplete:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::MatchingObstacleComplete:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			default:
-			{
-				cout << (int)event.eventType << " EVENT TYPE ERROR!" << endl;
 			}
 			}
 			continue;
@@ -402,196 +334,12 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 	case OverlappedType::GameStartCount:
 	{
-		bool isFever = false;
-		if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
-			isFever = isFeverByRoomID[id];
-
-		if (isFever && startCountByRoomID[id] == 3)
-		{
-			int count = 0;
-			for (auto cl : clients)
-			{
-				if (cl.second->RoomID == id)
-				{
-					cl.second->position = PlayerStartPos;
-					cl.second->position.x += PlayerStartDistance * count;
-					count++;
-				}
-			}
-		}
-
-		cout << "Start Count RoomID : " << id << endl;
-		for (auto cl : clients)
-		{
-			if (cl.second->isAI) continue;
-			if (cl.second->RoomID == id)
-			{
-				cl.second->SendGameStartPacket(startCountByRoomID[id]);
-			}
-		}
-
-
-		cout << startCountByRoomID[id] << " STARTCOUNT \n";
-		if(startCountByRoomID[id] > 0)
-		{
-			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
-			eventQueue.push(event);
-			startCountByRoomID[id] -= 1;
-		}
-
-		if (startCountByRoomID[id] == 0 && !isFever)
-		{
-			for (auto cl : clients)
-			{
-				if (cl.second->RoomID == id)
-				{
-					if (cl.second->isAI)
-					{
-						std::random_device rd;
-						std::mt19937 gen(rd());
-						std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
-						XMVECTOR dir{ urd(gen), 0, urd(gen) };
-
-						XMFLOAT3 normalDir;
-						XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
-
-						cl.second->direction = { normalDir.x, 0, normalDir.z };
-
-						std::uniform_int_distribution<int> time(1, 10);
-						Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
-						eventQueue.push(event);
-					}
-					else
-					{
-						cl.second->SendGameStartPacket(startCountByRoomID[id]);
-					}
-				}
-			}
-			isCoinActiveByRoomID[id][0] = false;
-			isCoinActiveByRoomID[id][1] = false;
-			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
-			eventQueue.push(event);
-		}	
-		else if (startCountByRoomID[id] == 0)
-		{
-			for (auto& cl : clients)
-			{
-				if (cl.second->RoomID == id)
-				{
-					if (!cl.second->isAI)
-					{
-						cl.second->SendGameStartPacket(startCountByRoomID[id]);
-					}
-				}
-			}
-			isCoinActiveByRoomID[id][0] = false;
-			isCoinActiveByRoomID[id][1] = false;
-			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
-			eventQueue.push(event);
-		}
-
+		GameStartCount(id);
 		break;
 	}
 	case OverlappedType::GameEnd:
 	{
-		startCountByRoomID[id] = 3;
-		cout << startCountByRoomID[id] << " GameEND reamin Count\n";
-		bool isFever = false;
-		if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
-			isFever = isFeverByRoomID[id];
-
-		int count = 0;
-		unsigned char rank[] { -1,-1,-1 };
-		int score[]{ -1,-1,-1 };
-		std::unordered_map<unsigned char, int> scoreByID;
-		if (isFever)
-		{
-			for (auto cl : clients)
-			{
-				if (cl.second->RoomID == id)
-				{
-					if (score[0] < cl.second->score)
-					{
-						if (score[0] == -1)
-						{
-							score[0] = cl.second->score;
-							rank[0] = cl.second->ID;
-							continue;
-						}
-						else
-						{
-							score[2] = score[1];
-							score[1] = score[0];
-							score[0] = cl.second->score;
-
-							rank[2] = rank[1];
-							rank[1] = rank[0];
-							rank[0] = cl.second->ID;
-						}
-					}
-					else if (score[1] < cl.second->score)
-					{
-						if (score[1] == -1)
-						{
-							score[1] = cl.second->score;
-							rank[1] = cl.second->ID;
-							continue;
-						}
-						else
-						{
-							score[2] = score[1];
-							score[1] = cl.second->score;
-
-							rank[2] = rank[1];
-							rank[1] = cl.second->ID;
-						}
-					}
-					else if (score[2] < cl.second->score)
-					{
-						score[2] = cl.second->score;
-						rank[2] = cl.second->ID;
-					}
-				}
-			}
-		}
-
-		for (auto cl : clients)
-		{
-			if (cl.second->RoomID == id)
-			{
-				if (!isFever)
-					cl.second->SendGameEndPacket(true);
-				else
-				{
-					cl.second->RoomID = -1;
-					cl.second->score = 0;
-
-					if (cl.second->isAI)
-					{
-						lock_guard<mutex> lock{ cl.second->lock };
-						cl.second->ID = -1;
-						closesocket(cl.second->socket);
-					}
-					else
-					{
-						cl.second->SendGameResultPacket(rank, 3);
-					}
-				}
-
-				lock_guard<mutex> lock{ cl.second->lock };
-				cl.second->isGoal = false;
-				cl.second->isMove = false;
-				cl.second->isJump = false;
-				cl.second->velocity = Vector3::Zero();
-				cl.second->direction = Vector3::Zero();
-			}
-		}
-
-		Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 4s };
-		eventQueue.push(event);
-
-		isFeverByRoomID[id] = true;
-
+		GameEnd(id);
 		break;
 	}
 	case OverlappedType::MatchingRacingStart:
@@ -674,10 +422,17 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			lock_guard<mutex> lock{ client->lock };
 			client->velocity.y -= GRAVITY;
 		}
-		if (client->isMove)
+		if (client->isMove && !client->isPushed)
 		{
 			lock_guard<mutex> lock{ client->lock };
 			auto delta = client->direction * SPEED;
+			client->velocity.x = delta.x;
+			client->velocity.z = delta.z;
+		}
+		else if (client->isPushed)
+		{
+			lock_guard<mutex> lock{ client->lock };
+			auto delta = client->direction * SPEED / 2;
 			client->velocity.x = delta.x;
 			client->velocity.z = delta.z;
 		}
@@ -901,7 +656,28 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		}
 		else if (client->mapType == MapType::Meteo)
 		{
+			if (client->velocity.y < 0)
+			{
+				for (auto& tile : tiles)
+				{
+					if (client->collider.isCollisionAABB(tile.collider))
+					{
+						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
 
+						//if(tile.data.state == LayerState::L1Water)
+						//	cout << "Tile : " << tile.data.state << endl;
+
+						lock_guard<mutex> lock{ client->lock };
+						client->position.y = tile.collider.position->y;
+						client->velocity.y = 0;
+						if (client->isJump)
+						{
+							client->isJump = false;
+						}
+						break;
+					}
+				}
+			}
 		}
 		else if (client->mapType == MapType::Bomb)
 		{
@@ -961,6 +737,17 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		std::uniform_int_distribution<int> update(1, 10);
 		Event event{ id, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(update(gen)) };
 		eventQueue.push(event);
+		break;
+	}
+	case OverlappedType::PushCoolTime:
+	{
+		clients[id]->isCanPush = true;
+		break;
+	}
+	case OverlappedType::PushEnd:
+	{
+		clients[id]->isPushed = false;
+		clients[id]->direction = Vector3::Zero();
 		break;
 	}
 	default:
@@ -1037,87 +824,9 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		}
 		break;
 	}
-	case ClientReady:
+	case ::ClientReady:
 	{
-		cout << "Cleint READY\n";
-		switch (clients[id]->mapType)
-		{
-		case MapType::Lobby:
-		{
-
-		}
-		case MapType::Racing:
-		{
-			cout << "Send Info  \n";
-			unsigned short RPS[OBSTACLENUM] = { 0, };
-			unsigned short degree[OBSTACLENUM] = { 0, };
-			int i = 0;
-			for (auto& obs : obstacles)
-			{
-				if (obs.data.state != OBSTACLE_STATE::STOP)
-				{
-					RPS[i] = obs.angularVelocity * 100;
-					degree[i] = obs.rotate * 100;
-					++i;
-				}
-			}
-			clients[id]->SendObstacleRPSPacket(RPS, OBSTACLENUM * sizeof(short));
-			clients[id]->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
-
-			Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
-			eventQueue.push(event);
-
-
-			int readyCount = -1;
-			{
-				lock_guard<mutex> lock{ this->lock };
-				remainingUnReadyClientNumByRoomID[clients[id]->RoomID] -= 1;
-				readyCount = remainingUnReadyClientNumByRoomID[clients[id]->RoomID];
-			}
-			if (readyCount == 0)
-			{
-				startCountByRoomID[clients[id]->RoomID] = 3;
-				if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
-				{
-					isCoinActiveByRoomID[clients[id]->RoomID] = new bool[2];
-					isCoinActiveByRoomID[clients[id]->RoomID][0] = false;
-					isCoinActiveByRoomID[clients[id]->RoomID][1] = false;
-				}
-
-				Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
-				eventQueue.push(event);
-			}
-
-			break;
-		}
-		case MapType::Result:
-		{
-			break;
-		}
-		// Obstacle
-		default:
-		{
-
-			break;
-		}
-		}
-
-		if (!clients[id]->isAI)
-		{
-			clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
-
-			for (auto& client : clients)
-			{
-				ClientException(client, id);
-				if (client.second->mapType != clients[id]->mapType) continue;
-				if (client.second->RoomID != clients[id]->RoomID) continue;
-
-				//if (!client.second->isAI)
-				//	client.second->SendAddPlayerPacket(id, clients[id]->position);
-
-				clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
-			}
-		}
+		ClientReady(id);
 		break;
 	}
 	case ClientKeyInput:
@@ -1143,6 +852,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	if (client->mapType == MapType::Lobby || client->RoomID == -1) return;
 	if (startCountByRoomID[client->RoomID] != 0) return;
 	if (client->isGoal) return;
+	if (client->isPushed) return;
 
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
@@ -1173,6 +883,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	{
 		if (!client->isJump)
 		{
+			lock_guard<mutex> lock{ client->lock };
 			client->isJump = true;
 			client->velocity.y = JUMPVEL;
 		}
@@ -1180,7 +891,10 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	}
 	case KeyType::Push: // 밀치기
 	{
+		if (false == client->isCanPush) break;
+
 		float nearestDistance = PUSHDISTANCE + 1;
+		Client* target = NULL;
 		for (auto& cl : clients)
 		{
 			ClientException(cl, id);
@@ -1190,9 +904,44 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 
 			auto distance = Vector3::Distance(client->position, cl.second->position);
 			if (distance < nearestDistance)
+			{
 				nearestDistance = distance;
+				target = cl.second;
+			}
 		}
 
+		if (target != NULL)
+		{
+			lock_guard<mutex> lock{ client->lock };
+			target->isPushed = true;
+			client->isCanPush = false;
+
+			auto dirvec = target->position - client->position;
+			XMVECTOR vec{ dirvec.x, 0, dirvec.z };
+			XMFLOAT3 normalDir;
+			XMStoreFloat3(&normalDir, XMVector3Normalize(vec));
+
+			target->direction = { normalDir.x, 0, normalDir.z };
+
+			for (auto& cl : clients)
+			{
+				if (cl.second->isAI) continue;
+				if (cl.second->ID < 0) continue;
+				if (cl.second->mapType != client->mapType) continue;
+				if (cl.second->RoomID != client->RoomID) continue;
+
+				cl.second->SendPushedPacket(target->ID);
+			}
+
+			auto useTime = chrono::system_clock::now() + 5s;
+
+			client->SendPushCoolTimePacket(useTime);
+			
+			Event coolTime{ client->ID, OverlappedType::PushCoolTime, useTime };
+			eventQueue.push(coolTime);
+			Event effectTime{ target->ID, OverlappedType::PushEnd, chrono::system_clock::now() + 500ms };
+			eventQueue.push(effectTime);
+		}
 
 		break;
 	}
@@ -1202,5 +951,288 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	default:
 		break;
 	}
+}
+
+void ServerBase::ClientReady(const int id)
+{
+	cout << "Cleint READY\n";
+	switch (clients[id]->mapType)
+	{
+	case MapType::Lobby:
+	{
+
+	}
+	case MapType::Racing:
+	{
+		cout << "Send Info  \n";
+		unsigned short RPS[OBSTACLENUM] = { 0, };
+		unsigned short degree[OBSTACLENUM] = { 0, };
+		int i = 0;
+		for (auto& obs : obstacles)
+		{
+			if (obs.data.state != OBSTACLE_STATE::STOP)
+			{
+				RPS[i] = obs.angularVelocity * 100;
+				degree[i] = obs.rotate * 100;
+				++i;
+			}
+		}
+		clients[id]->SendObstacleRPSPacket(RPS, OBSTACLENUM * sizeof(short));
+		clients[id]->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
+
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
+
+		break;
+	}
+	case MapType::Result:
+	{
+		break;
+	}
+	default: // Obstacle
+	{
+
+		break;
+	}
+	}
+
+	int readyCount = -1;
+	{
+		lock_guard<mutex> lock{ this->lock };
+		remainingUnReadyClientNumByRoomID[clients[id]->RoomID] -= 1;
+		readyCount = remainingUnReadyClientNumByRoomID[clients[id]->RoomID];
+	}
+	if (readyCount == 0)
+	{
+		startCountByRoomID[clients[id]->RoomID] = 3;
+		if (clients[id]->mapType == MapType::Racing)
+		{
+			if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
+			{
+				isCoinActiveByRoomID[clients[id]->RoomID] = new bool[2];
+				isCoinActiveByRoomID[clients[id]->RoomID][0] = false;
+				isCoinActiveByRoomID[clients[id]->RoomID][1] = false;
+			}
+		}
+
+		Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+		eventQueue.push(event);
+	}
+
+	if (!clients[id]->isAI)
+	{
+		clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
+
+		for (auto& client : clients)
+		{
+			ClientException(client, id);
+			if (client.second->mapType != clients[id]->mapType) continue;
+			if (client.second->RoomID != clients[id]->RoomID) continue;
+
+			//if (!client.second->isAI)
+			//	client.second->SendAddPlayerPacket(id, clients[id]->position);
+
+			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
+		}
+	}
+}
+
+void ServerBase::GameStartCount(const int id)
+{
+	bool isFever = false;
+	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
+		isFever = isFeverByRoomID[id];
+
+	if (clients[id]->mapType == MapType::Racing)
+	{
+		if (isFever && startCountByRoomID[id] == 3)
+		{
+			int count = 0;
+			for (auto cl : clients)
+			{
+				if (cl.second->RoomID == id)
+				{
+					cl.second->position = PlayerStartPos;
+					cl.second->position.x += PlayerStartDistance * count;
+					count++;
+				}
+			}
+		}
+
+		cout << "Start Count Racing RoomID : " << id << endl;
+		for (auto cl : clients)
+		{
+			if (cl.second->isAI) continue;
+			if (cl.second->RoomID == id)
+			{
+				cl.second->SendGameStartPacket(startCountByRoomID[id]);
+			}
+		}
+
+
+		cout << startCountByRoomID[id] << " STARTCOUNT \n";
+		if (startCountByRoomID[id] > 0)
+		{
+			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+			eventQueue.push(event);
+			startCountByRoomID[id] -= 1;
+		}
+		else return;
+
+		if (startCountByRoomID[id] == 0 && !isFever)
+		{
+			for (auto cl : clients)
+			{
+				if (cl.second->RoomID == id)
+				{
+					if (cl.second->isAI)
+					{
+						std::random_device rd;
+						std::mt19937 gen(rd());
+						std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
+						XMVECTOR dir{ urd(gen), 0, urd(gen) };
+
+						XMFLOAT3 normalDir;
+						XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
+
+						cl.second->direction = { normalDir.x, 0, normalDir.z };
+
+						std::uniform_int_distribution<int> time(1, 10);
+						Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
+						eventQueue.push(event);
+					}
+					else
+					{
+						cl.second->SendGameStartPacket(startCountByRoomID[id]);
+					}
+				}
+			}
+			isCoinActiveByRoomID[id][0] = false;
+			isCoinActiveByRoomID[id][1] = false;
+			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
+			eventQueue.push(event);
+			cout << "CALL END \n";
+		}
+		else if (startCountByRoomID[id] == 0)
+		{
+			for (auto& cl : clients)
+			{
+				if (cl.second->RoomID == id)
+				{
+					if (!cl.second->isAI)
+					{
+						cl.second->SendGameStartPacket(startCountByRoomID[id]);
+					}
+				}
+			}
+			isCoinActiveByRoomID[id][0] = false;
+			isCoinActiveByRoomID[id][1] = false;
+			Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
+			eventQueue.push(event);
+			cout << "CALL END \n";
+		}
+	}
+}
+
+void ServerBase::GameEnd(const int id)
+{
+	startCountByRoomID[id] = 3;
+	cout << startCountByRoomID[id] << " GameEND reamin Count\n";
+	bool isFever = false;
+	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
+		isFever = isFeverByRoomID[id];
+
+	int count = 0;
+	unsigned char rank[]{ -1,-1,-1 };
+	int score[]{ -1,-1,-1 };
+	std::unordered_map<unsigned char, int> scoreByID;
+	if (isFever)
+	{
+		for (auto cl : clients)
+		{
+			if (cl.second->RoomID == id)
+			{
+				if (score[0] < cl.second->score)
+				{
+					if (score[0] == -1)
+					{
+						score[0] = cl.second->score;
+						rank[0] = cl.second->ID;
+						continue;
+					}
+					else
+					{
+						score[2] = score[1];
+						score[1] = score[0];
+						score[0] = cl.second->score;
+
+						rank[2] = rank[1];
+						rank[1] = rank[0];
+						rank[0] = cl.second->ID;
+					}
+				}
+				else if (score[1] < cl.second->score)
+				{
+					if (score[1] == -1)
+					{
+						score[1] = cl.second->score;
+						rank[1] = cl.second->ID;
+						continue;
+					}
+					else
+					{
+						score[2] = score[1];
+						score[1] = cl.second->score;
+
+						rank[2] = rank[1];
+						rank[1] = cl.second->ID;
+					}
+				}
+				else if (score[2] < cl.second->score)
+				{
+					score[2] = cl.second->score;
+					rank[2] = cl.second->ID;
+				}
+			}
+		}
+	}
+
+	for (auto cl : clients)
+	{
+		if (cl.second->RoomID == id)
+		{
+			if (!isFever)
+				cl.second->SendGameEndPacket(true);
+			else
+			{
+				cl.second->RoomID = -1;
+				cl.second->score = 0;
+
+				if (cl.second->isAI)
+				{
+					lock_guard<mutex> lock{ cl.second->lock };
+					cl.second->ID = -1;
+					closesocket(cl.second->socket);
+				}
+				else
+				{
+					cl.second->SendGameResultPacket(rank, 3);
+				}
+			}
+
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->isGoal = false;
+			cl.second->isMove = false;
+			cl.second->isJump = false;
+			cl.second->velocity = Vector3::Zero();
+			cl.second->direction = Vector3::Zero();
+		}
+	}
+
+	Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 4s };
+	eventQueue.push(event);
+
+	isFeverByRoomID[id] = true;
+
 }
 

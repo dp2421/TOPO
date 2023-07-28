@@ -19,7 +19,8 @@ public:
 	bool isColl = false;
 	bool isGoal = false;
 	bool isCoin = false;
-	bool isPushed = true;
+	bool isPushed = false;
+	bool isCanPush = true;
 
 	bool isAI = false;
 	float remainChangeAIVelocity = 0;
@@ -58,6 +59,8 @@ public:
 	void SendObstacleRPSPacket(const unsigned short angularVelocity[], int size);
 	void SendMeteoPacket(const unsigned char target, unsigned short time);
 	void SendEnterCoinPacket(const int id, const int coinIndex);
+	void SendPushedPacket(const int id);
+	void SendPushCoolTimePacket(std::chrono::system_clock::time_point effectTime);
 private:
 	OverlappedEx recv;
 };
