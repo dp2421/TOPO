@@ -29,9 +29,8 @@ void CItemScript::Awake()
 
 void CItemScript::Update()
 {
-	if(!m_isCoinColl)
-		CoinRotate();
-	removeCoin(m_isCoinColl);
+	CoinRotate();
+	//removeCoin(m_isCoinColl);
 
 	//Vec3 pos = Transform()->GetLocalPos();
 	////슈점파티클
@@ -72,21 +71,12 @@ void CItemScript::CoinRotate()
 	}
 }
 
-void CItemScript::SetCollCoin(int idx)
+void CItemScript::removeCoin(int _idx)
 {
-	std::cout << "==========================================" << std::endl;
-	std::cout << "충돌코인 : " << idx << std::endl;
-	if (m_coinIdx == idx) 
-		m_isCoinColl = true; 
-}
-
-void CItemScript::removeCoin(bool iscoincoll)
-{
-	
-	if(iscoincoll)
+	std::cout << "충돌코인 : " << _idx << std::endl;
+	if (m_coinIdx == _idx)
 		GetObj()->SetActive(false);
 	else
-	{
-		//..
-	}
+	{ }
+
 }

@@ -187,7 +187,7 @@ void CSceneMgr::InitMainScene()
 	m_pRacingScene->GetLayer(8)->SetName(L"Obstacle");
 	//m_pCurScene->GetLayer(9)->SetName(L"ObstacleMove");
 	m_pRacingScene->GetLayer(9)->SetName(L"UI");
-
+	m_pRacingScene->GetLayer(10)->SetName(L"Coin");
 
 	m_pRacingScene->GetLayer(31)->SetName(L"Tool");
 
@@ -608,8 +608,6 @@ void CSceneMgr::InitMainScene()
 			pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
 			pObject->MeshRender()->SetDynamicShadow(true);
 			//pObject->Animator3D()->SetClipIndex(1);
-			m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
-
 			if (i == 2)
 			{
 				int temp = tile.GetState();
@@ -619,17 +617,20 @@ void CSceneMgr::InitMainScene()
 					pObject->Transform()->SetLocalScale(Vec3(1.5f, 0.8f, 1.5f));
 					pObject->AddComponent(new CItemScript);
 					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::SUPERJUMP);
+					m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 				}
 				else if (temp == LayerState::LCoin)
 				{
 					coincount++;
-					pObject->SetName(L"Coin");
 					pObject->AddComponent(new CItemScript);
 					pObject->GetScript<CItemScript>()->SetState(ITEM_STATE::COIN);
 					pObject->GetScript<CItemScript>()->CoinIdx(coincount);
+					m_pRacingScene->FindLayer(L"Coin")->AddGameObject(pObject, m_pRacingScene);
 
 				}
 			}
+			else
+				m_pRacingScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pRacingScene);
 
 		}
 

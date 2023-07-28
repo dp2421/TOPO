@@ -19,8 +19,7 @@ public:
     void CoinRotate();
     void SetState(ITEM_STATE _iState) { m_iState = _iState; }
     void CoinIdx(int idx) { m_coinIdx = idx; }
-    void SetCollCoin(int idx);
-    void removeCoin(bool iscoincoll);
+    void removeCoin(int idx);
 
     ITEM_STATE GetState() { return m_iState; }
 
