@@ -50,9 +50,6 @@ private:
     
     bool m_isFever = false;
 
-    bool beforeObsColl = false;
-    Vec3 ObsCollPos;
-
     CGameObject* m_pParticle;
     CGameObject* m_speedLine;
 public:

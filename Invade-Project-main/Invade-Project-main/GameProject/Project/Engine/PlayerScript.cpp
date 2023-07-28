@@ -510,9 +510,7 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isGoa
 
 void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart)
 {
-	beforeObsColl = isstart;
 	Vec3 notCollPos = Vec3(40000.f, 0.f, 0.f);
-
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
 	{
 		//if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
