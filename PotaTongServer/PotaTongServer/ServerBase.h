@@ -32,9 +32,6 @@ public:
 
 	void GameStartCount(const int id);
 	void GameEnd(const int id);
-	void RacingUpdate(const int id);
-	void MeteoUpdate(const int id);
-	void RacingUpdate(const int id);
 
 private:
 	SOCKET ServerSocket, ClientSocket;

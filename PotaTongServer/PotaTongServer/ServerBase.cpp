@@ -361,7 +361,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingObstacleComplete:
 	{
-
 		matchingManager->CompleteMatching(id, MapType::Obstacle);
 		break;
 	}
@@ -1005,6 +1004,7 @@ void ServerBase::ClientReady(const int id)
 	if (readyCount == 0)
 	{
 		startCountByRoomID[clients[id]->RoomID] = 3;
+
 		if (clients[id]->mapType == MapType::Racing)
 		{
 			if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
