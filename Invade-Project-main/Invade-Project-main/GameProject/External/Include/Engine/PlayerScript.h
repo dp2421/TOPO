@@ -55,6 +55,7 @@ private:
 public:
     CGameObject* runPlayer;
     CGameObject* IdlePlayer;
+    std::chrono::system_clock::time_point pushTime;
 
     virtual void Awake();
     virtual void Update();
