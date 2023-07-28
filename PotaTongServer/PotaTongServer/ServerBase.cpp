@@ -684,7 +684,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		}
 
 		if (!client->isAI)
+		{
 			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
+		}
 
 		for (auto cl : clients)
 		{

@@ -372,7 +372,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     }
     default:
     {
-        std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";
+        //std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";
     }
     } 
 }
