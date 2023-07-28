@@ -376,6 +376,10 @@ void CPlayerScript::Update()
 
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
+
+//	if(!beforeObsColl)
+//		LetParticle((Vec3((20000.f, 10.f, 0.f))), PARTICLE_TYPE::COLLPARICLE, beforeObsColl);
+
 	SetSpeedLine(isMove);
 }
 
@@ -506,29 +510,51 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isGoa
 
 void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart)
 {
+	beforeObsColl = isstart;
+	Vec3 notCollPos = Vec3(40000.f, 0.f, 0.f);
+
 	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetObjects())
 	{
+		//if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
 		if (obj->GetName().compare(L"Particle") == 0 && type == PARTICLE_TYPE::COLLPARICLE)
 		{
 			if (isstart)
+			{
 				obj->Transform()->SetLocalPos(Vec3(pos.x + 1.5f, pos.y + 150.f, pos.z));
+				break;
+			}
 			else
-				obj->Transform()->SetLocalPos(Vec3((20000.f, 10.f, 0.f)));
+			{
+				obj->Transform()->SetLocalPos(notCollPos);
+				break;
+			}
 		}
 		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticle") == 0))
 		{
 			if (isstart)
+			{
 				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z - 10.f));
+				break;
+			}
 			else
-				obj->Transform()->SetLocalPos(Vec3((20000.f, 10.f, 0.f)));
+			{
+				obj->Transform()->SetLocalPos(notCollPos);
+				break;
+			}
 		}
-		//if ((m_isFever && type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
-		//{
-		//	if (ismove && m_isFever)
-		//		obj->Transform()->SetLocalPos(Vec3(pos.x - 100, pos.y + 150.f, pos.z - 10.f));
-		//	else
-		//		obj->Transform()->SetLocalPos(Vec3((10.f, 20000.f, 0.f)));
-		//}
+		if ((m_isFever && type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
+		{
+			if (isstart)
+			{
+				obj->Transform()->SetLocalPos(Vec3(pos.x - 100, pos.y + 150.f, pos.z - 10.f));
+				break;
+			}
+			else
+			{
+				obj->Transform()->SetLocalPos(notCollPos);
+				break;
+			}
+		}
 	}
 }
 
