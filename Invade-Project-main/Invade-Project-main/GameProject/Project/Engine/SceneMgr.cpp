@@ -845,6 +845,9 @@ void CSceneMgr::InitMainScene()
 	pObject->SetActive(false);
 	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 
+	//m_pCurScene = m_pRacingScene;
+	//m_pRacingScene->Awake();
+
 }
 
 
