@@ -2045,8 +2045,8 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Victory.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-
-	Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
+	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
 	std::cout << "add obj" << std::endl;
 	// MeshRender 설정

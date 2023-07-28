@@ -876,7 +876,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				if (client->isCoin) continue;
 				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
-
+				
 				if (client->collider.isCollisionAABB(coin.collider))
 				{
 					cout << "CLIENT ID : " << client->ID << endl;
@@ -913,8 +913,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 		for (auto cl : clients)
 		{
-			//if (cl.second == nullptr)
-			//	continue;
+			if (cl.second == nullptr)
+				continue;
 			ClientException(cl, id);
 			if (cl.second->isAI) continue;
 			if (cl.second->RoomID != client->RoomID) continue;

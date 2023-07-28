@@ -65,7 +65,10 @@ void CPlayerScript::Update()
 		if (moveState == 1)
 		{
 			if (!runPlayer->IsActive())
+			{
+				runPlayer->MeshRender()->SetDynamicShadow(true);
 				runPlayer->SetActive(true);
+			}
 			if (IdlePlayer->IsActive())
 				IdlePlayer->SetActive(false);
 		}
@@ -74,7 +77,10 @@ void CPlayerScript::Update()
 			if (runPlayer->IsActive())
 				runPlayer->SetActive(false);
 			if (!IdlePlayer->IsActive())
+			{
+				IdlePlayer->MeshRender()->SetDynamicShadow(true);
 				IdlePlayer->SetActive(true);
+			}
 		}
 		prePosition = Transform()->GetLocalPos();
 		return;
@@ -168,8 +174,12 @@ void CPlayerScript::Update()
 	}
 	if (moveState != (int)Direction::None)
 	{
+
 		if (!runPlayer->IsActive())
+		{
 			runPlayer->SetActive(true);
+		}
+		runPlayer->MeshRender()->SetDynamicShadow(true);
 		if (IdlePlayer->IsActive())
 			IdlePlayer->SetActive(false);
 
@@ -191,14 +201,26 @@ void CPlayerScript::Update()
 		}
 
 		NetworkMgr::GetInst()->SendClientMovePacket(dir, fDegree);
+		std::cout << "run: " << std::boolalpha << runPlayer->MeshRender()->IsDynamicShadow() << std::endl;
+
 	}
 	else
 	{
+
 		if (runPlayer->IsActive())
+		{
 			runPlayer->SetActive(false);
+		}
 		if (!IdlePlayer->IsActive())
+		{
 			IdlePlayer->SetActive(true);
+		}
+		IdlePlayer->MeshRender()->SetDynamicShadow(true);
 	}
+	//std::cout << "run: " << std::boolalpha << runPlayer->MeshRender()->IsDynamicShadow() << std::endl;
+	//std::cout << "Idle: " << std::boolalpha << IdlePlayer->MeshRender()->IsDynamicShadow() << std::endl;
+
+
 #endif
 
 	/*
