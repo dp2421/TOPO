@@ -11,7 +11,8 @@
 
 void CPlayerScript::Awake()
 {
-	pushTime = std::chrono::system_clock::now();
+	//pushTime = std::chrono::system_clock::now();
+	
 	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	//m_pParticle = new CGameObject;
 	//m_pParticle->SetName(L"Particle");
