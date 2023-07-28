@@ -884,7 +884,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					isCoinActiveByRoomID[client->RoomID][count] = true;
 					for (auto& cl : clients)
 					{
-						ClientException(cl, id);
+						if (cl.second->ID == -1) continue;
 						if (cl.second->isAI) continue;
 						if (cl.second->RoomID != client->RoomID) continue;
 						if (cl.second->mapType != client->mapType) continue;

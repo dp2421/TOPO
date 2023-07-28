@@ -349,5 +349,9 @@ void NetworkMgr::ProcessPacket(char* packet)
         networkObjects[p->id]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
         break;
     }
+    default:
+    {
+        std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";
+    }
     } 
 }

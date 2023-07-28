@@ -116,7 +116,7 @@ void CNumScript::CountDown(int cnt)
 	}
 	else
 	{
-		std::cout << cnt << std::endl;
+		//std::cout << cnt << std::endl;
 		if (cnt == m_Numinfo.type)
 		{
 			GetObj()->Transform()->SetLocalPos(Vec3(0, 580, 10));
