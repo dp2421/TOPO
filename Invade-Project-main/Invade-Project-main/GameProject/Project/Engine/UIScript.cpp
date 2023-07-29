@@ -4,6 +4,7 @@
 #include "RenderMgr.h"
 #include "Camera.h"
 #include "UIScript.h"
+#include <chrono>
 
 void CUIScript::Update()
 {
@@ -198,16 +199,17 @@ void CUIScript::UIRender()
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
-		curObj->GetScript<CNumScript>()->CountDown(f_startCountdown);
+		curObj->GetScript<CNumScript>()->CountDown(CRenderMgr::GetInst()->m_startCnt);
 	}
-	GameEndStart(true);
+	if (CRenderMgr::GetInst()->m_startCnt ==0)
+		GameEndStart(true);
 }
 
 void CUIScript::GameEndStart(bool start)
 {
 	if (start)
 	{
-		if (f_WaitFeverModeTime <3)
+		if (NetworkMgr::GetInst()->startTime + std::chrono::seconds(2) <= std::chrono::system_clock::now())
 		{
 			if (m_iType == START)
 				GetObj()->SetActive(true);
@@ -218,7 +220,6 @@ void CUIScript::GameEndStart(bool start)
 				GetObj()->SetActive(false);
 		}
 
-		f_WaitFeverModeTime += 0.75;
 	}
 	else
 	{

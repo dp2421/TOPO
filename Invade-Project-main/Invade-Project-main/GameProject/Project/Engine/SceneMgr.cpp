@@ -1490,7 +1490,7 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pMatching2 = CResMgr::GetInst()->Load<CTexture>(L"Matching2", L"Texture\\Matching2.png"); 
 	Ptr<CTexture> pMatching3 = CResMgr::GetInst()->Load<CTexture>(L"Matching3", L"Texture\\Matching3.png");
 	Ptr<CTexture> pRoundOver = CResMgr::GetInst()->Load<CTexture>(L"RoundOver", L"Texture\\roundGameover2.png");
-	Ptr<CTexture> pRoundStart = CResMgr::GetInst()->Load<CTexture>(L"RoundStart", L"Texture\\UITest.png");
+	Ptr<CTexture> pRoundStart = CResMgr::GetInst()->Load<CTexture>(L"RoundStart", L"Texture\\StartUI.png");
 	Ptr<CTexture> pFeverUI  = CResMgr::GetInst()->Load<CTexture>(L"Fever", L"Texture\\FeverUI.png");
 
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
@@ -1952,7 +1952,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	//Ptr<CMeshData> idleData = CResMgr::GetInst()->LoadFBX(L"FBX\\test_run.fbx");
 	//idleData->Save(idleData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
 	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\test_run.mdat", L"MeshData\\test_run.mdat", false, true);
 	Ptr<CMeshData> falldownMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
