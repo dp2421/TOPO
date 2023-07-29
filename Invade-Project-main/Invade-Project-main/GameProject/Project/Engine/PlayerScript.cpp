@@ -11,49 +11,6 @@
 
 void CPlayerScript::Awake()
 {
-	//pushTime = std::chrono::system_clock::now();
-
-	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	//m_pParticle = new CGameObject;
-	//m_pParticle->SetName(L"Particle");
-	//m_pParticle->AddComponent(new CTransform);
-	//switch (m_iType)
-	//{
-	//case ELEMENT_TYPE::FROZEN:
-	//	m_pParticle->AddComponent(new CParticleSystem);
-	//	m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
-	//	m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-	//	m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 0.7f, 1.0f));
-	//	m_pParticle->ParticleSystem()->SetMaxLifeTime(3.0f);
-	//	m_pParticle->ParticleSystem()->SetMinLifeTime(0.5f);
-	//	m_pParticle->ParticleSystem()->SetStartScale(6.f);
-	//	m_pParticle->ParticleSystem()->SetEndScale(9.f);
-	//	break;
-	//case ELEMENT_TYPE::FIRE:
-	//	m_pParticle->AddComponent(new CParticleSystem);
-	//	m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"particle_00"));
-	//	m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 0.f, 0.5f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-	//	m_pParticle->ParticleSystem()->SetEndColor(Vec4(1.f, 0.f, 0.f, 1.0f));
-	//	m_pParticle->ParticleSystem()->SetStartScale(2.f);
-	//	m_pParticle->ParticleSystem()->SetEndScale(5.f);
-	//	break;
-	//case ELEMENT_TYPE::DARK:
-	//	m_pParticle->AddComponent(new CParticleSystem);
-	//	m_pParticle->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"smokeparticle"));
-	//	m_pParticle->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 0.f, 0.5f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-	//	m_pParticle->ParticleSystem()->SetEndColor(Vec4(0.f, 0.f, 0.f, 1.0f));
-	//	m_pParticle->ParticleSystem()->SetStartScale(2.f);
-	//	m_pParticle->ParticleSystem()->SetEndScale(5.f);
-	//	break;
-	//case ELEMENT_TYPE::THUNDER:
-	//	break;
-	//case ELEMENT_TYPE::WIND:
-	//	break;
-	//}
-	//m_pParticle->FrustumCheck(false);
-	//m_pParticle->Transform()->SetLocalPos(Vec3(1.5f, 150.f, 0.f));
-	//pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle, pCurScene);
-	//GetObj()->AddChild(m_pParticle);
 }
 
 void CPlayerScript::Update()
@@ -240,48 +197,41 @@ void CPlayerScript::Update()
 	//std::cout << "run: " << std::boolalpha << runPlayer->MeshRender()->IsDynamicShadow() << std::endl;
 	//std::cout << "Idle: " << std::boolalpha << IdlePlayer->MeshRender()->IsDynamicShadow() << std::endl;
 
-
 #endif
 
 	Pushed(isStun, stunTime);
 
-	//if (m_isSetAwardScene)
+	//if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
 	//{
-	//	CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
-	//	CRenderMgr::GetInst()->SetSceneChanged(true);
+	//	std::cout << "플레이어스크립트 : 시상식씬 들어왓답니다" << std::endl;
+	//	if (true)
+	//		SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
+	//	//else if (true)	// 2등
+	//	//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
+	//	//else if (true) //3등 
+	//	//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+	//	//else	// 패배자들
+	//	//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+	//	if (!VictoryPlayer->IsActive())
+	//		VictoryPlayer->SetActive(true);
+	//	if (IdlePlayer->IsActive() || runPlayer->IsActive() || FalldownPlayer->IsActive())
+	//	{
+	//		IdlePlayer->SetActive(false);
+	//		runPlayer->SetActive(false);
+	//		FalldownPlayer->SetActive(false);
+	//	}
+	//	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+	//	{
+	//		if (obj->GetName().compare(L"AwardMainCam") == 0)
+	//		{
+	//			obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
+	//			obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
+	//			Vec3 temp = obj->Transform()->GetLocalRot();
+	//			//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
+	//		}
+	//	}
+	//	
 	//}
-
-	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
-	{
-		std::cout << "플레이어스크립트 : 시상식씬 들어왓답니다" << std::endl;
-		//if (true)
-		//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
-		////else if (true)	// 2등
-		////	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
-		////else if (true) //3등 
-		////	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
-		////else	// 패배자들
-		////	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
-		//if (!VictoryPlayer->IsActive())
-		//	VictoryPlayer->SetActive(true);
-		//if (IdlePlayer->IsActive() || runPlayer->IsActive() || FalldownPlayer->IsActive())
-		//{
-		//	IdlePlayer->SetActive(false);
-		//	runPlayer->SetActive(false);
-		//	FalldownPlayer->SetActive(false);
-		//}
-		//for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
-		//{
-		//	if (obj->GetName().compare(L"AwardMainCam") == 0)
-		//	{
-		//		obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
-		//		obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
-		//		Vec3 temp = obj->Transform()->GetLocalRot();
-		//		//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
-		//	}
-		//}
-		
-	}
 
 	IdlePlayer->Transform()->SetLocalRot(vRot);
 	runPlayer->Transform()->SetLocalRot(vRot);
@@ -290,7 +240,6 @@ void CPlayerScript::Update()
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
 	SetSpeedLine(isMove);
-
 
 }
 
@@ -488,8 +437,6 @@ void CPlayerScript::startAwardScene(int rank)
 	//CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
 	//CRenderMgr::GetInst()->SetSceneChanged(true);
 	//CRenderMgr::GetInst()->SetFever(false);
-
-	std::cout << "StartAwardScene 진입..." << std::endl;
 
 	Vec3 rot = Vec3(0.f, 3.14f, 0.f); //정면보게 회전?
 	IdlePlayer->Transform()->SetLocalRot(rot);

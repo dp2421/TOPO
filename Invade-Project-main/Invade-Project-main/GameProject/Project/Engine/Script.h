@@ -23,6 +23,7 @@ enum class SCRIPT_TYPE {
     METEORSCRIPT,
     UISCRIPT,
     NUMSCRIPT,
+    AWARDSCRIPT,
     END,
 };
 

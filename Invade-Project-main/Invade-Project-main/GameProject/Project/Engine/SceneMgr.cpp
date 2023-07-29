@@ -38,6 +38,7 @@
 #include "ItemScript.h"
 #include "ParticleSystem.h"
 #include "ArrowScript.h"
+#include "AwardScript.h"
 #include "UIScript.h"
 #include "NumScript.h"
 #include "GameFramework.h"
@@ -1488,12 +1489,40 @@ void CSceneMgr::InitAwardScene()
 	pObject = victoryData->Instantiate();
 	pObject->SetName(L"VictoryPlayer");
 	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CAwardScript);
 	pObject->SetActive(true);
 	pObject->Transform()->SetLocalScale(Vec3(3.0f, 3.0f, 3.0f));
 	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 	pObject->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -200.f)); //플레이어위치
+	pObject->GetScript<CAwardScript>()->AwardPlayerIdx(0);
+	pObject->MeshRender()->SetDynamicShadow(true);
+	m_pAwardScene->FindLayer(L"Player")->AddGameObject(pObject, m_pAwardScene, false);
 
 
+	pObject = new CGameObject;
+	pObject = victoryData->Instantiate();
+	pObject->SetName(L"VictoryPlayer");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CAwardScript);
+	pObject->SetActive(true);
+	pObject->Transform()->SetLocalScale(Vec3(3.0f, 3.0f, 3.0f));
+	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+	pObject->Transform()->SetLocalPos(Vec3(475.f, 10.f + 175.f, -125.f)); //플레이어위치
+	pObject->GetScript<CAwardScript>()->AwardPlayerIdx(1);
+	pObject->MeshRender()->SetDynamicShadow(true);
+	m_pAwardScene->FindLayer(L"Player")->AddGameObject(pObject, m_pAwardScene, false);
+
+
+	pObject = new CGameObject;
+	pObject = victoryData->Instantiate();
+	pObject->SetName(L"VictoryPlayer");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CAwardScript);
+	pObject->SetActive(true);
+	pObject->Transform()->SetLocalScale(Vec3(3.0f, 3.0f, 3.0f));
+	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+	pObject->Transform()->SetLocalPos(Vec3(-475.f, 10.f + 175.f, -125.f)); //플레이어위치
+	pObject->GetScript<CAwardScript>()->AwardPlayerIdx(1);
 	pObject->MeshRender()->SetDynamicShadow(true);
 	m_pAwardScene->FindLayer(L"Player")->AddGameObject(pObject, m_pAwardScene, false);
 

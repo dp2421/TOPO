@@ -275,21 +275,13 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerGameResultPacket* p = reinterpret_cast<ServerGameResultPacket*>(packet);
         
         // p->id 등수 배열 0부터 1등 
-        //1등 테스트. 일단 플레이어 1등에 앉혀놓는거 확인
 
         CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
         CRenderMgr::GetInst()->SetSceneChanged(true);
         auto test = CSceneMgr::GetInst()->GetCurScene();
+
         CRenderMgr::GetInst()->SetFever(false);
         setRankPLID(p->id[0], p->id[1], p->id[2]);
-
-        //auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(0.f, 0.f, 0.f), CSceneMgr::GetInst()->GetCurScene());
-        //
-        //
-        //obj->GetScript<CPlayerScript>()->SetPlayable(true);
-
-        //obj->GetScript<CPlayerScript>()->SetChangeAward(true);
-        //obj->GetScript<CPlayerScript>()->startAwardScene(p->id[0]);
 
         break;
 
