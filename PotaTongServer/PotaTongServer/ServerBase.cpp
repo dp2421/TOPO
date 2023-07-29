@@ -344,7 +344,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingRacingStart:
 	{
-
 		break;
 	}
 	case OverlappedType::MatchingObstacleStart:
@@ -354,6 +353,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingRacingComplete:
 	{
+		if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
+		{
+			isCoinActiveByRoomID[clients[id]->RoomID] = new bool[2];
+			isCoinActiveByRoomID[clients[id]->RoomID][0] = false;
+			isCoinActiveByRoomID[clients[id]->RoomID][1] = false;
+		}
+
 		int connectClient = matchingManager->CompleteMatching(id, MapType::Racing);
 		remainingUnReadyClientNumByRoomID[id] = connectClient;
 		InitAI(id, MapType::Racing, connectClient);
@@ -1006,16 +1012,6 @@ void ServerBase::ClientReady(const int id)
 	if (readyCount == 0)
 	{
 		startCountByRoomID[clients[id]->RoomID] = 3;
-
-		if (clients[id]->mapType == MapType::Racing)
-		{
-			if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
-			{
-				isCoinActiveByRoomID[clients[id]->RoomID] = new bool[2];
-				isCoinActiveByRoomID[clients[id]->RoomID][0] = false;
-				isCoinActiveByRoomID[clients[id]->RoomID][1] = false;
-			}
-		}
 
 		Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 		eventQueue.push(event);
