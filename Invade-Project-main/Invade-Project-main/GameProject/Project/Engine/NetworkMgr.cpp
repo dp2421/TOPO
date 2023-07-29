@@ -249,6 +249,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         //    }
         //}
         // p->count << 시작까지 남은 초
+        
 
         CRenderMgr::GetInst()->m_startCnt = p->count;
         break;
@@ -274,6 +275,12 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerGameResultPacket* p = reinterpret_cast<ServerGameResultPacket*>(packet);
         
         // p->id 등수 배열 0부터 1등 
+                
+        //1등 테스트. 일단 플레이어 1등에 앉혀놓는거 확인
+
+        networkObjects[CurID]->GetScript<CPlayerScript>()->SetChangeAward(true);
+        networkObjects[CurID]->GetScript<CPlayerScript>()->startAwardScene(p->id[0]);
+       
         break;
     }
     case ServerAddPlayer:

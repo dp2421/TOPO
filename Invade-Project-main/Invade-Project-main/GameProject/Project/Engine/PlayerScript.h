@@ -49,6 +49,7 @@ private:
     bool isGoal = false;
     
     bool m_isFever = false;
+    bool m_isSetAwardScene = false;
 
     CGameObject* m_pParticle;
     CGameObject* m_speedLine;
@@ -78,6 +79,7 @@ public:
     );
     void LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart);
     void SetSpeedLine(bool ismove);
+    void startAwardScene(int rank); 
 
     void Pushed(bool ispush, std::chrono::system_clock::time_point time);
 
@@ -90,6 +92,7 @@ public:
     void SetIdlePlayer(CGameObject* obj) { 
         IdlePlayer = obj; 
     }
+    void SetChangeAward(bool is) { m_isSetAwardScene = is; }
 
     void SetVictoryPlayer(CGameObject* obj) {
         VictoryPlayer = obj;
