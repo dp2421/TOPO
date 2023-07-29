@@ -634,8 +634,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			int count = 0;
 			for (auto& coin : coins)
 			{
-				if (client->RoomID == -1 || client->ID == -1) continue;
-				if (client->isCoin) continue;
+				if (client->RoomID == -1 || client->ID == -1) break;
+				if (client->isCoin) break;
 				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
 				
 				if (client->collider.isCollisionAABB(coin.collider))
