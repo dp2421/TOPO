@@ -1103,8 +1103,6 @@ void ServerBase::ClientReady(const int id)
 
 	if (readyCount == 0)
 	{
-		cout << "ÄÈ½º\n";
-
 		Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 		eventQueue.push(event);
 	}
@@ -1143,13 +1141,12 @@ void ServerBase::GameStartCount(const int id)
 		if (cl.second->isAI) continue;
 		if (cl.second->RoomID == id)
 		{
-			cout << "??\n";
 			curMode = cl.second->mapType;
 			cl.second->SendGameStartPacket(startCountByRoomID[id]);
 		}
 	}
 
-	if (startCountByRoomID[id] > 0)
+	if (startCountByRoomID[id] > 0 && curMode != MapType::Lobby)
 	{
 		Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 		eventQueue.push(event);
@@ -1171,10 +1168,6 @@ void ServerBase::GameStartCount(const int id)
 	{
 		cout << "Jump\n";
 		JumpStartCount(id, isFever);
-	}
-	else
-	{
-		cout << "zzqt\n";
 	}
 }
 
