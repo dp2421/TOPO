@@ -49,6 +49,7 @@ private:
     bool isGoal = false;
     
     bool m_isFever = false;
+    bool m_isSetAwardScene = false;
 
     CGameObject* m_pParticle;
     CGameObject* m_speedLine;
@@ -74,6 +75,7 @@ public:
     );
     void LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart);
     void SetSpeedLine(bool ismove);
+    void startAwardScene(int rank); 
 
     CPlayerScript();
     virtual ~CPlayerScript();
@@ -84,6 +86,7 @@ public:
     void SetIdlePlayer(CGameObject* obj) { 
         IdlePlayer = obj; 
     }
+    void SetChangeAward(bool is) { m_isSetAwardScene = is; }
 
     CLONE(CPlayerScript);
 };
