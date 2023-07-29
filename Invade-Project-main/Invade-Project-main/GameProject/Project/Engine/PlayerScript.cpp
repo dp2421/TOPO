@@ -533,8 +533,7 @@ void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart)
 		}
 		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
 		{
-			//if (isstart && m_isFever )
-			if (isstart)
+			if (isstart && m_isFever )
 				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z + 10.f));
 			else
 				obj->Transform()->SetLocalPos(notCollPos);
