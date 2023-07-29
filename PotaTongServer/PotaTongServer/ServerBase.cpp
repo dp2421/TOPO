@@ -780,7 +780,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		if (!client->isAI)
 		{
 			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
-			cout << "Player Pos X : " << client->position.x << " Z : " << client->position.z << endl;
+			//cout << "Player Pos X : " << client->position.x << " Z : " << client->position.z << endl;
 		}
 
 		for (auto cl : clients)
@@ -1133,6 +1133,8 @@ void ServerBase::GameStartCount(const int id)
 	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
 		isFever = isFeverByRoomID[id];
 
+	cout << "isFever : " << isFever << endl;
+
 	MapType curMode = MapType::Lobby;
 
 	for (auto cl : clients)
@@ -1141,6 +1143,7 @@ void ServerBase::GameStartCount(const int id)
 		if (cl.second->isAI) continue;
 		if (cl.second->RoomID == id)
 		{
+			cout << "??\n";
 			curMode = cl.second->mapType;
 			cl.second->SendGameStartPacket(startCountByRoomID[id]);
 		}
@@ -1281,20 +1284,18 @@ void ServerBase::GameEnd(const int id)
 
 void ServerBase::RacingStartCount(const int id, const bool isFever)
 {
-	if (isFever && startCountByRoomID[id] == 3)
+	int count = 0;
+	for (auto cl : clients)
 	{
-		int count = 0;
-		for (auto cl : clients)
+		if (cl.second->RoomID == id)
 		{
-			if (cl.second->RoomID == id)
-			{
-				lock_guard<mutex> lock{ cl.second->lock };
-				cl.second->position = PlayerStartPos;
-				cl.second->position.x += PlayerStartDistance * count;
-				count++;
-			}
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->position = PlayerStartPos;
+			cl.second->position.x += PlayerStartDistance * count;
+			count++;
 		}
 	}
+
 	if (startCountByRoomID[id] == 0 && !isFever)
 	{
 		auto startTime = chrono::system_clock::now();
@@ -1355,18 +1356,15 @@ void ServerBase::RacingStartCount(const int id, const bool isFever)
 
 void ServerBase::MeteoStartCount(const int id, const bool isFever)
 {
-	if (isFever && startCountByRoomID[id] == 3)
+	int count = 0;
+	for (auto cl : clients)
 	{
-		int count = 0;
-		for (auto cl : clients)
+		if (cl.second->RoomID == id)
 		{
-			if (cl.second->RoomID == id)
-			{
-				lock_guard<mutex> lock{ cl.second->lock };
-				cl.second->position = MeteoStartPos;
-				cl.second->position += MeteoStartDistance * count;
-				count++;
-			}
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->position = MeteoStartPos;
+			cl.second->position += MeteoStartDistance * count;
+			count++;
 		}
 	}
 
@@ -1413,18 +1411,15 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 
 void ServerBase::JumpStartCount(const int id, const bool isFever)
 {
-	if (isFever && startCountByRoomID[id] == 3)
+	int count = 0;
+	for (auto cl : clients)
 	{
-		int count = 0;
-		for (auto cl : clients)
+		if (cl.second->RoomID == id)
 		{
-			if (cl.second->RoomID == id)
-			{
-				lock_guard<mutex> lock{ cl.second->lock };
-				cl.second->position = JumpStartPos;
-				cl.second->position += JumpStartDistance * count;
-				count++;
-			}
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->position = JumpStartPos;
+			cl.second->position += JumpStartDistance * count;
+			count++;
 		}
 	}
 

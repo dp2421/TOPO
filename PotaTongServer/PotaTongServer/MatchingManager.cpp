@@ -80,6 +80,7 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 				if (client->RoomID != -1) break;;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->mapType = mapType;
 				client->SendMatchingOKPacket(mapType);
 				client->position = PlayerStartPos;
 				client->position.x += PlayerStartDistance * i;
