@@ -245,14 +245,15 @@ void CPlayerScript::Update()
 
 	Pushed(isStun, stunTime);
 
-	if (m_isSetAwardScene)
-	{
-		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
-		CRenderMgr::GetInst()->SetSceneChanged(true);
-	}
+	//if (m_isSetAwardScene)
+	//{
+	//	CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
+	//	CRenderMgr::GetInst()->SetSceneChanged(true);
+	//}
 
 	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
 	{
+		std::cout << "플레이어스크립트 : 시상식씬 들어왓답니다" << std::endl;
 		if (true)
 			SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
 		//else if (true)	// 2등
