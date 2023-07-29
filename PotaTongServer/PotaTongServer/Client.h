@@ -43,6 +43,7 @@ public:
 	void SendServerLoginPacket(const int id);
 	void SendMatchingOKPacket(const MapType gamemode);
 	void SendGameStartPacket(const int count);
+	void SendStartTimePacket(std::chrono::system_clock::time_point startTime);
 	void SendGameEndPacket(const bool isFever);
 	void SendGameResultPacket(const int id[], const int size);
 	void SendAddPlayerPacket(const int id, const Vector3 pos);

@@ -1079,6 +1079,7 @@ void ServerBase::GameStartCount(const int id)
 
 		if (startCountByRoomID[id] == 0 && !isFever)
 		{
+			auto startTime = chrono::system_clock::now();
 			for (auto cl : clients)
 			{
 				if (cl.second->RoomID == id)
@@ -1102,6 +1103,7 @@ void ServerBase::GameStartCount(const int id)
 					else
 					{
 						cl.second->SendGameStartPacket(startCountByRoomID[id]);
+						cl.second->SendStartTimePacket(startTime);
 					}
 				}
 			}
@@ -1113,6 +1115,7 @@ void ServerBase::GameStartCount(const int id)
 		}
 		else if (startCountByRoomID[id] == 0)
 		{
+			auto startTime = chrono::system_clock::now();
 			for (auto& cl : clients)
 			{
 				if (cl.second->RoomID == id)
@@ -1120,6 +1123,7 @@ void ServerBase::GameStartCount(const int id)
 					if (!cl.second->isAI)
 					{
 						cl.second->SendGameStartPacket(startCountByRoomID[id]);
+						cl.second->SendStartTimePacket(startTime);
 					}
 				}
 			}

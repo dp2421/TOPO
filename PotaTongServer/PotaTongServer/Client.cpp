@@ -73,6 +73,16 @@ void Client::SendGameStartPacket(const int count)
 	SendPacket(&packet);
 }
 
+void Client::SendStartTimePacket(std::chrono::system_clock::time_point startTime)
+{
+	ServerStartTimePacket packet;
+	packet.size = sizeof(ServerStartTimePacket);
+	packet.type = ServerStartTime;
+	packet.startTime = startTime;
+
+	SendPacket(&packet);
+}
+
 void Client::SendGameEndPacket(const bool isFever)
 {
 	ServerGameEndPacket packet;
