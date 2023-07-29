@@ -36,7 +36,7 @@ void MatchingManager::DoMatching(Client* client, concurrency::concurrent_priorit
 			this->racingQueue.Push(client);
 		}
 	}
-	else if (client->mapType == MapType::Obstacle)
+	else if (client->mapType == MapType::Jump)
 	{
 		if (!this->isDoMatchingObstacle)
 		{

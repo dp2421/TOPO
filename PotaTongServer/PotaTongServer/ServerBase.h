@@ -15,6 +15,7 @@ public:
 	void InitMapInfo();
 	void InitItemInfo();
 	void InitMeteoInfo();
+	void InitJumpMapInfo();
 	void InitAI(int roomID, MapType mapType, int AINum);
 
 	void Run();
@@ -32,6 +33,10 @@ public:
 
 	void GameStartCount(const int id);
 	void GameEnd(const int id);
+
+	void RacingStartCount(const int id, const bool isFever);
+	void MeteoStartCount(const int id, const bool isFever);
+	void JumpStartCount(const int id, const bool isFever);
 
 private:
 	SOCKET ServerSocket, ClientSocket;
@@ -59,13 +64,16 @@ private:
 	std::vector<Tile> coins;
 	std::vector<Tile> superJump;
 	std::vector<Tile> tiles;
-	std::vector<Tile> racing2FTiles;
-	std::vector<Tile> racing1FTiles;
+
+	std::vector<Tile> meteoTiles;
+
+	std::vector<Tile> jumpMapTiles;
+	std::vector<Obstacle> jumpMapObstacle;
 
 	std::vector<thread> workerThreads;
 
-	std::vector<Tile> meteoTiles;
-	std::vector<Tile> jumpingTiles;
+	std::vector<Tile> racing2FTiles;
+	std::vector<Tile> racing1FTiles;
 
 	atomic<int> clientID = 0;
 

@@ -32,7 +32,7 @@ void CUIScript::Update()
 		{
 			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isMatching = true;
-			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Obstacle);
+			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Jump);
 		}
 		m_isClicked = false;
 
@@ -255,7 +255,7 @@ void CUIScript::MatchingComplete()
 	case MapType::Meteo:
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
 		break;
-	case MapType::Obstacle:
+	case MapType::Jump:
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::JUMP);
 		break;
 	default:
