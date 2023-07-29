@@ -21,7 +21,7 @@ public:
     void AwardPlayerIdx(int idx) { m_playerIdx = idx; }
     void SetRanking(RANK_TYPE _iState) { m_ranking = _iState; }
 
-    void RankedPlayer();
+    void RankedPlayer(int idx);
 
     CLONE(CAwardScript);
 };
