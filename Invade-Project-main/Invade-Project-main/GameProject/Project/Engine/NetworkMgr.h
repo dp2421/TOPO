@@ -20,6 +20,7 @@ public:
 	CGameObject* tempPlayerObj;
 
 	int rankPLID[3];
+	bool b_isgoal;
 
 public:
 

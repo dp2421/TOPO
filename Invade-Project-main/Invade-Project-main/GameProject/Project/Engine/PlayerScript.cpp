@@ -402,8 +402,9 @@ void CPlayerScript::Update()
 
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
+	if (isStun)
+		std::cout << "À¸¾Ç! " << std::boolalpha << isStun << std::endl;
 	Pushed(isStun, stunTime);
-	std::cout << "À¸¾Ç! " << std::boolalpha << isStun << std::endl;
 	SetSpeedLine(isMove);
 
 

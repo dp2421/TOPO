@@ -19,6 +19,7 @@ enum UI_TYPE
     ROUNDOVER,
     FEVER,
     SPEEDLINE,
+    DONE,
     START,
 }; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
