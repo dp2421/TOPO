@@ -56,8 +56,12 @@ private:
 public:
     CGameObject* runPlayer;
     CGameObject* IdlePlayer;
-    std::chrono::system_clock::time_point pushTime;
+    CGameObject* VictoryPlayer;
+    CGameObject* FalldownPlayer;
 
+    std::chrono::system_clock::time_point pushTime;
+    std::chrono::system_clock::time_point stunTime;
+    bool isStun;
     virtual void Awake();
     virtual void Update();
     void SetType(ELEMENT_TYPE _iType) { m_iType = _iType; }
@@ -77,9 +81,11 @@ public:
     void SetSpeedLine(bool ismove);
     void startAwardScene(int rank); 
 
+    void Pushed(bool ispush, std::chrono::system_clock::time_point time);
+
     CPlayerScript();
     virtual ~CPlayerScript();
-
+    void  SetPush(bool isstun, std::chrono::system_clock::time_point time) { isStun = isstun; stunTime = time; }
     void SetRunPlayer(CGameObject* obj) { 
         runPlayer = obj; 
     }
@@ -87,6 +93,14 @@ public:
         IdlePlayer = obj; 
     }
     void SetChangeAward(bool is) { m_isSetAwardScene = is; }
+
+    void SetVictoryPlayer(CGameObject* obj) {
+        VictoryPlayer = obj;
+    }
+
+    void SetFalldownPlayer(CGameObject* obj) {
+        FalldownPlayer = obj;
+    }
 
     CLONE(CPlayerScript);
 };

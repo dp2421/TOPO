@@ -12,7 +12,7 @@
 void CPlayerScript::Awake()
 {
 	//pushTime = std::chrono::system_clock::now();
-	
+
 	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	//m_pParticle = new CGameObject;
 	//m_pParticle->SetName(L"Particle");
@@ -71,13 +71,21 @@ void CPlayerScript::Update()
 				runPlayer->MeshRender()->SetDynamicShadow(true);
 				runPlayer->SetActive(true);
 			}
-			if (IdlePlayer->IsActive())
+			if (IdlePlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+			{
 				IdlePlayer->SetActive(false);
+				VictoryPlayer->SetActive(false);
+				FalldownPlayer->SetActive(false);
+			}
 		}
 		else
 		{
-			if (runPlayer->IsActive())
+			if (runPlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+			{
+				VictoryPlayer->SetActive(false);
+				FalldownPlayer->SetActive(false);
 				runPlayer->SetActive(false);
+			}
 			if (!IdlePlayer->IsActive())
 			{
 				IdlePlayer->MeshRender()->SetDynamicShadow(true);
@@ -93,7 +101,7 @@ void CPlayerScript::Update()
 	Vec3 vRot = Transform()->GetLocalRot();
 
 	Vec3 dir = Vec3::Zero;
-	
+
 	float fDegree = XMConvertToDegrees(vRot.y);
 	Vec2 vDrag = CKeyMgr::GetInst()->GetDragDir();
 	if (!m_bCheckStartMousePoint) {
@@ -188,9 +196,12 @@ void CPlayerScript::Update()
 			runPlayer->SetActive(true);
 		}
 		runPlayer->MeshRender()->SetDynamicShadow(true);
-		if (IdlePlayer->IsActive())
+		if (IdlePlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+		{
+			VictoryPlayer->SetActive(false);
+			FalldownPlayer->SetActive(false);
 			IdlePlayer->SetActive(false);
-
+		}
 		if ((moveState & (int)Direction::Front) == (int)Direction::Front)
 		{
 			dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
@@ -214,8 +225,10 @@ void CPlayerScript::Update()
 	else
 	{
 
-		if (runPlayer->IsActive())
+		if (runPlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
 		{
+			VictoryPlayer->SetActive(false);
+			FalldownPlayer->SetActive(false);
 			runPlayer->SetActive(false);
 		}
 		if (!IdlePlayer->IsActive())
@@ -241,16 +254,16 @@ void CPlayerScript::Update()
 		vPos += vFront * 10.f;
 		pObj->Transform()->SetLocalPos(vPos);
 		m_fArrowSpeed = 200.f;
-		
+
 	}
-	
+
 	if (KEY_HOLD(KEY_TYPE::KEY_LBTN)) {
 		m_fArrowSpeed += 1000.f*DT;
 		if (m_fArrowSpeed > 2000.f) {
 			m_fArrowSpeed = 2000.f;
 		}
 	}
-	
+
 	if (KEY_AWAY(KEY_TYPE::KEY_LBTN)) {
 		CGameObject* pObj = GetObj()->GetChild()[0];
 		Vec3 vPos = pObj->Transform()->GetLocalPos();
@@ -270,30 +283,30 @@ void CPlayerScript::Update()
 
 
 		Vec2 xzValue = GetDiagnal(m_fArcherLocation, vRight.x, vRight.z);
-	
+
 
 		CCameraScript* p=dynamic_cast<CCameraScript*>(GetObj()->GetChild()[0]->GetScripts()[0]);
 		float fDegree= p->GetDegree();
 		float fDegree2 = fDegree;
 		fDegree *= -1.f;
-	
-	
+
+
 		float yValue = sin(XMConvertToRadians(fDegree)) * m_fArcherLocation;
 
 		Vec3 vArrowPos = Vec3(GetObj()->Transform()->GetLocalPos().x+xzValue.x, GetObj()->Transform()->GetLocalPos().y + 70+yValue, GetObj()->Transform()->GetLocalPos().z+xzValue.y);
 
-		
+
 		m_pArrow[m_iCurArrow]->Transform()->SetLocalPos(vArrowPos);
 		fDegree *= -1.f;
-		
+
 
 
 		m_pArrow[m_iCurArrow]->Transform()->SetLocalRot(Vec3(GetObj()->Transform()->GetLocalRot().x, GetObj()->Transform()->GetLocalRot().y, GetObj()->Transform()->GetLocalRot().z));
 		if (m_iCurArrow == 0) {
 			int a = 0;
 		}
-		
-		
+
+
 		Vec3 vFront2 = vArrowPos;
 		Vec3 vRight2 = Vec3(1, 0, 0);
 		auto k = XMLoadFloat3(&vRight2);
@@ -301,22 +314,22 @@ void CPlayerScript::Update()
 		auto r = XMVector3TransformNormal(k, m);
 		XMFLOAT3 result;
 		XMStoreFloat3(&result, XMVector3Normalize(r));
-	
+
 		float flength = sqrt(pow(result.x, 2) + pow(result.z, 2));
-	
-	
+
+
 		vArrowPos.x += result.x;
 		vArrowPos.z += result.z;
 		float xValue = sqrt(pow(m_fArcherLocation, 2) - pow(yValue, 2));
 		float xValue2 = xValue + flength;
 		float fyValue2 = yValue * xValue2 / xValue;
-	
+
 		float SubeyValue2Value = fyValue2 - yValue;
 		m_pArrow[m_iCurArrow]->GetScript<CArrowScript>()->SetFallSpeen(SubeyValue2Value);
 
 		vArrowPos.y += SubeyValue2Value;
 		Vec3 vTarget = vArrowPos - vFront2;
-	
+
 		vTarget.Normalize();
 		float vDotValue = Dot(vTarget, result);
 		Vec3 vCrossValue;
@@ -326,46 +339,62 @@ void CPlayerScript::Update()
 		else {
 			vCrossValue = Cross(result, vTarget);
 		}
-		
-		
+
+
 		if (vCrossValue != Vec3(0.f, 0.f, 0.f)) {
-	
+
 			XMVECTOR xmmatrix = XMQuaternionRotationAxis(XMLoadFloat3(&vCrossValue), XMConvertToRadians(fDegree2));
 			m_pArrow[m_iCurArrow]->Transform()->SetQuaternion(XMQuaternionMultiply(m_pArrow[m_iCurArrow]->Transform()->GetQuaternion(), xmmatrix));
-	
+
 		}
-		
+
 		m_iCurArrow++;
 		m_iPower = 1;
-		if (m_iCurArrow > 19) { 
+		if (m_iCurArrow > 19) {
 			m_iCurArrow = 0;
-		
+
 		}
 
 	}
 	*/
-	//if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
-	//{
-	//	if (true)
-	//		SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
-	//	//else if (true)	// 2등
-	//	//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
-	//	//else if (true) //3등 
-	//	//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
-	//	//else	// 패배자들
-	//	//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+	if (m_isSetAwardScene)
+	{
+		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
+		CRenderMgr::GetInst()->SetSceneChanged(true);
+	}
+	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
+	{
+		if (true)
+			SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
+		//else if (true)	// 2등
+		//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
+		//else if (true) //3등 
+		//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+		//else	// 패배자들
+		//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+		if (!VictoryPlayer->IsActive())
+			VictoryPlayer->SetActive(true);
+		if (IdlePlayer->IsActive() || runPlayer->IsActive() || FalldownPlayer->IsActive())
+		{
+			IdlePlayer->SetActive(false);
+			runPlayer->SetActive(false);
+			FalldownPlayer->SetActive(false);
+		}
 
-	//	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
-	//	{
-	//		if (obj->GetName().compare(L"AwardMainCam") == 0)
-	//		{
-	//			obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
-	//			obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
-	//			Vec3 temp = obj->Transform()->GetLocalRot();
-	//			//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
-	//		}
-	//	}
-	//}
+
+		//	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+		//	{
+		//		if (obj->GetName().compare(L"AwardMainCam") == 0)
+		//		{
+		//			obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
+		//			obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
+		//			Vec3 temp = obj->Transform()->GetLocalRot();
+		//			//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
+		//		}
+		//	}
+		//}
+
+	}
 
 	IdlePlayer->Transform()->SetLocalRot(vRot);
 	runPlayer->Transform()->SetLocalRot(vRot);
@@ -373,14 +402,11 @@ void CPlayerScript::Update()
 
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
-
+	if (isStun)
+		std::cout << "으악! " << std::boolalpha << isStun << std::endl;
+	Pushed(isStun, stunTime);
 	SetSpeedLine(isMove);
 
-	if (m_isSetAwardScene)
-	{
-		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
-		CRenderMgr::GetInst()->SetSceneChanged(true);
-	}
 
 }
 
@@ -537,7 +563,7 @@ void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart)
 		}
 		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
 		{
-			if (isstart && m_isFever )
+			if (isstart && m_isFever)
 				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z + 10.f));
 			else
 				obj->Transform()->SetLocalPos(notCollPos);
@@ -557,6 +583,20 @@ void CPlayerScript::SetSpeedLine(bool ismove)
 	}
 
 }
+void CPlayerScript::Pushed(bool ispush, std::chrono::system_clock::time_point time)
+{
+
+	if (ispush && (std::chrono::system_clock::now() <= time + std::chrono::milliseconds(500)))
+	{
+		if (!FalldownPlayer->IsActive())
+			FalldownPlayer->SetActive(true);
+		if (IdlePlayer->IsActive() || runPlayer->IsActive())
+		{
+			IdlePlayer->SetActive(false);
+			runPlayer->SetActive(false);
+		}
+	}
+}
 
 void CPlayerScript::startAwardScene(int rank)
 {
@@ -567,7 +607,7 @@ void CPlayerScript::startAwardScene(int rank)
 	IdlePlayer->Transform()->SetLocalRot(rot);
 	runPlayer->Transform()->SetLocalRot(rot);
 	Transform()->SetLocalRot(rot);
-	
+
 	switch (rank)
 	{
 	case 0: //1등
@@ -607,3 +647,4 @@ CPlayerScript::CPlayerScript() :CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT), m_bChe
 CPlayerScript::~CPlayerScript()
 {
 }
+
