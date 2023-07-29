@@ -214,7 +214,7 @@ void CUIScript::GameEndStart(bool start)
 	{
 		if (std::chrono::system_clock::now()<=NetworkMgr::GetInst()->startTime + std::chrono::seconds(2) )
 		{
-			if (m_iType == START)
+			if (m_iType == START && !CRenderMgr::GetInst()->IsFever())
 				GetObj()->SetActive(true);
 		}
 		else
