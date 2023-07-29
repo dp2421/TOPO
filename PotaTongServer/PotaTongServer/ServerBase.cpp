@@ -763,11 +763,21 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					}
 				}
 			}
+			{
+				lock_guard<mutex> lock{ client->lock };
+				if (startCountByRoomID[client->RoomID] == 0)
+					client->position += client->velocity * DeltaTimefloat.count();
+				if (client->position.y < -3000)
+				{
+					client->velocity.y = 0;
+				}
+			}
 		}
 
 		if (!client->isAI)
 		{
 			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
+			cout << "Player Pos X : " << client->position.x << " Z : " << client->position.z << endl;
 		}
 
 		for (auto cl : clients)
@@ -1075,7 +1085,8 @@ void ServerBase::ClientReady(const int id)
 	}
 	default: // Obstacle
 	{
-
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
 		break;
 	}
 	}
@@ -1118,12 +1129,15 @@ void ServerBase::GameStartCount(const int id)
 	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
 		isFever = isFeverByRoomID[id];
 
+	MapType curMode;
+
 	for (auto cl : clients)
 	{
 		if (cl.second->ID == -1) continue;
 		if (cl.second->isAI) continue;
 		if (cl.second->RoomID == id)
 		{
+			curMode = cl.second->mapType;
 			cl.second->SendGameStartPacket(startCountByRoomID[id]);
 		}
 	}
@@ -1136,11 +1150,11 @@ void ServerBase::GameStartCount(const int id)
 	}
 	else return;
 
-	if (clients[id]->mapType == MapType::Racing)
+	if (curMode == MapType::Racing)
 	{
 		RacingStartCount(id, isFever);
 	}
-	else if (clients[id]->mapType == MapType::Racing)
+	else if (curMode == MapType::Racing)
 	{
 		MeteoStartCount(id, isFever);
 	}
@@ -1259,6 +1273,7 @@ void ServerBase::RacingStartCount(const int id, const bool isFever)
 		{
 			if (cl.second->RoomID == id)
 			{
+				lock_guard<mutex> lock{ cl.second->lock };
 				cl.second->position = PlayerStartPos;
 				cl.second->position.x += PlayerStartDistance * count;
 				count++;
