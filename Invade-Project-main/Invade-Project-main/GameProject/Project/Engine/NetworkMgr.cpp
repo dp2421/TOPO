@@ -363,8 +363,10 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerPushed:
     {
         ServerPushedPacket* p = reinterpret_cast<ServerPushedPacket*>(packet);
-        networkObjects[p->id]->GetScript<CPlayerScript>()->isStun = true;
-        networkObjects[p->id]->GetScript<CPlayerScript>()->stunTime = p->effectTime;
+        isStun = true;
+        stuntime = p->effectTime;
+        networkObjects[p->id]->GetScript<CPlayerScript>()->isStun = isStun;
+        networkObjects[p->id]->GetScript<CPlayerScript>()->stunTime = stuntime;
         //networkObjects[p->id]->GetScript<CPlayerScript>()->SetPush(true, p->effectTime);
         // p->id 밀쳐진 플레이어 
 
