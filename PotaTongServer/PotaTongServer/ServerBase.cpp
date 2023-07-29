@@ -353,11 +353,11 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingRacingComplete:
 	{
-		if (isCoinActiveByRoomID.find(clients[id]->RoomID) == isCoinActiveByRoomID.end())
+		if (isCoinActiveByRoomID.find(id) == isCoinActiveByRoomID.end())
 		{
-			isCoinActiveByRoomID[clients[id]->RoomID] = new bool[2];
-			isCoinActiveByRoomID[clients[id]->RoomID][0] = false;
-			isCoinActiveByRoomID[clients[id]->RoomID][1] = false;
+			isCoinActiveByRoomID[id] = new bool[2];
+			isCoinActiveByRoomID[id][0] = false;
+			isCoinActiveByRoomID[id][1] = false;
 		}
 
 		int connectClient = matchingManager->CompleteMatching(id, MapType::Racing);
