@@ -37,7 +37,7 @@ enum class MapType : int
 {
 	Lobby,
 	Racing,
-	Obstacle,
+	Jump,
 	Meteo,
 	Bomb,
 	Result

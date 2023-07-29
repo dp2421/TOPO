@@ -20,6 +20,10 @@ public:
 	CGameObject* tempPlayerObj;
 
 	int rankPLID[3];
+	bool b_isgoal;
+
+	bool isStun;
+	std::chrono::system_clock::time_point stuntime;
 
 public:
 

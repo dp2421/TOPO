@@ -32,7 +32,7 @@ void CUIScript::Update()
 		{
 			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isMatching = true;
-			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Obstacle);
+			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Jump);
 		}
 		m_isClicked = false;
 
@@ -203,6 +203,9 @@ void CUIScript::UIRender()
 	}
 	if (CRenderMgr::GetInst()->m_startCnt ==0)
 		GameEndStart(true);
+
+	if (NetworkMgr::GetInst()->b_isgoal)
+		GameEndStart(false);
 }
 
 void CUIScript::GameEndStart(bool start)
@@ -223,15 +226,15 @@ void CUIScript::GameEndStart(bool start)
 	}
 	else
 	{
-		if (f_WaitFeverModeTime < 3)
+		if (CSceneMgr::GetInst()->GetSceneType() != SCENE_TYPE::AWARD)
 		{
-			if (m_iType == ROUNDOVER)
+			if (m_iType == DONE)
 				GetObj()->SetActive(true);
 		}
 		else
 		{
-			if (m_iType == ROUNDOVER)
-				GetObj()->SetActive(false);
+			if (m_iType == DONE)
+				GetObj()->SetActive(true);
 
 		}
 	}
@@ -255,7 +258,7 @@ void CUIScript::MatchingComplete()
 	case MapType::Meteo:
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
 		break;
-	case MapType::Obstacle:
+	case MapType::Jump:
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::JUMP);
 		break;
 	default:

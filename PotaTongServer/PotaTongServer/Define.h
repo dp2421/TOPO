@@ -9,13 +9,17 @@
 
 constexpr int MatchingTime = 5;
 constexpr int GameTime = 10;
+constexpr int SurviveTime = 60;
 constexpr int Frame = 30;
+constexpr auto PushTime = 1500ms;
 constexpr auto DeltaTimeMilli = chrono::duration_cast<chrono::milliseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimeNano = chrono::duration_cast<chrono::nanoseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimefloat = chrono::duration<float>(1.f / Frame);
 
 constexpr int RacingMAX = 24;
 constexpr int SurviveMAX = 8;
+
+constexpr int MeteoTime = 12;
 
 constexpr float SPEED = 1000.f;
 constexpr float JUMPVEL = 450.0f;
@@ -24,9 +28,11 @@ constexpr float PUSHDISTANCE = 150.f;
 
 const Vector3 PlayerStartPos{ -1800, 10, 35 };
 const Vector3 MeteoStartPos{ -450, 10, -450 };
+const Vector3 JumpStartPos{ -850, 10, 850 };
 
 const float PlayerStartDistance = 200.0f;
-const Vector3 MeteoStartDistance{ 50, 10, 50 };
+const Vector3 MeteoStartDistance{ 50, 0, 50 };
+const Vector3 JumpStartDistance{ 200, 0, 0 };
 
 const Vector3 PlayerCollider{ 100.0f / 2, 160.0f / 2, 75.0f / 2 };
 const Vector3 PlayerOffset{ 0.0f, 90.0f, 0.0f };

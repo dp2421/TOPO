@@ -73,9 +73,13 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 	else if (_type == SCENE_TYPE::JUMP)
 	{
 		m_pCurScene = m_pJumpingScene;
+		NetworkMgr::GetInst()->SendClientReadyPacket();
 	}
 	else if (_type == SCENE_TYPE::METOR)
+	{
 		m_pCurScene = m_pMetorScene;
+		NetworkMgr::GetInst()->SendClientReadyPacket();
+	}
 }
 
 void CSceneMgr::ChangeScene()
@@ -1491,8 +1495,9 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pMatching3 = CResMgr::GetInst()->Load<CTexture>(L"Matching3", L"Texture\\Matching3.png");
 	Ptr<CTexture> pRoundOver = CResMgr::GetInst()->Load<CTexture>(L"RoundOver", L"Texture\\roundGameover2.png");
 	Ptr<CTexture> pRoundStart = CResMgr::GetInst()->Load<CTexture>(L"RoundStart", L"Texture\\StartUI.png");
+	Ptr<CTexture> pRoundDone = CResMgr::GetInst()->Load<CTexture>(L"RoundDone", L"Texture\\GameDone.png");
 	Ptr<CTexture> pFeverUI  = CResMgr::GetInst()->Load<CTexture>(L"Fever", L"Texture\\FeverUI.png");
-
+	
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 
 
@@ -1583,6 +1588,28 @@ void CSceneMgr::InitUI()
 	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
 	pObject->SetActive(false);
 	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
+
+	pObject = new CGameObject;
+	pObject->SetName(L"Done UI");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::DONE);
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0 / 2, 580.f, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x, winsize.x, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pRoundDone.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
+	pObject->SetActive(false);
+	m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
+
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Fever UI");

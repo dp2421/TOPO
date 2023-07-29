@@ -36,7 +36,7 @@ void MatchingManager::DoMatching(Client* client, concurrency::concurrent_priorit
 			this->racingQueue.Push(client);
 		}
 	}
-	else if (client->mapType == MapType::Obstacle)
+	else if (client->mapType == MapType::Jump)
 	{
 		if (!this->isDoMatchingObstacle)
 		{
@@ -80,6 +80,7 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 				if (client->RoomID != -1) break;;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->mapType = mapType;
 				client->SendMatchingOKPacket(mapType);
 				client->position = PlayerStartPos;
 				client->position.x += PlayerStartDistance * i;
@@ -92,14 +93,25 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 		count = obstacleQueue.Size();
 		this->isDoMatchingObstacle = false;
 		Client* client;
-		while (true)
+		for (int i = 0; i < count; ++i)
 		{
 			if (true == this->obstacleQueue.TryPop(client))
 			{
 				if (client->RoomID != -1) break;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->mapType = mapType;
 				client->SendMatchingOKPacket(mapType);
+				if (mapType == MapType::Jump)
+				{
+					client->position = JumpStartPos;
+					client->position += JumpStartDistance * i;
+				}
+				else if (mapType == MapType::Meteo)
+				{
+					client->position = MeteoStartPos;
+					client->position += MeteoStartDistance * i;
+				}
 			}
 			else break;
 		}

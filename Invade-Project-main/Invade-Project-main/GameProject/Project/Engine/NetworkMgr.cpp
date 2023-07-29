@@ -323,6 +323,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         if (networkObjects.find(p->id) != networkObjects.end())
         {
             networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isGoal);
+            b_isgoal = p->isGoal;
 
             if (CurID == p->id) networkObjects[p->id]->GetScript<CPlayerScript>()->LetParticle(Vec3(p->xPos, p->yPos, p->zPos), PARTICLE_TYPE::COLLPARICLE, p->isColl);
         }
@@ -358,6 +359,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     }
     case ServerMeteoInfo:
     {
+        ServerMeteoInfoPacket* p = reinterpret_cast<ServerMeteoInfoPacket*>(packet);
         break;
     }
     case ServerEnterCoin:
@@ -372,7 +374,11 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerPushedPacket* p = reinterpret_cast<ServerPushedPacket*>(packet);
 
-        networkObjects[p->id]->GetScript<CPlayerScript>()->SetPush(true, p->effectTime);
+        networkObjects[p->id]->GetScript<CPlayerScript>()->isStun = true;
+        networkObjects[p->id]->GetScript<CPlayerScript>()->stunTime = p->effectTime;
+
+        std::cout << "ID : " << p->id << " is Pushed \n";
+        //networkObjects[p->id]->GetScript<CPlayerScript>()->SetPush(true, p->effectTime);
         // p->id 밀쳐진 플레이어 
 
         break;
