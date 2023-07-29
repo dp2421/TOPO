@@ -172,7 +172,7 @@ void CSceneMgr::InitMainScene()
 	//
 
 	m_pRacingScene = new CScene;
-	m_pRacingScene->SetName(L"Play Scene");
+	m_pRacingScene->SetName(L"PlayScene");
 
 	m_pRacingScene->GetLayer(0)->SetName(L"Default");
 	m_pRacingScene->GetLayer(1)->SetName(L"Player");

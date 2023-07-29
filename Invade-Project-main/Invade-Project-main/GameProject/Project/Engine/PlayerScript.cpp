@@ -362,6 +362,7 @@ void CPlayerScript::Update()
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
 		CRenderMgr::GetInst()->SetSceneChanged(true);
 	}
+
 	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
 	{
 		if (true)
@@ -380,20 +381,17 @@ void CPlayerScript::Update()
 			runPlayer->SetActive(false);
 			FalldownPlayer->SetActive(false);
 		}
-
-
-		//	for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
-		//	{
-		//		if (obj->GetName().compare(L"AwardMainCam") == 0)
-		//		{
-		//			obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
-		//			obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
-		//			Vec3 temp = obj->Transform()->GetLocalRot();
-		//			//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
-		//		}
-		//	}
-		//}
-
+			for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+			{
+				if (obj->GetName().compare(L"AwardMainCam") == 0)
+				{
+					obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
+					obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
+					Vec3 temp = obj->Transform()->GetLocalRot();
+					//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
+				}
+			}
+		
 	}
 
 	IdlePlayer->Transform()->SetLocalRot(vRot);
@@ -403,7 +401,7 @@ void CPlayerScript::Update()
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
 	Pushed(isStun, stunTime);
-	std::cout << "으악! " << std::boolalpha << isStun << std::endl;
+	//std::cout << "으악! " << std::boolalpha << isStun << std::endl;
 	SetSpeedLine(isMove);
 
 
@@ -601,6 +599,9 @@ void CPlayerScript::startAwardScene(int rank)
 {
 	//CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
 	//CRenderMgr::GetInst()->SetSceneChanged(true);
+	//CRenderMgr::GetInst()->SetFever(false);
+
+	std::cout << "StartAwardScene 진입..." << std::endl;
 
 	Vec3 rot = Vec3(0.f, 3.14f, 0.f); //정면보게 회전?
 	IdlePlayer->Transform()->SetLocalRot(rot);

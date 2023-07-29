@@ -275,13 +275,22 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerGameResultPacket* p = reinterpret_cast<ServerGameResultPacket*>(packet);
         
         // p->id 등수 배열 0부터 1등 
-                
         //1등 테스트. 일단 플레이어 1등에 앉혀놓는거 확인
+        std::cout << "어워드로바뀔차례" << std::endl;
+        CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
+        CRenderMgr::GetInst()->SetSceneChanged(true);
+        auto test = CSceneMgr::GetInst()->GetCurScene();
 
-        networkObjects[CurID]->GetScript<CPlayerScript>()->SetChangeAward(true);
-        networkObjects[CurID]->GetScript<CPlayerScript>()->startAwardScene(p->id[0]);
+        auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(0.f, 0.f, 0.f), CSceneMgr::GetInst()->GetCurScene());
+        obj->GetScript<CPlayerScript>()->SetPlayable(true);
+        networkObjects[CurID] = obj;
+
+        obj->GetScript<CPlayerScript>()->SetChangeAward(true);
+        obj->GetScript<CPlayerScript>()->startAwardScene(p->id[0]);
+
        
         break;
+
     }
     case ServerAddPlayer:
     {
