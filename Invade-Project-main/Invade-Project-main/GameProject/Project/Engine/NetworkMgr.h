@@ -16,8 +16,10 @@ public:
 
 	int prevRemainData = 0;
 	vector <std::thread> workerThreads;
-
 	CGameObject* tempPlayerObj;
+
+	int rankPLID[3];
+
 public:
 
 	void Init();
@@ -33,5 +35,12 @@ public:
 	void DoRecv();
 	void AssemblyPacket(int recvData, OverlappedEx* over);
 	void ProcessPacket(char* packet);
+
+	void setRankPLID(int rk1, int rk2, int rk3) {
+		rankPLID[0] = rk1;
+		rankPLID[1] = rk2;
+		rankPLID[2] = rk3;
+	}
+
 private:
 };
