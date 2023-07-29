@@ -406,6 +406,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		int connectClient = matchingManager->CompleteMatching(id, MapType::Racing);
 		remainingUnReadyClientNumByRoomID[id] = connectClient;
 		InitAI(id, MapType::Racing, connectClient);
+		startCountByRoomID[id] = 3;
 		break;
 	}
 	case OverlappedType::MatchingObstacleComplete:
@@ -414,7 +415,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<int> x(2, 3);
 
-		matchingManager->CompleteMatching(id, static_cast<MapType>(x(gen)));
+		int connectClient = matchingManager->CompleteMatching(id, static_cast<MapType>(x(gen)));
+		remainingUnReadyClientNumByRoomID[id] = connectClient;
+		startCountByRoomID[id] = 3;
 		break;
 	}
 	case OverlappedType::RotateObs:
@@ -1097,9 +1100,10 @@ void ServerBase::ClientReady(const int id)
 		remainingUnReadyClientNumByRoomID[clients[id]->RoomID] -= 1;
 		readyCount = remainingUnReadyClientNumByRoomID[clients[id]->RoomID];
 	}
+
 	if (readyCount == 0)
 	{
-		startCountByRoomID[clients[id]->RoomID] = 3;
+		cout << "ÄÈ½º\n";
 
 		Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 		eventQueue.push(event);
