@@ -1949,12 +1949,12 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 		curscene = GetCurScene();
 	}
 	//ChangeScene(curscene);
-	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Player_Falldown.fbx");
-	//pMeshData->Save(pMeshData->GetPath());
+	//Ptr<CMeshData> idleData = CResMgr::GetInst()->LoadFBX(L"FBX\\test_run.fbx");
+	//idleData->Save(idleData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Run.mdat", L"MeshData\\Player_Run.mdat", false, true);
+	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\test_run.mdat", L"MeshData\\test_run.mdat", false, true);
 	Ptr<CMeshData> falldownMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
 	std::cout << "add obj" << std::endl;
 	// MeshRender 설정
