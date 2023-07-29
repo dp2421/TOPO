@@ -92,14 +92,25 @@ int MatchingManager::CompleteMatching(const int roomID, MapType mapType)
 		count = obstacleQueue.Size();
 		this->isDoMatchingObstacle = false;
 		Client* client;
-		while (true)
+		for (int i = 0; i < count; ++i)
 		{
 			if (true == this->obstacleQueue.TryPop(client))
 			{
 				if (client->RoomID != -1) break;
 				lock_guard<mutex> lock{ client->lock };
 				client->RoomID = roomID;
+				client->mapType = mapType;
 				client->SendMatchingOKPacket(mapType);
+				if (mapType == MapType::Jump)
+				{
+					client->position = JumpStartPos;
+					client->position += JumpStartDistance * i;
+				}
+				else if (mapType == MapType::Meteo)
+				{
+					client->position = MeteoStartPos;
+					client->position += MeteoStartDistance * i;
+				}
 			}
 			else break;
 		}

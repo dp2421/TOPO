@@ -1085,7 +1085,6 @@ void ServerBase::ClientReady(const int id)
 	}
 	default: // Obstacle
 	{
-		cout << "sibal";
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 		break;
@@ -1153,14 +1152,17 @@ void ServerBase::GameStartCount(const int id)
 
 	if (curMode == MapType::Racing)
 	{
+		cout << "Racing\n";
 		RacingStartCount(id, isFever);
 	}
 	else if (curMode == MapType::Meteo)
 	{
+		cout << "Meteo\n";
 		MeteoStartCount(id, isFever);
 	}
 	else if (curMode == MapType::Jump)
 	{
+		cout << "Jump\n";
 		JumpStartCount(id, isFever);
 	}
 	else
