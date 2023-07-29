@@ -23,8 +23,10 @@ constexpr float GRAVITY = 9.8f*2.f;
 constexpr float PUSHDISTANCE = 150.f;
 
 const Vector3 PlayerStartPos{ -1800, 10, 35 };
+const Vector3 MeteoStartPos{ -450, 10, -450 };
+
 const float PlayerStartDistance = 200.0f;
-const Vector3 MeteorStartPos{};
+const Vector3 MeteoStartDistance{ 50, 10, 50 };
 
 const Vector3 PlayerCollider{ 100.0f / 2, 160.0f / 2, 75.0f / 2 };
 const Vector3 PlayerOffset{ 0.0f, 90.0f, 0.0f };

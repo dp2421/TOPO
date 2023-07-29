@@ -1145,13 +1145,14 @@ void ServerBase::GameEnd(const int id)
 		isFever = isFeverByRoomID[id];
 
 	int count = 0;
-	unsigned char rank[]{ -1,-1,-1 };
+	int rank[]{ -1,-1,-1 };
 	int score[]{ -1,-1,-1 };
 	std::unordered_map<unsigned char, int> scoreByID;
 	if (isFever)
 	{
 		for (auto cl : clients)
 		{
+			if (cl.second->score == 0) continue;
 			if (cl.second->RoomID == id)
 			{
 				if (score[0] < cl.second->score)
@@ -1201,10 +1202,13 @@ void ServerBase::GameEnd(const int id)
 
 	for (auto cl : clients)
 	{
+		if (cl.second->ID == -1) continue;
 		if (cl.second->RoomID == id)
 		{
 			if (!isFever)
+			{
 				cl.second->SendGameEndPacket(true);
+			}
 			else
 			{
 				cl.second->RoomID = -1;
@@ -1218,14 +1222,12 @@ void ServerBase::GameEnd(const int id)
 				}
 				else
 				{
-					cl.second->SendGameResultPacket(rank, 3);
+					cl.second->SendGameResultPacket(rank, 3 * sizeof(int));
 				}
 			}
 
-			lock_guard<mutex> lock{ cl.second->lock };
-			cl.second->isGoal = false;
-			cl.second->isMove = false;
-			cl.second->isJump = false;
+			lock_guard<mutex> lock{ cl.second->lock }; 
+			cl.second->ClearBoolean();
 			cl.second->velocity = Vector3::Zero();
 			cl.second->direction = Vector3::Zero();
 		}

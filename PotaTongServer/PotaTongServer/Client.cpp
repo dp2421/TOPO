@@ -16,6 +16,17 @@ Client::~Client()
 {
 }
 
+void Client::ClearBoolean()
+{
+	bool isMove = false;
+	bool isJump = false;
+	bool isColl = false;
+	bool isGoal = false;
+	bool isCoin = false;
+	bool isPushed = false;
+	bool isCanPush = true;
+}
+
 void Client::SendPacket(void* packet)	
 {
 	OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
@@ -72,7 +83,7 @@ void Client::SendGameEndPacket(const bool isFever)
 	SendPacket(&packet);
 }
 
-void Client::SendGameResultPacket(const unsigned char id[], const int size)
+void Client::SendGameResultPacket(const int id[], const int size)
 {
 	ServerGameResultPacket packet;
 	packet.size = sizeof(ServerGameResultPacket);
@@ -139,7 +150,7 @@ void Client::SendObstacleInfoPacket(const unsigned short degree[], int size)
 	SendPacket(&packet);
 }
 
-void Client::SendSingleObstacleInfoPacket(const unsigned char id, const unsigned short degree)
+void Client::SendSingleObstacleInfoPacket(const int id, const unsigned short degree)
 {
 	ServerSingleObstacleInfoPacket packet;
 	packet.size = sizeof(ServerSingleObstacleInfoPacket);

@@ -35,6 +35,7 @@ public:
 public:
 	Client();
 	~Client();
+	void ClearBoolean();
 
 	void SendPacket(void* packet);
 	void RecvPacket();
@@ -43,7 +44,7 @@ public:
 	void SendMatchingOKPacket(const MapType gamemode);
 	void SendGameStartPacket(const int count);
 	void SendGameEndPacket(const bool isFever);
-	void SendGameResultPacket(const unsigned char id[], const int size);
+	void SendGameResultPacket(const int id[], const int size);
 	void SendAddPlayerPacket(const int id, const Vector3 pos);
 	void SendRemovePlayerPacket(const int id);
 	void SendPlayerInfoPacket(
@@ -55,7 +56,7 @@ public:
 		const bool isGoal
 	);
 	void SendObstacleInfoPacket(const unsigned short degree[], int size);
-	void SendSingleObstacleInfoPacket(const unsigned char id, const unsigned short degree);
+	void SendSingleObstacleInfoPacket(const int id, const unsigned short degree);
 	void SendObstacleRPSPacket(const unsigned short angularVelocity[], int size);
 	void SendMeteoPacket(const unsigned char target, unsigned short time);
 	void SendEnterCoinPacket(const int id, const int coinIndex);
