@@ -697,7 +697,9 @@ void CSceneMgr::InitMainScene()
 	pObject->ParticleSystem()->SetMinLifeTime(0.5f);
 	pObject->ParticleSystem()->SetStartScale(10.f);
 	pObject->ParticleSystem()->SetEndScale(13.f);
-	pObject->ParticleSystem()->SetFrequency(0.1f);
+	pObject->ParticleSystem()->SetFrequency(0.2f);
+	pObject->ParticleSystem()->SetMinSpeed(20.0f);
+	pObject->ParticleSystem()->SetMaxSpeed(40.0f);
 	pObject->FrustumCheck(false);
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 
