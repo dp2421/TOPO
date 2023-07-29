@@ -73,9 +73,13 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 	else if (_type == SCENE_TYPE::JUMP)
 	{
 		m_pCurScene = m_pJumpingScene;
+		NetworkMgr::GetInst()->SendClientReadyPacket();
 	}
 	else if (_type == SCENE_TYPE::METOR)
+	{
 		m_pCurScene = m_pMetorScene;
+		NetworkMgr::GetInst()->SendClientReadyPacket();
+	}
 }
 
 void CSceneMgr::ChangeScene()

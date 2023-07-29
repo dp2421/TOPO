@@ -1085,6 +1085,7 @@ void ServerBase::ClientReady(const int id)
 	}
 	default: // Obstacle
 	{
+		cout << "sibal";
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 		break;
@@ -1129,7 +1130,7 @@ void ServerBase::GameStartCount(const int id)
 	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
 		isFever = isFeverByRoomID[id];
 
-	MapType curMode;
+	MapType curMode = MapType::Lobby;
 
 	for (auto cl : clients)
 	{
@@ -1154,9 +1155,17 @@ void ServerBase::GameStartCount(const int id)
 	{
 		RacingStartCount(id, isFever);
 	}
-	else if (curMode == MapType::Racing)
+	else if (curMode == MapType::Meteo)
 	{
 		MeteoStartCount(id, isFever);
+	}
+	else if (curMode == MapType::Jump)
+	{
+		JumpStartCount(id, isFever);
+	}
+	else
+	{
+		cout << "zzqt\n";
 	}
 }
 
@@ -1347,6 +1356,7 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 		{
 			if (cl.second->RoomID == id)
 			{
+				lock_guard<mutex> lock{ cl.second->lock };
 				cl.second->position = MeteoStartPos;
 				cl.second->position += MeteoStartDistance * count;
 				count++;
@@ -1404,8 +1414,9 @@ void ServerBase::JumpStartCount(const int id, const bool isFever)
 		{
 			if (cl.second->RoomID == id)
 			{
-				cl.second->position = MeteoStartPos;
-				cl.second->position += MeteoStartDistance * count;
+				lock_guard<mutex> lock{ cl.second->lock };
+				cl.second->position = JumpStartPos;
+				cl.second->position += JumpStartDistance * count;
 				count++;
 			}
 		}
