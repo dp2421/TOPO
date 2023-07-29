@@ -930,6 +930,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 
 			target->direction = { normalDir.x, 0, normalDir.z };
 
+			auto pushedTime = chrono::system_clock::now() + 500ms;
 			for (auto& cl : clients)
 			{
 				if (cl.second->isAI) continue;
@@ -937,7 +938,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 				if (cl.second->mapType != client->mapType) continue;
 				if (cl.second->RoomID != client->RoomID) continue;
 
-				cl.second->SendPushedPacket(target->ID);
+				cl.second->SendPushedPacket(target->ID, pushedTime);
 			}
 
 			auto useTime = chrono::system_clock::now() + 5s;
@@ -946,7 +947,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 			
 			Event coolTime{ client->ID, OverlappedType::PushCoolTime, useTime };
 			eventQueue.push(coolTime);
-			Event effectTime{ target->ID, OverlappedType::PushEnd, chrono::system_clock::now() + 500ms };
+			Event effectTime{ target->ID, OverlappedType::PushEnd, pushedTime };
 			eventQueue.push(effectTime);
 		}
 
