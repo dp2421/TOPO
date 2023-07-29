@@ -394,18 +394,19 @@ void CPlayerScript::Update()
 		//	}
 		//}
 
-		IdlePlayer->Transform()->SetLocalRot(vRot);
-		runPlayer->Transform()->SetLocalRot(vRot);
-		Transform()->SetLocalRot(vRot);
-
-		m_isFever = CRenderMgr::GetInst()->IsFever();
-		LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
-		Pushed(isStun, stunTime);
-		std::cout << "À¸¾Ç! " << std::boolalpha << isStun << std::endl;
-		SetSpeedLine(isMove);
-
-
 	}
+
+	IdlePlayer->Transform()->SetLocalRot(vRot);
+	runPlayer->Transform()->SetLocalRot(vRot);
+	Transform()->SetLocalRot(vRot);
+
+	m_isFever = CRenderMgr::GetInst()->IsFever();
+	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
+	Pushed(isStun, stunTime);
+	std::cout << "À¸¾Ç! " << std::boolalpha << isStun << std::endl;
+	SetSpeedLine(isMove);
+
+
 }
 
 void CPlayerScript::SetPlayable(bool value)
