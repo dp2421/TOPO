@@ -1068,7 +1068,6 @@ void ServerBase::GameStartCount(const int id)
 		}
 
 
-		cout << startCountByRoomID[id] << " STARTCOUNT \n";
 		if (startCountByRoomID[id] > 0)
 		{
 			Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
@@ -1102,7 +1101,6 @@ void ServerBase::GameStartCount(const int id)
 					}
 					else
 					{
-						cl.second->SendGameStartPacket(startCountByRoomID[id]);
 						cl.second->SendStartTimePacket(startTime);
 					}
 				}
@@ -1122,7 +1120,6 @@ void ServerBase::GameStartCount(const int id)
 				{
 					if (!cl.second->isAI)
 					{
-						cl.second->SendGameStartPacket(startCountByRoomID[id]);
 						cl.second->SendStartTimePacket(startTime);
 					}
 				}

@@ -65,6 +65,7 @@ void Client::SendMatchingOKPacket(const MapType gamemode)
 
 void Client::SendGameStartPacket(const int count)
 {
+	cout << count << " STARTCOUNT \n";
 	ServerGameStartPacket packet;
 	packet.size = sizeof(ServerGameStartPacket);
 	packet.type = ServerGameStart;
