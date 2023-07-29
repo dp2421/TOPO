@@ -722,7 +722,7 @@ void CSceneMgr::InitMainScene()
 	//pObject->SetName(L"SuJumParticle");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CParticleSystem);
-	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"LingParticle"));
+	pObject->ParticleSystem()->Init(CResMgr::GetInst()->FindRes<CTexture>(L"Snow"));
 	pObject->ParticleSystem()->SetStartColor(Vec4(0.8f, 1.0f, 0.5f, 1.f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
 	pObject->ParticleSystem()->SetEndColor(Vec4(0.8f, 1.f, 1.0f, 1.0f));
 	pObject->ParticleSystem()->SetMaxLifeTime(10.0f);
@@ -770,15 +770,17 @@ void CSceneMgr::InitMainScene()
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CParticleSystem);
 	pObject->ParticleSystem()->Init((CResMgr::GetInst()->FindRes<CTexture>(L"CartoonSmokeF")));
-	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 1.0f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
-	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.1f));
+	pObject->ParticleSystem()->SetStartColor(Vec4(1.f, 1.f, 1.f, 0.8f));//,m_vStartColor(Vec4(0.4f,0.4f,0.8f,1.4f)),m_vEndColor(Vec4(1.f,1.f,1.f,1.0f))
+	pObject->ParticleSystem()->SetEndColor(Vec4(1.f, 1.f, 1.f, 0.4f));
 	pObject->ParticleSystem()->SetMaxLifeTime(0.8f);
 	pObject->ParticleSystem()->SetMinLifeTime(0.2f);
-	pObject->ParticleSystem()->SetStartScale(100.f);
-	pObject->ParticleSystem()->SetEndScale(60.f);
-	pObject->ParticleSystem()->SetFrequency(0.1f);
+	pObject->ParticleSystem()->SetStartScale(55.f);
+	pObject->ParticleSystem()->SetEndScale(40.f);
+	pObject->ParticleSystem()->SetFrequency(0.8f);
+	pObject->ParticleSystem()->SetMinSpeed(50.f);
+	pObject->ParticleSystem()->SetMaxSpeed(100.f);
 	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(40000.f, 10.f, -10.f));
+	pObject->Transform()->SetLocalPos(Vec3(40000.f, 0.f, 0.f));
 	pObject->SetActive(true);
 	m_pRacingScene->FindLayer(L"Default")->AddGameObject(pObject, m_pRacingScene);
 	

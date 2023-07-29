@@ -377,9 +377,6 @@ void CPlayerScript::Update()
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
 
-//	if(!beforeObsColl)
-//		LetParticle((Vec3((20000.f, 10.f, 0.f))), PARTICLE_TYPE::COLLPARICLE, beforeObsColl);
-
 	SetSpeedLine(isMove);
 }
 
@@ -530,28 +527,17 @@ void CPlayerScript::LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart)
 		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticle") == 0))
 		{
 			if (isstart)
-			{
 				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z - 10.f));
-				break;
-			}
 			else
-			{
 				obj->Transform()->SetLocalPos(notCollPos);
-				break;
-			}
 		}
-		if ((m_isFever && type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
+		if ((type == PARTICLE_TYPE::RUNPARTICLE && obj->GetName().compare(L"CartoonParticleF") == 0))
 		{
+			//if (isstart && m_isFever )
 			if (isstart)
-			{
-				obj->Transform()->SetLocalPos(Vec3(pos.x - 100, pos.y + 150.f, pos.z - 10.f));
-				break;
-			}
+				obj->Transform()->SetLocalPos(Vec3(pos.x, pos.y - 10.f, pos.z + 10.f));
 			else
-			{
 				obj->Transform()->SetLocalPos(notCollPos);
-				break;
-			}
 		}
 	}
 }
