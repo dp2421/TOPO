@@ -418,7 +418,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		auto client = clients[id];
 
-		if (client->ID < 0 || client->RoomID < 0)
+		if (client->ID == -1 || client->RoomID == -1)
 		{
 			break;
 		}
@@ -634,12 +634,14 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			int count = 0;
 			for (auto& coin : coins)
 			{
+				if (client->RoomID == -1 || client->ID == -1) continue;
 				if (client->isCoin) continue;
 				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
 				
 				if (client->collider.isCollisionAABB(coin.collider))
 				{
 					cout << "CLIENT ID : " << client->ID << endl;
+					lock_guard<mutex> lock{ client->lock };
 					client->isCoin = true;
 					isCoinActiveByRoomID[client->RoomID][count] = true;
 					for (auto& cl : clients)
