@@ -42,7 +42,7 @@ private:
     Vec3 mousepos;
     float f_Count = 0.f;
     Numbers m_Numinfo;
-    int f_startCountdown;
+    int f_startCountdown = -1;
 
 
 public:

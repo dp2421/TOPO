@@ -202,12 +202,13 @@ void Client::SendEnterCoinPacket(const int id, const int coinIndex)
 	SendPacket(&packet);
 }
 
-void Client::SendPushedPacket(const int id)
+void Client::SendPushedPacket(const int id, std::chrono::system_clock::time_point effectTime)
 {
 	ServerPushedPacket packet;
 	packet.size = sizeof(ServerPushedPacket);
 	packet.type = ServerPushed;
 	packet.id = id;
+	packet.effectTime = effectTime;
 
 	SendPacket(&packet);
 }

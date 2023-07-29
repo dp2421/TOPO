@@ -253,6 +253,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         //CRenderMgr::GetInst()->GetCamera(1)->SetStartCnt((int)p->count);
         std::cout << "Start Count " << (int)p->count << std::endl;
 
+        CRenderMgr::GetInst()->m_startCnt = p->count;
         break;
     }
     case ServerStartTime:
@@ -266,7 +267,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     {
         ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);
 
-        CRenderMgr::GetInst()->SetFever(p->isFever);
+        CRenderMgr::GetInst()->SetFever((int)p->isFever);
         // p->isFever << 피버모드냐 아니냐 아니라면 Result도 같이 갈듯
         
         break;

@@ -248,6 +248,7 @@ struct ServerPushedPacket
 	PACKETSIZE	size;
 	unsigned char	type;
 	int				id;
+	std::chrono::system_clock::time_point effectTime;
 };
 
 struct ServerPushCoolTimePacket

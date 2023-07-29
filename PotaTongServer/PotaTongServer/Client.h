@@ -61,7 +61,7 @@ public:
 	void SendObstacleRPSPacket(const unsigned short angularVelocity[], int size);
 	void SendMeteoPacket(const unsigned char target, unsigned short time);
 	void SendEnterCoinPacket(const int id, const int coinIndex);
-	void SendPushedPacket(const int id);
+	void SendPushedPacket(const int id, std::chrono::system_clock::time_point effectTime);
 	void SendPushCoolTimePacket(std::chrono::system_clock::time_point effectTime);
 private:
 	OverlappedEx recv;

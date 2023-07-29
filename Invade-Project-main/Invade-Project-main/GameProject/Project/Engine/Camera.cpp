@@ -21,6 +21,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Collider3D.h"
+#include "NetworkMgr.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -294,15 +295,14 @@ void CCamera::Render_UI()
 		if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 		{
 			m_vecUIObject[i]->GetScript<CNumScript>()->SetCount(temp);
-			m_vecUIObject[i]->GetScript<CUIScript>()->SetStartCount(startcnt);
+			m_vecUIObject[i]->GetScript<CUIScript>()->SetStartCount(CRenderMgr::GetInst()->m_startCnt);
 
 		}
 		m_vecUIObject[i]->GetScript<CUIScript>()->UIRender();
-
+		
 
 		if (m_vecUIObject[i]->IsActive() == true)
 			m_vecUIObject[i]->MeshRender()->Render();
-		
 	}
 }
 

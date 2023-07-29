@@ -45,6 +45,7 @@ private:
 	int m_maptype;
 	float f_lightpow;
 public:
+	int m_startCnt = -1;
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
 	void Render_Tool();
