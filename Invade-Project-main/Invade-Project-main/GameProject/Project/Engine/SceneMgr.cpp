@@ -1490,7 +1490,7 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pMatching2 = CResMgr::GetInst()->Load<CTexture>(L"Matching2", L"Texture\\Matching2.png"); 
 	Ptr<CTexture> pMatching3 = CResMgr::GetInst()->Load<CTexture>(L"Matching3", L"Texture\\Matching3.png");
 	Ptr<CTexture> pRoundOver = CResMgr::GetInst()->Load<CTexture>(L"RoundOver", L"Texture\\roundGameover2.png");
-	Ptr<CTexture> pRoundStart = CResMgr::GetInst()->Load<CTexture>(L"RoundStart", L"Texture\\UITest.png");
+	Ptr<CTexture> pRoundStart = CResMgr::GetInst()->Load<CTexture>(L"RoundStart", L"Texture\\StartUI.png");
 	Ptr<CTexture> pFeverUI  = CResMgr::GetInst()->Load<CTexture>(L"Fever", L"Texture\\FeverUI.png");
 
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;

@@ -45,7 +45,7 @@ private:
     bool b_isMatching = false;
 
     float temp = 0.f;
-    int startcnt;
+    int startcnt = -1;
 public:
 
     virtual void FinalUpdate();

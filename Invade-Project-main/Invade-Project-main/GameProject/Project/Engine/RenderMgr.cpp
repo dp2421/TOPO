@@ -80,6 +80,7 @@ void CRenderMgr::Render()
 
 	m_vecCam[1]->SortUIObject();
 	m_vecCam[1]->Render_UI();
+	m_vecCam[1]->SetStartCnt(m_startCnt);
 
 
 	////PostProcess Effect
