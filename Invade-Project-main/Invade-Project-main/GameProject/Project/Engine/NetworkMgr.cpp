@@ -280,7 +280,7 @@ void NetworkMgr::ProcessPacket(char* packet)
         CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
         CRenderMgr::GetInst()->SetSceneChanged(true);
         auto test = CSceneMgr::GetInst()->GetCurScene();
-
+        CRenderMgr::GetInst()->SetFever(false);
         setRankPLID(p->id[0], p->id[1], p->id[2]);
         //auto obj = CSceneMgr::GetInst()->AddNetworkGameObject(false, Vec3(0.f, 0.f, 0.f), CSceneMgr::GetInst()->GetCurScene());
         //

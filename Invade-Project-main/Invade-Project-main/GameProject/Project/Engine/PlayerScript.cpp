@@ -254,32 +254,32 @@ void CPlayerScript::Update()
 	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
 	{
 		std::cout << "플레이어스크립트 : 시상식씬 들어왓답니다" << std::endl;
-		if (true)
-			SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
-		//else if (true)	// 2등
-		//	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
-		//else if (true) //3등 
-		//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
-		//else	// 패배자들
-		//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
-		if (!VictoryPlayer->IsActive())
-			VictoryPlayer->SetActive(true);
-		if (IdlePlayer->IsActive() || runPlayer->IsActive() || FalldownPlayer->IsActive())
-		{
-			IdlePlayer->SetActive(false);
-			runPlayer->SetActive(false);
-			FalldownPlayer->SetActive(false);
-		}
-			for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
-			{
-				if (obj->GetName().compare(L"AwardMainCam") == 0)
-				{
-					obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
-					obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
-					Vec3 temp = obj->Transform()->GetLocalRot();
-					//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
-				}
-			}
+		//if (true)
+		//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
+		////else if (true)	// 2등
+		////	SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));
+		////else if (true) //3등 
+		////	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
+		////else	// 패배자들
+		////	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+		//if (!VictoryPlayer->IsActive())
+		//	VictoryPlayer->SetActive(true);
+		//if (IdlePlayer->IsActive() || runPlayer->IsActive() || FalldownPlayer->IsActive())
+		//{
+		//	IdlePlayer->SetActive(false);
+		//	runPlayer->SetActive(false);
+		//	FalldownPlayer->SetActive(false);
+		//}
+		//for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
+		//{
+		//	if (obj->GetName().compare(L"AwardMainCam") == 0)
+		//	{
+		//		obj->Transform()->SetLocalRot(Vec3(PI/8, 0, 0));
+		//		obj->Transform()->SetLocalPos(Vec3(0, 500, -1500));
+		//		Vec3 temp = obj->Transform()->GetLocalRot();
+		//		//std::cout << XMConvertToDegrees(temp.x) << ", " << XMConvertToDegrees(temp.y) << ", " << XMConvertToDegrees(temp.z) << std::endl;
+		//	}
+		//}
 		
 	}
 
@@ -499,7 +499,7 @@ void CPlayerScript::startAwardScene(int rank)
 	switch (rank)
 	{
 	case 0: //1등
-		SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f), -180);
+		SetPlayerPos(Vec3(0.f, 10.f + 350.f, -200.f));
 		break;
 	case 1: //2등
 		SetPlayerPos(Vec3(475.f, 10.f + 175.f, -125.f));

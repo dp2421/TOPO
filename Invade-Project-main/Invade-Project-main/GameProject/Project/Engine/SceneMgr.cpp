@@ -1401,9 +1401,8 @@ void CSceneMgr::InitAwardScene()
 	pMainCam->Camera()->SetFar(100000.f);
 	pMainCam->Camera()->SetLayerAllCheck();
 	//pMainCam->Transform()->SetLocalPos(Vec3());
-	pMainCam->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 200.f));
+	pMainCam->Transform()->SetLocalPos(Vec3(0, 60.f * 8, 140.f * 7 + 200.f));
 	pMainCam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-
 	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pMainCam, m_pAwardScene);
 
 	CGameObject* pObject = nullptr;
@@ -1458,9 +1457,6 @@ void CSceneMgr::InitAwardScene()
 		m_pAwardScene->FindLayer(L"Award")->AddGameObject(pObject, m_pAwardScene);
 	}
 
-	//m_pCurScene = m_pAwardScene;
-	//AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
-
 #if LOCALPLAY
 	//m_pCurScene = m_pAwardScene;
 	AddNetworkGameObject(true, Vec3::Zero, m_pAwardScene);
@@ -1478,87 +1474,51 @@ void CSceneMgr::InitAwardScene()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, m_pDaySkyBox.GetPointer());
 
 	m_pAwardScene->FindLayer(L"Default")->AddGameObject(pObject, m_pAwardScene);
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Monster");
-	//CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Monster");
+	
 	//m_pAwardScene->Awake();
 	//m_pAwardScene->Start();
 
 
 	//===============================================================================================
 
-	
-	////ChangeScene(curscene);
-	////Ptr<CMeshData> idleData = CResMgr::GetInst()->LoadFBX(L"FBX\\test_run.fbx");
-	////idleData->Save(idleData->GetPath());
-	////pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-	////Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
-	//Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-	////Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\test_run.mdat", L"MeshData\\test_run.mdat", false, true);
-	//Ptr<CMeshData> falldownMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
-	//std::cout << "add obj" << std::endl;
-	//// MeshRender 설정
-	//CGameObject* pPlayer = nullptr;
-	//pPlayer = new CGameObject;
+	//Ptr<CMeshData> idleData = CResMgr::GetInst()->LoadFBX(L"FBX\\test_run.fbx");
+	//idleData->Save(idleData->GetPath());
+	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
+	//Ptr<CMeshData> idleData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
+	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
+	//Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\test_run.mdat", L"MeshData\\test_run.mdat", false, true);
+	Ptr<CMeshData> falldownMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
+	std::cout << "add obj" << std::endl;
+	// MeshRender 설정
+	CGameObject* pPlayer = nullptr;
+	pPlayer = new CGameObject;
 
-	//pPlayer->SetName((L"Player"));
-	//pPlayer->AddComponent(new CTransform);
-	//pPlayer->AddComponent(new CMeshRender);
-	//pPlayer->AddComponent(new CCollider3D);
-	//pPlayer->AddComponent(new CPlayerScript);
-	//pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	//pPlayer->Collider3D()->SetOffsetScale(Vec3(100.0f, 160.0f, 100.0f));
-	//pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 90.0f, 0.f));
-	//pPlayer->FrustumCheck(false);
-	//// Transform 설정
+	pPlayer->SetName((L"Player"));
+	pPlayer->AddComponent(new CTransform);
+	pPlayer->AddComponent(new CMeshRender);
+	pPlayer->AddComponent(new CCollider3D);
+	pPlayer->AddComponent(new CPlayerScript);
+	pPlayer->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	pPlayer->Collider3D()->SetOffsetScale(Vec3(100.0f, 160.0f, 100.0f));
+	pPlayer->Collider3D()->SetOffsetPos(Vec3(0.f, 90.0f, 0.f));
+	pPlayer->FrustumCheck(false);
+	// Transform 설정
 
-	//// MeshRender 설정
-	//pPlayer->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-	//pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
-
-	//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f, 21400.f)); //10.f - FLOORHEIGHT
-	////pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f - FLOORHEIGHT, 15000.f));
-
-	//for (auto obj : m_pAwardScene->FindLayer(L"Default")->GetParentObj())
-	//{
-	//	if (obj->GetName().compare(L"AwardMainCam") == 0)
-	//	{
-	//		//1등석
-	//		pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -200.f));
-	//		//obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 200.f));
-	//		//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	//		pPlayer->AddChild(obj);
-
-	//		////2등석
-	//		//pPlayer->Transform()->SetLocalPos(Vec3(475.f, 10.f + 175.f, -125.f));
-	//		//obj->Transform()->SetLocalPos(Vec3(-470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
-	//		//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	//		//pPlayer->AddChild(obj);
-
-	//		////3등석
-	//		//pPlayer->Transform()->SetLocalPos(Vec3(-475.f, 10.f + 175.f, -125.f));
-	//		//obj->Transform()->SetLocalPos(Vec3(470.f, 60.f * 3 + 250.f, 140.f * 7 + 125.f));
-	//		//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	//		//pPlayer->AddChild(obj);
-
-	//		////기타등등..벽뒤에사람있어요.
-	//		//pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -780.f));
-	//		//obj->Transform()->SetLocalPos(Vec3(0, 60.f * 3, 140.f * 7 + 780.f));
-	//		//obj->Transform()->SetLocalRot(Vec3(0, -PI, 0));
-	//		//pPlayer->AddChild(obj);
-	//		break;
-
-	//	}
-	//}
+	// MeshRender 설정
+	pPlayer->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pPlayer->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"Std3DMtrl"));
+	pPlayer->Transform()->SetLocalPos(Vec3(0.f, 10.f + 350.f, -200.f)); //플레이어위치
 
 	//=============================================================================================================
 
-	//pPlayer->Transform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
+	pPlayer->Transform()->SetLocalScale(Vec3(1.5f, 1.5f, 1.5f));
 
-	//pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
-	//pPlayer->GetScript<CPlayerScript>()->SetType(ELEMENT_TYPE::FROZEN);
-	//pPlayer->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
+	pPlayer->GetScript<CPlayerScript>()->SetPlayable(false);
+	pPlayer->GetScript<CPlayerScript>()->SetState(PLAYER_STATE::IDLE);
+	pPlayer->SetActive(true);
+	m_pAwardScene->FindLayer(L"Player")->AddGameObject(pObject, m_pAwardScene, false);
+
 	//CGameObject* pObject = nullptr;
-
 	//pObject = new CGameObject;
 	//pObject = victoryData->Instantiate();
 	//pObject->SetName(L"VictoryPlayer");
@@ -1568,7 +1528,7 @@ void CSceneMgr::InitAwardScene()
 	//pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 	//pObject->MeshRender()->SetDynamicShadow(true);
-	//curscene->FindLayer(L"Player")->AddGameObject(pObject, curscene, false);
+	//m_pAwardScene->FindLayer(L"Player")->AddGameObject(pObject, m_pAwardScene, false);
 	////m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
 
 
@@ -2023,13 +1983,6 @@ void CSceneMgr::InitScene()
 
 void CSceneMgr::Update()
 {
-	if (m_pCurScene == m_pAwardScene)
-	{
-		std::cout << "씬매니저업뎃 : 지금은 시상식씬입니다" << std::endl;
-	}
-	else if (m_pCurScene == m_pRacingScene)
-		std::cout << "씬매니저업뎃 : 지금은 시상식이 아닙니다" << std::endl;
-
 	m_pCurScene->Update();
 	m_pCurScene->LateUpdate();
 
