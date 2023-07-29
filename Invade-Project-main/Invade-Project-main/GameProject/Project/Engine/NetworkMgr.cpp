@@ -355,7 +355,8 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerPushed:
     {
         ServerPushedPacket* p = reinterpret_cast<ServerPushedPacket*>(packet);
-        
+
+        networkObjects[p->id]->GetScript<CPlayerScript>()->SetPush(true, p->effectTime);
         // p->id 밀쳐진 플레이어 
 
         break;

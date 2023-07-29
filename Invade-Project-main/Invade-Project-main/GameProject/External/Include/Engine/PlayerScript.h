@@ -55,8 +55,12 @@ private:
 public:
     CGameObject* runPlayer;
     CGameObject* IdlePlayer;
-    std::chrono::system_clock::time_point pushTime;
+    CGameObject* VictoryPlayer;
+    CGameObject* FalldownPlayer;
 
+    std::chrono::system_clock::time_point pushTime;
+    std::chrono::system_clock::time_point stunTime;
+    bool isStun;
     virtual void Awake();
     virtual void Update();
     void SetType(ELEMENT_TYPE _iType) { m_iType = _iType; }
@@ -75,14 +79,24 @@ public:
     void LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart);
     void SetSpeedLine(bool ismove);
 
+    void Pushed(bool ispush, std::chrono::system_clock::time_point time);
+
     CPlayerScript();
     virtual ~CPlayerScript();
-
+    void  SetPush(bool isstun, std::chrono::system_clock::time_point time) { isStun = isstun; stunTime = time; }
     void SetRunPlayer(CGameObject* obj) { 
         runPlayer = obj; 
     }
     void SetIdlePlayer(CGameObject* obj) { 
         IdlePlayer = obj; 
+    }
+
+    void SetVictoryPlayer(CGameObject* obj) {
+        VictoryPlayer = obj;
+    }
+
+    void SetFalldownPlayer(CGameObject* obj) {
+        FalldownPlayer = obj;
     }
 
     CLONE(CPlayerScript);

@@ -1952,7 +1952,7 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	//Ptr<CMeshData> idleData = CResMgr::GetInst()->LoadFBX(L"FBX\\test_run.fbx");
 	//idleData->Save(idleData->GetPath());
 	//pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
-	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
+	Ptr<CMeshData> idleData= CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Idle.mdat", L"MeshData\\Player_Idle.mdat", false, true);
 	Ptr<CMeshData> victoryData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Victory.mdat", L"MeshData\\Player_Victory.mdat", false, true);
 	Ptr<CMeshData> runMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\test_run.mdat", L"MeshData\\test_run.mdat", false, true);
 	Ptr<CMeshData> falldownMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\Player_Falldown.mdat", L"MeshData\\Player_Falldown.mdat", false, true);
@@ -2067,6 +2067,38 @@ CGameObject* CSceneMgr::AddNetworkGameObject(bool isPlayer, Vec3 pos, CScene* cu
 	curscene->FindLayer(L"Player")->AddGameObject(pPlayer, curscene, false);
 	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pPlayer, false);
 
+	pObject = new CGameObject;
+	pObject = victoryData->Instantiate();
+	pObject->SetName(L"VictoryPlayer");
+	pObject->AddComponent(new CTransform);
+	pObject->SetActive(true);
+	pObject->Transform()->SetLocalScale(Vec3(1.5, 1.5, 1.5));
+	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+	pObject->MeshRender()->SetDynamicShadow(true);
+	curscene->FindLayer(L"Player")->AddGameObject(pObject, curscene, false);
+	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+
+	//pPlayer->AddChild(pObject);
+	pPlayer->GetScript<CPlayerScript>()->SetVictoryPlayer(pObject);
+	curscene->FindLayer(L"Player")->AddGameObject(pPlayer, curscene, false);
+
+	pObject = new CGameObject;
+	pObject = falldownMeshData->Instantiate();
+	pObject->SetName(L"FalldownPlayer");
+	pObject->AddComponent(new CTransform);
+	pObject->SetActive(true);
+	pObject->Transform()->SetLocalScale(Vec3(1.5, 1.5, 1.5));
+	pObject->Transform()->SetLocalRot(Vec3(0, -PI, 0));
+
+	pObject->MeshRender()->SetDynamicShadow(true);
+	curscene->FindLayer(L"Player")->AddGameObject(pObject, curscene, false);
+	//m_pStartScene->FindLayer(L"Player")->AddGameObject(pObject, false);
+
+	//pPlayer->AddChild(pObject);
+	pPlayer->GetScript<CPlayerScript>()->SetFalldownPlayer(pObject);
+	curscene->FindLayer(L"Player")->AddGameObject(pPlayer, curscene, false);
+
 	return pPlayer;
 }
 
@@ -2074,11 +2106,18 @@ void CSceneMgr::RemoveNetworkGameObject(CGameObject* obj)
 {
 	auto runPlayer = obj->GetScript<CPlayerScript>()->runPlayer;
 	auto IdlePlayer = obj->GetScript<CPlayerScript>()->IdlePlayer;
+	auto victoryPlayer = obj->GetScript<CPlayerScript>()->VictoryPlayer;
+	auto FalldownPlayer = obj->GetScript<CPlayerScript>()->FalldownPlayer;
 	m_pCurScene->GetLayer(obj->GetLayerIdx())->RemoveParentObj(obj);
 	CSceneMgr::GetInst()->GetCurScene()->GetLayer(runPlayer->GetLayerIdx())->RemoveParentObj(runPlayer);
 	CSceneMgr::GetInst()->GetCurScene()->GetLayer(IdlePlayer->GetLayerIdx())->RemoveParentObj(IdlePlayer);
+	CSceneMgr::GetInst()->GetCurScene()->GetLayer(victoryPlayer->GetLayerIdx())->RemoveParentObj(victoryPlayer);
+	CSceneMgr::GetInst()->GetCurScene()->GetLayer(FalldownPlayer->GetLayerIdx())->RemoveParentObj(FalldownPlayer);
+
 	runPlayer->SetActive(false);
 	IdlePlayer->SetActive(false);
+	victoryPlayer->SetActive(false);
+	FalldownPlayer->SetActive(false);
 	obj->SetActive(false);
 }
 

@@ -209,7 +209,7 @@ void CUIScript::GameEndStart(bool start)
 {
 	if (start)
 	{
-		if (NetworkMgr::GetInst()->startTime + std::chrono::seconds(2) <= std::chrono::system_clock::now())
+		if (std::chrono::system_clock::now()<=NetworkMgr::GetInst()->startTime + std::chrono::seconds(2) )
 		{
 			if (m_iType == START)
 				GetObj()->SetActive(true);

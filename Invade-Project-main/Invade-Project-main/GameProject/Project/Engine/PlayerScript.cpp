@@ -71,13 +71,21 @@ void CPlayerScript::Update()
 				runPlayer->MeshRender()->SetDynamicShadow(true);
 				runPlayer->SetActive(true);
 			}
-			if (IdlePlayer->IsActive())
+			if (IdlePlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+			{
 				IdlePlayer->SetActive(false);
+				VictoryPlayer->SetActive(false);
+				FalldownPlayer->SetActive(false);
+			}
 		}
 		else
 		{
-			if (runPlayer->IsActive())
+			if (runPlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+			{
+				VictoryPlayer->SetActive(false);
+				FalldownPlayer->SetActive(false);
 				runPlayer->SetActive(false);
+			}
 			if (!IdlePlayer->IsActive())
 			{
 				IdlePlayer->MeshRender()->SetDynamicShadow(true);
@@ -188,9 +196,12 @@ void CPlayerScript::Update()
 			runPlayer->SetActive(true);
 		}
 		runPlayer->MeshRender()->SetDynamicShadow(true);
-		if (IdlePlayer->IsActive())
+		if (IdlePlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+		{
+			VictoryPlayer->SetActive(false);
+			FalldownPlayer->SetActive(false);
 			IdlePlayer->SetActive(false);
-
+		}
 		if ((moveState & (int)Direction::Front) == (int)Direction::Front)
 		{
 			dir += -Transform()->GetWorldDir(DIR_TYPE::FRONT);
@@ -214,8 +225,10 @@ void CPlayerScript::Update()
 	else
 	{
 
-		if (runPlayer->IsActive())
+		if (runPlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
 		{
+			VictoryPlayer->SetActive(false);
+			FalldownPlayer->SetActive(false);
 			runPlayer->SetActive(false);
 		}
 		if (!IdlePlayer->IsActive())
@@ -354,6 +367,14 @@ void CPlayerScript::Update()
 		//	SetPlayerPos(Vec3(-475.f, 10.f + 175.f, -125.f));
 		//else	// 패배자들
 		//	SetPlayerPos(Vec3(0.f, 10.f + 350.f, -780.f));
+		if (!VictoryPlayer->IsActive())
+			VictoryPlayer->SetActive(true);
+		if (IdlePlayer->IsActive() || runPlayer->IsActive() || FalldownPlayer->IsActive())
+		{
+			IdlePlayer->SetActive(false);
+			runPlayer->SetActive(false);
+			FalldownPlayer->SetActive(false);
+		}
 
 		for (auto obj : CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Default")->GetParentObj())
 		{
@@ -376,7 +397,8 @@ void CPlayerScript::Update()
 
 	m_isFever = CRenderMgr::GetInst()->IsFever();
 	LetParticle(vPos, PARTICLE_TYPE::RUNPARTICLE, isMove);
-
+	Pushed(isStun, stunTime);
+	std::cout << "으악! " << std::boolalpha << isStun << std::endl;
 	SetSpeedLine(isMove);
 }
 
@@ -553,7 +575,20 @@ void CPlayerScript::SetSpeedLine(bool ismove)
 	}
 
 }
-
+void CPlayerScript::Pushed(bool ispush, std::chrono::system_clock::time_point time)
+{
+	
+	if (ispush && (std::chrono::system_clock::now() <= time+ std::chrono::milliseconds(500)))
+	{
+		if (!FalldownPlayer->IsActive())
+			FalldownPlayer->SetActive(true);
+		if (IdlePlayer->IsActive() || runPlayer->IsActive())
+		{
+			IdlePlayer->SetActive(false);
+			runPlayer->SetActive(false);
+		}
+	}
+}
 
 CPlayerScript::CPlayerScript() :CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT), m_bCheckStartMousePoint(false), m_fArcherLocation(20.f)
 {
@@ -563,3 +598,4 @@ CPlayerScript::CPlayerScript() :CScript((UINT)SCRIPT_TYPE::PLAYERSCRIPT), m_bChe
 CPlayerScript::~CPlayerScript()
 {
 }
+
