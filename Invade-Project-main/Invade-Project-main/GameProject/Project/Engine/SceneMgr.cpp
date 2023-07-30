@@ -1553,7 +1553,6 @@ void CSceneMgr::InitUI()
 {
 
 	Ptr<CTexture> pStartButton = CResMgr::GetInst()->Load<CTexture>(L"UIButton", L"Texture\\startbutton.png");
-	Ptr<CTexture> pCursor = CResMgr::GetInst()->Load<CTexture>(L"Cursor", L"Texture\\cursor.png");
 	Ptr<CTexture> pWindow = CResMgr::GetInst()->Load<CTexture>(L"Window", L"Texture\\SWindow.png");;
 	Ptr<CTexture> pSurvival = CResMgr::GetInst()->Load<CTexture>(L"Survival", L"Texture\\SSurvival.png");
 	Ptr<CTexture> pRacing = CResMgr::GetInst()->Load<CTexture>(L"Racing", L"Texture\\SRacing.png");
@@ -1592,48 +1591,22 @@ void CSceneMgr::InitUI()
 		pUICam->Transform()->SetLocalRot(Vec3(0, -PI, 0));
 
 
-
-		pObject = new CGameObject;
-		pObject->SetName(L"Cursor Object");
-		pObject->AddComponent(new CTransform);
-		pObject->AddComponent(new CMeshRender);
-		pObject->AddComponent(new CCollider2D);
-		pObject->AddComponent(new CUIScript);
-		pObject->GetScript<CUIScript>()->SetType(UI_TYPE::CURSOR);
-
-		// Transform ����
-		pObject->Transform()->SetLocalPos(Vec3(-400.f, 400.f, 20.f));
-		pObject->Transform()->SetLocalScale(Vec3(30.f, 30.f, 1.f));
-		pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-		// MeshRender ����
-		pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
-		pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
-		pObject->MeshRender()->GetSharedMaterial()->SetData(SHADER_PARAM::TEX_0, pCursor.GetPointer());
-		// Collider2D
-		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-		pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
-		pObject->SetActive(true);
 		switch (i)
 		{
 		case 0:
 			m_pStartScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pStartScene);
-			m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 			break;
 		case 1:
 			m_pRacingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pRacingScene);
-			m_pRacingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 			break;
 		case 2:
 			m_pMetorScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pMetorScene);
-			m_pMetorScene->FindLayer(L"UI")->AddGameObject(pObject, m_pMetorScene);
 			break;
 		case 3:
 			m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pJumpingScene);
-			m_pJumpingScene->FindLayer(L"UI")->AddGameObject(pObject, m_pJumpingScene);
 			break;
 		case 4:
 			m_pAwardScene->FindLayer(L"UI")->AddGameObject(pUICam, m_pAwardScene);
-			m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pAwardScene);
 			break;
 		default:
 			break;

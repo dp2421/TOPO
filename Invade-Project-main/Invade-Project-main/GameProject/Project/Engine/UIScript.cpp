@@ -10,6 +10,7 @@ void CUIScript::Update()
 {
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 	mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
+	//mousepos = Vec3(CKeyMgr::GetInst()->GetMousePos().x,CKeyMgr::GetInst()->GetMousePos().y, 0);
 	if (Transform()->IsCasting(mousepos) && CKeyMgr::GetInst()->GetClicked() == true)
 		m_isClicked = true;
 
@@ -58,12 +59,6 @@ void CUIScript::Update()
 void CUIScript::UIRender()
 {
 	CGameObject* curObj = GetObj();
-	if (curObj->GetName() == (L"Cursor Object"))
-	{
-		Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
-		Vec3 mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
-		curObj->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
-	}
 
 	if (m_isSelected == true)
 	{

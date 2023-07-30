@@ -103,6 +103,7 @@ void CKeyMgr::Update()
 			m_vecKey[i].bPrevPress = false;
 		}
 	}
+	//m_ptMouse = m_ptOldMouse;
 	m_ptOldMouse = m_ptMouse;
 	GetCursorPos(&m_ptMouse);
 	ScreenToClient(CRenderMgr::GetInst()->GethWnd(), &m_ptMouse);

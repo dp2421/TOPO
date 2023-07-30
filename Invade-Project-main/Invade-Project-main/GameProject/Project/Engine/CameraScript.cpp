@@ -14,7 +14,7 @@ void CCameraScript::Update()
 	}
 	else {
 		Vec2 vDrag = CKeyMgr::GetInst()->GetDragDir();
-		vRot.x -= vDrag.y * DT;
+		vRot.x += vDrag.y * DT;
 		m_fDegree=XMConvertToDegrees(vRot.x);
 		if (m_fDegree < -15 ) {
 			m_fDegree = -15.f;
