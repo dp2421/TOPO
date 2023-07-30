@@ -524,6 +524,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				}
 			}
 
+			client->isColl = false;
 			// 장애물 충돌체크
 			for (auto& obs : obstacles)
 			{
@@ -585,38 +586,84 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 							0
 						);
 
+					//if (client->collider.isCollisionOBB(obs.collider[1]))
+					//{
+					//	client->isColl = true;
+					//	//std::cout << " COLL SPIN " << endl;
+					//	auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
+					//
+					//	Vector3 vec = *obs.collider[1].position;
+					//
+					//	auto transMat = DirectX::XMMatrixTranslation(-vec.x, -vec.y, -vec.z);
+					//	auto inverseTransMat = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
+					//	auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(-obs.rotate));
+					//	auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
+					//
+					//	auto calculMat = transMat * rotateMat * originMat;
+					//	auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
+					//	//cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
+					//
+					//	if (calculPos.x > 0 && calculPos.z < 0)
+					//	{
+					//		calculMat.r[3].m128_f32[2] = -(obs.collider[1].size.z + PlayerCollider.z);
+					//	}
+					//	else if (calculPos.x < 0 && calculPos.z > 0)
+					//	{
+					//		calculMat.r[3].m128_f32[2] = (obs.collider[1].size.z + PlayerCollider.z);
+					//	}
+					//
+					//	auto resultMat = calculMat * inverseRotateMat * inverseTransMat;
+					//	auto resultPos = Vector3(resultMat.r[3].m128_f32[0], resultMat.r[3].m128_f32[1], resultMat.r[3].m128_f32[2]);
+					//
+					//	{
+					//		lock_guard<mutex> lock{ client->lock };
+					//		client->position = resultPos;
+					//	}
+					//}
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
 						client->isColl = true;
-						//std::cout << " COLL SPIN " << endl;
-						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
 
-						Vector3 vec = *obs.collider[1].position;
+						// Calculate the relative position of the player with respect to the obstacle's center
+						Vector3 pos = client->position - *obs.collider[1].position;
+						auto flo = pos.ConvertXMFLOAT3();
+						XMVECTOR relativePos = XMLoadFloat3(&flo);
 
-						auto transMat = DirectX::XMMatrixTranslation(-vec.x, -vec.y, -vec.z);
-						auto inverseTransMat = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(-obs.rotate));
-						auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
+						// Apply the inverse translation of the rotating object to move the relative vector to the obstacle's local space
+						auto inverseTransMat = DirectX::XMMatrixTranslation(-obs.collider[1].position->x, 0, -obs.collider[1].position->z);
+						relativePos = DirectX::XMVector3Transform(relativePos, inverseTransMat);
 
-						auto calculMat = transMat * rotateMat * originMat;
-						auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
-						//cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
+						// Apply the inverse rotation of the obstacle to the relative vector
+						auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, -XMConvertToRadians(obs.rotate));
+						relativePos = DirectX::XMVector3Transform(relativePos, inverseRotateMat);
 
-						if (calculPos.x > 0 && calculPos.z < 0)
+						XMStoreFloat3(&flo, relativePos);
+						// Calculate the penetration depth based on the collision normal (the adjustment in z-coordinate)
+						if (flo.x > 0 && flo.z < 0)
 						{
-							calculMat.r[3].m128_f32[2] = -(obs.collider[1].size.z + PlayerCollider.z);
+							flo.z = -(obs.collider[1].size.z + PlayerCollider.z);
 						}
-						else if (calculPos.x < 0 && calculPos.z > 0)
+						else if (flo.x < 0 && flo.z > 0)
 						{
-							calculMat.r[3].m128_f32[2] = (obs.collider[1].size.z + PlayerCollider.z);
+							flo.z = (obs.collider[1].size.z + PlayerCollider.z);
 						}
+						relativePos = XMLoadFloat3(&flo);
 
-						auto resultMat = calculMat * inverseRotateMat * inverseTransMat;
-						auto resultPos = Vector3(resultMat.r[3].m128_f32[0], resultMat.r[3].m128_f32[1], resultMat.r[3].m128_f32[2]);
+						// Apply the rotation of the obstacle to the relative vector
+						auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
+						relativePos = DirectX::XMVector3Transform(relativePos, rotateMat);
 
+						// Apply the translation of the obstacle to move the relative vector back to world space
+						auto transMat = DirectX::XMMatrixTranslation(obs.collider[1].position->x, 0, obs.collider[1].position->z);
+						relativePos = DirectX::XMVector3Transform(relativePos, transMat);
+
+						XMStoreFloat3(&flo, relativePos);
+						// Update the player's position inside the critical section
 						{
 							lock_guard<mutex> lock{ client->lock };
-							client->position = resultPos;
+							if(!client->isAI)
+								cout << "X : " << flo.x << ", Y : " << client->position.y << ", Z : " << flo.z << endl;
+							client->position = Vector3(flo.x, client->position.y, flo.z);
 						}
 					}
 				}
@@ -650,7 +697,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						//cout << "Coll PENDULUM " << vec4.x << " " << vec4.y << " " << vec4.z << " " << vec4.w << endl;
 					}
 				}
-				client->isColl = false;
 			}
 
 			for (auto& super : superJump)
