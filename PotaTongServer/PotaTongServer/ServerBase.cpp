@@ -82,6 +82,11 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 
 void ServerBase::EventThread()
 {
+	Event rotateObs{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+	eventQueue.push(rotateObs);
+	Event sendRotateInfo{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
+	eventQueue.push(sendRotateInfo);
+
 	Event event;
 	event.objID = -1;
 	while (true) {
@@ -471,6 +476,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			break;
 		}
 
+		client->velocity.x = 0;
+		client->velocity.z = 0;
 		{
 			lock_guard<mutex> lock{ client->lock };
 			client->velocity.y -= GRAVITY;
@@ -535,8 +542,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						if (client->collider.isCollisionAABB(obs.collider[0]))
 						{
 							client->isColl = true;
+
 							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
-							//auto boxcenter = obs.collider[0].getBoundingbox().Center;
 							auto clientCenter = client->collider.getBoundingbox().Center;
 							XMVECTOR center = XMLoadFloat3(&clientCenter);
 							XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
@@ -551,17 +558,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 								client->direction.x = 0;
 								client->velocity.x = 0;
 							}
-
-							else if (XMVectorGetY(faceNormal) < 0.0f)
-							{
-								lock_guard<mutex> lock{ client->lock };
-								if (client->position.y > 0)
-								{
-									client->direction.y = 0;
-									client->isJump = false;
-								}
-							}
-
 							else if (XMVectorGetZ(faceNormal) < 0.0f)
 							{
 								lock_guard<mutex> lock{ client->lock };
@@ -576,6 +572,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						}
 					}
 				}
+
 				if (obs.data.state == OBSTACLE_STATE::SPIN)
 				{
 					obs.collider[1].orientation =
@@ -586,98 +583,49 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 							0
 						);
 
-					//if (client->collider.isCollisionOBB(obs.collider[1]))
-					//{
-					//	client->isColl = true;
-					//	//std::cout << " COLL SPIN " << endl;
-					//	auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
-					//
-					//	Vector3 vec = *obs.collider[1].position;
-					//
-					//	auto transMat = DirectX::XMMatrixTranslation(-vec.x, -vec.y, -vec.z);
-					//	auto inverseTransMat = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-					//	auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(-obs.rotate));
-					//	auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
-					//
-					//	auto calculMat = transMat * rotateMat * originMat;
-					//	auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
-					//	//cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
-					//
-					//	if (calculPos.x > 0 && calculPos.z < 0)
-					//	{
-					//		calculMat.r[3].m128_f32[2] = -(obs.collider[1].size.z + PlayerCollider.z);
-					//	}
-					//	else if (calculPos.x < 0 && calculPos.z > 0)
-					//	{
-					//		calculMat.r[3].m128_f32[2] = (obs.collider[1].size.z + PlayerCollider.z);
-					//	}
-					//
-					//	auto resultMat = calculMat * inverseRotateMat * inverseTransMat;
-					//	auto resultPos = Vector3(resultMat.r[3].m128_f32[0], resultMat.r[3].m128_f32[1], resultMat.r[3].m128_f32[2]);
-					//
-					//	{
-					//		lock_guard<mutex> lock{ client->lock };
-					//		client->position = resultPos;
-					//	}
-					//}
+					XMFLOAT4 rhsOrientation;
+
+					XMStoreFloat4(&rhsOrientation, obs.collider[1].orientation);
+
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
 						client->isColl = true;
-
-						// Calculate the relative position of the player with respect to the obstacle's center
-						Vector3 pos = client->position - *obs.collider[1].position;
-						auto flo = pos.ConvertXMFLOAT3();
-						XMVECTOR relativePos = XMLoadFloat3(&flo);
-
-						// Apply the inverse translation of the rotating object to move the relative vector to the obstacle's local space
-						auto inverseTransMat = DirectX::XMMatrixTranslation(-obs.collider[1].position->x, 0, -obs.collider[1].position->z);
-						relativePos = DirectX::XMVector3Transform(relativePos, inverseTransMat);
-
-						// Apply the inverse rotation of the obstacle to the relative vector
-						auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, -XMConvertToRadians(obs.rotate));
-						relativePos = DirectX::XMVector3Transform(relativePos, inverseRotateMat);
-
-						XMStoreFloat3(&flo, relativePos);
-						// Calculate the penetration depth based on the collision normal (the adjustment in z-coordinate)
-						if (flo.x > 0 && flo.z < 0)
+					
+						Vector3 collisionNormal = client->position - *obs.collider[1].position;
+						collisionNormal.y = 0;
+						collisionNormal.Normalize();
+					
+						float angularVelocity = 3; 
+					
+						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
+					
+						Vector3 pushDirection = tangentialVelocity;
+						pushDirection.y = 0;
+						pushDirection.Normalize();
+					
+						float relativeVelocity = Vector3::Dot(client->velocity, pushDirection);
+					
+						auto someFactor = 50.0f;
+						
+						if (relativeVelocity <= 0)
 						{
-							flo.z = -(obs.collider[1].size.z + PlayerCollider.z);
+							float pushMagnitude = angularVelocity * someFactor;
+					
+							client->velocity = Vector3::Zero();
+							client->velocity += pushDirection * pushMagnitude;
 						}
-						else if (flo.x < 0 && flo.z > 0)
+						else
 						{
-							flo.z = (obs.collider[1].size.z + PlayerCollider.z);
-						}
-						relativePos = XMLoadFloat3(&flo);
-
-						// Apply the rotation of the obstacle to the relative vector
-						auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
-						relativePos = DirectX::XMVector3Transform(relativePos, rotateMat);
-
-						// Apply the translation of the obstacle to move the relative vector back to world space
-						auto transMat = DirectX::XMMatrixTranslation(obs.collider[1].position->x, 0, obs.collider[1].position->z);
-						relativePos = DirectX::XMVector3Transform(relativePos, transMat);
-
-						XMStoreFloat3(&flo, relativePos);
-						// Update the player's position inside the critical section
-						{
-							lock_guard<mutex> lock{ client->lock };
-							if(!client->isAI)
-								cout << "X : " << flo.x << ", Y : " << client->position.y << ", Z : " << flo.z << endl;
-							client->position = Vector3(flo.x, client->position.y, flo.z);
+							float pushMagnitude = angularVelocity * someFactor;
+					
+							client->velocity = Vector3::Zero();
+							client->velocity -= pushDirection * pushMagnitude;
 						}
 					}
 				}
 
 				if (obs.data.state == OBSTACLE_STATE::PENDULUM)
 				{
-					//auto transMat = XMMatrixTranslation(0, -150, 0);
-					//auto rotMat = XMMatrixRotationRollPitchYaw(0, 0, sinf(XMConvertToRadians(obs.rotate)));
-					//auto invTransMat = XMMatrixTranslation(0, 150, 0);
-					//
-					//auto resultMat = rotMat * transMat;
-					//
-					//obs.collider[0].orientation = XMQuaternionRotationMatrix(resultMat);
-
 					obs.collider[0].orientation =
 						DirectX::XMQuaternionRotationRollPitchYaw
 						(
@@ -689,12 +637,20 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					if (client->collider.isCollisionOBB(obs.collider[0]))
 					{
 						client->isColl = true;
-						XMVECTOR vec;
+
+						// Get the rotation axis and angle from the OBB's orientation
+						XMVECTOR axis;
 						float angle;
-						XMFLOAT4 vec4;
-						XMQuaternionToAxisAngle(&vec, &angle, obs.collider[0].orientation);
-						XMStoreFloat4(&vec4, vec);
-						//cout << "Coll PENDULUM " << vec4.x << " " << vec4.y << " " << vec4.z << " " << vec4.w << endl;
+						XMQuaternionToAxisAngle(&axis, &angle, obs.collider[0].orientation);
+
+						// Apply a pushing force to the player in the direction of rotation
+						// You may need to adjust the force magnitude to achieve the desired effect
+						float forceMagnitude = 100.0f; // Adjust this value as needed
+						XMVECTOR pushForce = axis * forceMagnitude;
+
+						XMFLOAT3 pos;
+						XMStoreFloat3(&pos, pushForce);
+						client->velocity += Vector3(pos.x, 0, pos.z);
 					}
 				}
 			}
@@ -949,7 +905,17 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			if (cl.second->isAI) continue;
 			if (cl.second->RoomID != id) continue;
 
-			cl.second->SendMeteoPacket((int)MetorLayerState::LMetorCenter, targetTime);
+			int target;
+			while (true)
+			{
+				auto r = rand() % 6;
+				if(isGroundByRoomID[id][r])
+				{
+					target = r;
+					isGroundByRoomID[id][r] = false;
+				}
+			}
+			cl.second->SendMeteoPacket(target, targetTime);
 		}
 
 		if (startCountByRoomID[id] == 0)
@@ -1512,6 +1478,7 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 				if (!cl.second->isAI)
 				{
 					cl.second->SendStartTimePacket(startTime);
+					Event event{ id, OverlappedType::Meteo, startTime + 12s };
 				}
 			}
 		}

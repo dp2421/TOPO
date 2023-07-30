@@ -148,6 +148,19 @@ Vector3& Vector3::operator=(const Vector3& vec)
     return (*this);
 }
 
+void Vector3::Normalize()
+{
+    float size = sqrt(x * x + y * y + z * z);
+    x = x / size;
+    y = y / size;
+    z = z / size;
+}
+
+float Vector3::Length() const
+{
+    return std::sqrt(x * x + y * y + z * z);
+}
+
 DirectX::XMFLOAT3 Vector3::ConvertXMFLOAT3()
 {
     return DirectX::XMFLOAT3(x, y, z);

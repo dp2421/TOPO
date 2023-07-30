@@ -43,7 +43,7 @@ const Vector3 TileOffset{ 0.0f, 0.0f, 0.0f };
 
 const Vector3 RotateObsRotateBodyCollider{ 450.0f / 2, 65.0f / 2, 80.0f / 2};
 const Vector3 RotateObsRotateBodyOffset{ 0.0f, 152.0f, 0.0f };
-const Vector3 RotateObsPillarCollider{ 80.0f / 2, 230.0f / 2, 80.0f / 2};
+const Vector3 RotateObsPillarCollider{ 120.0f / 2, 230.0f / 2, 120.0f / 2};
 const Vector3 RotateObsPillarOffset{ 0.0f, 115.0f, 0.0f };
 
 const Vector3 PendulumObsCollider{ 100.0f / 2, 300.0f / 2, 100.0f / 2 };

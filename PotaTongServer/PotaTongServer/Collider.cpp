@@ -32,10 +32,8 @@ XMVECTOR Collider::GetClosestFaceNormal(const BoundingBox& box, FXMVECTOR point)
 	float minDistanceY = XMVectorGetY(distances);
 	float minDistanceZ = XMVectorGetZ(distances);
 
-	if (minDistanceX < minDistanceY && minDistanceX < minDistanceZ)
+	if (minDistanceX < minDistanceZ)
 		faceIndex = 0; // X face
-	else if (minDistanceY < minDistanceZ)
-		faceIndex = 1; // Y face
 	else
 		faceIndex = 2; // Z face
 
