@@ -1620,7 +1620,7 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 				else
 				{
 					cl.second->SendStartTimePacket(startTime);
-					Event event{ id, OverlappedType::Meteo, startTime + 12s };
+					Event event{ id, OverlappedType::Meteo, startTime };
 					eventQueue.push(event);
 				}
 			}
@@ -1640,7 +1640,7 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 				if (!cl.second->isAI)
 				{
 					cl.second->SendStartTimePacket(startTime);
-					Event event{ id, OverlappedType::Meteo, startTime + 12s };
+					Event event{ id, OverlappedType::Meteo, startTime };
 				}
 			}
 		}
