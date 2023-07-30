@@ -59,6 +59,7 @@ private:
 	concurrency::concurrent_unordered_map<int, bool> isFeverByRoomID;
 	concurrency::concurrent_unordered_map<int, bool*> isCoinActiveByRoomID;
 	concurrency::concurrent_unordered_map<int, float> angularVelocityByRoomID;
+	concurrency::concurrent_unordered_map<int, std::vector<bool>> isGroundByRoomID;
 
 	std::vector<Obstacle> obstacles;
 	std::vector<Tile> coins;

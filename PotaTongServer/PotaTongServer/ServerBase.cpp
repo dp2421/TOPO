@@ -74,6 +74,7 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			break;
 		default:
 			ServerEvent(id, overlappedEx);
+			delete overlappedEx;
 			break;
 		}
 	}
@@ -385,15 +386,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		GameEnd(id);
 		break;
 	}
-	case OverlappedType::MatchingRacingStart:
-	{
-		break;
-	}
-	case OverlappedType::MatchingObstacleStart:
-	{
-
-		break;
-	}
 	case OverlappedType::MatchingRacingComplete:
 	{
 		if (isCoinActiveByRoomID.find(id) == isCoinActiveByRoomID.end())
@@ -415,9 +407,15 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<int> x(2, 3);
 
-		int connectClient = matchingManager->CompleteMatching(id, static_cast<MapType>(x(gen)));
+		auto mapType = static_cast<MapType>(x(gen));
+		int connectClient = matchingManager->CompleteMatching(id, mapType);
 		remainingUnReadyClientNumByRoomID[id] = connectClient;
 		startCountByRoomID[id] = 3;
+		if (mapType == MapType::Meteo)
+		{
+			for(int i = 0; i < 5; ++i)
+				isGroundByRoomID[id].push_back(true);
+		}
 		break;
 	}
 	case OverlappedType::RotateObs:
@@ -510,7 +508,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					}
 					if (client->collider.isCollisionAABB(tile.collider))
 					{
-						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
+						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) continue;
 
 						//if(tile.data.state == LayerState::L1Water)
 						//	cout << "Tile : " << tile.data.state << endl;
@@ -522,7 +520,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						{
 							client->isJump = false;
 						}
-						break;
 					}
 				}
 			}
@@ -530,7 +527,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			// 장애물 충돌체크
 			for (auto& obs : obstacles)
 			{
-				//break; /////////////////////////////////////////////////////////////////////////////////////////// 장애물 충돌 임시 중단
 				if (client->velocity.x != 0 || client->velocity.z != 0)
 				{
 					if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
@@ -538,7 +534,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						if (client->collider.isCollisionAABB(obs.collider[0]))
 						{
 							client->isColl = true;
-							break;
 							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
 							//auto boxcenter = obs.collider[0].getBoundingbox().Center;
 							auto clientCenter = client->collider.getBoundingbox().Center;
@@ -577,7 +572,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 								client->direction.z = 0;
 								client->velocity.z = 0;
 							}
-							break;
 						}
 					}
 				}
@@ -594,7 +588,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
 						client->isColl = true;
-						break;
 						//std::cout << " COLL SPIN " << endl;
 						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
 
@@ -649,7 +642,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					if (client->collider.isCollisionOBB(obs.collider[0]))
 					{
 						client->isColl = true;
-						break;
 						XMVECTOR vec;
 						float angle;
 						XMFLOAT4 vec4;
@@ -661,10 +653,37 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				client->isColl = false;
 			}
 
+			for (auto& super : superJump)
+			{
+				if (client->isSuperJump) break;
+				if (client->RoomID == -1 || client->ID == -1) break;
+				if (client->isAI) continue;
+
+				if (client->collider.isCollisionAABB(super.collider))
+				{
+					cout << "CLIENT ID : " << client->ID << endl;
+					lock_guard<mutex> lock{ client->lock };
+					client->isSuperJump = true;
+					client->position = Vector3(super.data.xPos, super.data.yPos, super.data.zPos);
+				}
+			}
+
 			{
 				lock_guard<mutex> lock{ client->lock };
-				if (startCountByRoomID[client->RoomID] == 0)
+				if (startCountByRoomID[client->RoomID] == 0 && !client->isSuperJump)
+				{
 					client->position += client->velocity * DeltaTimefloat.count();
+				}
+				else
+				{
+					client->position += client->velocity * DeltaTimefloat.count();
+					if (client->position.y > 1200.0f)
+					{
+						client->isSuperJump = false;
+						client->velocity = Vector3::Zero();
+					}
+				}
+
 				if (client->position.y < -3000)
 				{
 					client->velocity.y = 0;
@@ -868,6 +887,29 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					clients[id]->degree += 360;
 			}
 		}
+		break;
+	}
+	case OverlappedType::Meteo:
+	{
+		auto targetTime = chrono::system_clock::now() + 12s;
+		for (auto cl : clients)
+		{
+			if (cl.second->isAI) continue;
+			if (cl.second->RoomID != id) continue;
+
+			cl.second->SendMeteoPacket((int)MetorLayerState::LMetorCenter, targetTime);
+		}
+
+		if (startCountByRoomID[id] == 0)
+		{
+			Event event{ id, OverlappedType::Meteo, targetTime };
+			eventQueue.push(event);
+		}
+		break;
+	}
+	case OverlappedType::JumpMap:
+	{
+
 		break;
 	}
 	default:
@@ -1087,7 +1129,6 @@ void ServerBase::ClientReady(const int id)
 	}
 	case MapType::Racing:
 	{
-		cout << "Send Info  \n";
 		unsigned short RPS[OBSTACLENUM] = { 0, };
 		unsigned short degree[OBSTACLENUM] = { 0, };
 		int i = 0;
@@ -1157,8 +1198,6 @@ void ServerBase::GameStartCount(const int id)
 	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
 		isFever = isFeverByRoomID[id];
 
-	cout << "isFever : " << isFever << endl;
-
 	MapType curMode = MapType::Lobby;
 
 	for (auto cl : clients)
@@ -1177,22 +1216,20 @@ void ServerBase::GameStartCount(const int id)
 		Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
 		eventQueue.push(event);
 		startCountByRoomID[id] -= 1;
+		cout << "StartCount : " << startCountByRoomID[id] << ", RoomID : " << id << endl;
 	}
 	else return;
 
 	if (curMode == MapType::Racing)
 	{
-		cout << "Racing\n";
 		RacingStartCount(id, isFever);
 	}
 	else if (curMode == MapType::Meteo)
 	{
-		cout << "Meteo\n";
 		MeteoStartCount(id, isFever);
 	}
 	else if (curMode == MapType::Jump)
 	{
-		cout << "Jump\n";
 		JumpStartCount(id, isFever);
 	}
 }
@@ -1200,7 +1237,6 @@ void ServerBase::GameStartCount(const int id)
 void ServerBase::GameEnd(const int id)
 {
 	startCountByRoomID[id] = 3;
-	cout << startCountByRoomID[id] << " GameEND reamin Count\n";
 	bool isFever = false;
 	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
 		isFever = isFeverByRoomID[id];
@@ -1272,6 +1308,7 @@ void ServerBase::GameEnd(const int id)
 			}
 			else
 			{
+				cl.second->mapType = MapType::Lobby;
 				cl.second->RoomID = -1;
 				cl.second->score = 0;
 
@@ -1402,6 +1439,8 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 				else
 				{
 					cl.second->SendStartTimePacket(startTime);
+					Event event{ id, OverlappedType::Meteo, startTime + 12s };
+					eventQueue.push(event);
 				}
 			}
 		}

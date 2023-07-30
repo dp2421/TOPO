@@ -16,6 +16,7 @@ public:
 
 	bool isMove = false;
 	bool isJump = false;
+	bool isSuperJump = false;
 	bool isColl = false;
 	bool isGoal = false;
 	bool isCoin = false;
@@ -59,7 +60,7 @@ public:
 	void SendObstacleInfoPacket(const unsigned short degree[], int size);
 	void SendSingleObstacleInfoPacket(const int id, const unsigned short degree);
 	void SendObstacleRPSPacket(const unsigned short angularVelocity[], int size);
-	void SendMeteoPacket(const unsigned char target, unsigned short time);
+	void SendMeteoPacket(const unsigned char target, std::chrono::system_clock::time_point time);
 	void SendEnterCoinPacket(const int id, const int coinIndex);
 	void SendPushedPacket(const int id, std::chrono::system_clock::time_point effectTime);
 	void SendPushCoolTimePacket(std::chrono::system_clock::time_point effectTime);

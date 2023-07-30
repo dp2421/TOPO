@@ -20,6 +20,7 @@ void Client::ClearBoolean()
 {
 	bool isMove = false;
 	bool isJump = false;
+	bool isSuperJump = false;
 	bool isColl = false;
 	bool isGoal = false;
 	bool isCoin = false;
@@ -65,7 +66,6 @@ void Client::SendMatchingOKPacket(const MapType gamemode)
 
 void Client::SendGameStartPacket(const int count)
 {
-	cout << count << " STARTCOUNT \n";
 	ServerGameStartPacket packet;
 	packet.size = sizeof(ServerGameStartPacket);
 	packet.type = ServerGameStart;
@@ -181,12 +181,12 @@ void Client::SendObstacleRPSPacket(const unsigned short angularVelocity[], int s
 	SendPacket(&packet);
 }
 
-void Client::SendMeteoPacket(const unsigned char target, unsigned short time)
+void Client::SendMeteoPacket(const unsigned char target, std::chrono::system_clock::time_point time)
 {
 	ServerMeteoInfoPacket packet;
 	packet.size = sizeof(ServerMeteoInfoPacket);
 	packet.type = ServerMeteoInfo;
-	//packet.targetTime = time;
+	packet.targetTime = time;
 
 	SendPacket(&packet);
 }
