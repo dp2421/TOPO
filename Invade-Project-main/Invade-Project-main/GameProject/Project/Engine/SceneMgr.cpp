@@ -964,23 +964,23 @@ void CSceneMgr::InitStartScene()
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject, m_pStartScene);
 
 
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Lobby.fbx");
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Lobby.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\LobbyMap.mdat", L"MeshData\\LobbyMap.mdat", false, true);
 	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0, 10, 21400));
-	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(3.f, 3.f, 3.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pStartScene);
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(0, 10, 21400));
+	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	//pObject->Transform()->SetLocalScale(Vec3(3.f, 3.f, 3.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	//m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pStartScene);
 
 #if LOCALPLAY
 	m_pCurScene = m_pStartScene;

@@ -4,6 +4,7 @@
 #include "MeshRender.h"
 #include "Material.h"
 #include "ResMgr.h"
+#include "RenderMgr.h"
 #include "StructuredBuffer.h"
 
 void CAnimator3D::SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip)
@@ -60,18 +61,18 @@ void CAnimator3D::FinalUpdate()
 {
 	m_dCurTime = 0.f;
 	// 현재 재생중인 Clip 의 시간을 진행한다.
-	//for (int i = 0; i < 2; ++i)
-	//{
 
-	//}
 	m_vecClipUpdateTime[m_iCurClip] += DT;
 	auto p=m_pVecClip->at(m_iCurClip);
 	if (m_vecClipUpdateTime[m_iCurClip] >= m_pVecClip->at(m_iCurClip).dTimeLength)
 	{
 		m_vecClipUpdateTime[m_iCurClip] = 0.f;
 	}
+	if (CRenderMgr::GetInst()->IsFever())
+		m_dCurTime = m_pVecClip->at(m_iCurClip).dStartTime + m_vecClipUpdateTime[m_iCurClip] * 2;
+	else
+		m_dCurTime = m_pVecClip->at(m_iCurClip).dStartTime + m_vecClipUpdateTime[m_iCurClip];
 
-	m_dCurTime = m_pVecClip->at(m_iCurClip).dStartTime + m_vecClipUpdateTime[m_iCurClip];
 
 	double dFrameIdx = m_dCurTime * (double)m_iFrameCount;
 	m_iFrameIdx = (int)(dFrameIdx);

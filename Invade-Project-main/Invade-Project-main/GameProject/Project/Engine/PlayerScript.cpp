@@ -21,36 +21,46 @@ void CPlayerScript::Update()
 
 	if (!isPlayable)
 	{
-		if (moveState == 1)
+		if (isStun == true)
 		{
-			if (!runPlayer->IsActive())
-			{
-				runPlayer->MeshRender()->SetDynamicShadow(true);
-				runPlayer->SetActive(true);
-			}
-			if (IdlePlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
-			{
-				IdlePlayer->SetActive(false);
-				VictoryPlayer->SetActive(false);
-				FalldownPlayer->SetActive(false);
-			}
+
+			Pushed(isStun, stunTime);
 		}
 		else
 		{
-			if (runPlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+			if (moveState == 1)
 			{
-				VictoryPlayer->SetActive(false);
-				FalldownPlayer->SetActive(false);
-				runPlayer->SetActive(false);
+				if (!runPlayer->IsActive())
+				{
+					runPlayer->MeshRender()->SetDynamicShadow(true);
+					runPlayer->SetActive(true);
+				}
+				if (IdlePlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+				{
+					IdlePlayer->SetActive(false);
+					VictoryPlayer->SetActive(false);
+					FalldownPlayer->SetActive(false);
+				}
 			}
-			if (!IdlePlayer->IsActive())
+			else
 			{
-				IdlePlayer->MeshRender()->SetDynamicShadow(true);
-				IdlePlayer->SetActive(true);
+				if (runPlayer->IsActive() || VictoryPlayer->IsActive() || FalldownPlayer->IsActive())
+				{
+					VictoryPlayer->SetActive(false);
+					FalldownPlayer->SetActive(false);
+					runPlayer->SetActive(false);
+				}
+				if (!IdlePlayer->IsActive())
+				{
+					IdlePlayer->MeshRender()->SetDynamicShadow(true);
+					IdlePlayer->SetActive(true);
+				}
 			}
+			prePosition = Transform()->GetLocalPos();
+
 		}
-		prePosition = Transform()->GetLocalPos();
 		return;
+
 	}
 #endif
 
@@ -199,7 +209,6 @@ void CPlayerScript::Update()
 
 #endif
 
-	Pushed(isStun, stunTime);
 
 	//if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::AWARD)
 	//{
@@ -235,6 +244,7 @@ void CPlayerScript::Update()
 
 	IdlePlayer->Transform()->SetLocalRot(vRot);
 	runPlayer->Transform()->SetLocalRot(vRot);
+	FalldownPlayer->Transform()->SetLocalRot(vRot);
 	Transform()->SetLocalRot(vRot);
 
 	m_isFever = CRenderMgr::GetInst()->IsFever();
@@ -365,6 +375,7 @@ void CPlayerScript::SetPlayerPos(Vec3 pos, float degree, bool isMove, bool isGoa
 	Transform()->SetLocalPos(pos);
 	runPlayer->Transform()->SetLocalPos(pos);
 	IdlePlayer->Transform()->SetLocalPos(pos);
+	FalldownPlayer->Transform()->SetLocalPos(pos);
 }
 
 
@@ -418,8 +429,13 @@ void CPlayerScript::SetSpeedLine(bool ismove)
 }
 void CPlayerScript::Pushed(bool ispush, std::chrono::system_clock::time_point time)
 {
-
-	if (ispush && (std::chrono::system_clock::now() <= time))
+	if (time <= std::chrono::system_clock::now())
+	{
+		isStun = false;
+		FalldownPlayer->SetActive(false);
+		return;
+	}
+	else if (ispush && (std::chrono::system_clock::now() <= time))
 	{
 		if (!FalldownPlayer->IsActive())
 			FalldownPlayer->SetActive(true);
@@ -429,7 +445,12 @@ void CPlayerScript::Pushed(bool ispush, std::chrono::system_clock::time_point ti
 			runPlayer->SetActive(false);
 		}
 	}
-
+	//if (time <= std::chrono::system_clock::now())
+	//{
+	//	isStun == false;
+	//	FalldownPlayer->SetActive(false);
+	//	std::cout << "스턴 종료 " << std::endl;
+	//}
 }
 
 void CPlayerScript::startAwardScene(int rank)
