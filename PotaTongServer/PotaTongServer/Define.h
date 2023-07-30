@@ -12,6 +12,7 @@ constexpr int GameTime = 120;
 constexpr int SurviveTime = 60;
 constexpr int Frame = 30;
 constexpr auto PushTime = 1500ms;
+constexpr auto FeverModeMulti = 2;
 constexpr auto DeltaTimeMilli = chrono::duration_cast<chrono::milliseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimeNano = chrono::duration_cast<chrono::nanoseconds>(chrono::duration<float>(1.f / Frame));
 constexpr auto DeltaTimefloat = chrono::duration<float>(1.f / Frame);

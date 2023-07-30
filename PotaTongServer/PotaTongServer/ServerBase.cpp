@@ -393,6 +393,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingRacingComplete:
 	{
+		isFeverByRoomID[id] = false;
 		if (isCoinActiveByRoomID.find(id) == isCoinActiveByRoomID.end())
 		{
 			isCoinActiveByRoomID[id] = new bool[2];
@@ -408,6 +409,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::MatchingObstacleComplete:
 	{
+		isFeverByRoomID[id] = false;
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<int> x(2, 3);
@@ -499,19 +501,19 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		client->velocity.z = 0;
 		{
 			lock_guard<mutex> lock{ client->lock };
-			client->velocity.y -= GRAVITY;
+			client->velocity.y -= GRAVITY * (isFeverByRoomID[client->ID] ? 3 : 1);
 		}
 		if (client->isMove && !client->isPushed)
 		{
 			lock_guard<mutex> lock{ client->lock };
-			auto delta = client->direction * SPEED;
+			auto delta = client->direction * SPEED * (isFeverByRoomID[client->ID] ? FeverModeMulti : 1);
 			client->velocity.x = delta.x;
 			client->velocity.z = delta.z;
 		}
 		else if (client->isPushed)
 		{
 			lock_guard<mutex> lock{ client->lock };
-			auto delta = client->direction * SPEED / 3;
+			auto delta = client->direction * SPEED / 3 * (isFeverByRoomID[client->ID] ? FeverModeMulti : 1);
 			client->velocity.x = delta.x;
 			client->velocity.z = delta.z;
 		}
@@ -705,7 +707,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					}
 					else
 					{
-						client->position += SUPERJUMP * DeltaTimefloat.count();
+						client->position += SUPERJUMP * DeltaTimefloat.count() * (isFeverByRoomID[client->ID] ? FeverModeMulti : 1);
 						if (client->position.y > 1000.0f)
 						{
 							client->isSuperJump = false;
@@ -839,47 +841,48 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 							float pushMagnitude = angularVelocity * someFactor;
 
 							client->velocity = Vector3::Zero();
-							client->velocity += pushDirection * pushMagnitude;
+							client->velocity += pushDirection * pushMagnitude * (isFeverByRoomID[client->ID] ? FeverModeMulti : 1);
 						}
 						else
 						{
 							float pushMagnitude = angularVelocity * someFactor;
 
 							client->velocity = Vector3::Zero();
-							client->velocity -= pushDirection * pushMagnitude;
+							client->velocity -= pushDirection * pushMagnitude * (isFeverByRoomID[client->ID] ? FeverModeMulti : 1);
 						}
 					}
 				}
-			if (client->velocity.y < 0)
-			{
-				for (auto& tile : jumpMapTiles)
+				if (client->velocity.y < 0)
 				{
-					if (client->collider.isCollisionAABB(tile.collider))
+					for (auto& tile : jumpMapTiles)
 					{
-						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
-
-						//if(tile.data.state == LayerState::L1Water)
-						//	cout << "Tile : " << tile.data.state << endl;
-
-						lock_guard<mutex> lock{ client->lock };
-						client->position.y = tile.collider.position->y;
-						client->velocity.y = 0;
-						if (client->isJump)
+						if (client->collider.isCollisionAABB(tile.collider))
 						{
-							client->isJump = false;
-							client->isGoal = true;
+							if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
+
+							//if(tile.data.state == LayerState::L1Water)
+							//	cout << "Tile : " << tile.data.state << endl;
+
+							lock_guard<mutex> lock{ client->lock };
+							client->position.y = tile.collider.position->y;
+							client->velocity.y = 0;
+							if (client->isJump)
+							{
+								client->isJump = false;
+								client->isGoal = true;
+							}
+							break;
 						}
-						break;
 					}
 				}
-			}
-			{
-				lock_guard<mutex> lock{ client->lock };
-				if (startCountByRoomID[client->RoomID] == 0)
-					client->position += client->velocity * DeltaTimefloat.count();
-				if (client->position.y < -3000)
 				{
-					client->velocity.y = 0;
+					lock_guard<mutex> lock{ client->lock };
+					if (startCountByRoomID[client->RoomID] == 0)
+						client->position += client->velocity * DeltaTimefloat.count();
+					if (client->position.y < -3000)
+					{
+						client->velocity.y = 0;
+					}
 				}
 			}
 		}
@@ -1181,7 +1184,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 		{
 			lock_guard<mutex> lock{ client->lock };
 			client->isJump = true;
-			client->velocity.y = JUMPVEL;
+			client->velocity.y = JUMPVEL * (isFeverByRoomID[client->ID] ? FeverModeMulti : 1);
 		}
 		break;
 	}

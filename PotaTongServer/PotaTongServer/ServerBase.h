@@ -73,8 +73,8 @@ private:
 
 	std::vector<thread> workerThreads;
 
-	std::vector<Tile> racing2FTiles;
-	std::vector<Tile> racing1FTiles;
+	std::vector<Tile> navi2F;
+	std::vector<Tile> navi1F;
 
 	atomic<int> clientID = 0;
 
