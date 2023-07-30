@@ -359,7 +359,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerEnterCoin:
     {
         ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
-        
+            
         // p->id 먹은 플레이어 ID;
         CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Coin")->GetParentObj()[p->coinIndex]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
         break;

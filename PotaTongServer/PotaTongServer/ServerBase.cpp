@@ -661,26 +661,32 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 				if (client->collider.isCollisionAABB(super.collider))
 				{
-					cout << "CLIENT ID : " << client->ID << endl;
+					cout << "CALL SUPER : " << client->ID << endl;
 					lock_guard<mutex> lock{ client->lock };
 					client->isSuperJump = true;
+					client->isMove = false;
+					client->isJump = false;
+					client->velocity = Vector3::Zero();
 					client->position = Vector3(super.data.xPos, super.data.yPos, super.data.zPos);
 				}
 			}
 
 			{
 				lock_guard<mutex> lock{ client->lock };
-				if (startCountByRoomID[client->RoomID] == 0 && !client->isSuperJump)
+				if (startCountByRoomID[client->RoomID] == 0)
 				{
-					client->position += client->velocity * DeltaTimefloat.count();
-				}
-				else
-				{
-					client->position += client->velocity * DeltaTimefloat.count();
-					if (client->position.y > 1200.0f)
+					if (!client->isSuperJump)
 					{
-						client->isSuperJump = false;
-						client->velocity = Vector3::Zero();
+						client->position += client->velocity * DeltaTimefloat.count();
+					}
+					else
+					{
+						client->position += SUPERJUMP * DeltaTimefloat.count();
+						if (client->position.y > 1000.0f)
+						{
+							client->isSuperJump = false;
+							client->velocity = Vector3::Zero();
+						}
 					}
 				}
 
@@ -1015,6 +1021,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	if (startCountByRoomID[client->RoomID] != 0) return;
 	if (client->isGoal) return;
 	if (client->isPushed) return;
+	if (client->isSuperJump) return;
 
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);

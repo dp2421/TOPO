@@ -8,7 +8,7 @@
 #define DistanceVec3(a, b) sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
 
 constexpr int MatchingTime = 5;
-constexpr int GameTime = 10;
+constexpr int GameTime = 120;
 constexpr int SurviveTime = 60;
 constexpr int Frame = 30;
 constexpr auto PushTime = 1500ms;
@@ -25,7 +25,7 @@ constexpr float SPEED = 1000.f;
 constexpr float JUMPVEL = 450.0f;
 constexpr float GRAVITY = 9.8f*2.f;
 constexpr float PUSHDISTANCE = 150.f;
-const Vector3 SUPERJUMP{ 0.f, 1200.f, 0.f };
+const Vector3 SUPERJUMP{ 0.f, 2000.f, 0.f };
 
 const Vector3 PlayerStartPos{ -1800, 10, 35 };
 const Vector3 MeteoStartPos{ -450, 10, -450 };
