@@ -370,6 +370,12 @@ void CDevice::Render_Present()
 	// Present the frame.	
 	m_pSwapChain->Present(0, 0);
 
+
+
+	// 다음 프레임 시작 전 리소스 상태 복원: 프레임 시작에서 원래 상태로 전환
+	// 하나의 예로 다음 위치에 코드를 삽입할 수 있습니다:
+	// 다음 Update 또는 Render 함수 시작 부분, 렌더링 작업을 수행하기 전 리소스 상태를 전환.
+
 	WaitForFenceEvent();
 	
 	// 상수버퍼 오프셋 초기화

@@ -8,8 +8,8 @@ constexpr int BUFFERSIZE = 1024;
 constexpr int NAMESIZE = 20;
 constexpr int OBSTACLENUM = 50;
 
-//constexpr char SERVERIP[] = "210.117.115.67";
-constexpr char SERVERIP[] = "127.0.0.1";
+constexpr char SERVERIP[] = "210.117.115.67";
+//constexpr char SERVERIP[] = "127.0.0.1";
 
 constexpr unsigned char ClientLogin = 100;
 constexpr unsigned char ClientMatching = 101;

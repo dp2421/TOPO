@@ -81,6 +81,11 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 		m_pCurScene = m_pMetorScene;
 		NetworkMgr::GetInst()->SendClientReadyPacket();
 	}
+	else if (_type == SCENE_TYPE::LOBBY)
+	{
+		m_pCurScene = m_pStartScene;
+		//NetworkMgr::GetInst()->SendClientReadyPacket();
+	}
 }
 
 void CSceneMgr::ChangeScene()
@@ -964,23 +969,23 @@ void CSceneMgr::InitStartScene()
 	m_pStartScene->FindLayer(L"Default")->AddGameObject(pObject, m_pStartScene);
 
 
-	Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Lobby.fbx");
+	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->LoadFBX(L"FBX\\Lobby.fbx");
 	//pMeshData->Save(pMeshData->GetPath());
 
 	//Ptr<CMeshData> pMeshData = CResMgr::GetInst()->Load<CMeshData>(L"MeshData\\LobbyMap.mdat", L"MeshData\\LobbyMap.mdat", false, true);
 	//pMeshData->Save(pMeshData->GetPath());
-	pObject = pMeshData->Instantiate();
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CCollider3D);
-	pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
-	pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
-	pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
-	pObject->FrustumCheck(false);
-	pObject->Transform()->SetLocalPos(Vec3(0, 10, 21400));
-	pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(3.f, 3.f, 3.f));
-	pObject->MeshRender()->SetDynamicShadow(true);
-	m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pStartScene);
+	//pObject = pMeshData->Instantiate();
+	//pObject->AddComponent(new CTransform);
+	//pObject->AddComponent(new CCollider3D);
+	//pObject->Collider3D()->SetCollider3DType(COLLIDER3D_TYPE::CUBE);
+	//pObject->Collider3D()->SetOffsetScale(Vec3(1.f, 1.f, 1.f));
+	//pObject->Collider3D()->SetOffsetPos(Vec3(0.f, 10.f, 0.f));
+	//pObject->FrustumCheck(false);
+	//pObject->Transform()->SetLocalPos(Vec3(0, 10, 21400));
+	//pObject->Transform()->SetLocalRot(Vec3(3.14f / 2, 0.f, 0.f));
+	//pObject->Transform()->SetLocalScale(Vec3(3.f, 3.f, 3.f));
+	//pObject->MeshRender()->SetDynamicShadow(true);
+	//m_pStartScene->FindLayer(L"Racing")->AddGameObject(pObject, m_pStartScene);
 
 #if LOCALPLAY
 	m_pCurScene = m_pStartScene;
@@ -1561,6 +1566,9 @@ void CSceneMgr::InitUI()
 	Ptr<CTexture> pRoundStart = CResMgr::GetInst()->Load<CTexture>(L"RoundStart", L"Texture\\StartUI.png");
 	Ptr<CTexture> pRoundDone = CResMgr::GetInst()->Load<CTexture>(L"RoundDone", L"Texture\\GameDone.png");
 	Ptr<CTexture> pFeverUI  = CResMgr::GetInst()->Load<CTexture>(L"Fever", L"Texture\\FeverUI.png");
+	Ptr<CTexture> pLobbyUI  = CResMgr::GetInst()->Load<CTexture>(L"Lobby", L"Texture\\GotoLobby.png");
+	Ptr<CTexture> pTitle  = CResMgr::GetInst()->Load<CTexture>(L"Title", L"Texture\\TitleUI.png");
+
 	
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 
@@ -1631,6 +1639,26 @@ void CSceneMgr::InitUI()
 			break;
 		}
 	}
+	pObject = new CGameObject;
+	pObject->SetName(L"ToLobby UI");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::TOLOBBY);
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(-winsize.x / 2, winsize.y / 8, 0));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x / 4, winsize.y / 12, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pLobbyUI.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
+	pObject->SetActive(true);
+	m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 
 	pObject = new CGameObject;
 	pObject->SetName(L"Start UI");
@@ -1715,6 +1743,30 @@ void CSceneMgr::InitUI()
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
 	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
+	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
+
+
+	pObject = new CGameObject;
+	pObject->SetName(L"Title");
+	pObject->AddComponent(new CTransform);
+	pObject->AddComponent(new CMeshRender);
+	pObject->AddComponent(new CCollider2D);
+	pObject->AddComponent(new CUIScript);
+
+	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::TITLE);
+
+	// Transform ����
+	pObject->Transform()->SetLocalPos(Vec3(0, winsize.y / 3, 0.f));
+	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x , winsize.x, 1.f));
+	// MeshRender ����
+	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
+	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
+	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pTitle.GetPointer());
+	// Collider2D
+	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
+	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->SetActive(true);
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 

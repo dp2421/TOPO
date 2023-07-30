@@ -15,6 +15,12 @@ void CUIScript::Update()
 
 	if (m_isClicked == true)
 	{
+
+		if (m_iType == TOLOBBY)
+		{
+			CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::LOBBY);
+			CRenderMgr::GetInst()->SetSceneChanged(true);
+		}
 		if (m_iType == SELECT_BUTTON)
 		{
 			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
@@ -63,6 +69,10 @@ void CUIScript::UIRender()
 	{
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
+			if (obj->GetScript<CUIScript>()->GetType() == TITLE)
+			{
+				obj->SetActive(false);
+			}
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_SURVIVAL ||
 				obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_RACING ||
 				obj->GetScript<CUIScript>()->GetType() == UI_TYPE::WINDOW)
@@ -195,7 +205,6 @@ void CUIScript::UIRender()
 	//else f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
 
 
-
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
@@ -226,7 +235,8 @@ void CUIScript::GameEndStart(bool start)
 	}
 	else
 	{
-		if (CSceneMgr::GetInst()->GetSceneType() != SCENE_TYPE::AWARD)
+		//if (CSceneMgr::GetInst()->GetSceneType() != SCENE_TYPE::AWARD)
+		if (!CRenderMgr::GetInst()->IsFever())
 		{
 			if (m_iType == DONE)
 				GetObj()->SetActive(true);
@@ -234,7 +244,7 @@ void CUIScript::GameEndStart(bool start)
 		else
 		{
 			if (m_iType == DONE)
-				GetObj()->SetActive(true);
+				GetObj()->SetActive(false);
 
 		}
 	}
