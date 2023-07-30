@@ -24,6 +24,9 @@ HWND g_hWnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
+float winwidth = GetSystemMetrics(SM_CXSCREEN);
+float winheight = GetSystemMetrics(SM_CYSCREEN);
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -50,7 +53,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
-    if (FAILED(CGameFramework::GetInst()->Init(g_hWnd, tResolution{ 1920, 1080 }, true)))
+    if (FAILED(CGameFramework::GetInst()->Init(g_hWnd, tResolution{ winwidth, winheight }, true)))
     {
         return 0;
     }
@@ -127,14 +130,19 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   int width = GetSystemMetrics(SM_CXSCREEN);
+   int height = GetSystemMetrics(SM_CYSCREEN);
+
+   g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_POPUP,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
    if (!g_hWnd)
    {
       return FALSE;
    }
 
-   ShowWindow(g_hWnd, nCmdShow);
+   SetMenu(g_hWnd, NULL);
+
+   ShowWindow(g_hWnd, SW_HIDE);
    UpdateWindow(g_hWnd);
 
    return TRUE;
@@ -180,6 +188,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case VK_ESCAPE:  
+            DestroyWindow(hWnd);
+            break;
+        default:
+            break;
+        }
+        break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -194,6 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
     return 0;
 }
 
