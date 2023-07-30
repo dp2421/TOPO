@@ -13,6 +13,7 @@ public:
 	void InitHandler();
 	void InitObsatacleInfo();
 	void InitMapInfo();
+	void InitNaviInfo();
 	void InitItemInfo();
 	void InitMeteoInfo();
 	void InitJumpMapInfo();

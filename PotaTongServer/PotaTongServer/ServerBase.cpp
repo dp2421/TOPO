@@ -11,6 +11,8 @@ ServerBase::ServerBase()
 	InitMapInfo();
 	InitItemInfo();
 	InitMeteoInfo();
+	InitJumpMapInfo();
+	InitNaviInfo();
 	//InitAI();
 }
 
@@ -216,6 +218,48 @@ void ServerBase::InitMapInfo()
 	tiles.pop_back();
 
 	inFile.close();
+}
+
+void ServerBase::InitNaviInfo()
+{
+	{
+		const char* FileNames = { "move2F.bin" };
+
+		ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			TileInfo tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			navi2F.push_back(tile);
+		}
+		navi2F.pop_back();
+
+		inFile.close();
+	}
+	{
+		const char* FileNames = { "move1F.bin" };
+
+		ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			TileInfo tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			navi1F.push_back(tile);
+		}
+		navi1F.pop_back();
+
+		inFile.close();
+	}
 }
 
 void ServerBase::InitItemInfo()
