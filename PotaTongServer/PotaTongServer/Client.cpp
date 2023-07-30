@@ -183,7 +183,6 @@ void Client::SendObstacleRPSPacket(const unsigned short angularVelocity[], int s
 
 void Client::SendMeteoPacket(const unsigned char target, std::chrono::system_clock::time_point time)
 {
-	cout << "qudtls \n";
 	ServerMeteoInfoPacket packet;
 	packet.size = sizeof(ServerMeteoInfoPacket);
 	packet.type = ServerMeteoInfo;
