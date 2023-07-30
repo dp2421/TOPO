@@ -81,6 +81,11 @@ void CSceneMgr::ChangeScene(SCENE_TYPE _type)
 		m_pCurScene = m_pMetorScene;
 		NetworkMgr::GetInst()->SendClientReadyPacket();
 	}
+	else if (_type == SCENE_TYPE::LOBBY)
+	{
+		m_pCurScene = m_pStartScene;
+		//NetworkMgr::GetInst()->SendClientReadyPacket();
+	}
 }
 
 void CSceneMgr::ChangeScene()

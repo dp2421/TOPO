@@ -18,7 +18,7 @@ void CUIScript::Update()
 
 		if (m_iType == TOLOBBY)
 		{
-			CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::RACING);
+			CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::LOBBY);
 			CRenderMgr::GetInst()->SetSceneChanged(true);
 		}
 		if (m_iType == SELECT_BUTTON)
@@ -213,7 +213,7 @@ void CUIScript::UIRender()
 	if (CRenderMgr::GetInst()->m_startCnt ==0)
 		GameEndStart(true);
 
-	if (NetworkMgr::GetInst()->b_isgoal&&!CRenderMgr::GetInst()->IsFever())
+	if (NetworkMgr::GetInst()->b_isgoal)
 		GameEndStart(false);
 }
 
@@ -235,7 +235,8 @@ void CUIScript::GameEndStart(bool start)
 	}
 	else
 	{
-		if (CSceneMgr::GetInst()->GetSceneType() != SCENE_TYPE::AWARD)
+		//if (CSceneMgr::GetInst()->GetSceneType() != SCENE_TYPE::AWARD)
+		if (!CRenderMgr::GetInst()->IsFever())
 		{
 			if (m_iType == DONE)
 				GetObj()->SetActive(true);
@@ -243,7 +244,7 @@ void CUIScript::GameEndStart(bool start)
 		else
 		{
 			if (m_iType == DONE)
-				GetObj()->SetActive(true);
+				GetObj()->SetActive(false);
 
 		}
 	}
