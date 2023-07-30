@@ -8,8 +8,8 @@ void CAwardScript::Awake()
 
 void CAwardScript::Update()
 {
-	//for(int i=0; i<3; ++i)
-	//	RankedPlayer(i);
+	for(int i=0; i<3; ++i)
+		RankedPlayer(i);
 }
 
 CAwardScript::CAwardScript() :CScript((UINT)SCRIPT_TYPE::AWARDSCRIPT)
