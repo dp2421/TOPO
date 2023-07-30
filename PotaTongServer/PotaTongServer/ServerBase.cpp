@@ -487,7 +487,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		else if (client->isPushed)
 		{
 			lock_guard<mutex> lock{ client->lock };
-			auto delta = client->direction * SPEED / 2;
+			auto delta = client->direction * SPEED / 3;
 			client->velocity.x = delta.x;
 			client->velocity.z = delta.z;
 		}
@@ -844,6 +844,30 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		clients[id]->isPushed = false;
 		clients[id]->direction = Vector3::Zero();
+		if (clients[id]->isAI)
+		{
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> x(-1.0f, 1.0f);
+			std::uniform_real_distribution<float> z(0.0f, 1.0f);
+			XMVECTOR dir{ x(gen), 0, z(gen) };
+
+			XMFLOAT3 normalDir;
+			XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
+
+			{
+				lock_guard<mutex> lock{ clients[id]->lock };
+				clients[id]->isMove = true;
+				clients[id]->direction = { normalDir.x, normalDir.y, normalDir.z };
+
+				auto x = clients[id]->direction.x;
+				auto z = clients[id]->direction.z;
+
+				clients[id]->degree = XMConvertToDegrees(atan2(x, z)) - 180;
+				if (clients[id]->degree < -360)
+					clients[id]->degree += 360;
+			}
+		}
 		break;
 	}
 	default:
@@ -1019,7 +1043,9 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 
 			target->direction = { normalDir.x, 0, normalDir.z };
 
-			auto pushedTime = chrono::system_clock::now() + PushTime;
+			auto timepoint = chrono::system_clock::now();
+			auto pushedTime = timepoint + PushTime;
+			cout << "PUSH TIME" << (pushedTime - timepoint).count() << endl;
 			for (auto& cl : clients)
 			{
 				if (cl.second->isAI) continue;
