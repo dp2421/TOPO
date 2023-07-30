@@ -21,6 +21,8 @@ enum UI_TYPE
     SPEEDLINE,
     DONE,
     START,
+    TITLE,
+    TOLOBBY,
 }; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
 
