@@ -1641,6 +1641,7 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 				{
 					cl.second->SendStartTimePacket(startTime);
 					Event event{ id, OverlappedType::Meteo, startTime };
+					eventQueue.push(event);
 				}
 			}
 		}
