@@ -459,7 +459,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		std::uniform_int_distribution<int> x(2, 3);
 
 		auto mapType = static_cast<MapType>(x(gen));
-		int connectClient = matchingManager->CompleteMatching(id, mapType);
+		int connectClient = matchingManager->CompleteMatching(id, MapType::Meteo);
 		remainingUnReadyClientNumByRoomID[id] = connectClient;
 		startCountByRoomID[id] = 3;
 		if (mapType == MapType::Meteo)
@@ -660,7 +660,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						collisionNormal.y = 0;
 						collisionNormal.Normalize();
 					
-						float angularVelocity = 3; 
+						float angularVelocity = 5; 
 					
 						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
 					
@@ -812,7 +812,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					if (client->collider.isCollisionAABB(tile.collider))
 					{
 						cout << "Ãæµ¹ \n";
-						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) continue;
+						//if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) continue;
 
 						//if(tile.data.state == LayerState::L1Water)
 						//	cout << "Tile : " << tile.data.state << endl;
@@ -891,7 +891,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						collisionNormal.y = 0;
 						collisionNormal.Normalize();
 
-						float angularVelocity = 3;
+						float angularVelocity = 5;
 
 						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
 
