@@ -1629,7 +1629,7 @@ void CSceneMgr::InitUI()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pLobbyUI.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0.f));
+	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 8, 0));
 	pObject->SetActive(true);
 	m_pAwardScene->FindLayer(L"UI")->AddGameObject(pObject, m_pRacingScene);
 
@@ -1715,7 +1715,7 @@ void CSceneMgr::InitUI()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pStartButton.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 3, winsize.y / 7, 0.f));
+	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 2, winsize.y / 16, 0.f));
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
 
@@ -1785,7 +1785,7 @@ void CSceneMgr::InitUI()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pRacing.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->Collider2D()->SetOffsetPos(Vec3(-winsize.x / 3, 580.f, 5.f));
 	pObject->SetActive(false);
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 
@@ -1808,7 +1808,7 @@ void CSceneMgr::InitUI()
 	pObject->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, pSurvival.GetPointer());
 	// Collider2D
 	pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::RECT);
-	pObject->Collider2D()->SetOffsetPos(Vec3(-400.f, 400.f, 0.f));
+	pObject->Collider2D()->SetOffsetPos(Vec3(winsize.x / 3, 580.f, 2.f));
 	pObject->SetActive(false);
 	m_pStartScene->FindLayer(L"UI")->AddGameObject(pObject, m_pStartScene);
 

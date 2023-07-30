@@ -1060,12 +1060,14 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::Meteo:
 	{
+		cout << "RoomID : " << id << endl;
 		auto targetTime = chrono::system_clock::now() + 12s;
 		for (auto cl : clients)
 		{
 			if (cl.second->isAI) continue;
 			if (cl.second->RoomID != id) continue;
 
+			cout << "SIBAL\n";
 			int target;
 			while (true)
 			{
@@ -1075,6 +1077,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				{
 					target = r;
 					isGroundByRoomID[id][r] = false;
+					break;
 				}
 			}
 			cl.second->SendMeteoPacket(target, targetTime);
@@ -1268,7 +1271,6 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 
 			auto timepoint = chrono::system_clock::now();
 			auto pushedTime = timepoint + PushTime;
-			cout << "PUSH TIME" << (pushedTime - timepoint).count() << endl;
 			for (auto& cl : clients)
 			{
 				if (cl.second->isAI) continue;
@@ -1336,6 +1338,7 @@ void ServerBase::ClientReady(const int id)
 	}
 	default: // Obstacle
 	{
+		cout << "MAPTYPE : " << (int)clients[id]->mapType << endl;
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 		break;
@@ -1619,6 +1622,8 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 				}
 				else
 				{
+					cout << "skrk \n";
+
 					cl.second->SendStartTimePacket(startTime);
 					Event event{ id, OverlappedType::Meteo, startTime };
 					eventQueue.push(event);
@@ -1639,6 +1644,7 @@ void ServerBase::MeteoStartCount(const int id, const bool isFever)
 			{
 				if (!cl.second->isAI)
 				{
+					cout << "skrk \n";
 					cl.second->SendStartTimePacket(startTime);
 					Event event{ id, OverlappedType::Meteo, startTime };
 					eventQueue.push(event);
