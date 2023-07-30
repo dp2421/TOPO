@@ -1706,7 +1706,7 @@ void CSceneMgr::InitUI()
 	pObject->AddComponent(new CUIScript);
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::SELECT_BUTTON);
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(-winsize.x/2, winsize.y/8, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(-winsize.x/2, winsize.y/16, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 	pObject->Transform()->SetLocalScale(Vec3(winsize.x/4, winsize.y/12, 1.f));
 	// MeshRender ����
@@ -1729,9 +1729,9 @@ void CSceneMgr::InitUI()
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::TITLE);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0, winsize.y / 3, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0, winsize.y / 4, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(winsize.x , winsize.x, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x*1.2 , winsize.x*1.2, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1753,9 +1753,9 @@ void CSceneMgr::InitUI()
 	pObject->GetScript<CUIScript>()->SetType(UI_TYPE::WINDOW);
 
 	// Transform ����
-	pObject->Transform()->SetLocalPos(Vec3(0, winsize.y/3, 0.f));
+	pObject->Transform()->SetLocalPos(Vec3(0, winsize.y/4, 0.f));
 	pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
-	pObject->Transform()->SetLocalScale(Vec3(winsize.x*1.5, winsize.y/2, 1.f));
+	pObject->Transform()->SetLocalScale(Vec3(winsize.x*1.5, winsize.y/2.f, 1.f));
 	// MeshRender ����
 	pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
 	pObject->MeshRender()->SetMaterial(CResMgr::GetInst()->FindRes<CMaterial>(L"UIMtrl"));
@@ -1954,7 +1954,7 @@ void CSceneMgr::InitUI()
 
 				// Transform ����
 				pObject->Transform()->SetLocalPos(Vec3(300.f - 50.f * i, 600.f, 10.f));
-				pObject->Transform()->SetLocalScale(Vec3(50.f, 50.f, 1.f));
+				pObject->Transform()->SetLocalScale(Vec3(150.f, 150.f, 1.f));
 				pObject->Transform()->SetLocalRot(Vec3(XM_PI, 0.f, XM_PI));
 				// MeshRender ����
 				pObject->MeshRender()->SetMesh(CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh"));
