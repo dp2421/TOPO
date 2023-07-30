@@ -936,21 +936,21 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				for (auto& tile : meteoTiles)
 				{
-					if (client->collider.isCollisionAABB(tile.collider))
+					if (isGroundByRoomID[client->RoomID][static_cast<int>(tile.Mdata.state) - 6])
 					{
-						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
-
-						//if(tile.data.state == LayerState::L1Water)
-						//	cout << "Tile : " << tile.data.state << endl;
-
-						lock_guard<mutex> lock{ client->lock };
-						client->position.y = tile.collider.position->y;
-						client->velocity.y = 0;
-						if (client->isJump)
+						if (client->collider.isCollisionAABB(tile.collider))
 						{
-							client->isJump = false;
+							if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
+
+							lock_guard<mutex> lock{ client->lock };
+							client->position.y = tile.collider.position->y;
+							client->velocity.y = 0;
+							if (client->isJump)
+							{
+								client->isJump = false;
+							}
+							break;
 						}
-						break;
 					}
 				}
 			}
