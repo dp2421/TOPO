@@ -25,6 +25,9 @@ public:
 	bool isStun;
 	std::chrono::system_clock::time_point stuntime;
 
+	int target;
+	std::chrono::system_clock::time_point targettime;
+
 public:
 
 	void Init();

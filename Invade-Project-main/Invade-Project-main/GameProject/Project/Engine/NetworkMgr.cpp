@@ -354,6 +354,8 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerMeteoInfo:
     {
         ServerMeteoInfoPacket* p = reinterpret_cast<ServerMeteoInfoPacket*>(packet);
+        targettime = p->targetTime;
+        target = p->metorLayerState;
         break;
     }
     case ServerEnterCoin:
