@@ -84,7 +84,7 @@ void ServerBase::EventThread()
 {
 	Event rotateObs{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
 	eventQueue.push(rotateObs);
-	Event sendRotateInfo{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
+	Event sendRotateInfo{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + DeltaTimeMilli };
 	eventQueue.push(sendRotateInfo);
 
 	Event event;
@@ -435,6 +435,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
+		for (auto& obs : jumpMapObstacle)
+		{
+			obs.rotate += obs.deltaRotate;
+			if (obs.rotate > 360)
+				obs.rotate -= 360;
+		}
+
 		Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 
@@ -453,16 +460,28 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
+		unsigned short jumpDegree = 0;
+		for (auto& obs : jumpMapObstacle)
+		{
+			jumpDegree = obs.rotate * 100;
+		}
+
 		for (auto client : clients)
 		{
 			if (client.second->RoomID == -1) continue;
-			if (client.second->mapType != MapType::Racing) continue;
-
-			if (client.second->ID != -1 && !client.second->isAI)
-				client.second->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
+			if (client.second->mapType == MapType::Racing)
+			{
+				if (client.second->ID != -1 && !client.second->isAI)
+					client.second->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
+			}
+			else if (client.second->mapType == MapType::Jump)
+			{
+				if (client.second->ID != -1 && !client.second->isAI)
+					client.second->SendJumpObstacleInfoPacket(jumpDegree);
+			}
 		}
 
-		Event event{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
+		Event event{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 
 		break;
@@ -636,21 +655,24 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 
 					if (client->collider.isCollisionOBB(obs.collider[0]))
 					{
-						client->isColl = true;
-
-						// Get the rotation axis and angle from the OBB's orientation
-						XMVECTOR axis;
-						float angle;
-						XMQuaternionToAxisAngle(&axis, &angle, obs.collider[0].orientation);
-
-						// Apply a pushing force to the player in the direction of rotation
-						// You may need to adjust the force magnitude to achieve the desired effect
-						float forceMagnitude = 100.0f; // Adjust this value as needed
-						XMVECTOR pushForce = axis * forceMagnitude;
-
-						XMFLOAT3 pos;
-						XMStoreFloat3(&pos, pushForce);
-						client->velocity += Vector3(pos.x, 0, pos.z);
+						//client->isColl = true;
+						//
+						//// Assuming the obstacle's velocity is accessible through obs.velocity.
+						//XMVECTOR obstacleVelocity = XMLoadFloat3(&obs.velocity);
+						//
+						//// Calculate the direction of the obstacle's movement at the point of collision.
+						//XMVECTOR movementDirection = XMVector3Cross(collisionNormal, obstacleVelocity);
+						//movementDirection = XMVector3Normalize(movementDirection);
+						//
+						//// Determine the relative velocity between the player and the obstacle along the movement direction.
+						//XMVECTOR relativeVelocity = client->velocity - obstacleVelocity;
+						//
+						//// Calculate the magnitude of the pushing force based on relative velocity, mass, or any other factors.
+						//// You can adjust this value to achieve the desired gameplay effect.
+						//float forceMagnitude = 100.0f;
+						//
+						//// Apply the pushing force to the player in the direction of the obstacle's movement.
+						//client->velocity += movementDirection * forceMagnitude;
 					}
 				}
 			}
@@ -736,6 +758,98 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		}
 		else if (client->mapType == MapType::Jump)
 		{
+			client->isColl = false;
+			// 장애물 충돌체크
+			for (auto& obs : jumpMapObstacle)
+			{
+				if (client->velocity.x != 0 || client->velocity.z != 0)
+				{
+					if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
+					{
+						if (client->collider.isCollisionAABB(obs.collider[0]))
+						{
+							client->isColl = true;
+
+							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
+							auto clientCenter = client->collider.getBoundingbox().Center;
+							XMVECTOR center = XMLoadFloat3(&clientCenter);
+							XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
+
+							if (XMVectorGetX(faceNormal) < 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								if (client->position.x > obs.position.x)
+									client->position.x = obs.position.x + obs.collider[0].size.x + (PlayerCollider.x);
+								else
+									client->position.x = obs.position.x - obs.collider[0].size.x - (PlayerCollider.x);
+								client->direction.x = 0;
+								client->velocity.x = 0;
+							}
+							else if (XMVectorGetZ(faceNormal) < 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								if (client->position.z > obs.position.z)
+									client->position.z = obs.position.z + obs.collider[0].size.z + (PlayerCollider.z + 0.1);
+								else
+									client->position.z = obs.position.z - obs.collider[0].size.z - (PlayerCollider.z + 0.1);
+
+								client->direction.z = 0;
+								client->velocity.z = 0;
+							}
+						}
+					}
+				}
+
+				if (obs.data.state == OBSTACLE_STATE::SPIN)
+				{
+					obs.collider[1].orientation =
+						DirectX::XMQuaternionRotationRollPitchYaw
+						(
+							0,
+							XMConvertToRadians(obs.rotate),
+							0
+						);
+
+					XMFLOAT4 rhsOrientation;
+
+					XMStoreFloat4(&rhsOrientation, obs.collider[1].orientation);
+
+					if (client->collider.isCollisionOBB(obs.collider[1]))
+					{
+						client->isColl = true;
+
+						Vector3 collisionNormal = client->position - *obs.collider[1].position;
+						collisionNormal.y = 0;
+						collisionNormal.Normalize();
+
+						float angularVelocity = 3;
+
+						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
+
+						Vector3 pushDirection = tangentialVelocity;
+						pushDirection.y = 0;
+						pushDirection.Normalize();
+
+						float relativeVelocity = Vector3::Dot(client->velocity, pushDirection);
+
+						auto someFactor = 100.0f;
+
+						if (relativeVelocity <= 0)
+						{
+							float pushMagnitude = angularVelocity * someFactor;
+
+							client->velocity = Vector3::Zero();
+							client->velocity += pushDirection * pushMagnitude;
+						}
+						else
+						{
+							float pushMagnitude = angularVelocity * someFactor;
+
+							client->velocity = Vector3::Zero();
+							client->velocity -= pushDirection * pushMagnitude;
+						}
+					}
+				}
 			if (client->velocity.y < 0)
 			{
 				for (auto& tile : jumpMapTiles)
@@ -908,6 +1022,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			int target;
 			while (true)
 			{
+				srand(time(NULL));
 				auto r = rand() % 6;
 				if(isGroundByRoomID[id][r])
 				{

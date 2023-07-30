@@ -390,6 +390,14 @@ void NetworkMgr::ProcessPacket(char* packet)
 
         break;
     }
+    case ServerJumpObstacleInfo:
+    {
+        ServerJumpObstacleInfoPacket* p = reinterpret_cast<ServerJumpObstacleInfoPacket*>(packet);
+        //CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[p->id]->GetScript<CObstacleScript>()->Rotate(((float)p->degree) / 100);
+        // 위쪽 주석 친 코드를 JUMP맵으로 바꿔서 쓰시면 됩니다
+
+        break;
+    }
     default:
     {
         //std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";

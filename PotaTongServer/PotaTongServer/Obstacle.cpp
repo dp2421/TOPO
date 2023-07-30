@@ -61,7 +61,7 @@ Obstacle::Obstacle(JumpObstacleObject info)
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> urd(0.1f, 5.0f);
+	std::uniform_real_distribution<float> urd(3.0f, 5.0f);
 	deltaRotate = urd(gen);
 	angularVelocity = deltaRotate * Frame;
 

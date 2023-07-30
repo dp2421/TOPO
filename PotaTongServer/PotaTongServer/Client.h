@@ -64,6 +64,7 @@ public:
 	void SendEnterCoinPacket(const int id, const int coinIndex);
 	void SendPushedPacket(const int id, std::chrono::system_clock::time_point effectTime);
 	void SendPushCoolTimePacket(std::chrono::system_clock::time_point effectTime);
+	void SendJumpObstacleInfoPacket(const unsigned short degree);
 private:
 	OverlappedEx recv;
 };

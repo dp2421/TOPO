@@ -222,3 +222,13 @@ void Client::SendPushCoolTimePacket(std::chrono::system_clock::time_point effect
 
 	SendPacket(&packet);
 }
+
+void Client::SendJumpObstacleInfoPacket(const unsigned short degree)
+{
+	ServerJumpObstacleInfoPacket packet;
+	packet.size = sizeof(ServerJumpObstacleInfoPacket);
+	packet.type = ServerJumpObstacleInfo;
+	packet.degree = degree;
+
+	SendPacket(&packet);
+}

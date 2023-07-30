@@ -65,6 +65,7 @@ constexpr unsigned char ServerEnterCoin = 214;
 constexpr unsigned char ServerStartTime = 215;
 constexpr unsigned char ServerPushed = 216;
 constexpr unsigned char ServerPushCoolTime = 217;
+constexpr unsigned char ServerJumpObstacleInfo = 218;
 
 #pragma pack (push, 1)
 
@@ -257,5 +258,13 @@ struct ServerPushCoolTimePacket
 	unsigned char	type;
 	std::chrono::system_clock::time_point effectTime;
 };
+
+struct ServerJumpObstacleInfoPacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	unsigned short	degree;
+};
+
 
 #pragma pack (pop)
