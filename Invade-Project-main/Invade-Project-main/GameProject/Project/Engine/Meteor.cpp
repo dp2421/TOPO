@@ -13,22 +13,22 @@ void MeteorScript::Update()
 		GroundPos = pObj;
 	}
 	m_Time += CTimeMgr::GetInst()->GetDeltaTime()*0.3;
-	if (m_iType == MAP_TYPE::GROUND)
+	if (m_iType == MAP_TYPE::GROUND && m_iMapType == m_curTarget)
 	{
 		if (m_iMapType == m_curTarget && std::chrono::system_clock::now() == targetTime);
 		{
-			if (m_Time < 2.0f)
+			if (std::chrono::system_clock::now() <= targetTime)
 			{
-
+				int i = 1;
 			}
-			else if (m_Time > 2.0f && m_Time < 6.0f)
+			else if (std::chrono::system_clock::now() >= targetTime + std::chrono::seconds(2) && std::chrono::system_clock::now() <= targetTime + std::chrono::seconds(6))
 			{
 				float saking = sin(100.0f * m_Time);
 				Transform()->SetLocalPos(Vec3(GroundPos.x + saking, GroundPos.y, GroundPos.z + saking));
 			}
 			else
 			{
-				GroundPos.y -= 3;
+				GroundPos.y -= 1;
 				Transform()->SetLocalPos(Vec3(GroundPos.x, GroundPos.y, GroundPos.z));
 
 				//GetObj()->SetActive(false);
@@ -38,8 +38,8 @@ void MeteorScript::Update()
 	}
 	else
 	{
-		//if (!isColl)
-		//{
+		if (!isColl&& std::chrono::system_clock::now()<= targetTime)
+		{
 			Vec3 pTarget;
 
 			m_fFrmSpeed += m_fSpeed*0.75;
@@ -57,15 +57,15 @@ void MeteorScript::Update()
 				pTarget = m_TargetPos[GROUND_TYPE::WOOD];
 			else if (m_curTarget == GROUND_TYPE::CENTER)
 				pTarget = m_TargetPos[GROUND_TYPE::CENTER];
-			Vec3 vPos = Vec3::Lerp(OriginPos, pTarget, m_fFrmSpeed);
-			Transform()->SetLocalPos(vPos);
-			if (Transform()->IsCasting(pTarget))
+			if (Transform()->GetLocalPos().y<= pTarget.y+100)
 			{
-				Transform()->SetLocalPos(Vec3(-10000, -100000, 100000));
+				Transform()->SetLocalPos(OriginPos);
 				isColl = true;
 				return;
 			}
-		//}
+			Vec3 vPos = Vec3::Lerp(OriginPos, pTarget, m_fFrmSpeed);
+			Transform()->SetLocalPos(vPos);
+		}
 
 	}
 
