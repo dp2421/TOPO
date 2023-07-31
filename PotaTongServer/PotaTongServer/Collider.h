@@ -17,6 +17,7 @@ public:
     XMVECTOR XMVectorMin(XMVECTOR v);
     XMVECTOR GetClosestFaceNormal(const BoundingBox& box, FXMVECTOR point);
     BoundingBox getBoundingbox();
+    BoundingOrientedBox getBoundingOrientedBox();
 
     bool isCollisionOBB(Collider& rhs);
     bool isCollisionAABB(Collider& rhs);

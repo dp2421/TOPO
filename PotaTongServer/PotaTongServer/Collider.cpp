@@ -64,6 +64,19 @@ BoundingBox Collider::getBoundingbox()
 	};
 }
 
+BoundingOrientedBox Collider::getBoundingOrientedBox()
+{
+	XMFLOAT4 thisOrientation;
+	XMStoreFloat4(&thisOrientation, this->orientation);
+
+	return BoundingOrientedBox
+	{
+		(*this->position + this->offset).ConvertXMFLOAT3(),
+		this->size.ConvertXMFLOAT3(),
+		thisOrientation
+	};
+}
+
 bool Collider::isCollisionOBB(Collider& rhs)
 {
 	XMFLOAT4 thisOrientation;

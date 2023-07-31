@@ -8,7 +8,7 @@
 #define DistanceVec3(a, b) sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
 
 constexpr int MatchingTime = 5;
-constexpr int GameTime = 10;
+constexpr int GameTime = 30;
 constexpr int SurviveTime = 60;
 constexpr int Frame = 30;
 constexpr auto PushTime = 1500ms;

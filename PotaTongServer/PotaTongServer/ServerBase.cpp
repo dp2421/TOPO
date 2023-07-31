@@ -464,8 +464,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		startCountByRoomID[id] = 3;
 		if (mapType == MapType::Meteo)
 		{
-			for(int i = 0; i < 5; ++i)
+			for (int i = 0; i < 5; ++i)
 				isGroundByRoomID[id].push_back(true);
+			cout << "isGroundByRoomID size :" << isGroundByRoomID[id].size() << endl;
 		}
 		break;
 	}
@@ -655,34 +656,34 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
 						client->isColl = true;
-					
+
 						Vector3 collisionNormal = client->position - *obs.collider[1].position;
 						collisionNormal.y = 0;
 						collisionNormal.Normalize();
-					
-						float angularVelocity = 5; 
-					
+
+						float angularVelocity = 5;
+
 						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
-					
+
 						Vector3 pushDirection = tangentialVelocity;
 						pushDirection.y = 0;
 						pushDirection.Normalize();
-					
+
 						float relativeVelocity = Vector3::Dot(client->velocity, pushDirection);
-					
+
 						auto someFactor = 50.0f;
-						
+
 						if (relativeVelocity <= 0)
 						{
 							float pushMagnitude = angularVelocity * someFactor;
-					
+
 							client->velocity = Vector3::Zero();
 							client->velocity += pushDirection * pushMagnitude;
 						}
 						else
 						{
 							float pushMagnitude = angularVelocity * someFactor;
-					
+
 							client->velocity = Vector3::Zero();
 							client->velocity -= pushDirection * pushMagnitude;
 						}
@@ -698,27 +699,22 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 							0,
 							sinf(XMConvertToRadians(obs.rotate))
 						);
+					auto clientCenter = client->collider.getBoundingbox().Center;
+					XMVECTOR center = XMLoadFloat3(&clientCenter);
+					XMVECTOR collisionNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
 
 					if (client->collider.isCollisionOBB(obs.collider[0]))
 					{
-						//client->isColl = true;
-						//
-						//// Assuming the obstacle's velocity is accessible through obs.velocity.
-						//XMVECTOR obstacleVelocity = XMLoadFloat3(&obs.velocity);
-						//
-						//// Calculate the direction of the obstacle's movement at the point of collision.
-						//XMVECTOR movementDirection = XMVector3Cross(collisionNormal, obstacleVelocity);
-						//movementDirection = XMVector3Normalize(movementDirection);
-						//
-						//// Determine the relative velocity between the player and the obstacle along the movement direction.
-						//XMVECTOR relativeVelocity = client->velocity - obstacleVelocity;
-						//
-						//// Calculate the magnitude of the pushing force based on relative velocity, mass, or any other factors.
-						//// You can adjust this value to achieve the desired gameplay effect.
-						//float forceMagnitude = 100.0f;
-						//
-						//// Apply the pushing force to the player in the direction of the obstacle's movement.
-						//client->velocity += movementDirection * forceMagnitude;
+						client->isColl = true;
+
+						auto angle = sinf(XMConvertToRadians(obs.rotate));
+
+						Vector3 direction;
+						direction.x = std::sinf(XMConvertToRadians(obs.rotate));
+						direction.y = 0.0f;
+						direction.z = 0.0f;
+
+						client->position += direction * 200.0f * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
 					}
 				}
 			}
@@ -765,7 +761,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					client->velocity.y = 0;
 					client->position = Vector3{ 0,10,50 };
 				}
-				else if (client->position.z > 21500 && client->position.y > 0)
+				else if (client->position.z > 21500 && client->position.y > 0 && !client->isGoal)
 				{
 					client->isGoal = true;
 					client->isMove = false;
@@ -811,11 +807,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 				{
 					if (client->collider.isCollisionAABB(tile.collider))
 					{
-						cout << "Ãæµ¹ \n";
-						//if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) continue;
-
-						//if(tile.data.state == LayerState::L1Water)
-						//	cout << "Tile : " << tile.data.state << endl;
 
 						lock_guard<mutex> lock{ client->lock };
 						client->position.y = tile.collider.position->y;
@@ -970,7 +961,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 		if (!client->isAI)
 		{
 			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
-			//cout << "Player Pos X : " << client->position.x << " Z : " << client->position.z << endl;
 		}
 
 		for (auto cl : clients)
@@ -998,30 +988,123 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		if (id == -1) break;
 
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<float> x(-1.0f, 1.0f);
-		std::uniform_real_distribution<float> z(0.0f, 1.0f);
-		XMVECTOR dir{ x(gen), 0, z(gen) };
+		auto client = clients[id];
 
-		XMFLOAT3 normalDir;
-		XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
-
+		if (client->velocity.y < 0 || client->isColl)
 		{
-			lock_guard<mutex> lock{ clients[id]->lock };
-			clients[id]->isMove = true;
-			clients[id]->direction = { normalDir.x, normalDir.y, normalDir.z };
-
-			auto x = clients[id]->direction.x;
-			auto z = clients[id]->direction.z;
-
-			clients[id]->degree = XMConvertToDegrees(atan2(x, z)) - 180;
-			if (clients[id]->degree < -360)
-				clients[id]->degree += 360;
+			ClientKeyInputPacket p;
+			p.x = 0;
+			p.y = 0;
+			p.z = 0;
+			p.degree = 0;
+			p.key = KeyType::Jump;
+			ProcessInput(id, &p);
+		}
+		if (client->isCanPush)
+		{
+			ClientKeyInputPacket p;
+			p.x = 0;
+			p.y = 0;
+			p.z = 0;
+			p.degree = 0;
+			p.key = KeyType::Push;
+			ProcessInput(id, &p);
 		}
 
-		std::uniform_int_distribution<int> update(1, 10);
-		Event event{ id, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(update(gen)) };
+		if (client->position.y > -100)
+		{
+			float nearestDistance = -1;
+			Tile* nearestTile = NULL;
+			for (auto& way : navi2F)
+			{
+				if (way.data.zPos - 20 < client->position.z) continue;
+				auto dis = Vector3::Distance(client->position, Vector3(way.data.xPos, way.data.yPos, way.data.zPos - 20));
+				if (nearestDistance == -1)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+
+				if (dis < nearestDistance)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+			}
+			if (nearestTile == NULL) break;
+
+			Vector3 nearestPos{ nearestTile->data.xPos, nearestTile->data.yPos, nearestTile->data.zPos };
+
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> x(-100.0f, 100.0f);
+
+			Vector3 Target = nearestPos - client->position;
+			Target.y = 0;
+			Target.x += x(gen);
+
+			Target.Normalize();
+			ClientKeyInputPacket p;
+			p.x = Target.x;
+			p.y = Target.y;
+			p.z = Target.z;
+
+			auto xx = Target.x;
+			auto zz = Target.z;
+			p.degree = XMConvertToDegrees(atan2(xx, zz)) - 180;
+			if (p.degree < -360)
+				p.degree += 360;
+			p.key = KeyType::MoveStart;
+			ProcessInput(id, &p);
+		}
+		else
+		{
+			float nearestDistance = -1;
+			Tile* nearestTile = NULL;
+			for (auto& way : navi1F)
+			{
+				if (way.data.zPos - 20 < client->position.z) continue;
+				auto dis = Vector3::Distance(client->position, Vector3(way.data.xPos, way.data.yPos, way.data.zPos - 20));
+				if (nearestDistance == -1)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+
+				if (dis < nearestDistance)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+			}
+			if (nearestTile == NULL) break;
+
+			Vector3 nearestPos{ nearestTile->data.xPos, nearestTile->data.yPos, nearestTile->data.zPos };
+
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> x(-100.0f, 100.0f);
+
+			Vector3 Target = nearestPos - client->position;
+			Target.y = 0;
+			Target.x += x(gen);
+			Target.Normalize();
+
+			ClientKeyInputPacket p;
+			p.x = Target.x;
+			p.y = Target.y;
+			p.z = Target.z;
+
+			auto xx = Target.x;
+			auto zz = Target.z;
+			p.degree = XMConvertToDegrees(atan2(xx, zz)) - 180;
+			if (p.degree < -360)
+				p.degree += 360;
+			p.key = KeyType::MoveStart;
+			ProcessInput(id, &p);
+		}
+
+		Event event{ id, OverlappedType::UpdateAI, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 		break;
 	}
@@ -1073,8 +1156,9 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			{
 				srand(time(NULL));
 				auto r = rand() % 6;
-				if(isGroundByRoomID[id][r])
+				if (isGroundByRoomID[id][r])
 				{
+					cout << id << endl;;
 					target = r;
 					isGroundByRoomID[id][r] = false;
 					break;
@@ -1260,6 +1344,7 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 		{
 			lock_guard<mutex> lock{ client->lock };
 			target->isPushed = true;
+			target->isMove = false;
 			client->isCanPush = false;
 
 			auto dirvec = target->position - client->position;
@@ -1338,7 +1423,6 @@ void ServerBase::ClientReady(const int id)
 	}
 	default: // Obstacle
 	{
-		cout << "MAPTYPE : " << (int)clients[id]->mapType << endl;
 		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 		break;
@@ -1529,6 +1613,7 @@ void ServerBase::RacingStartCount(const int id, const bool isFever)
 	{
 		if (cl.second->RoomID == id)
 		{
+			cl.second->ClearBoolean();
 			lock_guard<mutex> lock{ cl.second->lock };
 			cl.second->position = PlayerStartPos;
 			cl.second->position.x += PlayerStartDistance * count;
@@ -1545,20 +1630,10 @@ void ServerBase::RacingStartCount(const int id, const bool isFever)
 			if (cl.second->ID == -1) continue;
 			if (cl.second->RoomID == id)
 			{
+				cl.second->ClearBoolean();
 				if (cl.second->isAI)
 				{
-					std::random_device rd;
-					std::mt19937 gen(rd());
-					std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
-					XMVECTOR dir{ urd(gen), 0, urd(gen) };
-
-					XMFLOAT3 normalDir;
-					XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
-
-					cl.second->direction = { normalDir.x, 0, normalDir.z };
-
-					std::uniform_int_distribution<int> time(1, 10);
-					Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
+					Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + DeltaTimeMilli };
 					eventQueue.push(event);
 				}
 				else
@@ -1581,6 +1656,7 @@ void ServerBase::RacingStartCount(const int id, const bool isFever)
 			if (cl.second->ID == -1) continue;
 			if (cl.second->RoomID == id)
 			{
+				cl.second->ClearBoolean();
 				if (!cl.second->isAI)
 				{
 					cl.second->SendStartTimePacket(startTime);
