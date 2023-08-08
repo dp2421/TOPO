@@ -16,6 +16,13 @@ enum UI_TYPE
     MATCHING2,
     MATCHING3,
     NUMBER,
+    ROUNDOVER,
+    FEVER,
+    SPEEDLINE,
+    DONE,
+    START,
+    TITLE,
+    TOLOBBY,
 }; //MATCHING0-MATCHING3 은 무조건 6-9번 이여야 함
 
 
@@ -25,11 +32,14 @@ private:
     bool m_isClicked;
     bool m_isSelected;
     bool m_isMatching;
+    bool m_isRoundOver;
 
     UI_TYPE m_iType;
 
     Vec3 mousepos;
     float f_MatchingTime = 0.f;
+    float f_WaitFeverModeTime = 0.f; //약 3초 예정
+    int f_startCountdown;
 
 public:
     CUIScript();
@@ -37,11 +47,14 @@ public:
     virtual void Update();
     void UIRender();
     void MatchingComplete();
-    void NumScript(int num, float offsetx, float offsety);
+    void GameEndStart(bool start);
+    //void NumScript(int num, float offsetx, float offsety);
     void SetType(UI_TYPE _iState) { m_iType = _iState; }
     UI_TYPE GetType() { 
         return m_iType;
     }
+    void SetStartCount(int cnt) { f_startCountdown = cnt; }
+
     CLONE(CUIScript);
 };
 

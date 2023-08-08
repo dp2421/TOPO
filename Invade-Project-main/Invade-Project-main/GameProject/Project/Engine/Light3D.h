@@ -13,6 +13,7 @@ private:
     Ptr<CMaterial> m_pLightMtrl;
     int m_iArrIdx;
     CGameObject* m_pCamObj;
+    float temp;
     
 public:
     void SetLightType(LIGHT_TYPE _eType);

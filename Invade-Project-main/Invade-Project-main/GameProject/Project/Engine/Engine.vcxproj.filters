@@ -273,6 +273,9 @@
     <ClInclude Include="NumScript.h">
       <Filter>Script</Filter>
     </ClInclude>
+    <ClInclude Include="AwardScript.h">
+      <Filter>Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp">
@@ -450,6 +453,9 @@
       <Filter>Script</Filter>
     </ClCompile>
     <ClCompile Include="NumScript.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="AwardScript.cpp">
       <Filter>Script</Filter>
     </ClCompile>
   </ItemGroup>

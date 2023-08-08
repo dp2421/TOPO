@@ -16,6 +16,18 @@ Client::~Client()
 {
 }
 
+void Client::ClearBoolean()
+{
+	bool isMove = false;
+	bool isJump = false;
+	bool isSuperJump = false;
+	bool isColl = false;
+	bool isGoal = false;
+	bool isCoin = false;
+	bool isPushed = false;
+	bool isCanPush = true;
+}
+
 void Client::SendPacket(void* packet)	
 {
 	OverlappedEx* overlappedEx = new OverlappedEx{ reinterpret_cast<char*>(packet) };
@@ -62,6 +74,16 @@ void Client::SendGameStartPacket(const int count)
 	SendPacket(&packet);
 }
 
+void Client::SendStartTimePacket(std::chrono::system_clock::time_point startTime)
+{
+	ServerStartTimePacket packet;
+	packet.size = sizeof(ServerStartTimePacket);
+	packet.type = ServerStartTime;
+	packet.startTime = startTime;
+
+	SendPacket(&packet);
+}
+
 void Client::SendGameEndPacket(const bool isFever)
 {
 	ServerGameEndPacket packet;
@@ -72,7 +94,7 @@ void Client::SendGameEndPacket(const bool isFever)
 	SendPacket(&packet);
 }
 
-void Client::SendGameResultPacket(const unsigned char id[], const int size)
+void Client::SendGameResultPacket(const int id[], const int size)
 {
 	ServerGameResultPacket packet;
 	packet.size = sizeof(ServerGameResultPacket);
@@ -139,7 +161,7 @@ void Client::SendObstacleInfoPacket(const unsigned short degree[], int size)
 	SendPacket(&packet);
 }
 
-void Client::SendSingleObstacleInfoPacket(const unsigned char id, const unsigned short degree)
+void Client::SendSingleObstacleInfoPacket(const int id, const unsigned short degree)
 {
 	ServerSingleObstacleInfoPacket packet;
 	packet.size = sizeof(ServerSingleObstacleInfoPacket);
@@ -159,21 +181,54 @@ void Client::SendObstacleRPSPacket(const unsigned short angularVelocity[], int s
 	SendPacket(&packet);
 }
 
-void Client::SendMeteoPacket(const unsigned char target, unsigned short time)
+void Client::SendMeteoPacket(const unsigned char target, std::chrono::system_clock::time_point time)
 {
 	ServerMeteoInfoPacket packet;
 	packet.size = sizeof(ServerMeteoInfoPacket);
 	packet.type = ServerMeteoInfo;
-	packet.time = time;
+	packet.targetTime = time;
 
 	SendPacket(&packet);
 }
 
-void Client::SendEnterCoinPacket(const int id)
+void Client::SendEnterCoinPacket(const int id, const int coinIndex)
 {
 	ServerEnterCoinPacket packet;
-	packet.size = sizeof(ServerEnterCoin);
+	packet.size = sizeof(ServerEnterCoinPacket);
+	packet.type = ServerEnterCoin;
 	packet.id = id;
+	packet.coinIndex = coinIndex;
+
+	SendPacket(&packet);
+}
+
+void Client::SendPushedPacket(const int id, std::chrono::system_clock::time_point effectTime)
+{
+	ServerPushedPacket packet;
+	packet.size = sizeof(ServerPushedPacket);
+	packet.type = ServerPushed;
+	packet.id = id;
+	packet.effectTime = effectTime;
+
+	SendPacket(&packet);
+}
+
+void Client::SendPushCoolTimePacket(std::chrono::system_clock::time_point effectTime)
+{
+	ServerPushCoolTimePacket packet;
+	packet.size = sizeof(ServerPushCoolTimePacket);
+	packet.type = ServerPushCoolTime;
+	packet.effectTime = effectTime;
+
+	SendPacket(&packet);
+}
+
+void Client::SendJumpObstacleInfoPacket(const unsigned short degree)
+{
+	ServerJumpObstacleInfoPacket packet;
+	packet.size = sizeof(ServerJumpObstacleInfoPacket);
+	packet.type = ServerJumpObstacleInfo;
+	packet.degree = degree;
 
 	SendPacket(&packet);
 }

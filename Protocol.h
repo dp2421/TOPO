@@ -1,10 +1,12 @@
 #pragma once
+#include <chrono>
 
 #define PACKETSIZE unsigned short
 
 constexpr int PORTNUM = 20150;
 constexpr int BUFFERSIZE = 1024;
 constexpr int NAMESIZE = 20;
+constexpr int OBSTACLENUM = 50;
 
 constexpr char SERVERIP[] = "210.117.115.67";
 //constexpr char SERVERIP[] = "127.0.0.1";
@@ -35,7 +37,7 @@ enum class MapType : int
 {
 	Lobby,
 	Racing,
-	Obstacle,
+	Jump,
 	Meteo,
 	Bomb,
 	Result
@@ -60,6 +62,10 @@ constexpr unsigned char ServerObstacleRPS = 211;
 constexpr unsigned char ServerSingleObstacleInfo = 212;
 constexpr unsigned char ServerMeteoInfo = 213;
 constexpr unsigned char ServerEnterCoin = 214;
+constexpr unsigned char ServerStartTime = 215;
+constexpr unsigned char ServerPushed = 216;
+constexpr unsigned char ServerPushCoolTime = 217;
+constexpr unsigned char ServerJumpObstacleInfo = 218;
 
 #pragma pack (push, 1)
 
@@ -126,6 +132,14 @@ struct ServerGameStartPacket
 	unsigned char	count;
 };
 
+struct ServerStartTimePacket
+{
+	PACKETSIZE size;
+	unsigned char	type;
+
+	std::chrono::system_clock::time_point startTime;
+};
+
 struct ServerAddPlayerPacket
 {
 	PACKETSIZE size;
@@ -158,7 +172,7 @@ struct ServerObstacleInfoPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	unsigned short		degree[66];
+	unsigned short		degree[OBSTACLENUM];
 	//타입에 따라서 내용이 달라질 것 같음
 	//장애물에 번호 부여?
 	//NPC같은 느낌으로 따로 클래스?
@@ -192,30 +206,65 @@ struct ServerObstacleRPSPacket
 {
 	PACKETSIZE size;
 	unsigned char	type;
-	unsigned short	angularVelocity[66];
+	unsigned short	angularVelocity[OBSTACLENUM];
 };
 
 struct ServerSingleObstacleInfoPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	id;
+	int				id;
 	unsigned short	degree;
 };
 
+/// <summary>
+/// metorLayerState : enum typecast
+/// targetTime : 무너지는 시간 
+/// </summary>
 struct ServerMeteoInfoPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	target;
-	unsigned short	time;
+	unsigned char	metorLayerState;
+	std::chrono::system_clock::time_point targetTime;
 };
 
+/// <summary>
+/// ID : 코인 먹은 사람
+/// coinIndex : 코인 번호
+/// </summary>
 struct ServerEnterCoinPacket
 {
 	PACKETSIZE	size;
 	unsigned char	type;
-	unsigned char	id;
+	int				id;
+	unsigned char	coinIndex;
 };
+
+/// <summary>
+/// id : 밀린 캐릭터 ID
+/// </summary>
+struct ServerPushedPacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	int				id;
+	std::chrono::system_clock::time_point effectTime;
+};
+
+struct ServerPushCoolTimePacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	std::chrono::system_clock::time_point effectTime;
+};
+
+struct ServerJumpObstacleInfoPacket
+{
+	PACKETSIZE	size;
+	unsigned char	type;
+	unsigned short	degree;
+};
+
 
 #pragma pack (pop)

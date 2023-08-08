@@ -36,17 +36,16 @@ private:
 	bool b_SceneChanged = false;
 	SCENE_TYPE m_sceneType;
 
-
-	bool b_isFever = true;
-	bool b_isMatchComplete = false;
-	int m_maptype;
-
-	float f_lightpow;
-
-public:
 	CSound* m_sounds[(int)SOUND_TYPE::END];
 
+	SOUND_TYPE m_curSound;
 
+	bool b_isFever = false;
+	bool b_isMatchComplete = false;
+	int m_maptype;
+	float f_lightpow;
+public:
+	int m_startCnt = -1;
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
 	void Render_Tool();
@@ -55,6 +54,7 @@ public:
 	void Render_Lights();
 	void Merge_Light();
 	void PlaySound();
+	void PlayEffect(SOUND_TYPE type);
 	void Render_PostEffect();
 	//void Render_OutLine();
 private:
@@ -104,5 +104,8 @@ public:
 	void SetMatchComplete(bool complete, int p) { b_isMatchComplete = complete; m_maptype = p; }
 	bool GetMatchComplete() { return b_isMatchComplete; }
 	int GetMatchMapType() { return m_maptype; }
+
+	void SetFever(bool fever) { b_isFever = fever; }
+	bool IsFever() { return b_isFever; }
 };
 

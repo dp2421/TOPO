@@ -5,6 +5,9 @@
 #include "RenderMgr.h"
 #include "ResMgr.h"
 #include "Camera.h"
+#include "NetworkMgr.h"
+#include "SceneMgr.h"
+#include "Scene.h"
 
 CLight3D::CLight3D() :CComponent(COMPONENT_TYPE::LIGHT3D),m_iArrIdx(-1),m_pCamObj(nullptr)
 {
@@ -36,10 +39,11 @@ void CLight3D::SetLightType(LIGHT_TYPE _eType)
 		m_pVolumeMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
 		m_pLightMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"DirLightMtrl");
 		m_pCamObj->Camera()->SetProjType(PROJ_TYPE::ORTHGRAPHIC);
-		m_pCamObj->Camera()->SetScale(35.f);
-		m_pCamObj->Camera()->SetFar(100000.f);
+		m_pCamObj->Camera()->SetScale(5.f);
+		m_pCamObj->Camera()->SetFar(10000.f);
 		m_pCamObj->Camera()->SetWidth(4096);
 		m_pCamObj->Camera()->SetHeight(4096);
+		m_pCamObj->Camera()->Transform()->SetLocalPos(Vec3(0,-10, 0));
 	}
 	else if (LIGHT_TYPE::POINT == (LIGHT_TYPE)m_tLightInfo.iLightType)
 	{
@@ -69,10 +73,20 @@ void CLight3D::SetLightDir(const Vec3& _vDir)
 
 void CLight3D::FinalUpdate()
 {
+	temp += 1;
+
+	int myid = NetworkMgr::GetInst()->CurID;
+	auto netobjs = NetworkMgr::GetInst()->networkObjects;
 	m_tLightInfo.vLightPos = Transform()->GetWorldPos();
 	Transform()->SetLocalScale(Vec3(m_tLightInfo.fRange, m_tLightInfo.fRange, m_tLightInfo.fRange));
 	m_iArrIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
 	*m_pCamObj->Transform() = *Transform();
+	if (myid != -1 && netobjs.find(myid) != netobjs.end())
+	{
+		CGameObject* curPos = NetworkMgr::GetInst()->networkObjects[myid];
+		Vec3 cPos = Vec3(curPos->Transform()->GetLocalPos().x,1000, curPos->Transform()->GetLocalPos().z);
+		m_pCamObj->Transform()->SetLocalPos(cPos);
+	}
 	m_pCamObj->FinalUpdate();
 }
 

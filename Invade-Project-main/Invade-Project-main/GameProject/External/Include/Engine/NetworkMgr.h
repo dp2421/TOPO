@@ -7,14 +7,27 @@ public:
 	SOCKET socket;
 	OverlappedEx recv;
 
-	int CurID;
+	int CurID = -1;
 	std::unordered_map<int, CGameObject*> networkObjects;
 	std::unordered_map<int, std::mutex> mutexList;
 
+	std::chrono::system_clock::time_point startTime;
+
+	int StartCntDown;
+
 	int prevRemainData = 0;
 	vector <std::thread> workerThreads;
-
 	CGameObject* tempPlayerObj;
+
+	int rankPLID[3];
+	bool b_isgoal;
+
+	bool isStun;
+	std::chrono::system_clock::time_point stuntime;
+
+	int target;
+	std::chrono::system_clock::time_point targettime;
+
 public:
 
 	void Init();
@@ -30,5 +43,12 @@ public:
 	void DoRecv();
 	void AssemblyPacket(int recvData, OverlappedEx* over);
 	void ProcessPacket(char* packet);
+
+	void setRankPLID(int rk1, int rk2, int rk3) {
+		rankPLID[0] = rk1;
+		rankPLID[1] = rk2;
+		rankPLID[2] = rk3;
+	}
+
 private:
 };

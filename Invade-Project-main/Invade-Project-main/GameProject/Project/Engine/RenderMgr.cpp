@@ -80,6 +80,7 @@ void CRenderMgr::Render()
 
 	m_vecCam[1]->SortUIObject();
 	m_vecCam[1]->Render_UI();
+	m_vecCam[1]->SetStartCnt(m_startCnt);
 
 
 	////PostProcess Effect
@@ -159,23 +160,17 @@ void CRenderMgr::Render_Lights()
 	g_transform.matProj = pMainCam->GetProjMat();
 	g_transform.matViewInv = pMainCam->GetViewInvMat();
 
+
+	f_lightpow += 0.01;
+	if (f_lightpow > 1)
+		f_lightpow = 0;
 	// 광원을 그린다.
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
-		if (m_vecLight3D[i]->Light3D()->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::DIR)
-		{
-			if (b_isFever)
-				m_vecLight3D[i]->Light3D()->SetDiffuseColor(Vec3(0.06f, 0.149f, 0.4f));
-		}
-
-		if (m_vecLight3D[i]->Light3D()->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::POINT)
-		{
-			f_lightpow += 0.01;
-			if (f_lightpow > 1)
-				f_lightpow = 0.f;
-			m_vecLight3D[i]->Light3D()->SetAmbient(Vec3(f_lightpow, f_lightpow, f_lightpow));
-		}
-
+		if (m_vecLight3D[i]->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::POINT)
+			m_vecLight3D[i]->SetAmbient(Vec3(f_lightpow));
+		if (b_isFever&& m_vecLight3D[i]->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::DIR)
+			m_vecLight3D[i]->Light3D()->SetDiffuseColor(Vec3(0.06f, 0.149f, 0.4f));
 		m_vecLight3D[i]->Light3D()->Render();
 	}
 
@@ -207,30 +202,52 @@ void CRenderMgr::PlaySound()
 			if (i != (int)SOUND_TYPE::LOBBY)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		m_curSound = SOUND_TYPE::LOBBY;
 		break;
 	case SCENE_TYPE::RACING:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::RACING)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::RACING]->Play(0);
+		m_curSound = SOUND_TYPE::RACING;
 		break;
 	case SCENE_TYPE::JUMP:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::SURVIVAL)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		m_curSound = SOUND_TYPE::SURVIVAL;
 		break;
 	case SCENE_TYPE::METOR:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::SURVIVAL)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		m_curSound = SOUND_TYPE::SURVIVAL;
 		break;
 	case SCENE_TYPE::AWARD:
 		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
 			if (i != (int)SOUND_TYPE::LOBBY)
 				m_sounds[i]->Stop();
 		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		m_curSound = SOUND_TYPE::LOBBY;
+		break;
+	default:
+		break;
+	}
+}
+
+void CRenderMgr::PlayEffect(SOUND_TYPE type)
+{
+	switch (type)
+	{
+	case SOUND_TYPE::CLICK:
+		m_sounds[(int)m_curSound]->Stop();
+		m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
+		break;
+	case SOUND_TYPE::JUMP:
+		m_sounds[(int)m_curSound]->Stop();
+		m_sounds[(int)SOUND_TYPE::JUMP]->Play(1, true);
 		break;
 	default:
 		break;

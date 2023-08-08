@@ -6,6 +6,7 @@
 #include <WS2tcpip.h>
 #include <MSWSock.h>
 #include <vector>
+#include <unordered_map>
 #include <concurrent_unordered_map.h>
 #include <functional>
 #include <queue>

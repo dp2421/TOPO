@@ -9,6 +9,10 @@ ServerBase::ServerBase()
 	InitHandler();
 	InitObsatacleInfo();
 	InitMapInfo();
+	InitItemInfo();
+	InitMeteoInfo();
+	InitJumpMapInfo();
+	InitNaviInfo();
 	//InitAI();
 }
 
@@ -72,6 +76,7 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 			break;
 		default:
 			ServerEvent(id, overlappedEx);
+			delete overlappedEx;
 			break;
 		}
 	}
@@ -79,6 +84,11 @@ void ServerBase::WorkerThread(HANDLE IOCP)
 
 void ServerBase::EventThread()
 {
+	Event rotateObs{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
+	eventQueue.push(rotateObs);
+	Event sendRotateInfo{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + DeltaTimeMilli };
+	eventQueue.push(sendRotateInfo);
+
 	Event event;
 	event.objID = -1;
 	while (true) {
@@ -102,76 +112,17 @@ void ServerBase::EventThread()
 
 			switch (event.eventType)
 			{
-			case OverlappedType::GameStartCount:
+			default:
 			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::RotateObs:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::SendRotateInfo:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::Update:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
 				// 시간 보간
 				//auto diff = chrono::duration<float>((currentTime - event.excuteTime) / DeltaTimeMilli);
 				//memcpy(overlappedEx->sendBuf, &diff, sizeof(diff));
 
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::UpdateAI:
-			{
 				OverlappedEx* overlappedEx = new OverlappedEx;
 				overlappedEx->type = event.eventType;
 
 				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
 				event.objID = -1;
-				break;
-			}
-			case OverlappedType::MatchingRacingComplete:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			case OverlappedType::MatchingObstacleComplete:
-			{
-				OverlappedEx* overlappedEx = new OverlappedEx;
-				overlappedEx->type = event.eventType;
-
-				PostQueuedCompletionStatus(IOCPHandle, 1, event.objID, &overlappedEx->overlapped);
-				event.objID = -1;
-				break;
-			}
-			default:
-			{
-				cout << (int)event.eventType << " EVENT TYPE ERROR!" << endl;
 			}
 			}
 			continue;
@@ -269,6 +220,76 @@ void ServerBase::InitMapInfo()
 	inFile.close();
 }
 
+void ServerBase::InitNaviInfo()
+{
+	{
+		const char* FileNames = { "move2F.bin" };
+
+		ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			TileInfo tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			navi2F.push_back(tile);
+		}
+		navi2F.pop_back();
+
+		inFile.close();
+	}
+	{
+		const char* FileNames = { "move1F.bin" };
+
+		ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			TileInfo tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			navi1F.push_back(tile);
+		}
+		navi1F.pop_back();
+
+		inFile.close();
+	}
+}
+
+void ServerBase::InitItemInfo()
+{
+	const char* FileNames = { "RacingMapItemSV.bin" };
+
+	ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+	if (!inFile) {
+		std::cerr << "Failed to open " << FileNames << std::endl;
+		return;
+	}
+
+	while (!inFile.eof()) {
+		TileInfo tile;
+		inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+		if (tile.state == LayerState::LCoin)
+		{
+			coins.push_back(tile);
+		}
+		else if (tile.state == LayerState::L1Sujum)
+		{
+			superJump.push_back(tile);
+		}
+	}
+	coins.pop_back();
+
+	inFile.close();
+}
+
 void ServerBase::InitMeteoInfo()
 {
 	const char* FileNames[] = { "LMetorCenterSV.bin", "LMetorGrassSV.bin", "LMetorStoneSV.bin", "LMetorWaterSV.bin", "LMetorWoodSV.bin" };
@@ -292,6 +313,49 @@ void ServerBase::InitMeteoInfo()
 	}
 }
 
+void ServerBase::InitJumpMapInfo()
+{
+	{
+		const char* FileNames = { "JumpMap.bin" };
+
+		ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			TileInfo tile;
+			inFile.read(reinterpret_cast<char*>(&tile), sizeof(tile));
+			jumpMapTiles.push_back(tile);
+		}
+		jumpMapTiles.pop_back();
+
+		inFile.close();
+	}
+
+	{
+		const char* FileNames = { "Jumpobstacles.bin" };
+
+		ifstream inFile(FileNames, std::ios::in | std::ios::binary);
+
+		if (!inFile) {
+			std::cerr << "Failed to open " << FileNames << std::endl;
+			return;
+		}
+
+		while (!inFile.eof()) {
+			JumpObstacleObject obs;
+			inFile.read(reinterpret_cast<char*>(&obs), sizeof(obs));
+			jumpMapObstacle.push_back(obs);
+		}
+		jumpMapObstacle.pop_back();
+
+		inFile.close();
+	}
+}
+
 void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
 {
 	for (int i = AINum; i < RacingMAX; ++i)
@@ -304,7 +368,10 @@ void ServerBase::InitAI(int roomID, MapType mapType, int AINum)
 		clients[newID]->RoomID = roomID;
 		clients[newID]->mapType = mapType;
 		clients[newID]->position = PlayerStartPos;
-		clients[newID]->position.z += PUSHDISTANCE * AINum;
+		clients[newID]->position.x += (PlayerStartDistance * i);
+
+		Event update{ clients[newID]->ID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(update);
 	}
 }
 
@@ -360,74 +427,47 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 	case OverlappedType::GameStartCount:
 	{
-		for (auto cl : clients)
-		{
-			if (cl.second->isAI) continue;
-			if (cl.second->RoomID == id)
-			{
-				cl.second->SendGameStartPacket(startCountByRoomID[id] - 1);
-			}
-		}
-
-		startCountByRoomID[id] -= 1;
-		if (startCountByRoomID[id] == 0)
-		{
-			for (auto cl : clients)
-			{
-				if (cl.second->RoomID == clients[id]->RoomID)
-				{
-					if (cl.second->isAI)
-					{
-						std::random_device rd;
-						std::mt19937 gen(rd());
-						std::uniform_real_distribution<float> urd(-1.0f, 1.0f);
-						XMVECTOR dir{ urd(gen), 0, urd(gen) };
-
-						XMFLOAT3 normalDir;
-						XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
-
-						cl.second->direction = { normalDir.x, 0, normalDir.z };
-
-						Event update{ cl.second->ID, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
-						eventQueue.push(update);
-						std::uniform_int_distribution<int> time(1, 10);
-						Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(time(gen)) };
-						eventQueue.push(event);
-					}
-				}
-			}
-		}
-		else
-		{
-			Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
-			eventQueue.push(event);
-		}
-
-		cout << startCountByRoomID[id] << " STARTCOUNT \n";
-
+		GameStartCount(id);
 		break;
 	}
-	case OverlappedType::MatchingRacingStart:
+	case OverlappedType::GameEnd:
 	{
-
-		break;
-	}
-	case OverlappedType::MatchingObstacleStart:
-	{
-
+		GameEnd(id);
 		break;
 	}
 	case OverlappedType::MatchingRacingComplete:
 	{
+		isFeverByRoomID[id] = false;
+		if (isCoinActiveByRoomID.find(id) == isCoinActiveByRoomID.end())
+		{
+			isCoinActiveByRoomID[id] = new bool[2];
+			isCoinActiveByRoomID[id][0] = false;
+			isCoinActiveByRoomID[id][1] = false;
+		}
+
 		int connectClient = matchingManager->CompleteMatching(id, MapType::Racing);
 		remainingUnReadyClientNumByRoomID[id] = connectClient;
 		InitAI(id, MapType::Racing, connectClient);
+		startCountByRoomID[id] = 3;
 		break;
 	}
 	case OverlappedType::MatchingObstacleComplete:
 	{
+		isFeverByRoomID[id] = false;
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> x(2, 3);
 
-		matchingManager->CompleteMatching(id, MapType::Obstacle);
+		auto mapType = static_cast<MapType>(x(gen));
+		int connectClient = matchingManager->CompleteMatching(id, MapType::Meteo);
+		remainingUnReadyClientNumByRoomID[id] = connectClient;
+		startCountByRoomID[id] = 3;
+		if (mapType == MapType::Meteo)
+		{
+			for (int i = 0; i < 5; ++i)
+				isGroundByRoomID[id].push_back(true);
+			cout << "isGroundByRoomID size :" << isGroundByRoomID[id].size() << endl;
+		}
 		break;
 	}
 	case OverlappedType::RotateObs:
@@ -442,6 +482,13 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
+		for (auto& obs : jumpMapObstacle)
+		{
+			obs.rotate += obs.deltaRotate;
+			if (obs.rotate > 360)
+				obs.rotate -= 360;
+		}
+
 		Event event{ 9999, OverlappedType::RotateObs, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 
@@ -449,7 +496,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	}
 	case OverlappedType::SendRotateInfo:
 	{
-		unsigned short degree[66] = { 0, };
+		unsigned short degree[OBSTACLENUM] = { 0, };
 		int i = 0;
 		for (auto& obs : obstacles)
 		{
@@ -460,16 +507,28 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 			}
 		}
 
+		unsigned short jumpDegree = 0;
+		for (auto& obs : jumpMapObstacle)
+		{
+			jumpDegree = obs.rotate * 100;
+		}
+
 		for (auto client : clients)
 		{
 			if (client.second->RoomID == -1) continue;
-			if (client.second->mapType != MapType::Racing) continue;
-
-			if (client.second->ID != -1 && !client.second->isAI)
-				client.second->SendObstacleInfoPacket(degree, 66 * sizeof(short));
+			if (client.second->mapType == MapType::Racing)
+			{
+				if (client.second->ID != -1 && !client.second->isAI)
+					client.second->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
+			}
+			else if (client.second->mapType == MapType::Jump)
+			{
+				if (client.second->ID != -1 && !client.second->isAI)
+					client.second->SendJumpObstacleInfoPacket(jumpDegree);
+			}
 		}
 
-		Event event{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + 1s };
+		Event event{ 9999, OverlappedType::SendRotateInfo, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
 
 		break;
@@ -478,19 +537,28 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		auto client = clients[id];
 
-		if (client->ID < 0)
+		if (client->ID == -1 || client->RoomID == -1)
 		{
 			break;
 		}
 
+		client->velocity.x = 0;
+		client->velocity.z = 0;
 		{
 			lock_guard<mutex> lock{ client->lock };
-			client->velocity.y -= GRAVITY;
+			client->velocity.y -= GRAVITY * ((isFeverByRoomID[client->ID]) ? 3 : 1);
 		}
-		if (client->isMove)
+		if (client->isMove && !client->isPushed)
 		{
 			lock_guard<mutex> lock{ client->lock };
-			auto delta = client->direction * SPEED;
+			auto delta = client->direction * SPEED * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
+			client->velocity.x = delta.x;
+			client->velocity.z = delta.z;
+		}
+		else if (client->isPushed)
+		{
+			lock_guard<mutex> lock{ client->lock };
+			auto delta = client->direction * SPEED / 3 * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
 			client->velocity.x = delta.x;
 			client->velocity.z = delta.z;
 		}
@@ -513,7 +581,7 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 					}
 					if (client->collider.isCollisionAABB(tile.collider))
 					{
-						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
+						if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) continue;
 
 						//if(tile.data.state == LayerState::L1Water)
 						//	cout << "Tile : " << tile.data.state << endl;
@@ -525,15 +593,14 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						{
 							client->isJump = false;
 						}
-						break;
 					}
 				}
 			}
 
+			client->isColl = false;
 			// 장애물 충돌체크
 			for (auto& obs : obstacles)
 			{
-				//break; /////////////////////////////////////////////////////////////////////////////////////////// 장애물 충돌 임시 중단
 				if (client->velocity.x != 0 || client->velocity.z != 0)
 				{
 					if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
@@ -541,9 +608,8 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 						if (client->collider.isCollisionAABB(obs.collider[0]))
 						{
 							client->isColl = true;
-							break;
+
 							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
-							//auto boxcenter = obs.collider[0].getBoundingbox().Center;
 							auto clientCenter = client->collider.getBoundingbox().Center;
 							XMVECTOR center = XMLoadFloat3(&clientCenter);
 							XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
@@ -558,17 +624,6 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 								client->direction.x = 0;
 								client->velocity.x = 0;
 							}
-
-							else if (XMVectorGetY(faceNormal) < 0.0f)
-							{
-								lock_guard<mutex> lock{ client->lock };
-								if (client->position.y > 0)
-								{
-									client->direction.y = 0;
-									client->isJump = false;
-								}
-							}
-
 							else if (XMVectorGetZ(faceNormal) < 0.0f)
 							{
 								lock_guard<mutex> lock{ client->lock };
@@ -580,10 +635,10 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 								client->direction.z = 0;
 								client->velocity.z = 0;
 							}
-							break;
 						}
 					}
 				}
+
 				if (obs.data.state == OBSTACLE_STATE::SPIN)
 				{
 					obs.collider[1].orientation =
@@ -594,53 +649,49 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 							0
 						);
 
+					XMFLOAT4 rhsOrientation;
+
+					XMStoreFloat4(&rhsOrientation, obs.collider[1].orientation);
+
 					if (client->collider.isCollisionOBB(obs.collider[1]))
 					{
 						client->isColl = true;
-						break;
-						//std::cout << " COLL SPIN " << endl;
-						auto originMat = DirectX::XMMatrixTranslation(client->position.x, client->position.y, client->position.z);
 
-						Vector3 vec = *obs.collider[1].position;
+						Vector3 collisionNormal = client->position - *obs.collider[1].position;
+						collisionNormal.y = 0;
+						collisionNormal.Normalize();
 
-						auto transMat = DirectX::XMMatrixTranslation(-vec.x, -vec.y, -vec.z);
-						auto inverseTransMat = DirectX::XMMatrixTranslation(vec.x, vec.y, vec.z);
-						auto rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(-obs.rotate));
-						auto inverseRotateMat = DirectX::XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(obs.rotate));
+						float angularVelocity = 5;
 
-						auto calculMat = transMat * rotateMat * originMat;
-						auto calculPos = Vector3(calculMat.r[3].m128_f32[0], calculMat.r[3].m128_f32[1], calculMat.r[3].m128_f32[2]);
-						//cout << calculPos.x << " " << calculPos.y << " " << calculPos.z << endl;
+						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
 
-						if (calculPos.x > 0 && calculPos.z < 0)
+						Vector3 pushDirection = tangentialVelocity;
+						pushDirection.y = 0;
+						pushDirection.Normalize();
+
+						float relativeVelocity = Vector3::Dot(client->velocity, pushDirection);
+
+						auto someFactor = 50.0f;
+
+						if (relativeVelocity <= 0)
 						{
-							calculMat.r[3].m128_f32[2] = -(obs.collider[1].size.z + PlayerCollider.z);
+							float pushMagnitude = angularVelocity * someFactor;
+
+							client->velocity = Vector3::Zero();
+							client->velocity += pushDirection * pushMagnitude;
 						}
-						else if (calculPos.x < 0 && calculPos.z > 0)
+						else
 						{
-							calculMat.r[3].m128_f32[2] = (obs.collider[1].size.z + PlayerCollider.z);
-						}
+							float pushMagnitude = angularVelocity * someFactor;
 
-						auto resultMat = calculMat * inverseRotateMat * inverseTransMat;
-						auto resultPos = Vector3(resultMat.r[3].m128_f32[0], resultMat.r[3].m128_f32[1], resultMat.r[3].m128_f32[2]);
-
-						{
-							lock_guard<mutex> lock{ client->lock };
-							client->position = resultPos;
+							client->velocity = Vector3::Zero();
+							client->velocity -= pushDirection * pushMagnitude;
 						}
 					}
 				}
 
 				if (obs.data.state == OBSTACLE_STATE::PENDULUM)
 				{
-					//auto transMat = XMMatrixTranslation(0, -150, 0);
-					//auto rotMat = XMMatrixRotationRollPitchYaw(0, 0, sinf(XMConvertToRadians(obs.rotate)));
-					//auto invTransMat = XMMatrixTranslation(0, 150, 0);
-					//
-					//auto resultMat = rotMat * transMat;
-					//
-					//obs.collider[0].orientation = XMQuaternionRotationMatrix(resultMat);
-
 					obs.collider[0].orientation =
 						DirectX::XMQuaternionRotationRollPitchYaw
 						(
@@ -648,50 +699,274 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 							0,
 							sinf(XMConvertToRadians(obs.rotate))
 						);
+					auto clientCenter = client->collider.getBoundingbox().Center;
+					XMVECTOR center = XMLoadFloat3(&clientCenter);
+					XMVECTOR collisionNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
 
 					if (client->collider.isCollisionOBB(obs.collider[0]))
 					{
 						client->isColl = true;
-						break;
-						XMVECTOR vec;
-						float angle;
-						XMFLOAT4 vec4;
-						XMQuaternionToAxisAngle(&vec, &angle, obs.collider[0].orientation);
-						XMStoreFloat4(&vec4, vec);
-						//cout << "Coll PENDULUM " << vec4.x << " " << vec4.y << " " << vec4.z << " " << vec4.w << endl;
+
+						auto angle = sinf(XMConvertToRadians(obs.rotate));
+
+						Vector3 direction;
+						direction.x = std::sinf(XMConvertToRadians(obs.rotate));
+						direction.y = 0.0f;
+						direction.z = 0.0f;
+
+						client->position += direction * 200.0f * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
 					}
 				}
-				client->isColl = false;
+			}
+
+			for (auto& super : superJump)
+			{
+				if (client->isSuperJump) break;
+				if (client->RoomID == -1 || client->ID == -1) break;
+				if (client->isAI) continue;
+
+				if (client->collider.isCollisionAABB(super.collider))
+				{
+					cout << "CALL SUPER : " << client->ID << endl;
+					lock_guard<mutex> lock{ client->lock };
+					client->isSuperJump = true;
+					client->isMove = false;
+					client->isJump = false;
+					client->velocity = Vector3::Zero();
+					client->position = Vector3(super.data.xPos, super.data.yPos, super.data.zPos);
+				}
 			}
 
 			{
 				lock_guard<mutex> lock{ client->lock };
-				client->position += client->velocity * DeltaTimefloat.count();
+				if (startCountByRoomID[client->RoomID] == 0)
+				{
+					if (!client->isSuperJump)
+					{
+						client->position += client->velocity * DeltaTimefloat.count();
+					}
+					else
+					{
+						client->position += SUPERJUMP * DeltaTimefloat.count() * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
+						if (client->position.y > 1000.0f)
+						{
+							client->isSuperJump = false;
+							client->velocity = Vector3::Zero();
+						}
+					}
+				}
+
 				if (client->position.y < -3000)
 				{
 					client->velocity.y = 0;
-					client->position = PlayerStartPos;
+					client->position = Vector3{ 0,10,50 };
+				}
+				else if (client->position.z > 21500 && client->position.y > 0 && !client->isGoal)
+				{
+					client->isGoal = true;
+					client->isMove = false;
+					client->isJump = false;
+					client->velocity = Vector3::Zero();
+					client->direction = Vector3::Zero();
+					client->score += 120000 - chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now() - startTimePointByRoomID[client->RoomID]).count();
+				}
+			}
+
+			int count = 0;
+			for (auto& coin : coins)
+			{
+				if (client->RoomID == -1 || client->ID == -1) break;
+				if (client->isCoin) break;
+				if (isCoinActiveByRoomID[client->RoomID][count]) continue;
+
+				if (client->collider.isCollisionAABB(coin.collider))
+				{
+					cout << "CLIENT ID : " << client->ID << endl;
+					lock_guard<mutex> lock{ client->lock };
+					client->isCoin = true;
+					isCoinActiveByRoomID[client->RoomID][count] = true;
+					for (auto& cl : clients)
+					{
+						if (cl.second->ID == -1) continue;
+						if (cl.second->isAI) continue;
+						if (cl.second->RoomID != client->RoomID) continue;
+						if (cl.second->mapType != client->mapType) continue;
+
+						cl.second->SendEnterCoinPacket(id, count);
+					}
+				}
+				count++;
+			}
+		}
+		else if (client->mapType == MapType::Jump)
+		{
+
+			if (client->velocity.y < 0)
+			{
+				for (auto& tile : jumpMapTiles)
+				{
+					if (client->collider.isCollisionAABB(tile.collider))
+					{
+
+						lock_guard<mutex> lock{ client->lock };
+						client->position.y = tile.collider.position->y;
+						client->velocity.y = 0;
+						if (client->isJump)
+						{
+							client->isJump = false;
+						}
+					}
+				}
+			}
+			client->isColl = false;
+			// 장애물 충돌체크
+			for (auto& obs : jumpMapObstacle)
+			{
+				if (client->velocity.x != 0 || client->velocity.z != 0)
+				{
+					if (obs.data.state == OBSTACLE_STATE::SPIN || obs.data.state == OBSTACLE_STATE::STOP)
+					{
+						if (client->collider.isCollisionAABB(obs.collider[0]))
+						{
+							client->isColl = true;
+
+							// BoundingBox Side 별 거리 계산 후 가장 가까운 방향의 Normal Vector 세팅 후 반환
+							auto clientCenter = client->collider.getBoundingbox().Center;
+							XMVECTOR center = XMLoadFloat3(&clientCenter);
+							XMVECTOR faceNormal = client->collider.GetClosestFaceNormal(obs.collider[0].getBoundingbox(), center);
+
+							if (XMVectorGetX(faceNormal) < 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								if (client->position.x > obs.position.x)
+									client->position.x = obs.position.x + obs.collider[0].size.x + (PlayerCollider.x);
+								else
+									client->position.x = obs.position.x - obs.collider[0].size.x - (PlayerCollider.x);
+								client->direction.x = 0;
+								client->velocity.x = 0;
+							}
+							else if (XMVectorGetZ(faceNormal) < 0.0f)
+							{
+								lock_guard<mutex> lock{ client->lock };
+								if (client->position.z > obs.position.z)
+									client->position.z = obs.position.z + obs.collider[0].size.z + (PlayerCollider.z + 0.1);
+								else
+									client->position.z = obs.position.z - obs.collider[0].size.z - (PlayerCollider.z + 0.1);
+
+								client->direction.z = 0;
+								client->velocity.z = 0;
+							}
+						}
+					}
+				}
+
+				if (obs.data.state == OBSTACLE_STATE::SPIN)
+				{
+					obs.collider[1].orientation =
+						DirectX::XMQuaternionRotationRollPitchYaw
+						(
+							0,
+							XMConvertToRadians(obs.rotate),
+							0
+						);
+
+					XMFLOAT4 rhsOrientation;
+
+					XMStoreFloat4(&rhsOrientation, obs.collider[1].orientation);
+
+					if (client->collider.isCollisionOBB(obs.collider[1]))
+					{
+						client->isColl = true;
+
+						Vector3 collisionNormal = client->position - *obs.collider[1].position;
+						collisionNormal.y = 0;
+						collisionNormal.Normalize();
+
+						float angularVelocity = 5;
+
+						Vector3 tangentialVelocity = Vector3::Cross(obs.collider[1].size, collisionNormal) * angularVelocity;
+
+						Vector3 pushDirection = tangentialVelocity;
+						pushDirection.y = 0;
+						pushDirection.Normalize();
+
+						float relativeVelocity = Vector3::Dot(client->velocity, pushDirection);
+
+						auto someFactor = 100.0f;
+
+						if (relativeVelocity <= 0)
+						{
+							float pushMagnitude = angularVelocity * someFactor;
+
+							client->velocity = Vector3::Zero();
+							client->velocity += pushDirection * pushMagnitude * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
+						}
+						else
+						{
+							float pushMagnitude = angularVelocity * someFactor;
+
+							client->velocity = Vector3::Zero();
+							client->velocity -= pushDirection * pushMagnitude * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
+						}
+					}
+				}
+			}
+
+			{
+				lock_guard<mutex> lock{ client->lock };
+				if (startCountByRoomID[client->RoomID] == 0)
+					client->position += client->velocity * DeltaTimefloat.count();
+				if (client->position.y < -3000)
+				{
+					client->velocity.y = 0;
+					client->isGoal = true;
 				}
 			}
 		}
-		else if (client->mapType == MapType::Obstacle)
-		{
-
-		}
 		else if (client->mapType == MapType::Meteo)
 		{
+			if (client->velocity.y < 0)
+			{
+				for (auto& tile : meteoTiles)
+				{
+					if (isGroundByRoomID[client->RoomID][static_cast<int>(tile.Mdata.state) - 6])
+					{
+						if (client->collider.isCollisionAABB(tile.collider))
+						{
+							if (client->position.y + abs(client->velocity.y) < tile.collider.position->y) break;
 
-		}
-		else if (client->mapType == MapType::Bomb)
-		{
-
+							lock_guard<mutex> lock{ client->lock };
+							client->position.y = tile.collider.position->y;
+							client->velocity.y = 0;
+							if (client->isJump)
+							{
+								client->isJump = false;
+							}
+							break;
+						}
+					}
+				}
+			}
+			{
+				lock_guard<mutex> lock{ client->lock };
+				if (startCountByRoomID[client->RoomID] == 0)
+					client->position += client->velocity * DeltaTimefloat.count();
+				if (client->position.y < -3000)
+				{
+					client->velocity.y = 0;
+				}
+			}
 		}
 
 		if (!client->isAI)
+		{
 			client->SendPlayerInfoPacket(id, client->position, client->degree, client->isMove, client->isColl, client->isGoal);
+		}
 
 		for (auto cl : clients)
 		{
+			if (cl.second == nullptr)
+				continue;
 			ClientException(cl, id);
 			if (cl.second->isAI) continue;
 			if (cl.second->RoomID != client->RoomID) continue;
@@ -713,31 +988,195 @@ void ServerBase::ServerEvent(const int id, OverlappedEx* overlappedEx)
 	{
 		if (id == -1) break;
 
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_real_distribution<float> x(-1.0f, 1.0f);
-		std::uniform_real_distribution<float> z(0.0f, 1.0f);
-		XMVECTOR dir{ x(gen), 0, z(gen) };
+		auto client = clients[id];
 
-		XMFLOAT3 normalDir;
-		XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
-
+		if (client->velocity.y < 0 || client->isColl)
 		{
-			lock_guard<mutex> lock{ clients[id]->lock };
-			clients[id]->isMove = true;
-			clients[id]->direction = { normalDir.x, normalDir.y, normalDir.z };
-
-			auto x = clients[id]->direction.x;
-			auto z = clients[id]->direction.z;
-
-			clients[id]->degree = XMConvertToDegrees(atan2(x, z)) - 180;
-			if (clients[id]->degree < -360)
-				clients[id]->degree += 360;
+			ClientKeyInputPacket p;
+			p.x = 0;
+			p.y = 0;
+			p.z = 0;
+			p.degree = 0;
+			p.key = KeyType::Jump;
+			ProcessInput(id, &p);
+		}
+		if (client->isCanPush)
+		{
+			ClientKeyInputPacket p;
+			p.x = 0;
+			p.y = 0;
+			p.z = 0;
+			p.degree = 0;
+			p.key = KeyType::Push;
+			ProcessInput(id, &p);
 		}
 
-		std::uniform_int_distribution<int> update(1, 10);
-		Event event{ id, OverlappedType::UpdateAI, chrono::system_clock::now() + chrono::seconds(update(gen)) };
+		if (client->position.y > -100)
+		{
+			float nearestDistance = -1;
+			Tile* nearestTile = NULL;
+			for (auto& way : navi2F)
+			{
+				if (way.data.zPos - 20 < client->position.z) continue;
+				auto dis = Vector3::Distance(client->position, Vector3(way.data.xPos, way.data.yPos, way.data.zPos - 20));
+				if (nearestDistance == -1)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+
+				if (dis < nearestDistance)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+			}
+			if (nearestTile == NULL) break;
+
+			Vector3 nearestPos{ nearestTile->data.xPos, nearestTile->data.yPos, nearestTile->data.zPos };
+
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> x(-100.0f, 100.0f);
+
+			Vector3 Target = nearestPos - client->position;
+			Target.y = 0;
+			Target.x += x(gen);
+
+			Target.Normalize();
+			ClientKeyInputPacket p;
+			p.x = Target.x;
+			p.y = Target.y;
+			p.z = Target.z;
+
+			auto xx = Target.x;
+			auto zz = Target.z;
+			p.degree = XMConvertToDegrees(atan2(xx, zz)) - 180;
+			if (p.degree < -360)
+				p.degree += 360;
+			p.key = KeyType::MoveStart;
+			ProcessInput(id, &p);
+		}
+		else
+		{
+			float nearestDistance = -1;
+			Tile* nearestTile = NULL;
+			for (auto& way : navi1F)
+			{
+				if (way.data.zPos - 20 < client->position.z) continue;
+				auto dis = Vector3::Distance(client->position, Vector3(way.data.xPos, way.data.yPos, way.data.zPos - 20));
+				if (nearestDistance == -1)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+
+				if (dis < nearestDistance)
+				{
+					nearestDistance = dis;
+					nearestTile = &way;
+				}
+			}
+			if (nearestTile == NULL) break;
+
+			Vector3 nearestPos{ nearestTile->data.xPos, nearestTile->data.yPos, nearestTile->data.zPos };
+
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> x(-100.0f, 100.0f);
+
+			Vector3 Target = nearestPos - client->position;
+			Target.y = 0;
+			Target.x += x(gen);
+			Target.Normalize();
+
+			ClientKeyInputPacket p;
+			p.x = Target.x;
+			p.y = Target.y;
+			p.z = Target.z;
+
+			auto xx = Target.x;
+			auto zz = Target.z;
+			p.degree = XMConvertToDegrees(atan2(xx, zz)) - 180;
+			if (p.degree < -360)
+				p.degree += 360;
+			p.key = KeyType::MoveStart;
+			ProcessInput(id, &p);
+		}
+
+		Event event{ id, OverlappedType::UpdateAI, chrono::system_clock::now() + DeltaTimeMilli };
 		eventQueue.push(event);
+		break;
+	}
+	case OverlappedType::PushCoolTime:
+	{
+		clients[id]->isCanPush = true;
+		break;
+	}
+	case OverlappedType::PushEnd:
+	{
+		clients[id]->isPushed = false;
+		clients[id]->direction = Vector3::Zero();
+		if (clients[id]->isAI)
+		{
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<float> x(-1.0f, 1.0f);
+			std::uniform_real_distribution<float> z(0.0f, 1.0f);
+			XMVECTOR dir{ x(gen), 0, z(gen) };
+
+			XMFLOAT3 normalDir;
+			XMStoreFloat3(&normalDir, XMVector3Normalize(dir));
+
+			{
+				lock_guard<mutex> lock{ clients[id]->lock };
+				clients[id]->isMove = true;
+				clients[id]->direction = { normalDir.x, normalDir.y, normalDir.z };
+
+				auto x = clients[id]->direction.x;
+				auto z = clients[id]->direction.z;
+
+				clients[id]->degree = XMConvertToDegrees(atan2(x, z)) - 180;
+				if (clients[id]->degree < -360)
+					clients[id]->degree += 360;
+			}
+		}
+		break;
+	}
+	case OverlappedType::Meteo:
+	{
+		auto targetTime = chrono::system_clock::now() + 12s;
+		for (auto cl : clients)
+		{
+			if (cl.second->isAI) continue;
+			if (cl.second->RoomID != id) continue;
+
+			int target;
+			while (true)
+			{
+				srand(time(NULL));
+				auto r = rand() % 6;
+				if (isGroundByRoomID[id][r])
+				{
+					cout << id << endl;;
+					target = r;
+					isGroundByRoomID[id][r] = false;
+					break;
+				}
+			}
+			cl.second->SendMeteoPacket(target, targetTime);
+		}
+
+		if (startCountByRoomID[id] == 0)
+		{
+			Event event{ id, OverlappedType::Meteo, targetTime };
+			eventQueue.push(event);
+		}
+		break;
+	}
+	case OverlappedType::JumpMap:
+	{
+
 		break;
 	}
 	default:
@@ -814,79 +1253,9 @@ void ServerBase::ProcessPacket(const int id, char* packet)
 		}
 		break;
 	}
-	case ClientReady:
+	case ::ClientReady:
 	{
-		switch (clients[id]->mapType)
-		{
-		case MapType::Lobby:
-		{
-
-		}
-		case MapType::Racing:
-		{
-			cout << "Send Info  \n";
-			unsigned short RPS[66] = { 0, };
-			unsigned short degree[66] = { 0, };
-			int i = 0;
-			for (auto& obs : obstacles)
-			{
-				if (obs.data.state != OBSTACLE_STATE::STOP)
-				{
-					RPS[i] = obs.angularVelocity * 100;
-					degree[i] = obs.rotate * 100;
-					++i;
-				}
-			}
-			clients[id]->SendObstacleRPSPacket(RPS, 66 * sizeof(short));
-			clients[id]->SendObstacleInfoPacket(degree, 66 * sizeof(short));
-
-			Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
-			eventQueue.push(event);
-
-
-			int readyCount = -1;
-			{
-				lock_guard<mutex> lock{ this->lock };
-				remainingUnReadyClientNumByRoomID[clients[id]->RoomID] -= 1;
-				readyCount = remainingUnReadyClientNumByRoomID[clients[id]->RoomID];
-			}
-			if (readyCount == 0)
-			{
-				startCountByRoomID[clients[id]->RoomID] = 3;
-				Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
-				eventQueue.push(event);
-			}
-
-			break;
-		}
-		case MapType::Result:
-		{
-			break;
-		}
-		// Obstacle
-		default:
-		{
-
-			break;
-		}
-		}
-
-		if (!clients[id]->isAI)
-		{
-			clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
-
-			for (auto& client : clients)
-			{
-				ClientException(client, id);
-				if (client.second->mapType != clients[id]->mapType) continue;
-				if (client.second->RoomID != clients[id]->RoomID) continue;
-
-				//if (!client.second->isAI)
-				//	client.second->SendAddPlayerPacket(id, clients[id]->position);
-
-				clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
-			}
-		}
+		ClientReady(id);
 		break;
 	}
 	case ClientKeyInput:
@@ -911,6 +1280,9 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	auto client = clients[id];
 	if (client->mapType == MapType::Lobby || client->RoomID == -1) return;
 	if (startCountByRoomID[client->RoomID] != 0) return;
+	if (client->isGoal) return;
+	if (client->isPushed) return;
+	if (client->isSuperJump) return;
 
 	auto key = packet->key;
 	Vector3 dir = Vector3(packet->x, packet->y, packet->z);
@@ -941,29 +1313,474 @@ void ServerBase::ProcessInput(const int id, ClientKeyInputPacket* packet)
 	{
 		if (!client->isJump)
 		{
+			lock_guard<mutex> lock{ client->lock };
 			client->isJump = true;
-			client->velocity.y = JUMPVEL;
+			client->velocity.y = JUMPVEL * ((isFeverByRoomID[client->ID]) ? FeverModeMulti : 1);
 		}
 		break;
 	}
 	case KeyType::Push: // 밀치기
+	{
+		if (false == client->isCanPush) break;
+
+		float nearestDistance = PUSHDISTANCE + 1;
+		Client* target = NULL;
 		for (auto& cl : clients)
 		{
 			ClientException(cl, id);
 			if (cl.second->mapType != client->mapType) continue;
-			if (cl.second->RoomID == -1) continue;
-
+			if (cl.second->RoomID != client->RoomID) continue;
 			if (Vector3::Distance(client->position, cl.second->position) > PUSHDISTANCE) continue;
-			{
 
+			auto distance = Vector3::Distance(client->position, cl.second->position);
+			if (distance < nearestDistance)
+			{
+				nearestDistance = distance;
+				target = cl.second;
 			}
 		}
+
+		if (target != NULL)
+		{
+			lock_guard<mutex> lock{ client->lock };
+			target->isPushed = true;
+			target->isMove = false;
+			client->isCanPush = false;
+
+			auto dirvec = target->position - client->position;
+			XMVECTOR vec{ dirvec.x, 0, dirvec.z };
+			XMFLOAT3 normalDir;
+			XMStoreFloat3(&normalDir, XMVector3Normalize(vec));
+
+			target->direction = { normalDir.x, 0, normalDir.z };
+
+			auto timepoint = chrono::system_clock::now();
+			auto pushedTime = timepoint + PushTime;
+			for (auto& cl : clients)
+			{
+				if (cl.second->isAI) continue;
+				if (cl.second->ID < 0) continue;
+				if (cl.second->mapType != client->mapType) continue;
+				if (cl.second->RoomID != client->RoomID) continue;
+
+				cl.second->SendPushedPacket(target->ID, pushedTime);
+			}
+
+			auto useTime = chrono::system_clock::now() + 5s;
+
+			client->SendPushCoolTimePacket(useTime);
+
+			Event coolTime{ client->ID, OverlappedType::PushCoolTime, useTime };
+			eventQueue.push(coolTime);
+			Event effectTime{ target->ID, OverlappedType::PushEnd, pushedTime };
+			eventQueue.push(effectTime);
+		}
+
 		break;
+	}
 	case KeyType::Boom: // 폭탄돌리기
 
 		break;
 	default:
 		break;
+	}
+}
+
+void ServerBase::ClientReady(const int id)
+{
+	cout << "Cleint READY\n";
+	switch (clients[id]->mapType)
+	{
+	case MapType::Lobby:
+	{
+
+	}
+	case MapType::Racing:
+	{
+		unsigned short RPS[OBSTACLENUM] = { 0, };
+		unsigned short degree[OBSTACLENUM] = { 0, };
+		int i = 0;
+		for (auto& obs : obstacles)
+		{
+			if (obs.data.state != OBSTACLE_STATE::STOP)
+			{
+				RPS[i] = obs.angularVelocity * 100;
+				degree[i] = obs.rotate * 100;
+				++i;
+			}
+		}
+		clients[id]->SendObstacleRPSPacket(RPS, OBSTACLENUM * sizeof(short));
+		clients[id]->SendObstacleInfoPacket(degree, OBSTACLENUM * sizeof(short));
+
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
+
+		break;
+	}
+	case MapType::Result:
+	{
+		break;
+	}
+	default: // Obstacle
+	{
+		Event event{ id, OverlappedType::Update, chrono::system_clock::now() + DeltaTimeMilli };
+		eventQueue.push(event);
+		break;
+	}
+	}
+
+	int readyCount = -1;
+	{
+		lock_guard<mutex> lock{ this->lock };
+		remainingUnReadyClientNumByRoomID[clients[id]->RoomID] -= 1;
+		readyCount = remainingUnReadyClientNumByRoomID[clients[id]->RoomID];
+	}
+
+	if (readyCount == 0)
+	{
+		Event event{ clients[id]->RoomID, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+		eventQueue.push(event);
+	}
+
+	if (!clients[id]->isAI)
+	{
+		clients[id]->SendAddPlayerPacket(id, PlayerStartPos);
+
+		for (auto& client : clients)
+		{
+			ClientException(client, id);
+			if (client.second->mapType != clients[id]->mapType) continue;
+			if (client.second->RoomID != clients[id]->RoomID) continue;
+
+			//if (!client.second->isAI)
+			//	client.second->SendAddPlayerPacket(id, clients[id]->position);
+
+			clients[id]->SendAddPlayerPacket(client.second->ID, client.second->position);
+		}
+	}
+}
+
+void ServerBase::GameStartCount(const int id)
+{
+	bool isFever = false;
+	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
+		isFever = isFeverByRoomID[id];
+
+	MapType curMode = MapType::Lobby;
+
+	for (auto cl : clients)
+	{
+		if (cl.second->ID == -1) continue;
+		if (cl.second->isAI) continue;
+		if (cl.second->RoomID == id)
+		{
+			curMode = cl.second->mapType;
+			cl.second->SendGameStartPacket(startCountByRoomID[id]);
+		}
+	}
+
+	if (startCountByRoomID[id] > 0 && curMode != MapType::Lobby)
+	{
+		Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 1s };
+		eventQueue.push(event);
+		startCountByRoomID[id] -= 1;
+		cout << "StartCount : " << startCountByRoomID[id] << ", RoomID : " << id << endl;
+	}
+	else return;
+
+	if (curMode == MapType::Racing)
+	{
+		RacingStartCount(id, isFever);
+	}
+	else if (curMode == MapType::Meteo)
+	{
+		MeteoStartCount(id, isFever);
+	}
+	else if (curMode == MapType::Jump)
+	{
+		JumpStartCount(id, isFever);
+	}
+}
+
+void ServerBase::GameEnd(const int id)
+{
+	startCountByRoomID[id] = 3;
+	bool isFever = false;
+	if (isFeverByRoomID.find(id) != isFeverByRoomID.end())
+		isFever = isFeverByRoomID[id];
+
+	int count = 0;
+	int rank[]{ -1,-1,-1 };
+	int score[]{ -1,-1,-1 };
+	std::unordered_map<unsigned char, int> scoreByID;
+	if (isFever)
+	{
+		for (auto cl : clients)
+		{
+			if (cl.second->score == 0) continue;
+			if (cl.second->RoomID == id)
+			{
+				if (score[0] < cl.second->score)
+				{
+					if (score[0] == -1)
+					{
+						score[0] = cl.second->score;
+						rank[0] = cl.second->ID;
+						continue;
+					}
+					else
+					{
+						score[2] = score[1];
+						score[1] = score[0];
+						score[0] = cl.second->score;
+
+						rank[2] = rank[1];
+						rank[1] = rank[0];
+						rank[0] = cl.second->ID;
+					}
+				}
+				else if (score[1] < cl.second->score)
+				{
+					if (score[1] == -1)
+					{
+						score[1] = cl.second->score;
+						rank[1] = cl.second->ID;
+						continue;
+					}
+					else
+					{
+						score[2] = score[1];
+						score[1] = cl.second->score;
+
+						rank[2] = rank[1];
+						rank[1] = cl.second->ID;
+					}
+				}
+				else if (score[2] < cl.second->score)
+				{
+					score[2] = cl.second->score;
+					rank[2] = cl.second->ID;
+				}
+			}
+		}
+	}
+
+	for (auto cl : clients)
+	{
+		if (cl.second->ID == -1) continue;
+		if (cl.second->RoomID == id)
+		{
+			if (!isFever)
+			{
+				cl.second->SendGameEndPacket(true);
+			}
+			else
+			{
+				cl.second->mapType = MapType::Lobby;
+				cl.second->RoomID = -1;
+				cl.second->score = 0;
+
+				if (cl.second->isAI)
+				{
+					lock_guard<mutex> lock{ cl.second->lock };
+					cl.second->ID = -1;
+					closesocket(cl.second->socket);
+				}
+				else
+				{
+					cl.second->SendGameResultPacket(rank, 3 * sizeof(int));
+				}
+			}
+
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->ClearBoolean();
+			cl.second->velocity = Vector3::Zero();
+			cl.second->direction = Vector3::Zero();
+		}
+	}
+
+	Event event{ id, OverlappedType::GameStartCount, chrono::system_clock::now() + 4s };
+	eventQueue.push(event);
+
+	isFeverByRoomID[id] = true;
+	cout << "SetFever\n" << endl;
+}
+
+void ServerBase::RacingStartCount(const int id, const bool isFever)
+{
+	int count = 0;
+	for (auto cl : clients)
+	{
+		if (cl.second->RoomID == id)
+		{
+			cl.second->ClearBoolean();
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->position = PlayerStartPos;
+			cl.second->position.x += PlayerStartDistance * count;
+			count++;
+		}
+	}
+
+	if (startCountByRoomID[id] == 0 && !isFever)
+	{
+		auto startTime = chrono::system_clock::now();
+		startTimePointByRoomID[id] = startTime;
+		for (auto cl : clients)
+		{
+			if (cl.second->ID == -1) continue;
+			if (cl.second->RoomID == id)
+			{
+				cl.second->ClearBoolean();
+				if (cl.second->isAI)
+				{
+					Event event{ cl.second->ID, OverlappedType::UpdateAI, chrono::system_clock::now() + DeltaTimeMilli };
+					eventQueue.push(event);
+				}
+				else
+				{
+					cl.second->SendStartTimePacket(startTime);
+				}
+			}
+		}
+		isCoinActiveByRoomID[id][0] = false;
+		isCoinActiveByRoomID[id][1] = false;
+		Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
+		eventQueue.push(event);
+	}
+	else if (startCountByRoomID[id] == 0)
+	{
+		auto startTime = chrono::system_clock::now();
+		startTimePointByRoomID[id] = startTime;
+		for (auto& cl : clients)
+		{
+			if (cl.second->ID == -1) continue;
+			if (cl.second->RoomID == id)
+			{
+				cl.second->ClearBoolean();
+				if (!cl.second->isAI)
+				{
+					cl.second->SendStartTimePacket(startTime);
+				}
+			}
+		}
+		isCoinActiveByRoomID[id][0] = false;
+		isCoinActiveByRoomID[id][1] = false;
+		Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(GameTime) };
+		eventQueue.push(event);
+	}
+}
+
+void ServerBase::MeteoStartCount(const int id, const bool isFever)
+{
+	int count = 0;
+	for (auto cl : clients)
+	{
+		if (cl.second->RoomID == id)
+		{
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->position = MeteoStartPos;
+			cl.second->position += MeteoStartDistance * count;
+			count++;
+		}
+	}
+
+	if (startCountByRoomID[id] == 0 && !isFever)
+	{
+		auto startTime = chrono::system_clock::now();
+		startTimePointByRoomID[id] = startTime;
+		for (auto cl : clients)
+		{
+			if (cl.second->ID == -1) continue;
+			if (cl.second->RoomID == id)
+			{
+				if (cl.second->isAI)
+				{
+				}
+				else
+				{
+					cl.second->SendStartTimePacket(startTime);
+					Event event{ id, OverlappedType::Meteo, startTime };
+					eventQueue.push(event);
+				}
+			}
+		}
+		Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(SurviveTime) };
+		eventQueue.push(event);
+	}
+	else if (startCountByRoomID[id] == 0)
+	{
+		auto startTime = chrono::system_clock::now();
+		startTimePointByRoomID[id] = startTime;
+		for (auto& cl : clients)
+		{
+			if (cl.second->ID == -1) continue;
+			if (cl.second->RoomID == id)
+			{
+				if (!cl.second->isAI)
+				{
+					cl.second->SendStartTimePacket(startTime);
+					Event event{ id, OverlappedType::Meteo, startTime };
+					eventQueue.push(event);
+				}
+			}
+		}
+		Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(SurviveTime) };
+		eventQueue.push(event);
+	}
+}
+
+void ServerBase::JumpStartCount(const int id, const bool isFever)
+{
+	int count = 0;
+	for (auto cl : clients)
+	{
+		if (cl.second->RoomID == id)
+		{
+			lock_guard<mutex> lock{ cl.second->lock };
+			cl.second->position = JumpStartPos;
+			cl.second->position += JumpStartDistance * count;
+			count++;
+		}
+	}
+
+	if (startCountByRoomID[id] == 0 && !isFever)
+	{
+		auto startTime = chrono::system_clock::now();
+		startTimePointByRoomID[id] = startTime;
+		for (auto cl : clients)
+		{
+			if (cl.second->ID == -1) continue;
+			if (cl.second->RoomID == id)
+			{
+				if (cl.second->isAI)
+				{
+				}
+				else
+				{
+					cl.second->SendStartTimePacket(startTime);
+				}
+			}
+		}
+		Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(SurviveTime) };
+		eventQueue.push(event);
+	}
+	else if (startCountByRoomID[id] == 0)
+	{
+		auto startTime = chrono::system_clock::now();
+		startTimePointByRoomID[id] = startTime;
+		for (auto& cl : clients)
+		{
+			if (cl.second->ID == -1) continue;
+			if (cl.second->RoomID == id)
+			{
+				if (!cl.second->isAI)
+				{
+					cl.second->SendStartTimePacket(startTime);
+				}
+			}
+		}
+		Event event{ id, OverlappedType::GameEnd, chrono::system_clock::now() + chrono::seconds(SurviveTime) };
+		eventQueue.push(event);
 	}
 }
 

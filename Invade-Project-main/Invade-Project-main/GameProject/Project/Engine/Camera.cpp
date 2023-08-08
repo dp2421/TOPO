@@ -21,6 +21,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Collider3D.h"
+#include "NetworkMgr.h"
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -175,8 +176,10 @@ void CCamera::Render_Deferred()
 
 	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
 	{
-		//if (m_vecDeferred[i]->GetName() == L"Player")
-		//	std::cout << m_vecDeferred[i]->Transform()->GetLocalPos().x << ", " << m_vecDeferred[i]->Transform()->GetLocalPos().y << ", " << m_vecDeferred[i]->Transform()->GetLocalPos().z << std::endl;
+		if (m_vecDeferred[i]->GetName() == L"Player")
+		{
+
+		}
 		if (m_vecDeferred[i]->IsActive() == true)
 			m_vecDeferred[i]->MeshRender()->Render();
 		else
@@ -197,7 +200,7 @@ void CCamera::Render_Forward()
 	{
 		if (m_vecForward[i]->GetName() == L"SkyBox")
 		{
-			if (true)
+			if (CRenderMgr::GetInst()->IsFever())
 				m_vecForward[i]->MeshRender()->GetCloneMaterial()->SetData(SHADER_PARAM::TEX_0, CSceneMgr::GetInst()->GetNightSky().GetPointer());
 
 		}
@@ -292,13 +295,14 @@ void CCamera::Render_UI()
 		if (m_vecUIObject[i]->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 		{
 			m_vecUIObject[i]->GetScript<CNumScript>()->SetCount(temp);
+			m_vecUIObject[i]->GetScript<CUIScript>()->SetStartCount(CRenderMgr::GetInst()->m_startCnt);
+
 		}
 		m_vecUIObject[i]->GetScript<CUIScript>()->UIRender();
-
+		
 
 		if (m_vecUIObject[i]->IsActive() == true)
 			m_vecUIObject[i]->MeshRender()->Render();
-		
 	}
 }
 

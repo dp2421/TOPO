@@ -57,6 +57,32 @@ Obstacle::Obstacle(ObstacleInfo info, int i):
 	}
 }
 
+Obstacle::Obstacle(JumpObstacleObject info)
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<float> urd(3.0f, 5.0f);
+	deltaRotate = urd(gen);
+	angularVelocity = deltaRotate * Frame;
+
+	position.x = data.x;
+	position.y = data.y;
+	position.z = data.z;
+
+	auto vec = Vector3(info.xScale, info.yScale, info.zScale);
+
+	Collider coll;
+	coll.offset = RotateObsPillarOffset;
+	coll.size = RotateObsPillarCollider;
+	collider.push_back(coll);
+	collider[0].position = new Vector3(data.x, data.y, data.z);
+
+	coll.offset = RotateObsRotateBodyOffset;
+	coll.size = RotateObsRotateBodyCollider * vec;
+	collider.push_back(coll);
+	collider[1].position = new Vector3(data.x, data.y, data.z);
+}
+
 Obstacle::~Obstacle()
 {
 

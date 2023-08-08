@@ -13,7 +13,10 @@ public:
 	void InitHandler();
 	void InitObsatacleInfo();
 	void InitMapInfo();
+	void InitNaviInfo();
+	void InitItemInfo();
 	void InitMeteoInfo();
+	void InitJumpMapInfo();
 	void InitAI(int roomID, MapType mapType, int AINum);
 
 	void Run();
@@ -26,6 +29,15 @@ public:
 	void ProcessPacket(const int id, char* packet);
 
 	void ProcessInput(const int id, ClientKeyInputPacket* key);
+
+	void ClientReady(const int id);
+
+	void GameStartCount(const int id);
+	void GameEnd(const int id);
+
+	void RacingStartCount(const int id, const bool isFever);
+	void MeteoStartCount(const int id, const bool isFever);
+	void JumpStartCount(const int id, const bool isFever);
 
 private:
 	SOCKET ServerSocket, ClientSocket;
@@ -44,17 +56,26 @@ private:
 
 	concurrency::concurrent_unordered_map<int, int> remainingUnReadyClientNumByRoomID;
 	concurrency::concurrent_unordered_map<int, int> startCountByRoomID;
+	concurrency::concurrent_unordered_map<int, chrono::system_clock::time_point> startTimePointByRoomID;
+	concurrency::concurrent_unordered_map<int, bool> isFeverByRoomID;
+	concurrency::concurrent_unordered_map<int, bool*> isCoinActiveByRoomID;
+	concurrency::concurrent_unordered_map<int, float> angularVelocityByRoomID;
+	concurrency::concurrent_unordered_map<int, std::vector<bool>> isGroundByRoomID;
 
 	std::vector<Obstacle> obstacles;
-	std::vector<Obstacle> coins;
+	std::vector<Tile> coins;
+	std::vector<Tile> superJump;
 	std::vector<Tile> tiles;
-	std::vector<Tile> racing2FTiles;
-	std::vector<Tile> racing1FTiles;
+
+	std::vector<Tile> meteoTiles;
+
+	std::vector<Tile> jumpMapTiles;
+	std::vector<Obstacle> jumpMapObstacle;
 
 	std::vector<thread> workerThreads;
 
-	std::vector<Tile> meteoTiles;
-	std::vector<Tile> jumpingTiles;
+	std::vector<Tile> navi2F;
+	std::vector<Tile> navi1F;
 
 	atomic<int> clientID = 0;
 

@@ -7,6 +7,8 @@
 #include "PlayerScript.h"
 #include "ObstacleScript.h"
 #include "UIScript.h"
+#include "ItemScript.h"
+#include "Camera.h"
 
 
 NetworkMgr::NetworkMgr()
@@ -241,14 +243,31 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerGameStart:
     {
         ServerGameStartPacket* p = reinterpret_cast<ServerGameStartPacket*>(packet);
-
+        //for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+        //{
+        //    if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
+        //    {
+        //        obj->GetScript<CUIScript>()->SetCountDown(p->count);
+        //    }
+        //}
         // p->count << 시작까지 남은 초
+        
+
+        CRenderMgr::GetInst()->m_startCnt = p->count;
+        break;
+    }
+    case ServerStartTime:
+    {
+        ServerStartTimePacket* p = reinterpret_cast<ServerStartTimePacket*>(packet);
+        startTime = p->startTime;
+
         break;
     }
     case ServerGameEnd:
     {
         ServerGameEndPacket* p = reinterpret_cast<ServerGameEndPacket*>(packet);
 
+        CRenderMgr::GetInst()->SetFever((int)p->isFever);
         // p->isFever << 피버모드냐 아니냐 아니라면 Result도 같이 갈듯
         
         break;
@@ -258,7 +277,16 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerGameResultPacket* p = reinterpret_cast<ServerGameResultPacket*>(packet);
         
         // p->id 등수 배열 0부터 1등 
+
+        CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::AWARD);
+        CRenderMgr::GetInst()->SetSceneChanged(true);
+        auto test = CSceneMgr::GetInst()->GetCurScene();
+
+        CRenderMgr::GetInst()->SetFever(false);
+        setRankPLID(p->id[0], p->id[1], p->id[2]);
+
         break;
+
     }
     case ServerAddPlayer:
     {
@@ -290,7 +318,10 @@ void NetworkMgr::ProcessPacket(char* packet)
         ServerPlayerInfoPacket* p = reinterpret_cast<ServerPlayerInfoPacket*>(packet);
         if (networkObjects.find(p->id) != networkObjects.end())
         {
-            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isColl, p->isGoal);
+            networkObjects[p->id]->GetScript<CPlayerScript>()->SetPlayerPos(Vec3(p->xPos, p->yPos, p->zPos), p->degree, p->isMove, p->isGoal);
+            b_isgoal = p->isGoal;
+
+            if (CurID == p->id) networkObjects[p->id]->GetScript<CPlayerScript>()->LetParticle(Vec3(p->xPos, p->yPos, p->zPos), PARTICLE_TYPE::COLLPARICLE, p->isColl);
         }
         else
         {
@@ -301,7 +332,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerObstacleInfo:
     {
         ServerObstacleInfoPacket* p = reinterpret_cast<ServerObstacleInfoPacket*>(packet);
-        for (int i = 0; i < 66; ++i)
+        for (int i = 0; i < OBSTACLENUM; ++i)
         {
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->Rotate(((float)p->degree[i])/100);
         }
@@ -310,7 +341,7 @@ void NetworkMgr::ProcessPacket(char* packet)
     case ServerObstacleRPS:
     {
         ServerObstacleRPSPacket* p = reinterpret_cast<ServerObstacleRPSPacket*>(packet);
-        for (int i = 0; i < 66; ++i)
+        for (int i = 0; i < OBSTACLENUM; ++i)
         {
             CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[i]->GetScript<CObstacleScript>()->SetSpeed(((float)p->angularVelocity[i]) / 100);
         }
@@ -322,13 +353,56 @@ void NetworkMgr::ProcessPacket(char* packet)
         CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[p->id]->GetScript<CObstacleScript>()->Rotate(((float)p->degree) / 100);
         break;
     }
+    case ServerMeteoInfo:
+    {
+        ServerMeteoInfoPacket* p = reinterpret_cast<ServerMeteoInfoPacket*>(packet);
+        targettime = p->targetTime;
+        target = p->metorLayerState;
+        break;
+    }
     case ServerEnterCoin:
     {
         ServerEnterCoinPacket* p = reinterpret_cast<ServerEnterCoinPacket*>(packet);
-        
+            
         // p->id 먹은 플레이어 ID;
+        CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Coin")->GetParentObj()[p->coinIndex]->GetScript<CItemScript>()->removeCoin(p->coinIndex);
+        break;
+    }
+    case ServerPushed:
+    {
+        ServerPushedPacket* p = reinterpret_cast<ServerPushedPacket*>(packet);
+
+        networkObjects[p->id]->GetScript<CPlayerScript>()->isStun = true;
+        networkObjects[p->id]->GetScript<CPlayerScript>()->stunTime = p->effectTime;
+
+        std::cout << "ID : " << p->id << " is Pushed \n";
+        //networkObjects[p->id]->GetScript<CPlayerScript>()->SetPush(true, p->effectTime);
+        // p->id 밀쳐진 플레이어 
 
         break;
+    }
+    case ServerPushCoolTime:
+    {
+        ServerPushCoolTimePacket* p = reinterpret_cast<ServerPushCoolTimePacket*>(packet);
+
+        if (networkObjects.find(CurID) != networkObjects.end())
+        {
+            networkObjects[CurID]->GetScript<CPlayerScript>()->pushTime = p->effectTime;
+        }
+
+        break;
+    }
+    case ServerJumpObstacleInfo:
+    {
+        ServerJumpObstacleInfoPacket* p = reinterpret_cast<ServerJumpObstacleInfoPacket*>(packet);
+        //CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"Obstacle")->GetParentObj()[p->id]->GetScript<CObstacleScript>()->Rotate(((float)p->degree) / 100);
+        // 위쪽 주석 친 코드를 JUMP맵으로 바꿔서 쓰시면 됩니다
+
+        break;
+    }
+    default:
+    {
+        //std::cout << "TYPE : " << (int)(unsigned char)packet[sizeof(PACKETSIZE)] << " \n";
     }
     } 
 }

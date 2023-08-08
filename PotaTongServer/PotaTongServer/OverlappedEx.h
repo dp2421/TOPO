@@ -6,15 +6,18 @@ enum class OverlappedType : int
 	Recv,
 	Send,
 	GameStartCount,
-	MatchingRacingStart,
-	MatchingObstacleStart,
+	GameEnd,
 	MatchingRacingComplete,
 	MatchingObstacleComplete,
 	RotateObs,
 	SendRotateInfo,
 	AddAI,
 	UpdateAI,
-	Update
+	Update,
+	PushCoolTime,
+	PushEnd,
+	Meteo,
+	JumpMap
 };
 
 class OverlappedEx

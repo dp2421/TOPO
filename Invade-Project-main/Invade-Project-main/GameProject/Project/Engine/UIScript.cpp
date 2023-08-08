@@ -4,36 +4,42 @@
 #include "RenderMgr.h"
 #include "Camera.h"
 #include "UIScript.h"
+#include <chrono>
 
 void CUIScript::Update()
 {
 	Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
 	mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
+	//mousepos = Vec3(CKeyMgr::GetInst()->GetMousePos().x,CKeyMgr::GetInst()->GetMousePos().y, 0);
 	if (Transform()->IsCasting(mousepos) && CKeyMgr::GetInst()->GetClicked() == true)
-	{
 		m_isClicked = true;
-	}
 
 	if (m_isClicked == true)
 	{
+
+		if (m_iType == TOLOBBY)
+		{
+			CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::LOBBY);
+			CRenderMgr::GetInst()->SetSceneChanged(true);
+		}
 		if (m_iType == SELECT_BUTTON)
 		{
+			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isSelected = true;
 			CGameObject* curobj = GetObj();
 			curobj->SetActive(false);
-			CRenderMgr::GetInst()->m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
 		}
 		else if (m_iType == MODE_RACING)
 		{
+			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isMatching = true;
 			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Racing);
-			CRenderMgr::GetInst()->m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
 		}
 		else if (m_iType == MODE_SURVIVAL)
 		{
+			CRenderMgr::GetInst()->PlayEffect(SOUND_TYPE::CLICK);
 			m_isMatching = true;
-			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Obstacle);
-			CRenderMgr::GetInst()->m_sounds[(int)SOUND_TYPE::CLICK]->Play(1, true);
+			NetworkMgr::GetInst()->SendClientMatchingPacket(MapType::Jump);
 		}
 		m_isClicked = false;
 
@@ -47,22 +53,21 @@ void CUIScript::Update()
 			activeobj->SetActive(false);
 		}
 	}
+
 }
 
 void CUIScript::UIRender()
 {
 	CGameObject* curObj = GetObj();
-	if (curObj->GetName() == (L"Cursor Object"))
-	{
-		Vec2 winsize = CGameFramework::GetInst()->m_WinSize;
-		Vec3 mousepos = Vec3(winsize.x / 1.3 - CKeyMgr::GetInst()->GetMousePos().x, winsize.y / 1.8 - CKeyMgr::GetInst()->GetMousePos().y, 0);
-		curObj->Transform()->SetLocalPos(Vec3(mousepos.x, mousepos.y, 0));
-	}
 
 	if (m_isSelected == true)
 	{
 		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
 		{
+			if (obj->GetScript<CUIScript>()->GetType() == TITLE)
+			{
+				obj->SetActive(false);
+			}
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_SURVIVAL ||
 				obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MODE_RACING ||
 				obj->GetScript<CUIScript>()->GetType() == UI_TYPE::WINDOW)
@@ -75,7 +80,7 @@ void CUIScript::UIRender()
 	if (m_isMatching == true)
 	{
 		m_isClicked = false;
-		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75f;
+		f_MatchingTime += CTimeMgr::GetInst()->GetDeltaTime() / 0.75f;
 
 		//std::cout << f_MatchingTime << std::endl;
 
@@ -88,7 +93,7 @@ void CUIScript::UIRender()
 		{
 			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::MATCHING)
 			{
-				if (CRenderMgr::GetInst()->GetMatchComplete()==false) // 매칭여부bool값으로 변경
+				if (CRenderMgr::GetInst()->GetMatchComplete() == false) // 매칭여부bool값으로 변경
 				{
 					obj->SetActive(true);
 					for (CGameObject* Loadobj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
@@ -165,13 +170,80 @@ void CUIScript::UIRender()
 		}
 	}
 
+	if (CRenderMgr::GetInst()->IsFever())
+	{
+
+		for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+		{
+			if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::FEVER && f_WaitFeverModeTime < 3)
+			{
+				obj->SetActive(true);
+			}
+			else if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::FEVER && f_WaitFeverModeTime > 3)
+			{
+				obj->SetActive(false);
+				// 만약 서버에서 fever false 신호 안 주면 여기서 false 설정
+			}
+		}
+		f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
+	}
+	//if (f_WaitFeverModeTime > 3)
+	//{
+	//	for (CGameObject* obj : CRenderMgr::GetInst()->GetCamera(1)->GetUIObj())
+	//	{
+	//		if (obj->GetScript<CUIScript>()->GetType() == UI_TYPE::FEVER)
+	//		{
+	//			obj->SetActive(false);
+	//		}
+	//	}
+	//}
+	//else f_WaitFeverModeTime += CTimeMgr::GetInst()->GetDeltaTime() * 0.75;
+
 
 	if (curObj->GetScript<CUIScript>()->GetType() == UI_TYPE::NUMBER)
 	{
 		curObj->GetScript<CNumScript>()->NumberUpdate();
+		curObj->GetScript<CNumScript>()->CountDown(CRenderMgr::GetInst()->m_startCnt);
 	}
+	if (CRenderMgr::GetInst()->m_startCnt ==0)
+		GameEndStart(true);
+
+	if (NetworkMgr::GetInst()->b_isgoal)
+		GameEndStart(false);
 }
 
+void CUIScript::GameEndStart(bool start)
+{
+	if (start)
+	{
+		if (std::chrono::system_clock::now()<=NetworkMgr::GetInst()->startTime + std::chrono::seconds(2) )
+		{
+			if (m_iType == START && !CRenderMgr::GetInst()->IsFever())
+				GetObj()->SetActive(true);
+		}
+		else
+		{
+			if (m_iType == START)
+				GetObj()->SetActive(false);
+		}
+
+	}
+	else
+	{
+		//if (CSceneMgr::GetInst()->GetSceneType() != SCENE_TYPE::AWARD)
+		if (!CRenderMgr::GetInst()->IsFever())
+		{
+			if (m_iType == DONE)
+				GetObj()->SetActive(true);
+		}
+		else
+		{
+			if (m_iType == DONE)
+				GetObj()->SetActive(false);
+
+		}
+	}
+}
 void CUIScript::MatchingComplete()
 {
 #if LOCALPLAY
@@ -182,8 +254,6 @@ void CUIScript::MatchingComplete()
 		int random = rand() % 2 + 1;
 		CRenderMgr::GetInst()->SetSceneType((SCENE_TYPE)random);
 	}
-	CRenderMgr::GetInst()->SetSceneChanged(true);
-
 #else // !LOCALPLAY
 	switch ((MapType)CRenderMgr::GetInst()->GetMatchMapType())
 	{
@@ -193,7 +263,7 @@ void CUIScript::MatchingComplete()
 	case MapType::Meteo:
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::METOR);
 		break;
-	case MapType::Obstacle:
+	case MapType::Jump:
 		CRenderMgr::GetInst()->SetSceneType(SCENE_TYPE::JUMP);
 		break;
 	default:
@@ -203,10 +273,15 @@ void CUIScript::MatchingComplete()
 #endif
 }
 
+//void CUIScript::GameEndStart()
+//{
+//}
+
 CUIScript::CUIScript() :CScript((UINT)SCRIPT_TYPE::UISCRIPT)
 {
 	m_isClicked = false;
 	m_isSelected = false;
+	m_isRoundOver = false;
 }
 
 CUIScript::~CUIScript()

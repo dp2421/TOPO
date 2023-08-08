@@ -15,13 +15,22 @@ struct ObstacleInfo
 	float z;
 };
 
+struct JumpObstacleObject
+{
+	OBSTACLE_STATE state;
+	float x, y, z;
+	float xScale, yScale, zScale;
+};
+
 class Obstacle
 {
 public:
 	Obstacle(ObstacleInfo info, int i);
+	Obstacle(JumpObstacleObject info);
 	~Obstacle();
 
 	ObstacleInfo data;
+	JumpObstacleObject jData;
 	int index;
 	float rotate = 0;
 	float deltaRotate;

@@ -11,6 +11,7 @@
 #include "EventMgr.h"
 #include "NetworkMgr.h"
 #include "InstancingMgr.h"
+#include <filesystem>
 
 CGameFramework::CGameFramework():m_hMainhWnd(nullptr) {
 	CRenderMgr::GetInst();
@@ -27,6 +28,7 @@ CGameFramework::~CGameFramework() {
 
 int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWindow)
 {
+
 	m_WinSize = Vec2(_resolution.fHeight, _resolution.fWidth);
 	m_hMainhWnd = _hWnd;
 	ChangeWindowSize(m_hMainhWnd, _resolution);
@@ -63,7 +65,7 @@ int CGameFramework::Init(HWND _hWnd, const tResolution& _resolution, bool _bWind
 	CSceneMgr::GetInst()->InitUI();
 	CSceneMgr::GetInst()->InitScene();
 	//CSceneMgr::GetInst()->ChangeScene();
-	//CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::RACING);
+	//CSceneMgr::GetInst()->ChangeScene(SCENE_TYPE::METOR);
 
 	NetworkMgr::GetInst()->Init();
 	
@@ -94,11 +96,11 @@ void CGameFramework::ProcessInput()
 
 	POINT ptCursorPos;
 	
-		SetCursor(NULL);
+		//SetCursor(NULL);
 		GetCursorPos(&ptCursorPos);
-		m_vMouseMove.x = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.f;
-		m_vMouseMove.y = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.f;
-		m_vMouseMove.y *= -1.f;
+		m_vMouseMove.x = (float)(ptCursorPos.x - m_ptOldCursorPos.x);
+		m_vMouseMove.y = (float)(ptCursorPos.y - m_ptOldCursorPos.y) ;
+		//m_vMouseMove.y *= -1.f;
 
 		m_ptOldCursorPos = ptCursorPos;
 		//SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
@@ -115,14 +117,11 @@ void CGameFramework::OnProcessingMouseMessage(HWND _hWnd, UINT _uMessageID, WPAR
 		SetCapture(_hWnd);
 		GetCursorPos(&m_ptOldCursorPos);
 		SetIsClicked(true);
-		std::cout << "true" << std::endl;
 		break;
 	case WM_RBUTTONUP:
 	case WM_LBUTTONUP:
 		SetIsClicked(false);
 		ReleaseCapture();
-		std::cout << "false" << std::endl;
-
 	default:
 		break;
 	}
@@ -150,7 +149,7 @@ void CGameFramework::ChangeWindowSize(HWND _hWnd, const tResolution _resolution)
 	RECT rt = { 0,0,(int)_resolution.fWidth,(int)_resolution.fHeight };
 
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, false);
-	SetWindowPos(_hWnd, nullptr, 0, 0, rt.right - rt.left, rt.bottom - rt.top, 0);
+	SetWindowPos(_hWnd, HWND_TOP, 0, 0, rt.right - rt.left, rt.bottom - rt.top, 0);
 
 }
 

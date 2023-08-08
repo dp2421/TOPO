@@ -4,6 +4,7 @@
 #include "MeshRender.h"
 #include "Material.h"
 #include "ResMgr.h"
+#include "RenderMgr.h"
 #include "StructuredBuffer.h"
 
 void CAnimator3D::SetAnimClip(const vector<tMTAnimClip>* _vecAnimClip)
@@ -60,18 +61,24 @@ void CAnimator3D::FinalUpdate()
 {
 	m_dCurTime = 0.f;
 	// 현재 재생중인 Clip 의 시간을 진행한다.
-	//for (int i = 0; i < 2; ++i)
-	//{
 
-	//}
 	m_vecClipUpdateTime[m_iCurClip] += DT;
 	auto p=m_pVecClip->at(m_iCurClip);
 	if (m_vecClipUpdateTime[m_iCurClip] >= m_pVecClip->at(m_iCurClip).dTimeLength)
 	{
 		m_vecClipUpdateTime[m_iCurClip] = 0.f;
 	}
+	if (CRenderMgr::GetInst()->IsFever())
+	{
+		m_dCurTime = m_pVecClip->at(m_iCurClip).dStartTime + m_vecClipUpdateTime[m_iCurClip] * 2;
+		m_iFrameCount = 14;
 
-	m_dCurTime = m_pVecClip->at(m_iCurClip).dStartTime + m_vecClipUpdateTime[m_iCurClip];
+	}
+	else
+	{
+		m_dCurTime = m_pVecClip->at(m_iCurClip).dStartTime + m_vecClipUpdateTime[m_iCurClip];
+		m_iFrameCount = 28;
+	}
 
 	double dFrameIdx = m_dCurTime * (double)m_iFrameCount;
 	m_iFrameIdx = (int)(dFrameIdx);
@@ -92,7 +99,7 @@ void CAnimator3D::LoadFromScene(FILE* _pFile)
 {
 }
 
-CAnimator3D::CAnimator3D():CComponent(COMPONENT_TYPE::ANIMATOR3D),m_iCurClip(0),m_dCurTime(0.f),m_iFrameCount(30),m_pBoneFinalMat(nullptr),m_bFinalMatUpdate(false)
+CAnimator3D::CAnimator3D():CComponent(COMPONENT_TYPE::ANIMATOR3D),m_iCurClip(0),m_dCurTime(0.f),m_iFrameCount(29),m_pBoneFinalMat(nullptr),m_bFinalMatUpdate(false)
 {
 	m_pBoneMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"Animation3DUpdateMtrl");
 	m_pBoneFinalMat = new CStructuredBuffer;

@@ -9,11 +9,6 @@ enum class ELEMENT_TYPE {
     WIND=4
 };
 
-enum class PARTICLE_TYPE {
-    COLLPARICLE=0,
-    RUNPARTICLE
-};
-
 enum class Direction : int
 {
     None = 0,
@@ -22,6 +17,10 @@ enum class Direction : int
     Left = 1 << 2,
     Right = 1 << 3,
     END
+};
+enum class PARTICLE_TYPE {
+    COLLPARICLE = 0,
+    RUNPARTICLE,
 };
 
 class CTexture;
@@ -46,18 +45,23 @@ private:
 
     int moveState = 0;
     bool isPlayable = false;
-    bool isColl = false;
+    bool m_isColl = false;
     bool isGoal = false;
-
-    bool m_isColl = false; //부딪혔을때 나오는 파티클
-    bool m_isRun = true;  //뛸 때 나오는 파티클
-    int testCount = 0;
+    
+    bool m_isFever = false;
+    bool m_isSetAwardScene = false;
 
     CGameObject* m_pParticle;
+    CGameObject* m_speedLine;
 public:
     CGameObject* runPlayer;
     CGameObject* IdlePlayer;
+    CGameObject* VictoryPlayer;
+    CGameObject* FalldownPlayer;
 
+    std::chrono::system_clock::time_point pushTime;
+    std::chrono::system_clock::time_point stunTime;
+    bool isStun;
     virtual void Awake();
     virtual void Update();
     void SetType(ELEMENT_TYPE _iType) { m_iType = _iType; }
@@ -71,20 +75,31 @@ public:
         Vec3 pos,
         float degree = 0,
         bool isMove = false,
-        bool isColl = false,
         bool isGoal = false
     );
-    void StartParticle(Vec3 pos, PARTICLE_TYPE type);
-    void EndParticle();
+    void LetParticle(Vec3 pos, PARTICLE_TYPE type, bool isstart);
+    void SetSpeedLine(bool ismove);
+    void startAwardScene(int rank); 
+
+    void Pushed(bool ispush, std::chrono::system_clock::time_point time);
 
     CPlayerScript();
     virtual ~CPlayerScript();
-
+    void  SetPush(bool isstun, std::chrono::system_clock::time_point time) { isStun = isstun; stunTime = time; }
     void SetRunPlayer(CGameObject* obj) { 
         runPlayer = obj; 
     }
     void SetIdlePlayer(CGameObject* obj) { 
         IdlePlayer = obj; 
+    }
+    void SetChangeAward(bool is) { m_isSetAwardScene = is; }
+
+    void SetVictoryPlayer(CGameObject* obj) {
+        VictoryPlayer = obj;
+    }
+
+    void SetFalldownPlayer(CGameObject* obj) {
+        FalldownPlayer = obj;
     }
 
     CLONE(CPlayerScript);

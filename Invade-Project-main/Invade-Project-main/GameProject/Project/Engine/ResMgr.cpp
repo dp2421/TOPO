@@ -666,7 +666,7 @@ void CResMgr::CreateDefaultShader()
 	// ============
 	pShader = new CShader;
 	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
-	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3D", "ps_5_0");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_UI", "ps_5_0");
 	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 	pShader->Create(SHADER_POV::DEFERRED);
 	AddRes(L"UIShader", pShader);
@@ -681,6 +681,15 @@ void CResMgr::CreateDefaultShader()
 	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 	pShader->Create(SHADER_POV::DEFERRED);
 	AddRes(L"BloomShader", pShader);
+
+	// ============
+	// Goal Shader
+	// ============
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_RED", "ps_5_0");
+	pShader->Create(SHADER_POV::DEFERRED);
+	AddRes(L"GoalShader", pShader);
 
 
 	// =============
@@ -930,6 +939,11 @@ void CResMgr::CreateDefaultMaterial()
 	pMtrl->DisableFileSave();
 	pMtrl->SetShader(FindRes<CShader>(L"BloomShader"));
 	AddRes(L"BloomMtrl", pMtrl);
+
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"GoalShader"));
+	AddRes(L"GoalMtrl", pMtrl);
 
 	pMtrl = new CMaterial;
 	pMtrl->DisableFileSave();

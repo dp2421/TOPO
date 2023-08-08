@@ -26,6 +26,8 @@ public:
 	void Play(int _iRoopCount, bool _bOverlap = false);
 	void Stop();
 
+	void IsPaused(bool isplay);
+
 	void RemoveChannel(FMOD::Channel* _pTargetChannel);
 
 public:
