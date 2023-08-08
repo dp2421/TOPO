@@ -1,5 +1,6 @@
 #pragma once
 #define _XM_NO_INTRINSICS_
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
 #include <d3d12.h>
@@ -41,11 +42,16 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
 
+#include <fstream>
 #include <string>
 #include <vector>
 #include <list>
 #include <map>
 #include <unordered_map>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 #include <fbxsdk.h>
 #ifdef _DEBUG
@@ -66,6 +72,3 @@ using std::make_pair;
 #include "struct.h"
 #include "func.h"
 #include "extern.h"
-#include "imgui.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_internal.h"

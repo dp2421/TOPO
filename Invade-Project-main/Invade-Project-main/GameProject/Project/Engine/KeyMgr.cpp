@@ -110,4 +110,7 @@ void CKeyMgr::Update()
 	CGameFramework::GetInst()->ProcessInput();
 
 	m_vDragDir = CGameFramework::GetInst()->GetMouseMove();
+	m_isClicked = CGameFramework::GetInst()->GetIsClicked();
+
+
 }

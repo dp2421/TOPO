@@ -60,6 +60,10 @@ void CAnimator3D::FinalUpdate()
 {
 	m_dCurTime = 0.f;
 	// 현재 재생중인 Clip 의 시간을 진행한다.
+	//for (int i = 0; i < 2; ++i)
+	//{
+
+	//}
 	m_vecClipUpdateTime[m_iCurClip] += DT;
 	auto p=m_pVecClip->at(m_iCurClip);
 	if (m_vecClipUpdateTime[m_iCurClip] >= m_pVecClip->at(m_iCurClip).dTimeLength)

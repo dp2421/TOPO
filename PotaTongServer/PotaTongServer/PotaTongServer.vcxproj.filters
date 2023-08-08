@@ -40,6 +40,9 @@
     <Filter Include="PotaTongServer\Math">
       <UniqueIdentifier>{2eb69400-b106-4574-869f-2f1882df4397}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PotaTongServer\Core\Event">
+      <UniqueIdentifier>{959bb1f1-f812-48a3-8f0d-b9a7a3bca040}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -81,11 +84,32 @@
     <ClInclude Include="..\..\Protocol.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Vector3.h">
       <Filter>PotaTongServer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>PotaTongServer\Core\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Obstacle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinObs.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PendulumObs.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -128,11 +152,29 @@
     <ClCompile Include="OverlappedEx.cpp">
       <Filter>PotaTongServer\Client</Filter>
     </ClCompile>
-    <ClCompile Include="Event.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Vector3.cpp">
       <Filter>PotaTongServer\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>PotaTongServer\Core\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Obstacle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinObs.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PendulumObs.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

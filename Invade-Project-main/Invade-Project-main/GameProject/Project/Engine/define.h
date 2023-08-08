@@ -36,12 +36,11 @@ static type* GetInst()\
 #define DBG_MSG(pStr) CDebugMgr::GetInst()->AddDbgMsg(DBG_TYPE::DBG_MSG, pStr);
 
 #define MAX_LAYER 32
+#define SPEED 2000
 
-//#define _WITH_DIRECT2D
+// 1 네트워크 사용 안함, 0 네트워크 사용 함
+#define LOCALPLAY 0
 
-//#ifdef _WITH_DIRECT2D
-//#define _WITH_DIRECT2D_IMAGE_EFFECT
-//#endif
 typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
@@ -63,7 +62,8 @@ enum class CONST_REGISTER
 	b2 = 2,
 	b3 = 3,
 	b4 = 4,
-	b5=5,
+	b5 = 5,
+	b6 = 6,
 	END,
 };
 
@@ -121,6 +121,26 @@ enum class RS_TYPE
 	END,
 };
 
+enum class SCENE_TYPE
+{
+	LOBBY,
+	RACING,
+	JUMP,
+	METOR,
+	AWARD,
+	END,
+};
+
+enum class SOUND_TYPE
+{
+	LOBBY,
+	SURVIVAL,
+	RACING,
+	CLICK,
+	JUMP,
+	SUPERJUMP,
+	END,
+};
 
 namespace RES_TYPE_STR
 {
@@ -317,7 +337,6 @@ enum class MRT_TYPE
 	LIGHT,		// LIGHT, SPECULAR
 	SHADOWMAP,	// SHADOWMAP
 	POSTEFFECT, // POSTEFFECT1, POSTEFFECT2
-	OUTLINE,
 	UI,
 	END,
 };
@@ -348,4 +367,26 @@ enum class MINION_STATE {
 enum class MINION_CAMP {
 	BLUE,
 	RED,
+};
+
+
+//PLAYER STATE
+
+enum class PLAYER_STATE {
+	IDLE,
+	WALK,
+	RUN,
+	HAPPY,
+};
+
+enum class OBSTACLE_STATE {
+	STOP,
+	MOVE,
+	MOVEA,
+	MOVEB,
+};
+
+enum class ITEM_STATE {
+	SUPERJUMP,
+	COIN
 };

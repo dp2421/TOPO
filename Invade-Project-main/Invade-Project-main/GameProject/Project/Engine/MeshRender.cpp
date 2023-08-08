@@ -28,6 +28,7 @@ ULONG64 CMeshRender::GetInstID(UINT _iMtrlIdx)
 void CMeshRender::Render()
 {
 	int a = 1;
+
 	for (size_t i = 0; i < m_vecMesh.size(); ++i)
 	{
 		if (IsActive() == false || nullptr == m_vecMesh[i])
@@ -35,7 +36,6 @@ void CMeshRender::Render()
 	}
 	for (size_t h = 0; h < m_vecMesh.size(); ++h)
 	{
-
 		for (size_t i = 0; i < m_vecMtrl.size(); ++i)
 		{
 			if (nullptr == m_vecMtrl[i] || nullptr == m_vecMtrl[i]->GetShader())
@@ -53,7 +53,6 @@ void CMeshRender::Render()
 			m_vecMtrl[i]->UpdateData();
 			m_vecMesh[h]->Render((UINT)0);
 
-			//m_pMesh->Render((UINT)i);
 			a = 0;
 			m_vecMtrl[i]->SetData(SHADER_PARAM::INT_0, &a);
 		}

@@ -591,7 +591,7 @@ void CResMgr::CreateDefaultShader()
 	pShader->CreatePixelShader(L"Shader\\std.fx", "PS_Tex", "ps_5_0");
 
 	// BlendState 설정
-	// pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 
 	// DSState
 	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::NO_DEPTHTEST_NO_WRITE);
@@ -612,6 +612,7 @@ void CResMgr::CreateDefaultShader()
 
 	// DepthStencilState 설정
 	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::NO_DEPTH_TEST);
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 
 	pShader->Create(SHADER_POV::FORWARD, D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
 	AddRes(L"Collider2DShader", pShader);
@@ -655,9 +656,32 @@ void CResMgr::CreateDefaultShader()
 	pShader = new CShader;
 	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
 	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3D", "ps_5_0");
-
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
 	pShader->Create(SHADER_POV::DEFERRED);
 	AddRes(L"Std3DShader", pShader);
+
+
+	// ============
+	// Std3D Shader
+	// ============
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Std3D", "ps_5_0");
+	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	pShader->Create(SHADER_POV::DEFERRED);
+	AddRes(L"UIShader", pShader);
+
+
+	// ============
+	// Bloom Shader
+	// ============
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\std3d.fx", "VS_Std3D", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\std3d.fx", "PS_Bloom", "ps_5_0");
+	pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	pShader->Create(SHADER_POV::DEFERRED);
+	AddRes(L"BloomShader", pShader);
+
 
 	// =============
 	// Skybox Shader
@@ -682,6 +706,21 @@ void CResMgr::CreateDefaultShader()
 	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::LESS_NO_WRITE);
 	pShader->Create(SHADER_POV::FORWARD);
 	AddRes(L"GridShader", pShader);
+
+
+	// =================
+	// PostEffect Shader
+	// =================
+	pShader = new CShader;
+	pShader->CreateVertexShader(L"Shader\\postEffect.fx", "VSQuad", "vs_5_0");
+	pShader->CreatePixelShader(L"Shader\\postEffect.fx", "PSSepia", "ps_5_0");
+	//pShader->SetBlendState(BLEND_TYPE::ALPHABLEND);
+	pShader->SetRasterizerType(RS_TYPE::CULL_NONE);
+	pShader->SetDepthStencilType(DEPTH_STENCIL_TYPE::NO_DEPTH_TEST); //외곽선이 아니라 전체적으로 필터 입히니까 필요없지않나
+	pShader->Create(SHADER_POV::POST_EFFECT); //픽셀단위로 렌더링된 이미지를 가져와 이펙트를 적용할거
+	AddRes(L"PostEffectShader", pShader);
+
+
 
 	// ===============
 	// DirLight Shader
@@ -884,6 +923,16 @@ void CResMgr::CreateDefaultMaterial()
 
 	pMtrl = new CMaterial;
 	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"UIShader"));
+	AddRes(L"UIMtrl", pMtrl);
+
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"BloomShader"));
+	AddRes(L"BloomMtrl", pMtrl);
+
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
 	pMtrl->SetShader(FindRes<CShader>(L"SkyboxShader"));
 	AddRes(L"SkyboxMtrl", pMtrl);
 
@@ -893,6 +942,14 @@ void CResMgr::CreateDefaultMaterial()
 	//Ptr<CTexture> pPositionTargetTex = CResMgr::GetInst()->FindRes<CTexture>(L"PositionTargetTex");
 	//pMtrl->SetData(SHADER_PARAM::TEX_0, pPositionTargetTex.GetPointer());
 	AddRes(L"GridMtrl", pMtrl);
+
+
+
+	pMtrl = new CMaterial;
+	pMtrl->DisableFileSave();
+	pMtrl->SetShader(FindRes<CShader>(L"PostEffectShader"));
+	AddRes(L"PostEffectMtrl", pMtrl);
+
 
 	{
 		pMtrl = new CMaterial;

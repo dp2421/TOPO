@@ -16,7 +16,7 @@ CMesh::~CMesh(){
 	SAFE_DELETE(m_pBoneFrameData);
 	SAFE_DELETE(m_pBoneOffset);
 }
-void CMesh::Load(const wstring& _strFullPath, bool _bFBX)
+void CMesh::Load(const wstring& _strFullPath, bool _bFBX, bool _bVecMesh)
 {
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, _strFullPath.c_str(), L"rb");
@@ -404,7 +404,7 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _Loader, int index)
 	for (UINT i = 0; i < iVtxCount; ++i)
 	{
 		pSysMem[i].vPos = container->vecPos[i];
-		pSysMem[i].vUV = container->vecUV[i];
+		pSysMem[i].vUV = container->vecUV[i];	// 여기서 뭔가 일어나고 있다 ..
 		pSysMem[i].vColor = Vec4(1.f, 0.f, 1.f, 1.f);
 		pSysMem[i].vNormal = container->vecNormal[i];
 		pSysMem[i].vTangent = container->vecTangent[i];
@@ -573,6 +573,7 @@ CMesh* CMesh::CreateFromContainer(CFBXLoader& _Loader, int index)
 		tClip.eMode = vecAnimClip[i]->eMode;
 
 		pMesh->m_vecAnimClip.push_back(tClip);
+		
 	}
 
 	if (pMesh->IsAnimMesh()) {

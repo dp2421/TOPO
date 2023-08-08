@@ -13,17 +13,18 @@ struct OverlappedEx
 	{
 		wsaBuf.len = BUFFERSIZE;
 		wsaBuf.buf = sendBuf;
+		type = OverlappedType::Recv;
 		ZeroMemory(&overlapped, sizeof(overlapped));
 	}
 
 	OverlappedEx(char* packet)
 	{
-		wsaBuf.len = packet[0];
+		wsaBuf.len = reinterpret_cast<PACKETSIZE*>(packet)[0];
 		wsaBuf.buf = sendBuf;
+		type = OverlappedType::Send;
 		ZeroMemory(&overlapped, sizeof(overlapped));
 
-		auto pack = reinterpret_cast<char*>(packet);
-		memcpy(sendBuf, pack, pack[0]);
+		memcpy(sendBuf, packet, reinterpret_cast<PACKETSIZE*>(packet)[0]);
 	}
 };
 

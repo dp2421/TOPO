@@ -37,15 +37,26 @@ private:
 
     vector<CGameObject*>	m_vecDeferred;
     vector<CGameObject*>	m_vecForward;
+
+    vector<CGameObject*> m_vecUIObject;
+
+    bool isSceneChange = false;
+    bool b_isClicked = false;
+    bool b_isMatching = false;
+
+    float temp = 0.f;
 public:
 
     virtual void FinalUpdate();
     void SortGameObject();
     void SortShadowObject();
+    void SortUIObject();
+
     void Render_Deferred();
     void Render_Forward();
     void Render();
     void Render_ShadowMap();
+    void Render_UI();
 
     void SetModule(bool _bModule) { m_bModule = _bModule; }
 
@@ -75,6 +86,8 @@ public:
     const Matrix& GetProjMat() { return m_matProj; }
     const Matrix& GetProjInvMat() { return m_matProjInv; }
 
+    bool GetSceneChanged() { return isSceneChange; }
+    
     void SetWidth(float _fWidth) { m_fWidth = _fWidth; }
     void SetHeight(float _fHeight) { m_fHeight = _fHeight; }
     CCamera();
@@ -82,6 +95,7 @@ public:
     virtual void SaveToScene(FILE* _pFile);
     virtual void LoadFromScene(FILE* _pFile);
 
+    vector<CGameObject*> GetUIObj() { return m_vecUIObject; }
     CLONE(CCamera);
 
 };

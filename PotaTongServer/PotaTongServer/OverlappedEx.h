@@ -1,11 +1,20 @@
 #pragma once
 
-enum class OverlappedType
+enum class OverlappedType : int
 {
 	Accept,
 	Recv,
 	Send,
-	ServerEvent
+	GameStartCount,
+	MatchingRacingStart,
+	MatchingObstacleStart,
+	MatchingRacingComplete,
+	MatchingObstacleComplete,
+	RotateObs,
+	SendRotateInfo,
+	AddAI,
+	UpdateAI,
+	Update
 };
 
 class OverlappedEx
@@ -26,12 +35,11 @@ public:
 
 	OverlappedEx(char* packet)
 	{
-		wsaBuf.len = packet[0];
+		wsaBuf.len = reinterpret_cast<PACKETSIZE*>(packet)[0];
 		wsaBuf.buf = sendBuf;
 		type = OverlappedType::Send;
 		ZeroMemory(&overlapped, sizeof(overlapped));
 
-		auto pack = reinterpret_cast<char*>(packet);
-		memcpy(sendBuf, pack, pack[0]);
+		memcpy(sendBuf, packet, reinterpret_cast<PACKETSIZE*>(packet)[0]);
 	}
 };

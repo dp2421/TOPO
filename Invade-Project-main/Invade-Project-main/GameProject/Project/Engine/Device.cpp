@@ -94,23 +94,6 @@ int CDevice::Init(HWND _hWnd, const tResolution& _res, bool _bWindow)
 	CreateRootSignature();
 
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(m_hWnd);
-	ImGui_ImplDX12_Init(m_pDevice.Get(), 3,
-		DXGI_FORMAT_R8G8B8A8_UNORM, m_pInitDescriptor.Get(),
-		m_pInitDescriptor.Get()->GetCPUDescriptorHandleForHeapStart(),
-		m_pInitDescriptor.Get()->GetGPUDescriptorHandleForHeapStart());
-
-	// ImGui 창을 생성합니다.
-
-
-
-
 	return S_OK;
 }
 
@@ -149,34 +132,223 @@ void CDevice::Render_Start(float(&_arrFloat)[4])
 	ClearDummyDescriptorHeap(0);
 }
 
+
+void CDevice::Render_PostEffect()
+{
+	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	CMRT* pPostMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::POSTEFFECT); //렌더타겟을 여기다복사할거임
+	//ComPtr<ID3D12Resource> resource1; 
+	D3D12_RESOURCE_BARRIER barrier = {};
+
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST; //여기에복사할거
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(); //가져와
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; //렌더타겟에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE; //이걸 복사할거
+	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	//
+	m_pCmdListGraphic->CopyResource(pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(), barrier.Transition.pResource); //복사해
+
+
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(); //가져와
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST; //복사용에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ; //이걸로바꿔주고
+
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	////
+	//m_pCmdListGraphic->Close();
+
+	//// 커맨드 리스트 수행	
+	//ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
+	//m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+
+	//디스크립터힙생성 & 설정
+	ID3D12DescriptorHeap* pDescriptor = m_pDummyDescriptorCompute.Get();
+	m_pCmdListCompute->SetDescriptorHeaps(1, &pDescriptor);
+	
+
+	//후처리효과아아아
+	//계산셰이더 써야하나??쓴다면==================================================================
+	D3D12_GPU_DESCRIPTOR_HANDLE  gpuHandle = pDescriptor->GetGPUDescriptorHandleForHeapStart();
+	m_pCmdListCompute->SetComputeRootDescriptorTable(0, gpuHandle);
+	//=========================================================================================
+
+	//setPipeLineState해주는과정들을...이제...저기서 해줘야함.
+	//어떻게잘됐다고 가정해보고...
+
+
+	//resource1을 이제렌더타겟에 다시 복사해줌
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE; //복사용으로
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST; //복사용으로
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+	m_pCmdListGraphic->CopyResource(barrier.Transition.pResource, pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()); //복사
+
+	
+	//복사용렌더타겟 원래대로 돌려놓기
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE; //복사용에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; //알잘딱
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	//렌더타겟으로 설정 원래대로 해놓기
+	//
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST; //복사도착지에서
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; //렌더타겟용으로
+	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+	//
+	m_pCmdListGraphic->Close();
+	// 커맨드 리스트 수행	
+	ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
+	m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+}
+
+void CDevice::Set_PostEffectBefore()
+{
+	//7.22 추가
+
+	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
+	CMRT* pPostMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::POSTEFFECT); //렌더타겟을 여기다복사할거임
+	//ComPtr<ID3D12Resource> resource1; 
+	//D3D12_RESOURCE_BARRIER barrier = {};
+
+
+	//렌더타겟을 포스트프로세스버퍼에 복사
+
+	CD3DX12_RESOURCE_BARRIER value = CD3DX12_RESOURCE_BARRIER::Transition(pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()
+		, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST); //알잘딱 -> 복사도착지
+	CMDLIST_CS->ResourceBarrier(1, &value);
+	//_pTex->SetResState(D3D12_RESOURCE_STATE_COMMON);
+
+	value = CD3DX12_RESOURCE_BARRIER::Transition(pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()
+		, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_SOURCE); //렌더타겟->복사할용도
+	CMDLIST_CS->ResourceBarrier(1, &value);
+
+	CMDLIST_CS->CopyResource(pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get(), pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()); //복사
+
+	value = CD3DX12_RESOURCE_BARRIER::Transition(pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()
+		, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
+	CMDLIST_CS->ResourceBarrier(1, &value);
+
+
+
+	//// 커맨드 리스트 수행	
+	//ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
+	//m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+
+	//디스크립터힙생성 & 설정
+	ID3D12DescriptorHeap* pDescriptor = m_pDummyDescriptorCompute.Get();
+	m_pCmdListCompute->SetDescriptorHeaps(1, &pDescriptor);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE  gpuHandle = pDescriptor->GetGPUDescriptorHandleForHeapStart();
+	m_pCmdListCompute->SetComputeRootDescriptorTable(0, gpuHandle);
+	//=========================================================================================
+
+
+	//setPipeLineState해주는과정들을...이제...저기서 해줘야함.
+	//어떻게잘됐다고 가정해보고...
+
+
+
+
+
+	// 커맨드 리스트 수행	
+	ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
+	m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+}
+
+void CDevice::Set_PostEffectAfter()
+{
+
+	////resource1을 이제렌더타겟에 다시 복사해줌
+	////
+	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE; //복사용으로
+	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+
+	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COMMON; //알아서 설정
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST; //복사용으로
+	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+
+	//m_pCmdListGraphic->CopyResource(barrier.Transition.pResource, pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get()); //복사
+
+
+	////복사용렌더타겟 원래대로 돌려놓기
+	////
+	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier.Transition.pResource = pPostMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE; //복사용에서
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON; //알잘딱
+	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+
+	////렌더타겟으로 설정 원래대로 해놓기
+	////
+	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
+	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST; //복사도착지에서
+	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; //렌더타겟용으로
+	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+}
+
+
+
 void CDevice::Render_Present()
 {
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
-	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-	{
-		static int counter = 0;
-
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-
-		//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
-
-		//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		ImGui::End();
-	}
-	ImGui::Render();
-
 	CMRT* pSwapChainMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN);
 	// Indicate that the back buffer will now be used to present.
 	D3D12_RESOURCE_BARRIER barrier = {};
@@ -184,21 +356,18 @@ void CDevice::Render_Present()
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE; 
 	barrier.Transition.pResource = pSwapChainMRT->GetRTTex(m_iCurTargetIdx)->GetTex2D().Get();
-	//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;	// 백버퍼에서
-	//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;			// 다시 출력으로 지정
-	//m_pCmdListGraphic->ResourceBarrier(1, &barrier);
 
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_pCmdListGraphic.Get());
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	m_pCmdListGraphic->ResourceBarrier(1, &barrier);
+	
 	m_pCmdListGraphic->Close();
 
 	// 커맨드 리스트 수행	
 	ID3D12CommandList* ppCommandLists[] = { m_pCmdListGraphic.Get() };
 	m_pCmdQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
-	// Present the frame.
+	// Present the frame.	
 	m_pSwapChain->Present(0, 0);
 
 	WaitForFenceEvent();
@@ -213,129 +382,17 @@ void CDevice::Render_Present()
 
 }
 
-#ifdef _WITH_DIRECT2D
-void CDevice::CreateDirect2DDevice()
+
+void CDevice::ChangeScene()
 {
-	UINT nD3D11DeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-#if defined(_DEBUG) || defined(DBG)
-	nD3D11DeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-	ID3D11Device* pd3d11Device = NULL;
-	ID3D12CommandQueue* ppd3dCommandQueues[] = { m_pCmdQueue.Get() };
-	HRESULT hResult = ::D3D11On12CreateDevice(m_pDevice.Get(), nD3D11DeviceFlags, NULL, 0, reinterpret_cast<IUnknown**>(ppd3dCommandQueues), _countof(ppd3dCommandQueues), 0, &pd3d11Device, &m_pd3d11DeviceContext, NULL);
-	hResult = pd3d11Device->QueryInterface(__uuidof(ID3D11On12Device), (void**)&m_pd3d11On12Device);
-	if (pd3d11Device) pd3d11Device->Release();
-
-	D2D1_FACTORY_OPTIONS nD2DFactoryOptions = { D2D1_DEBUG_LEVEL_NONE };
-#if defined(_DEBUG) || defined(DBG)
-	nD2DFactoryOptions.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
-	ID3D12InfoQueue* pd3dInfoQueue = NULL;
-	if (SUCCEEDED(m_pDevice->QueryInterface(IID_PPV_ARGS(&pd3dInfoQueue))))
-	{
-		D3D12_MESSAGE_SEVERITY pd3dSeverities[] =
-		{
-			D3D12_MESSAGE_SEVERITY_INFO,
-		};
-
-		D3D12_MESSAGE_ID pd3dDenyIds[] =
-		{
-			D3D12_MESSAGE_ID_INVALID_DESCRIPTOR_HANDLE,
-		};
-
-		D3D12_INFO_QUEUE_FILTER d3dInforQueueFilter = { };
-		d3dInforQueueFilter.DenyList.NumSeverities = _countof(pd3dSeverities);
-		d3dInforQueueFilter.DenyList.pSeverityList = pd3dSeverities;
-		d3dInforQueueFilter.DenyList.NumIDs = _countof(pd3dDenyIds);
-		d3dInforQueueFilter.DenyList.pIDList = pd3dDenyIds;
-
-		pd3dInfoQueue->PushStorageFilter(&d3dInforQueueFilter);
-	}
-	pd3dInfoQueue->Release();
-#endif
-
-	hResult = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory3), &nD2DFactoryOptions, (void**)&m_pd2dFactory);
-
-	IDXGIDevice* pdxgiDevice = NULL;
-	hResult = m_pd3d11On12Device->QueryInterface(__uuidof(IDXGIDevice), (void**)&pdxgiDevice);
-	hResult = m_pd2dFactory->CreateDevice(pdxgiDevice, &m_pd2dDevice);
-	hResult = m_pd2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &m_pd2dDeviceContext);
-	hResult = ::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&m_pdWriteFactory);
-	if (pdxgiDevice) pdxgiDevice->Release();
-
-	m_pd2dDeviceContext->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE);
-
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(0.3f, 0.0f, 0.0f, 0.5f), &m_pd2dbrBackground);
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF(0x9ACD32, 1.0f)), &m_pd2dbrBorder);
-
-	hResult = m_pdWriteFactory->CreateTextFormat(L"텍스트 레이아웃", NULL, DWRITE_FONT_WEIGHT_DEMI_BOLD, DWRITE_FONT_STYLE_OBLIQUE, DWRITE_FONT_STRETCH_NORMAL, 24.0f, L"en-US", &m_pdwFont);
-	hResult = m_pdwFont->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	hResult = m_pdwFont->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::DarkBlue, 0.8f), &m_pd2dbrText);
-	hResult = m_pdWriteFactory->CreateTextLayout(L"텍스트 레이아웃", 6, m_pdwFont.Get(), 1024, 1024, &m_pdwTextLayout);
-
-	float fDpi = (float)GetDpiForWindow(m_hWnd);
-	D2D1_BITMAP_PROPERTIES1 d2dBitmapProperties = D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), fDpi, fDpi);
-	
-	
-	CMRT* pUiMRT = CRenderMgr::GetInst()->GetMRT(MRT_TYPE::UI);
-	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
-	{
-		m_ppd3dSwapChainBackBuffers[i] = pUiMRT->GetDSTex()->GetTex2D().Get();
-		m_pSwapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&m_ppd3dSwapChainBackBuffers[i]);
-		//m_pDevice->CreateRenderTargetView(m_ppd3dSwapChainBackBuffers[i], NULL, m_pInitDescriptor.Get()->GetCPUDescriptorHandleForHeapStart());
-
-		D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
-		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, IID_PPV_ARGS(&m_ppd3d11WrappedBackBuffers));
-		IDXGISurface* pdxgiSurface = NULL;
-		//m_ppd3dSwapChainBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
-		m_ppd3d11WrappedBackBuffers->QueryInterface(__uuidof(IDXGISurface), (void**)&pdxgiSurface);
-		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets);
-		if (pdxgiSurface) pdxgiSurface->Release();
-	}
-
-#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	CoInitialize(NULL);
-	hResult = ::CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, __uuidof(IWICImagingFactory), (void**)&m_pwicImagingFactory);
-
-	hResult = m_pd2dFactory->CreateDrawingStateBlock(&m_pd2dsbDrawingState);
-	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1BitmapSource, &m_pd2dfxBitmapSource);
-	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1GaussianBlur, &m_pd2dfxGaussianBlur);
-	hResult = m_pd2dDeviceContext->CreateEffect(CLSID_D2D1EdgeDetection, &m_pd2dfxEdgeDetection);
-
-	//IWICBitmapDecoder* pwicBitmapDecoder;
-	//hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/MiniMap.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
-	//IWICBitmapFrameDecode* pwicFrameDecode;
-	//pwicBitmapDecoder->GetFrame(0, &pwicFrameDecode);
-	//m_pwicImagingFactory->CreateFormatConverter(&m_pwicFormatConverter);
-	//m_pwicFormatConverter->Initialize(pwicFrameDecode, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
-	//m_pd2dfxBitmapSource->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_pwicFormatConverter);
-	//hResult = m_pwicImagingFactory->CreateDecoderFromFilename(L"Image/EDGE.jpg", NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pwicBitmapDecoder);
-
-	m_pd2dfxGaussianBlur->SetInputEffect(0, m_pd2dfxBitmapSource.Get());
-	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.0f);
-
-	m_pd2dfxEdgeDetection->SetInputEffect(0, m_pd2dfxBitmapSource.Get());
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_STRENGTH, 0.5f);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_BLUR_RADIUS, 0.0f);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_MODE, D2D1_EDGEDETECTION_MODE_SOBEL);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_OVERLAY_EDGES, false);
-	m_pd2dfxEdgeDetection->SetValue(D2D1_EDGEDETECTION_PROP_ALPHA_MODE, D2D1_ALPHA_MODE_PREMULTIPLIED);
-
-	//if (pwicBitmapDecoder) pwicBitmapDecoder->Release();
-	//if (pwicFrameDecode) pwicFrameDecode->Release();
-#endif
-
-
-
 }
-#endif
 
 void CDevice::WaitForFenceEvent()
 {
+	m_iFenceValue++;
 	// Signal and increment the fence value.
 	const UINT64 fence = m_iFenceValue;
 	m_pCmdQueue->Signal(m_pFence.Get(), fence);
-	m_iFenceValue++;
 
 	int a = m_pFence->GetCompletedValue();
 	// Wait until the previous frame is finished.

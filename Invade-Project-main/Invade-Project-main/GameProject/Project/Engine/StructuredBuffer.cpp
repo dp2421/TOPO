@@ -37,7 +37,11 @@ void CStructuredBuffer::Create(UINT _iElementSize, UINT _iElementCount, void* _p
 	tBufferDesc.SampleDesc.Count = 1;
 	tBufferDesc.SampleDesc.Quality = 0;
 	CD3DX12_HEAP_PROPERTIES value = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-	DEVICE->CreateCommittedResource(&value, D3D12_HEAP_FLAG_NONE, &tBufferDesc, m_eResState, nullptr, IID_PPV_ARGS(&m_pBuffer));
+	HRESULT result = DEVICE->CreateCommittedResource(&value, D3D12_HEAP_FLAG_NONE, &tBufferDesc, m_eResState, nullptr, IID_PPV_ARGS(&m_pBuffer));
+	if (result != S_OK) {
+		std::string errorMessage = "Failed to create committed resource. Error code: " + std::to_string(result);
+		std::cout << "Error: " << errorMessage << std::endl;
+	}
 
 
 
@@ -80,7 +84,12 @@ void CStructuredBuffer::Create(UINT _iElementSize, UINT _iElementCount, void* _p
 	uavHeapDesc.NumDescriptors = 1;
 	uavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	uavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	DEVICE->CreateDescriptorHeap(&uavHeapDesc, IID_PPV_ARGS(&m_pUAV));
+	result = DEVICE->CreateDescriptorHeap(&uavHeapDesc, IID_PPV_ARGS(&m_pUAV));
+
+	if (result != S_OK) {
+		std::string errorMessage = "Failed to create committed resource. Error code: " + std::to_string(result);
+		std::cout << "Error: " << errorMessage << std::endl;
+	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = m_pUAV->GetCPUDescriptorHandleForHeapStart();
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};

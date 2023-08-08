@@ -166,6 +166,15 @@ wchar_t* LoadWString(FILE* _pFile)
 	fread(&c, 1, 1, _pFile);
 	fread(szStr, 2, c, _pFile);
 	szStr[c] = 0;
+	int temp = int(c);
+ 	return szStr;
+}
+
+wstring LoadWString(FILE* _pFile, int index, const wstring _strFilePath)
+{
+	static wstring szStr = {};
+	szStr = L"Mesh\\" + _strFilePath + L"_" + std::to_wstring(index) + L".mesh";
+
 
 	return szStr;
 }

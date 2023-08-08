@@ -15,12 +15,13 @@ CLayer::~CLayer()
 }
 
 
-void CLayer::AddGameObject(CGameObject* _pObject, bool _bMoveAll)
+void CLayer::AddGameObject(CGameObject* _pObject, CScene* curscene, bool _bMoveAll)
 {
 	if (!_pObject->GetParent()) {
 		m_vecParentObj.push_back(_pObject);
 		if (-1 != _pObject->GetLayerIdx()) {
 			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+			pCurScene = curscene;
 			pCurScene->GetLayer(_pObject->GetLayerIdx())->RemoveParentObj(_pObject);
 		}
 	}

@@ -19,6 +19,8 @@ private:
     Matrix m_matColWorld;
     UINT m_iColID;
 
+    bool m_bBoundDraw = false;
+
 public:
     virtual void Update();
     virtual void FinalUpdate();
@@ -29,6 +31,8 @@ public:
     void OnCollisionExit(CCollider3D* _pOther);
     void SetOffsetPos(const Vec3& _vPos) { m_vOffsetPos = _vPos; }
     void SetOffsetScale(const Vec3& _vScale) { m_vOffsetScale = _vScale; }
+
+    void SetBoundingBoxDraw(bool _bBoundDraw) { m_bBoundDraw = _bBoundDraw; }
 
     const Vec3& GetOffsetPos() { return m_vOffsetPos; }
     const Vec3& GetOffsetScale() { return m_vOffsetScale; }

@@ -35,6 +35,8 @@ void Safe_Delete_Vector(vector<T*> _vec)
 void SaveWString(FILE* _pFile, const wstring& _str);
 
 wchar_t* LoadWString(FILE* _pFile);
+wstring LoadWString(FILE* _pFile, int index, const wstring _strFilePath);
+
 Matrix GetMatrix(FbxAMatrix& _mat);
 Vec3 DeComposeRotMat(const Matrix& _matRot);
 

@@ -12,6 +12,13 @@
 // g_tex_1 : Normalmap Texture
 // BlendState : false
 // ==========================
+
+cbuffer Parameters : register(b0)
+{
+    float4 sampleOffsets[16];
+    float4 sampleWeights[16];
+};
+
 struct VS_STD3D_INPUT
 {
     float3 vPos : POSITION;
@@ -45,7 +52,7 @@ struct VS_STD3D_OUTPUT
 VS_STD3D_OUTPUT VS_Std3D(VS_STD3D_INPUT _in)
 {
     VS_STD3D_OUTPUT output = (VS_STD3D_OUTPUT) 0.f;
-        
+
     if (g_int_0)
     {
         Skinning(_in.vPos, _in.vTangent, _in.vBinormal, _in.vNormal, _in.vWeight, _in.vIndices, 0); 
@@ -77,42 +84,46 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     //   ** Outline Code **
     // ----------------------------------
    
-    //// Sobel X 커널
-    //float3x3 sobelX = float3x3(-1, 0, 1,
-    //    -2, 0, 2,
-    //    -1, 0, 1);
+    // Sobel X 커널
+    float3x3 sobelX = float3x3(-1, 0, 1,
+        -2, 0, 2,
+        -1, 0, 1);
 
-    //// Sobel Y 커널
-    //float3x3 sobelY = float3x3(-1, -2, -1,
-    //    0, 0, 0,
-    //    1, 2, 1);
-    //// Sobel 커널을 사용하여 이미지의 외곽선 계산
-    //float textureWidth;
-    //float textureHeight;
-    //g_tex_0.GetDimensions(textureWidth, textureHeight);
-    //float2 texelSize = 1.0 / float2(textureWidth, textureHeight);
-    //float3 c00 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, -1)).rgb;
-    //float3 c01 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 0)).rgb;
-    //float3 c02 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 1)).rgb;
-    //float3 c10 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, -1)).rgb;
-    //float3 c11 = g_tex_0.Sample(g_sam_0, _in.vUV).rgb;
-    //float3 c12 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, 1)).rgb;
-    //float3 c20 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, -1)).rgb;
-    //float3 c21 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 0)).rgb;
-    //float3 c22 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 1)).rgb;
+    // Sobel Y 커널
+    float3x3 sobelY = float3x3(-1, -2, -1,
+        0, 0, 0,
+        1, 2, 1);
+    // Sobel 커널을 사용하여 이미지의 외곽선 계산
+    float textureWidth;
+    float textureHeight;
+    g_tex_0.GetDimensions(textureWidth, textureHeight);
+    float2 texelSize = 1.0 / float2(textureWidth, textureHeight);
+    float3 c00 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, -1)).rgb;
+    float3 c01 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 0)).rgb;
+    float3 c02 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(-1, 1)).rgb;
+    float3 c10 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, -1)).rgb;
+    float3 c11 = g_tex_0.Sample(g_sam_0, _in.vUV).rgb;
+    float3 c12 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(0, 1)).rgb;
+    float3 c20 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, -1)).rgb;
+    float3 c21 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 0)).rgb;
+    float3 c22 = g_tex_0.Sample(g_sam_0, _in.vUV + texelSize * float2(1, 1)).rgb;
 
-    //// Sobel X 커널을 사용하여 가로 방향의 엣지 검출
-    //float3 gx = dot(float3(c00.r, c01.r, c02.r), sobelX[0]) +
-    //    dot(float3(c10.r, c11.r, c12.r), sobelX[1]) +
-    //    dot(float3(c20.r, c21.r, c22.r), sobelX[2]);
+    // Sobel X 커널을 사용하여 가로 방향의 엣지 검출
+    float3 gx = dot(float3(c00.r, c01.r, c02.r), sobelX[0]) +
+        dot(float3(c10.r, c11.r, c12.r), sobelX[1]) +
+        dot(float3(c20.r, c21.r, c22.r), sobelX[2]);
 
-    //// Sobel Y 커널을 사용하여 세로 방향의 엣지 검출
-    //float3 gy = dot(float3(c00.r, c01.r, c02.r), sobelY[0]) +
-    //    dot(float3(c10.r, c11.r, c12.r), sobelY[1]) +
-    //    dot(float3(c20.r, c21.r, c22.r), sobelY[2]);
+    // Sobel Y 커널을 사용하여 세로 방향의 엣지 검출
+    float3 gy = dot(float3(c00.r, c01.r, c02.r), sobelY[0]) +
+        dot(float3(c10.r, c11.r, c12.r), sobelY[1]) +
+        dot(float3(c20.r, c21.r, c22.r), sobelY[2]);
 
-    //float3 sobel = sqrt(gx * gx + gy * gy);
-    //output.vTarget0 = float4(sobel, 1.f);
+    float3 sobel = (gx * gx + gy * gy); //sqrt할수록 전체적으로 밝아짐
+    output.vTarget0 = float4(sobel, 1.f);
+
+    //
+
+    float4 vCartoon;
 
     // 계산된 외곽선 값을 렌더 타겟 텍스처에 씁니다.
 
@@ -138,13 +149,40 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     if (tex_0)
     {
         float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
-        output.vTarget0 = texColor * float4(stepColor, 1.f);
+        //output.vTarget0 = texColor * float4(stepColor, 1.f);
+        vCartoon = texColor * float4(stepColor, 1.f);
     }
     else
     {
-        output.vTarget0 = float4(stepColor, 1.f);
-        //output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        //output.vTarget0 = float4(stepColor, 1.f);
+        ////output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        vCartoon = float4(stepColor, 1.f);
     }
+
+    //output.vTarget0 = vCartoon;
+
+    //////아래주석 풀면 텍스쳐내부 외곽라인 검은색으로 출력됨
+    if (output.vTarget0.x <= 0.95f && output.vTarget0.y <= 0.95f && output.vTarget0.z <= 0.95f)
+    {
+        output.vTarget0 = vCartoon;
+    }
+    else
+    {
+        output.vTarget0 = float4(0, 0, 0, 1);
+    }
+    //// ----------------------------------
+
+    // ------------------------------------
+    //   ** Color Saturation Shader Code **
+    // ------------------------------------
+    float avg = (output.vTarget0.r + output.vTarget0.g + output.vTarget0.b) / 3.0f;
+    float fValue = 2.0f; //0에 가까울수록 채도가 낮아짐
+    float4 newColor;
+    newColor.r = avg * (1.0 - fValue) + output.vTarget0.r * fValue;
+    newColor.g = avg * (1.0 - fValue) + output.vTarget0.g * fValue;
+    newColor.b = avg * (1.0 - fValue) + output.vTarget0.b * fValue;
+    newColor.a = output.vTarget0.a;
+    output.vTarget0 = newColor;
 
 
     float3 vViewNormal = _in.vViewNormal;
@@ -163,6 +201,158 @@ PS_STD3D_OUTPUT PS_Std3D(VS_STD3D_OUTPUT _in)
     return output;
 }
 
+// ================================================================================
+// ================================================================================
+// effect Shader
+ 
+// for rainbow
+float3 HSVtoRGB(float3 HSV)
+{
+    float3 RGB = 0;
+    float C = HSV.z * HSV.y;
+    float H = HSV.x * 6;
+    float X = C * (1 - abs(fmod(H, 2) - 1));
+    if (HSV.y != 0)
+    {
+        float I = floor(H);
+        if (I == 0) { RGB = float3(C, X, 0); }
+        else if (I == 1) { RGB = float3(X, C, 0); }
+        else if (I == 2) { RGB = float3(0, C, X); }
+        else if (I == 3) { RGB = float3(0, X, C); }
+        else if (I == 4) { RGB = float3(X, 0, C); }
+        else { RGB = float3(C, 0, X); }
+    }
+    float M = HSV.z - C;
+    return RGB + M;
+}
+
+float3 RGBtoHSV(float3 RGB)
+{
+    float3 HSV = 0;
+    float M = min(RGB.r, min(RGB.g, RGB.b));
+    HSV.z = max(RGB.r, max(RGB.g, RGB.b));
+    float C = HSV.z - M;
+    if (C != 0)
+    {
+        HSV.y = C / HSV.z;
+        float3 D = (((HSV.z - RGB) / 6) + (C / 2)) / C;
+        if (RGB.r == HSV.z)
+            HSV.x = D.b - D.g;
+        else if (RGB.g == HSV.z)
+            HSV.x = (1.0 / 3.0) + D.r - D.b;
+        else if (RGB.b == HSV.z)
+            HSV.x = (2.0 / 3.0) + D.g - D.r;
+        if (HSV.x < 0.0) { HSV.x += 1.0; }
+        if (HSV.x > 1.0) { HSV.x -= 1.0; }
+    }
+    return HSV;
+}
+
+PS_STD3D_OUTPUT PS_Bloom(VS_STD3D_OUTPUT _in)
+{
+    PS_STD3D_OUTPUT output = (PS_STD3D_OUTPUT)0.f;
+
+    // ----------------------------------
+    //   ** Cartoon Shader Code **
+    // ----------------------------------
+    float4 vCartoon;
+    float brightness = dot(normalize(_in.vViewNormal), normalize(_in.vLights));
+    float stepIntensity = saturate(brightness);
+    float3 stepColor = float3(1, 1, 1);
+    if (stepIntensity > 0.95) {
+        stepColor = float3(1, 1, 1);
+    }
+    else if (stepIntensity > 0.5) {
+        stepColor = float3(0.9, 0.9, 0.9);
+    }
+    else if (stepIntensity > 0.1) {
+        stepColor = float3(0.7, 0.7, 0.7);
+    }
+    else {
+        stepColor = float3(0.5, 0.5, 0.5);
+    }
+    if (tex_0)
+    {
+        float4 texColor = g_tex_0.Sample(g_sam_0, _in.vUV) * 2.f;
+        //output.vTarget0 = texColor * float4(stepColor, 1.f);
+        vCartoon = texColor * float4(stepColor, 1.f);
+    }
+    else
+    {
+        //output.vTarget0 = float4(stepColor, 1.f);
+        ////output.vTarget0 = float4(1.f, 0.f, 1.f, 1.f);
+        vCartoon = float4(stepColor, 1.f);
+    }
+
+    output.vTarget0 = vCartoon;
+
+    // ------------------------------------
+    //   ** Color Saturation Shader Code **
+    // ------------------------------------
+    float avg = (output.vTarget0.r + output.vTarget0.g + output.vTarget0.b) / 3.0f;
+    float fValue = 2.0f; //0에 가까울수록 채도가 낮아짐
+    float4 newColor;
+    newColor.r = avg * (1.0 - fValue) + output.vTarget0.r * fValue;
+    newColor.g = avg * (1.0 - fValue) + output.vTarget0.g * fValue;
+    newColor.b = avg * (1.0 - fValue) + output.vTarget0.b * fValue;
+    newColor.a = output.vTarget0.a;
+    output.vTarget0 = newColor;
+
+    //=============================================
+    //Test Effect - rainbow
+    //float4 Color = g_tex_0.Sample(g_sam_0, _in.vUV);
+    //float2 temp = _in.vUV;
+    //float3 hsv = RGBtoHSV(Color.rgb);
+    //hsv.x = frac(hsv.x + 0.05 * temp.x);
+    //Color.rgb = HSVtoRGB(hsv);
+    //output.vTarget0 = float4(Color);
+
+
+    float4 red = float4(1, 0, 0, 1);
+    float4 orange = float4(1, .5, 0, 1);
+    float4 yellow = float4(1, 1, 0, 1);
+    float4 green = float4(0, 1, 0, 1);
+    float4 blue = float4(0, 0, 1, 1);
+    float4 indigo = float4(.3, 0, .8, 1);
+    float4 violet = float4(1, .8, 1, 1);
+    float4 black = float4(0, 0, 0, 1);
+
+    float step = 1.0 / 7;
+
+    float4 color = g_tex_0.Sample(g_sam_0, _in.vUV);
+
+    if (!any(color))
+        output.vTarget0 = color;
+
+    if (_in.vUV.x < (step * 1)) color = red;
+    else if (_in.vUV.x < (step * 2)) color = orange;
+    else if (_in.vUV.x < (step * 3)) color = yellow;
+    else if (_in.vUV.x < (step * 4)) color = green;
+    else if (_in.vUV.x < (step * 5)) color = blue;
+    else if (_in.vUV.x < (step * 6)) color = indigo;
+    else                            color = violet;
+
+    output.vTarget0 = color;
+
+    //=============================================
+
+    float3 vViewNormal = _in.vViewNormal;
+    // 노말맵이 있는경우
+    if (tex_1)
+    {
+        float3 vTSNormal = g_tex_1.Sample(g_sam_0, _in.vUV).xyz;
+        vTSNormal.xyz = (vTSNormal.xyz - 0.5f) * 2.f;
+        float3x3 matTBN = { _in.vViewTangent, _in.vViewBinormal, _in.vViewNormal };
+        vViewNormal = normalize(mul(vTSNormal, matTBN));
+    }
+
+    output.vTarget1.xyz = vViewNormal;
+    output.vTarget2.xyz = _in.vViewPos;
+
+    return output;
+}
+// ================================================================================
+// ================================================================================
 
 // ==========================
 // Std3D Shader

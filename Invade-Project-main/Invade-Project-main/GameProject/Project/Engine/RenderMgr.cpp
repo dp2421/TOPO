@@ -9,10 +9,11 @@
 #include "EventMgr.h"
 #include "Light3D.h"
 
+#include "UIScript.h"
 #include "ResMgr.h"
 #include "MRT.h"
-CRenderMgr::CRenderMgr() 
-	:m_arrMRT{},m_iRTVHeapSize(0)
+CRenderMgr::CRenderMgr()
+	:m_arrMRT{}, m_iRTVHeapSize(0)
 {}
 CRenderMgr::~CRenderMgr() {
 	Safe_Delete_Array(m_arrMRT);
@@ -21,6 +22,7 @@ CRenderMgr::~CRenderMgr() {
 
 void CRenderMgr::Render()
 {
+
 	float arrColor[4] = { 0.f,0.f, 0.f, 1.f };
 	CDevice::GetInst()->Render_Start(arrColor);
 
@@ -33,14 +35,17 @@ void CRenderMgr::Render()
 	// SwapChain MRT 초기화
 	UINT iIdx = CDevice::GetInst()->GetSwapChainIndex();
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Clear(iIdx);
-	m_arrMRT[(UINT)MRT_TYPE::UI]->OMSet();
-	m_arrMRT[(UINT)MRT_TYPE::UI]->Clear();
 
 	// DeferredMRT 초기화
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->Clear();
 
 	// LightMRT 초기화
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Clear();
+
+	// PostEffectMRT 초기화
+	m_arrMRT[(UINT)MRT_TYPE::POSTEFFECT]->Clear();
+
+	//
 
 	m_vecCam[0]->SortGameObject();
 
@@ -56,27 +61,71 @@ void CRenderMgr::Render()
 
 	Merge_Light();
 
-	m_vecCam[0]->Render_Forward(); // skybox, grid, ui
+	m_vecCam[0]->Render_Forward(); // skybox, grid
+
+
+#if LOCALPLAY
+	if (CSceneMgr::GetInst()->GetSceneType() == SCENE_TYPE::LOBBY)
+	{
+		m_vecCam[1]->SortUIObject();
+		m_vecCam[1]->Render_UI();
+	}
+	else
+	{
+		m_vecCam[1]->SortUIObject();
+		m_vecCam[1]->Render_UI();
+
+	}
+#endif
+
+	m_vecCam[1]->SortUIObject();
+	m_vecCam[1]->Render_UI();
+
+
+	////PostProcess Effect
+	//Render_PostEffect();
+
+
 
 	// 출력
 	CDevice::GetInst()->Render_Present();
+
+	if (b_SceneChanged == true)
+	{
+		CSceneMgr::GetInst()->ChangeScene(m_sceneType);
+		b_SceneChanged = false;
+	}
+
+
 }
+
+void CRenderMgr::Render_PostEffect()
+{
+	//여기서 이제... setPipeLineState해주는
+	static Ptr<CMesh> pRectMesh = CResMgr::GetInst()->FindRes<CMesh>(L"RectMesh");
+	static Ptr<CMaterial> pMtrl = CResMgr::GetInst()->FindRes<CMaterial>(L"MergeLightMtrl");
+
+	pMtrl->UpdateData();
+	pRectMesh->Render();
+
+}
+
 
 void CRenderMgr::Render_Tool()
 {
-	float arrColor[4] = {0.f,0.f,0.f,1.f};
+	float arrColor[4] = { 0.f,0.f,0.f,1.f };
 	UpdateLight2D();
 	UpdateLight3D();
 }
 
 void Render_OutLine()
 {
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->Clear();
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->OMSet();
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->Clear();
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->OMSet();
 
-	// 렌더링 코드
+	//// 렌더링 코드
 
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->TargetToResBarrier();
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::OUTLINE)->TargetToResBarrier();
 }
 
 
@@ -92,11 +141,18 @@ void CRenderMgr::Render_ShadowMap()
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SHADOWMAP)->TargetToResBarrier();
 }
 
+void CRenderMgr::Render_UI()
+{
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::UI)->Clear();
+
+	//CRenderMgr::GetInst()->GetMRT(MRT_TYPE::UI)->OMSet();
+}
+
 void CRenderMgr::Render_Lights()
 {
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
 
-	CCamera* pMainCam = CRenderMgr::GetInst()->GetMainCam();
+	CCamera* pMainCam = CRenderMgr::GetInst()->GetCamera(0);
 	if (nullptr == pMainCam)
 		return;
 	g_transform.matView = pMainCam->GetViewMat();
@@ -106,6 +162,20 @@ void CRenderMgr::Render_Lights()
 	// 광원을 그린다.
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
+		if (m_vecLight3D[i]->Light3D()->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::DIR)
+		{
+			if (b_isFever)
+				m_vecLight3D[i]->Light3D()->SetDiffuseColor(Vec3(0.06f, 0.149f, 0.4f));
+		}
+
+		if (m_vecLight3D[i]->Light3D()->GetLight3DInfo().iLightType == (int)LIGHT_TYPE::POINT)
+		{
+			f_lightpow += 0.01;
+			if (f_lightpow > 1)
+				f_lightpow = 0.f;
+			m_vecLight3D[i]->Light3D()->SetAmbient(Vec3(f_lightpow, f_lightpow, f_lightpow));
+		}
+
 		m_vecLight3D[i]->Light3D()->Render();
 	}
 
@@ -125,6 +195,46 @@ void CRenderMgr::Merge_Light()
 
 	pMtrl->UpdateData();
 	pRectMesh->Render();
+}
+
+void CRenderMgr::PlaySound()
+{
+	SCENE_TYPE curscene = CSceneMgr::GetInst()->GetSceneType();
+	switch (curscene)
+	{
+	case SCENE_TYPE::LOBBY:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::LOBBY)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		break;
+	case SCENE_TYPE::RACING:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::RACING)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::RACING]->Play(0);
+		break;
+	case SCENE_TYPE::JUMP:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::SURVIVAL)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		break;
+	case SCENE_TYPE::METOR:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::SURVIVAL)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::SURVIVAL]->Play(0);
+		break;
+	case SCENE_TYPE::AWARD:
+		for (int i = 0; i < (int)SOUND_TYPE::END; ++i)
+			if (i != (int)SOUND_TYPE::LOBBY)
+				m_sounds[i]->Stop();
+		m_sounds[(int)SOUND_TYPE::LOBBY]->Play(0);
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -250,18 +360,36 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::SHADOWMAP]->Create(1, arrRT, pDSTex); // 별도의 깊이버퍼 를 가짐
 	}
 
+	// ==============
+	// POSTEFFECT MRT
+	// ==============
 	{
 		tRT arrRT[8] = {};
 
 		arrRT[0].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
-		arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"OutlineTargetTex"
+		arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"PostEffectTex"
 			, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
 			, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
 			, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
 
-		m_arrMRT[(UINT)MRT_TYPE::OUTLINE] = new CMRT;
-		m_arrMRT[(UINT)MRT_TYPE::OUTLINE]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
+		m_arrMRT[(UINT)MRT_TYPE::POSTEFFECT] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::POSTEFFECT]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
 	}
+
+
+
+	//{
+	//	tRT arrRT[8] = {};
+
+	//	arrRT[0].vClearColor = Vec4(0.f, 0.f, 0.f, 0.f);
+	//	arrRT[0].pTarget = CResMgr::GetInst()->CreateTexture(L"OutlineTargetTex"
+	//		, (UINT)m_tResolution.fWidth, (UINT)m_tResolution.fHeight
+	//		, DXGI_FORMAT_R8G8B8A8_UNORM, CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE
+	//		, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, arrRT[0].vClearColor);
+
+	//	m_arrMRT[(UINT)MRT_TYPE::OUTLINE] = new CMRT;
+	//	m_arrMRT[(UINT)MRT_TYPE::OUTLINE]->Create(1, arrRT, pDSTex); // 깊이 텍스쳐는 SwapChain 것을 사용한다.
+	//}
 
 	// ============
 	// UI MRT

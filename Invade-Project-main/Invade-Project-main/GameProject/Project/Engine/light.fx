@@ -54,7 +54,7 @@ PS_OUTPUT PS_DirLight(VS_OUTPUT _In)
             float fShadowDepth = g_tex_3.Sample(g_sam_0, vShadowUV).r;
             if (fShadowDepth != 0.f && (fDepth > fShadowDepth + 0.00001f))
             {
-                tCurCol.vDiff *= 0.1f;
+                tCurCol.vDiff *= 0.3f;
                 tCurCol.vSpec = (float4) 0.f;
             }
         }

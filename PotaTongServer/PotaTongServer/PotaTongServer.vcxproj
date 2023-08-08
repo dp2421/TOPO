@@ -130,38 +130,51 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Protocol.h" />
+    <ClInclude Include="AI.h" />
     <ClInclude Include="BombMode.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="Define.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="GameMode.h" />
     <ClInclude Include="MatchingManager.h" />
     <ClInclude Include="MeteorMode.h" />
     <ClInclude Include="ObatacleMode.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="OverlappedEx.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PendulumObs.h" />
     <ClInclude Include="RacingMode.h" />
     <ClInclude Include="ServerBase.h" />
+    <ClInclude Include="SpinObs.h" />
     <ClInclude Include="SurviveMode.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="BombMode.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="GameMode.cpp" />
     <ClCompile Include="MatchingManager.cpp" />
     <ClCompile Include="MeteorMode.cpp" />
     <ClCompile Include="ObatacleMode.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="OverlappedEx.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PendulumObs.cpp" />
     <ClCompile Include="PotaTongServer.cpp" />
     <ClCompile Include="RacingMode.cpp" />
     <ClCompile Include="ServerBase.cpp" />
+    <ClCompile Include="SpinObs.cpp" />
     <ClCompile Include="SurviveMode.cpp" />
     <ClCompile Include="ThreadSafeQueue.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

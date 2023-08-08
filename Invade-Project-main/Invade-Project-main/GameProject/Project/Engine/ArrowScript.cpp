@@ -52,7 +52,7 @@ void CArrowScript::Awake()
 	m_pParticle->FrustumCheck(false);
 	m_pParticle->Transform()->SetLocalPos(Vec3(0.5f, 0.f, 0.f));
 
-	pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle);
+	pCurScene->FindLayer(L"Default")->AddGameObject(m_pParticle, pCurScene);
 
 	GetObj()->AddChild(m_pParticle);
 }
@@ -60,8 +60,6 @@ void CArrowScript::Awake()
 
 void CArrowScript::Update()
 {
-	
-
 
 	if (!m_bMove)
 	{

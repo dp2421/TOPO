@@ -17,8 +17,6 @@ public:
     void SubRef() { m_iRefCount--; }
     UINT GetCloneCount() { return m_iCloneCount; }
 
-
-
     virtual void Load(const wstring& _strPath) {};
     virtual void Save(const wstring& _strPath) {};
 

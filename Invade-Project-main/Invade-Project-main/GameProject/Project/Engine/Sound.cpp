@@ -58,7 +58,7 @@ void CSound::Play(int _iRoopCount, bool _bOverlap)
 
 	FMOD::Channel* pChannel = nullptr;
 	g_pFMOD->playSound(m_pSound, nullptr, false, &pChannel);
-
+	pChannel->setVolume(0.1f);
 	pChannel->setCallback(CHANNEL_CALLBACK);
 	pChannel->setUserData(this);
 
@@ -67,7 +67,7 @@ void CSound::Play(int _iRoopCount, bool _bOverlap)
 
 	m_listChannel.push_back(pChannel);
 
-	Stop();
+	//Stop();
 }
 
 void CSound::Stop()
@@ -94,7 +94,7 @@ void CSound::RemoveChannel(FMOD::Channel* _pTargetChannel)
 	}
 }
 
-void CSound::Load(const wstring& _strFilePath)
+void CSound::Load(const wstring& _strFilePath, bool _bFBX, bool _bVecMesh)
 {
 	string path(_strFilePath.begin(), _strFilePath.end());
 

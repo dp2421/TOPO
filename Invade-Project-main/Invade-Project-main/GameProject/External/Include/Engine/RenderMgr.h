@@ -7,6 +7,7 @@ class CLight3D;
 class CRenderTarget24;
 class CMRT;
 
+#include "Sound.h"
 #include "Ptr.h"
 #include "Texture.h"
 
@@ -21,9 +22,6 @@ private:
 	tResolution m_tResolution;
 	CMRT* m_arrMRT[(UINT)MRT_TYPE::END];
 
-
-
-
 	tLight2DInfo m_tLight2DInfo;
 	
 	vector<CLight3D*> m_vecLight3D;
@@ -34,17 +32,32 @@ private:
 	bool m_bWindowed;
 
 	UINT m_iRTVHeapSize;
+
+	bool b_SceneChanged = false;
+	SCENE_TYPE m_sceneType;
+
+
+	bool b_isFever = true;
+	bool b_isMatchComplete = false;
+	int m_maptype;
+
+	float f_lightpow;
+
 public:
+	CSound* m_sounds[(int)SOUND_TYPE::END];
+
+
 	void Init(HWND _hWnd, const tResolution& _res, bool _bWindow);
 	void Render();
 	void Render_Tool();
 	void Render_ShadowMap();
+	void Render_UI();
 	void Render_Lights();
 	void Merge_Light();
-
+	void PlaySound();
+	void Render_PostEffect();
 	//void Render_OutLine();
 private:
-
 
 	void UpdateLight2D();
 	void UpdateLight3D();
@@ -83,8 +96,13 @@ public:
 	CMRT* GetMRT(MRT_TYPE _eType) { return m_arrMRT[(UINT)_eType]; }
 	friend class CSceneMgr;
 
+	void SetSceneChanged(bool sc) { b_SceneChanged = true; }
+	void SetSceneType(SCENE_TYPE type) { m_sceneType = type; }
 
+	void SetSound(CSound* sound, SOUND_TYPE type) { m_sounds[(int)type] = sound; }
 
-
+	void SetMatchComplete(bool complete, int p) { b_isMatchComplete = complete; m_maptype = p; }
+	bool GetMatchComplete() { return b_isMatchComplete; }
+	int GetMatchMapType() { return m_maptype; }
 };
 
