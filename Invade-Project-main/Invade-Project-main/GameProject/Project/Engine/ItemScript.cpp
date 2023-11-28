@@ -73,7 +73,7 @@ void CItemScript::CoinRotate()
 
 void CItemScript::removeCoin(int _idx)
 {
-	std::cout << "面倒内牢 : " << _idx << std::endl;
+	//std::cout << "面倒内牢 : " << _idx << std::endl;
 	if (m_coinIdx == _idx)
 		GetObj()->SetActive(false);
 	else
